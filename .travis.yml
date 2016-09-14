@@ -4,6 +4,8 @@ language: python
 python:
   - "3.5"
 
+before_install: openssl aes-256-cbc -K $encrypted_4ffee584dbdc_key -iv $encrypted_4ffee584dbdc_iv -in secrets.py.enc -out pawprints/secrets.py -d
+
 install: pip install -r requirements.txt
 
 script: python manage.py test
