@@ -92,3 +92,4 @@ ENV/
 # PawPrints project specific dirs/files
 env
 *.swp
+secrets.py
