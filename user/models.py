@@ -9,6 +9,9 @@ class Profile(models.Model):
     sn = models.CharField(max_length=60)
     notifications = models.ForeignKey(Notifications, on_delete=models.CASCADE)
 
+    def __unicode__(self):
+        return self.user.username
+
 # Defines user's email notification settings.
 class Notifications(models.Model):
     update = models.BooleanField(default=True)
