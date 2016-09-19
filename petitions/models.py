@@ -9,7 +9,7 @@ class Petition(models.Model):
     description = models.TextField()
     tags = models.ManyToManyField(Tag) 
     author = models.ForeignKey(User)
-    signatures = models.PositiveIntegerField()
+    signatures = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField()
     published = models.BooleanField(default=False)
     expires = models.DateTimeField()
