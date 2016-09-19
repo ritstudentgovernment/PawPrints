@@ -8,6 +8,9 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sn = models.CharField(max_length=60)
     notifications = models.ForeignKey(Notifications, on_delete=models.CASCADE)
+    subscriptions = models.ManyToManyField('petitions.Petition', blank=True, null=True)
+    petitions_created = models.ManyToManyField('petitions.Petition', blank=True, null=True)
+    petitions_signed = models.ManyToManyField('petitions.Petition', blank=True, null=True)
 
     def __unicode__(self):
         return self.user.username

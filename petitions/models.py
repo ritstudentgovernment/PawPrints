@@ -13,7 +13,7 @@ class Petition(models.Model):
     created_at = models.DateTimeField()
     published = models.BooleanField(default=False)
     expires = models.DateTimeField()
-    last_signed = models.DateTimeField()
+    last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey(Response, default=None, blank=True, null=True)
 
