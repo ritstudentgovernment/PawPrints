@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class Petition(models.Model):
     title = models.CharField(max_length=80)
     description = models.TextField()
-    tags = models.ManyToManyField(Tag) 
+    tags = models.ManyToManyField('petitions.Tag') 
     author = models.ForeignKey(User)
     signatures = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField()
@@ -15,7 +15,7 @@ class Petition(models.Model):
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
-    response = models.ForeignKey(Response, default=None, blank=True, null=True)
+    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.title

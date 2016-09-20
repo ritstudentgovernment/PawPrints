@@ -7,10 +7,10 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sn = models.CharField(max_length=60)
-    notifications = models.ForeignKey(Notifications, on_delete=models.CASCADE)
-    subscriptions = models.ManyToManyField('petitions.Petition', blank=True, null=True)
-    petitions_created = models.ManyToManyField('petitions.Petition', blank=True, null=True)
-    petitions_signed = models.ManyToManyField('petitions.Petition', blank=True, null=True)
+    notifications = models.ForeignKey('profile.Notifications', on_delete=models.CASCADE)
+    subscriptions = models.ManyToManyField('petitions.Petition', related_name='profile_subscriptions', blank=True)
+    petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
+    petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed',blank=True)
 
     def __unicode__(self):
         return self.user.username
