@@ -1,0 +1,93 @@
+[
+  {
+    "model": "petitions.Tag",
+    "pk": 0,
+    "fields": {
+      "name": "Academics"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 1,
+    "fields": {
+      "name": "Campus Life"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 2,
+    "fields": {
+      "name": "Clubs & Organizations"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 3,
+    "fields": {
+      "name": "Deaf Advocacy"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 4,
+    "fields": {
+      "name": "Dining"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 5,
+    "fields": {
+      "name": "Facilities"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 6,
+    "fields": {
+      "name": "Governance"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 7,
+    "fields": {
+      "name": "Housing"
+    }
+  },
+  {
+    "model": "petitions.tag",
+    "pk": 8,
+    "fields": {
+      "name": "Other"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 9,
+    "fields": {
+      "name": "Parking & Transportation"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 10,
+    "fields": {
+      "name": "Public Safety"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 11,
+    "fields": {
+      "name": "Sustainability"
+    }
+  },
+  {
+    "model": "petitions.Tag",
+    "pk": 12,
+    "fields": {
+      "name": "Technology"
+    }
+  }
+]
