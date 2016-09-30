@@ -1,3 +1,8 @@
+""" 
+models.py
+Peter Zujko (pxz3370)
+9/30/2016
+"""
 from django.db import models
 from django.contrib.auth.models import User
 
