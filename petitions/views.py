@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-import datetime
+from datetime import datetime
 from petitions.models import Petition
 from profile.models import Profile
 
@@ -30,7 +30,31 @@ def petition_sign(request, petition_id):
     user.profile.petitions_signed.add(petition)
     user.save()
     petition.update(signatures=F('signatures')+1) 
-    petition.update(last_signed=datetime.datetime.now())
+    petition.update(last_signed=datetime.now())
     petition.save()
     
     return redirect('petition/' + str(petition_id))
+
+# HELPER FUNCTIONS #
+
+# SORTING 
+def most_recent():
+    return Petition.objects.all() \
+    .filter(expires__gt=datetime.now()) \
+    .exclude(has_response=True) \
+    .filter(published=True) \
+    .order_by('-created_at')
+
+def most_signatures():
+    return Petition.objects.all() \
+    .filter(expires__gt=datetime.now()) \
+    .exclude(has_response=True) \
+    .filter(published=True) \
+    .order_by('-signatures')
+
+def last_signed():
+    return Petition.objects.all() \
+    .filter(expires_gt=datetime.now()) \
+    .exclude(has_response=True) \
+    .filter(published=True) \
+    .order_by('-last_signed')
