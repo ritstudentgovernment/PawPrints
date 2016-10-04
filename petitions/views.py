@@ -20,7 +20,7 @@ def petition(request, petition_id):
         'users_signed': users_signed
     }
 
-    return render(request, '', data_object)      
+    return render(request, 'petition/'+str(petition_id), data_object)      
 
 @login_required
 @require_POST
@@ -30,31 +30,31 @@ def petition_sign(request, petition_id):
     user.profile.petitions_signed.add(petition)
     user.save()
     petition.update(signatures=F('signatures')+1) 
-    petition.update(last_signed=datetime.now())
+    petition.update(last_signed=datetime.utcnow())
     petition.save()
     
-    return redirect('petition/' + str(petition_id))
+    return redirect('petition/sign/' + str(petition_id))
 
 # HELPER FUNCTIONS #
 
 # SORTING 
 def most_recent():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.now()) \
+    .filter(expires__gt=datetime.utcnow()) \
     .exclude(has_response=True) \
     .filter(published=True) \
     .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.now()) \
+    .filter(expires__gt=datetime.utcnow()) \
     .exclude(has_response=True) \
     .filter(published=True) \
     .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires_gt=datetime.now()) \
+    .filter(expires_gt=datetime.utcnow()) \
     .exclude(has_response=True) \
     .filter(published=True) \
     .order_by('-last_signed')
