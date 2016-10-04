@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>{{petition.title}}</title>
+
+</head>
+
+<body>
+  <h1>{{petition.title}}</h1>
+  <ul>
+  {% for tag in petition.tags.all %}
+    <li>{{tag.name}}</li>
+  {% endfor %}
+  </ul>
+  <p>{{petition.description}}</p>
+</body>
+</html>

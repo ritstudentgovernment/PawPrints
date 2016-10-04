@@ -5,12 +5,16 @@ from django.db.models import F
 from datetime import datetime
 from petitions.models import Petition
 from profile.models import Profile
+from django.contrib.auth.models import User
 
 def petition(request, petition_id):
     petition = get_object_or_404(Petition, pk=petition_id) 
-    author = Profile.objects.get(petitions_created=petition)
+    author = User.objects.get(pk=petition.author.id)
     user = request.user
-    curr_user_signed = user.partner_set.filter(petitions_signed=petition).exists()
+
+    # Check if user is authenticated before querying
+    curr_user_signed = user.profile.partner_set.filter(petitions_signed=petition).exists() if user.is_authenticated() else None
+
     users_signed = Profile.objects.filter(petitions_signed=petition)
     
     data_object = {
@@ -20,7 +24,7 @@ def petition(request, petition_id):
         'users_signed': users_signed
     }
 
-    return render(request, 'petition/'+str(petition_id), data_object)      
+    return render(request, 'petition.html', data_object)      
 
 @login_required
 @require_POST
