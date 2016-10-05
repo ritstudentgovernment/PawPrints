@@ -37,7 +37,17 @@ def petition_sign(request, petition_id):
     petition.update(last_signed=datetime.utcnow())
     petition.save()
     
-    return redirect('petition/sign/' + str(petition_id))
+    return redirect('petition/' + str(petition_id))
+
+@login_required
+@require_POST
+@user_passes_test(lambda u: u.is_staff)
+def petition_unpublish(request, petition_id):
+    petition = get_object_or_404(Petition, pk=petition_id)
+    petition.published = False    
+    petition.save()
+
+    return redirect('petition/' + str(petition_id))
 
 # HELPER FUNCTIONS #
 
