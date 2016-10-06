@@ -68,24 +68,38 @@ def petition_unpublish(request, petition_id):
 
 # HELPER FUNCTIONS #
 
-# SORTING 
+# PETITION SORTING 
 def most_recent():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
-    .exclude(has_response=True) \
-    .filter(published=True) \
-    .order_by('-created_at')
+            .filter(expires__gt=datetime.utcnow()) \
+            .exclude(has_response=True) \
+            .filter(published=True) \
+            .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
-    .exclude(has_response=True) \
-    .filter(published=True) \
-    .order_by('-signatures')
+            .filter(expires__gt=datetime.utcnow()) \
+            .exclude(has_response=True) \
+            .filter(published=True) \
+            .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires_gt=datetime.utcnow()) \
-    .exclude(has_response=True) \
-    .filter(published=True) \
-    .order_by('-last_signed')
+            .filter(expires__gt=datetime.utcnow()) \
+            .exclude(has_response=True) \
+            .filter(published=True) \
+            .order_by('-last_signed')
+
+def all_active():
+    """All petitions that have no yet expired"""
+    return Petition.objects.all() \
+            .filter(expires__gt=datetime.utcnow()) \
+            .exclude(published=False) \ 
+            .order_by('-created_at')
+
+def all_inactive():
+    """All petitions that have expired and are published"""
+    return Petition.objects.all() \
+            .filter(expires__lt=datetime.utcnow()) \
+            .exclude(published=False) \
+            .order_by('-created_at')
