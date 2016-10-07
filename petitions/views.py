@@ -29,7 +29,8 @@ def petition(request, petition_id):
         'petition': petition,
         'current_user': user,
         'curr_user_signed': curr_user_signed,
-        'users_signed': users_signed
+        'users_signed': users_signed,
+        'curr_user_petition': author == user
     }
 
     return render(request, 'petition.html', data_object)      
@@ -48,6 +49,17 @@ def petition_sign(request, petition_id):
     petition.update(signatures=F('signatures')+1) 
     petition.update(last_signed=datetime.utcnow())
     petition.save()
+    
+    return redirect('petition/' + str(petition_id))
+
+@login_required
+@require_POST
+def petition_subscribe(request, petition_id):
+    """ Endpoint subscribes a user to the petition"""
+    petition = get_object_or_404(Petition, pk=petition_id)
+    user = request.user
+    user.profile.subscriptions.add(petition)
+    user.save()
     
     return redirect('petition/' + str(petition_id))
 
