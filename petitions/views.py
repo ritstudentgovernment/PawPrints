@@ -106,7 +106,7 @@ def all_active():
     """All petitions that have no yet expired"""
     return Petition.objects.all() \
             .filter(expires__gt=datetime.utcnow()) \
-            .exclude(published=False) \ 
+            .exclude(published=False) \
             .order_by('-created_at')
 
 def all_inactive():
