@@ -35,6 +35,8 @@ def petition(request, petition_id):
 
     return render(request, 'petition.html', data_object)      
 
+# ENDPOINTS #
+
 @login_required
 @require_POST
 def petition_sign(request, petition_id):
@@ -77,6 +79,17 @@ def petition_unpublish(request, petition_id):
     petition.save()
 
     return redirect('petition/' + str(petition_id))
+
+@login_required
+@require_POST
+@user_passes_test(lambda u: u.is_staff)
+def add_tag(request):
+    tag_name = request.POST.get('name', '')
+    if tag_name != '':
+        tag = Tag(name=tag_name)
+        tag.save()
+
+    return redirect(request.META.get('HTTP_REFERER'))
 
 # HELPER FUNCTIONS #
 
