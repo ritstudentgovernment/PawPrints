@@ -1,19 +1,108 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-
-  <title>{{petition.title}}</title>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+        .petition_data span{
+            font-weight: normal;
+            font-size: 16px;
+            text-transform: capitalize;
+        }
+        textarea {
+            display: inline-block;
+            font-size: inherit;
+            font-family: inherit;
+            font-weight: inherit;
+            height: 0px;
+            width: 100%;
+            padding: 1px 0px;
+            white-space: normal;
+            border: 1px dashed #cfcfcf;
+            border-bottom: 2px solid #0f0f0f;
+            resize: none;
+        }
+        textarea:focus, textarea:active{
+            outline: none;
+        }
+    </style>
+    <title>{{petition.title}}</title>
 
 </head>
 
 <body>
-  <h1>{{petition.title}}</h1>
-  <ul>
-  {% for tag in petition.tags.all %}
+    <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
+
+    <ul>
+    {% for tag in petition.tags.all %}
     <li>{{tag.name}}</li>
-  {% endfor %}
-  </ul>
-  <p>{{petition.description}}</p>
+    {% endfor %}
+    </ul>
+    <p id="petition_description" class="petition_data">{{petition.description}}</p>
+
+
+    {% if edit %}
+    <!--
+        The logic to make the petition editable, if the user has permission.
+
+        If the user does have permission, they can edit an element by clicking on editable places
+
+        Note for design: In order to ensure that the editing works, editable rows like the title and description (for
+        example) must have the class "petition_data" and an ID. The ID must be the same as the template link, except
+        with an underscore instead of a period.
+     -->
+    <form action="/">
+
+    </form>
+    <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length,c.length);
+                }
+            }
+            return "";
+        }
+        $(window).click(function(e){
+            var clicked_element = e.target ? $(e.target) : false;
+            if(!clicked_element.hasClass("editable")) {
+                $(".editable").each(function(){
+
+                    var value = $(this).val();
+                    value = value.trim();
+                    var attribute = $(this).parent().attr("id");
+                    attribute = attribute.replace('petition_','');
+                    if (value != "" && value != null) {
+                        $(this).parent().html(value);
+                        var csrftoken = getCookie('csrftoken');
+                        $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":csrftoken});
+                    }
+
+                });
+            }
+            if(clicked_element.hasClass("petition_data")){
+
+                var text = clicked_element.html();
+                var title = clicked_element.attr("id").replace("_"," ");
+                clicked_element.html("<span>"+title+":</span><textarea class='editable'>"+text+"</textarea>");
+
+                $('.editable').each(function(){
+                    this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+                }).on('input', function () {
+                    this.style.height = '0px';
+                    this.style.height = (this.scrollHeight) + 'px';
+                });
+
+            }
+        });
+    </script>
+    {% endif %}
+
 </body>
 </html>

@@ -1,0 +1,9 @@
+from django.conf.urls import url
+from . import views
+
+app_name='profile'
+
+urlpatterns = [
+    url(r'^$', views.main),
+    url(r'^login/', views.login_user)
+]
