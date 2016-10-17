@@ -22,7 +22,7 @@ class Petition(models.Model):
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 #
@@ -31,7 +31,7 @@ class Petition(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 #
@@ -42,5 +42,5 @@ class Response(models.Model):
     created_at = models.DateTimeField()
     author = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.author
