@@ -48,11 +48,11 @@ def petition_sign(request, petition_id):
     user = request.user
     user.profile.petitions_signed.add(petition)
     user.save()
-    petition.update(signatures=F('signatures')+1) 
-    petition.update(last_signed=datetime.utcnow())
+    petition.signatures += 1
+    petition.last_signed = datetime.utcnow()
     petition.save()
     
-    return redirect('petition/' + str(petition_id))
+    return redirect('/petition/'+str(petition_id))
 
 @login_required
 @require_POST
