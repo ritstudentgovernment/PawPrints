@@ -28,3 +28,17 @@ class PetitionTest(TestCase):
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.signatures, 1)
 
+    def test_petition_unpublish(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/petition/unpublish/'+str(self.petition.id))
+        pet = Petition.objects.get(pk=self.petition.id)
+        self.assertEqual(pet.published, False)
+
+        # Test using not super user
+        self.client.force_login(self.user)
+        pet.published = True
+        pet.save()
+        response = self.client.post('/petition/unpublish/'+str(self.petition.id))
+        pet = Petition.objects.get(pk=self.petition.id)
+        self.assertEqual(pet.published, True)
+
