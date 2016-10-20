@@ -34,6 +34,15 @@ class PetitionTest(TestCase):
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.signatures, 1)
 
+    def test_petition_subscribe(self):
+        self.client.force_login(self.user)
+        user = User.objects.get(pk=self.user.id)
+        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
+        response = self.client.post('/petition/subscribe/'+str(self.petition.id),{})
+        user = User.objects.get(pk=self.user.id)
+        
+        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
+
     def test_petition_unpublish(self):
         self.client.force_login(self.superUser)
         response = self.client.post('/petition/unpublish/'+str(self.petition.id))
