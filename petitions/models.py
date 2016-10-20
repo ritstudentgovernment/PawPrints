@@ -1,7 +1,8 @@
 """ 
-models.py
-Peter Zujko (pxz3370)
-9/30/2016
+Author: Peter Zujko (@zujko)
+Description: Contains models for Petition, Tag, and Response.
+Date Created: Sept 15 2016
+Updated: Oct 17 2016
 """
 from django.db import models
 from django.contrib.auth.models import User

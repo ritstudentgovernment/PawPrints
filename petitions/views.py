@@ -1,3 +1,9 @@
+"""
+Author: Peter Zujko (@zujko)
+Description: Handles views and endpoints for all petition related operations.
+Date Created: Sept 15 2016
+Updated: Oct 18 2016
+"""
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test

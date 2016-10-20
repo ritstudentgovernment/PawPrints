@@ -1,3 +1,9 @@
+"""
+Author: Peter Zujko (@zujko)
+Description: Tests for petition operations.
+Date Created: Sept 15 2016
+Updated: Oct 18 2016
+"""
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from petitions.models import Petition, Tag
