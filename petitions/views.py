@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
-Updated: Oct 18 2016
+Updated: Oct 26 2016
 """
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
@@ -26,7 +26,7 @@ def petition(request, petition_id):
     user = request.user
 
     # Check if user is authenticated before querying
-    curr_user_signed = user.profile.partner_set.filter(petitions_signed=petition).exists() if user.is_authenticated() else None
+    curr_user_signed = user.profile.petitions_signed.filter(id=petition.id).exists() if user.is_authenticated() else None
 
     # Get QuerySet of all users who signed this petition
     users_signed = Profile.objects.filter(petitions_signed=petition)

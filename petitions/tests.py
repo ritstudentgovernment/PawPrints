@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Tests for petition operations.
 Date Created: Sept 15 2016
-Updated: Oct 18 2016
+Updated: Oct 26 2016
 """
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
@@ -56,4 +56,8 @@ class PetitionTest(TestCase):
         response = self.client.post('/petition/unpublish/'+str(self.petition.id))
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.published, True)
+
+    def test_petition_page(self):
+        response = self.client.get('/petition/'+str(self.petition.id))
+        self.assertEqual(response.status_code, 200)
 
