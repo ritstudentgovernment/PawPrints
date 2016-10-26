@@ -1,7 +1,8 @@
 """ 
-models.py
-Peter Zujko (pxz3370)
-9/30/2016
+Author: Peter Zujko (@zujko)
+Description: Contains models for Petition, Tag, and Response.
+Date Created: Sept 15 2016
+Updated: Oct 17 2016
 """
 from django.db import models
 from django.contrib.auth.models import User
@@ -22,7 +23,7 @@ class Petition(models.Model):
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 #
@@ -31,7 +32,7 @@ class Petition(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 #
@@ -42,5 +43,5 @@ class Response(models.Model):
     created_at = models.DateTimeField()
     author = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.author
