@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 from django.db.models import F
 from datetime import datetime, timedelta
-from petitions.models import Petition
+from petitions.models import Petition, Tag
 from profile.models import Profile
 from django.contrib.auth.models import User
 
@@ -24,7 +25,11 @@ def petition(request, petition_id):
     curr_user_signed = user.profile.petitions_signed.filter(id=petition.id).exists() if user.is_authenticated() else None
 
     # Get QuerySet of all users who signed this petition
+    # Note: This returns an abstract list of IDs that are not directly associated, at least to my knowledge, to specific user objects.
     users_signed = Profile.objects.filter(petitions_signed=petition)
+
+    # Get all of the current tags in pawprints.
+    additional_tags = Tag.objects.all().exclude(name__in=[x.name for x in petition.tags.all()])
 
     # Generate the placeholders for the petition's page.
     # Note: 'edit' is how the system determines if the current user has the permission to edit a petition or not.
@@ -32,8 +37,9 @@ def petition(request, petition_id):
         'petition': petition,
         'author':author,
         'current_user': user,
-        'curr_user_signed': curr_user_signed,
+        'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
+        'additional_tags': additional_tags,
         'edit': edit_check(user, petition)
     }
 
@@ -41,12 +47,15 @@ def petition(request, petition_id):
 
 
 @login_required
+@require_POST
 def petition_create(request):
     """
     Endpoint for creating a new petition.
     This requires the user be signed in.
+    Note: This endpoint returns the ID of the petition
+          created, in order for JavaScript to redirect
+          to the correct petition.
     """
-
     # Build the user reference.
     user = request.user
 
@@ -59,8 +68,15 @@ def petition_create(request):
     petition_id = new_petition.id
     user.profile.petitions_created.add(petition_id)
 
-    # Go to the new petition to edit its content.
-    return redirect('/petition/'+str(petition_id))
+    # Auto-sign the author to the petition.
+    user.profile.petitions_signed.add(new_petition)
+    user.save()
+    new_petition.last_signed = datetime.utcnow()
+    new_petition.signatures = F('signatures')+1
+    new_petition.save()
+
+    # Return the petition's ID to be used to redirect the user to the new petition.
+    return HttpResponse(str(petition_id))
 
 
 @login_required
@@ -74,18 +90,28 @@ def petition_edit(request, petition_id):
     # create the petition object based on the petition id sent.
     petition = get_object_or_404(Petition, pk=petition_id)
 
-    attribute = request.POST.get("attribute")
-    value = request.POST.get("value")
+    # Check if the user is able to edit
+    if edit_check(request.user, petition):
 
-    if attribute == "title":
-        petition.title = value
+        attribute = request.POST.get("attribute")
+        value = request.POST.get("value")
 
-    if attribute == "description":
-        petition.description = value
+        if attribute == "title":
+            petition.title = value
 
-    petition.save()
+        if attribute == "description":
+            petition.description = value
+
+        if attribute == "add-tag":
+            petition.tags.add(value)
+
+        if attribute == "remove-tag":
+            petition.tags.remove(value)
+
+        petition.save()
 
     return redirect('/petition/' + str(petition_id))
+
 
 
 @login_required
@@ -94,16 +120,18 @@ def petition_sign(request, petition_id):
     """ Endpoint for signing a petition.
     This endpoint requires the user be signed in
     and that the HTTP request method is a POST.
+    Note: This endpoint returns the ID of the petition signed.
+          This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
     user = request.user
     user.profile.petitions_signed.add(petition)
     user.save()
-    petition.update(signatures=F('signatures')+1) 
-    petition.update(last_signed=datetime.utcnow())
+    petition.signatures = F('signatures')+1
+    petition.last_signed = datetime.utcnow()
     petition.save()
-    
-    return redirect('petition/' + str(petition_id))
+
+    return HttpResponse(str(petition.id))
 
 
 @login_required

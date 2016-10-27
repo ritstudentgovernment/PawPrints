@@ -1,7 +1,8 @@
 """
 models.py
 Peter Zujko (pxz3370)
-9/30/16
+Lukas Yelle (lxy5611)
+10/20/16
 """
 from django.db import models
 from django.contrib.auth.models import User
@@ -16,6 +17,7 @@ class Profile(models.Model):
     subscriptions = models.ManyToManyField('petitions.Petition', related_name='profile_subscriptions', blank=True)
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
     petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed',blank=True)
+    display_name = models.CharField(max_length=3,blank=True)
 
     def __unicode__(self):
         return self.user.username

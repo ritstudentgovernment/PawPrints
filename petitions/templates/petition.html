@@ -1,8 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="utf-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{% static '/js/global.js' %}"></script>
     <style>
         .petition_data span{
             font-weight: normal;
@@ -25,6 +27,68 @@
         textarea:focus, textarea:active{
             outline: none;
         }
+        .hidden{
+            display: none;
+        }
+        .petition_list_data{
+            padding: 10px;
+            margin: 0;
+            overflow: hidden;
+            min-height: 40px;
+            display: block;
+            width: auto;
+        }
+        .tag,.new-tag{
+            padding: 10px 5px;
+            display: inline-block;
+            position: relative;
+        }
+        .list_editable{
+            border: 1px dashed #cfcfcf;
+        }
+        .new-tag{
+            border: 1px solid #0c0c0c;
+        }
+        .new-tag:hover{
+            background-color: #0c0c0c;
+            color: #fff;
+            cursor: pointer;
+        }
+        .new-tag:hover:after{
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50%;
+            height: 50%;
+            text-align: center;
+            content: "+";
+            line-height: 1em;
+            background-color: #fff;
+            color: #000;
+            border-left: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+        }
+        .list_editable .tag{
+            border: 1px solid rgba(255,255,255,0);
+        }
+        .list_editable .tag:hover{
+            cursor: pointer;
+            border: 1px solid #c0c0c0;
+        }
+        .list_editable .tag:hover:after{
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 50%;
+            height: 50%;
+            text-align: center;
+            content: "-";
+            line-height: 1em;
+            background-color: #fff;
+            color: #000;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
     </style>
     <title>{{petition.title}}</title>
 
@@ -33,13 +97,46 @@
 <body>
     <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
 
-    <ul>
-    {% for tag in petition.tags.all %}
-    <li>{{tag.name}}</li>
-    {% endfor %}
-    </ul>
+    <section>
+        <h4>Tags</h4>
+        <ul class="petition_list_data">
+            {% for tag in petition.tags.all %}
+                <li id="{{ tag.id }}" class="tag">{{tag.name}}</li>
+            {% endfor %}
+            {% if edit %}
+                {% for tag in additional_tags %}
+                    <li id="{{ tag.id }}" class="new-tag">{{ tag.name }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </section>
+
     <p id="petition_description" class="petition_data">{{petition.description}}</p>
 
+    {% if current_user.is_authenticated and not current_user_signed and not author == current_user.profile.id %}
+        <!--
+            The logic to enable an authenticated user to sign a petition.
+        -->
+        <button id="sign-petition">Click me to sign this petition!</button>
+        <script>
+            $("#sign-petition").click(function(){
+                $.post('/petition/sign/{{petition.id}}',{"csrfmiddlewaretoken":get_csrf()},function(){
+                    window.location.reload();
+                });
+            });
+        </script>
+    {% endif %}
+
+    <section id="signatures">
+        <h4>Signatures</h4>
+        <ul>
+            {% for user in users_signed.all %}
+                <li>{{ user.display_name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <p>Number of signatures: {{ petition.signatures }}</p>
 
     {% if edit %}
     <!--
@@ -51,24 +148,10 @@
         example) must have the class "petition_data" and an ID. The ID must be the same as the template link, except
         with an underscore instead of a period.
      -->
-    <form action="/">
-
-    </form>
     <script>
-        function getCookie(cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length,c.length);
-                }
-            }
-            return "";
-        }
+        $(document).ready(function(){
+            $(".petition_list_data").addClass("list_editable");
+        });
         $(window).click(function(e){
             var clicked_element = e.target ? $(e.target) : false;
             if(!clicked_element.hasClass("editable")) {
@@ -80,14 +163,12 @@
                     attribute = attribute.replace('petition_','');
                     if (value != "" && value != null) {
                         $(this).parent().html(value);
-                        var csrftoken = getCookie('csrftoken');
-                        $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":csrftoken});
+                        $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":get_csrf()});
                     }
 
                 });
             }
             if(clicked_element.hasClass("petition_data")){
-
                 var text = clicked_element.html();
                 var title = clicked_element.attr("id").replace("_"," ");
                 clicked_element.html("<span>"+title+":</span><textarea class='editable'>"+text+"</textarea>");
@@ -98,8 +179,19 @@
                     this.style.height = '0px';
                     this.style.height = (this.scrollHeight) + 'px';
                 });
-
             }
+        });
+        $(document).on("click",".new-tag",function(){
+            var id = $(this).attr("id");
+            $(this).removeClass("new-tag");
+            $(this).addClass("tag");
+            $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+        });
+        $(document).on("click",".tag",function(){
+            var id = $(this).attr("id");
+            $(this).removeClass("tag");
+            $(this).addClass("new-tag");
+            $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
         });
     </script>
     {% endif %}

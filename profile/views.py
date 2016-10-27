@@ -8,14 +8,24 @@ from django.contrib.auth import authenticate, login, logout
 def main(request):
     """
     Redirects the user to whatever page they came from if they are logged in.
+    OR, if they do not have somewhere to be redirected, direct them to their
+    account page
     """
 
     # Get the next page from the url
-    next_url = request.GET.get("next",'')
-    if not next_url:
-        next_url = "/"
+    next_url = request.GET.get("next", '')
+    if next_url:
+        return redirect(next_url)
 
-    return redirect(next_url)
+    user = request.user
+
+    data_object = {
+        'first_name':user.profile.user.first_name,
+        'last_name':user.profile.user.last_name,
+        'petitions_created':user.profile.petitions_created.all
+    }
+
+    return render(request, 'account.html', data_object)
 
 
 def login_user(request):
@@ -25,7 +35,7 @@ def login_user(request):
     """
 
     # Get the next page from the url
-    next_url = request.GET.get("next",'')
+    next_url = request.GET.get("next", '')
     if not next_url:
         next_url = "/accounts/"
 
