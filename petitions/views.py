@@ -9,6 +9,36 @@ from profile.models import Profile
 from django.contrib.auth.models import User
 
 
+def index(request):
+    """
+    Handles displaying the index page of PawPrints.
+    """
+    # Get the current sorting key from the index page, if one is not set the default is 'most recent'
+    sorting_key = request.POST.get('sort_by', 'most recent')
+
+    data_object = {
+        'tags': Tag.objects.all,
+        'petitions': sorting_controller(sorting_key)
+    }
+
+    return render(request, 'index.html', data_object)
+
+
+def load_petitions(request):
+    """
+    Handles requests for the list of petitions by AJAX.
+    """
+    sorting_key = request.POST.get('sort_by', 'most recent')
+    filter_key = request.POST.get('filter', 'all')
+
+    # This line gets a filtered and sorted list of petitions.
+    data_object = {
+        "petitions": filtering_controller(sorting_controller(sorting_key), filter_key)
+    }
+
+    return render(request, 'list_petitions.html', data_object)
+
+
 def petition(request, petition_id):
     """ Handles displaying A single petition. 
     DB queried to get Petition object and User objects.
@@ -96,6 +126,10 @@ def petition_edit(request, petition_id):
         attribute = request.POST.get("attribute")
         value = request.POST.get("value")
 
+        if attribute == "publish":
+            user = request.user.profile
+            return petition_publish(user, petition)
+
         if attribute == "title":
             petition.title = value
 
@@ -124,13 +158,13 @@ def petition_sign(request, petition_id):
           This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
-    user = request.user
-    user.profile.petitions_signed.add(petition)
-    user.save()
-    petition.signatures = F('signatures')+1
-    petition.last_signed = datetime.utcnow()
-    petition.save()
-
+    if petition.status != 2:
+        user = request.user
+        user.profile.petitions_signed.add(petition)
+        user.save()
+        petition.signatures = F('signatures')+1
+        petition.last_signed = datetime.utcnow()
+        petition.save()
     return HttpResponse(str(petition.id))
 
 
@@ -144,10 +178,12 @@ def petition_unpublish(request, petition_id):
     user is an admin.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
-    petition.published = False    
+    # Set status to 2 to hide it from view.
+    petition.status = 2
     petition.save()
 
     return redirect('petition/' + str(petition_id))
+
 
 # HELPER FUNCTIONS #
 def edit_check(user, petition):
@@ -170,30 +206,61 @@ def edit_check(user, petition):
         # Check if the user's account is active (it may be disabled)
         if user.is_active:
             # Check if the user is a staff member or the author of the petition
-            if user.is_staff or user.id == petition.author.id:
+            if user.is_staff or (user.id == petition.author.id and petition.status != 2 ):
                 # The user is authenticated, and can edit the petition!
                 edit = True
-
     return edit
 
-# SORTING 
+def petition_publish(user, petition):
+    """ Endpoint for publishing a petition.
+    This endpoint requires that the user be signed in,
+    the HTTP request method is a POST, the petition is new,
+    and that the user is the petition's author.
+    """
+    response = False
+    if petition.status == 0 and user.id == petition.author.id:
+        # Set status to 1 to publish it to the world.
+        petition.status = 1
+        petition.save()
+        response = True
+    return HttpResponse(response)
+
+
+# FILTERING
+def filtering_controller(sorted_objects, tag):
+    if tag == "all":
+        return sorted_objects
+    else:
+        return sorted_objects.all().filter(tags__in=tag)
+
+
+# SORTING
+#
+def sorting_controller(key):
+    result = {
+        'most recent': most_recent(),
+        'most signatures': most_signatures(),
+        'last signed': last_signed()
+    }.get(key, None)
+    return result
+
 def most_recent():
     return Petition.objects.all() \
     .filter(expires__gt=datetime.utcnow()) \
     .exclude(has_response=True) \
-    .filter(published=True) \
+    .filter(status=1) \
     .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
     .filter(expires__gt=datetime.utcnow()) \
     .exclude(has_response=True) \
-    .filter(published=True) \
+    .filter(status=1) \
     .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires_gt=datetime.utcnow()) \
+    .filter(expires__gt=datetime.utcnow()) \
     .exclude(has_response=True) \
-    .filter(published=True) \
+    .filter(status=1) \
     .order_by('-last_signed')

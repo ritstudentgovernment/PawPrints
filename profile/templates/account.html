@@ -6,25 +6,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="{% static '/js/global.js' %}"></script>
     <title>Account | PawPrints</title>
+    <style>
+    </style>
 </head>
 <body>
 
+
     {{ first_name }}
     {{ last_name }}
-    <se
     {% for petition in petitions_created %}
         {{ petition.title }}
     {% endfor %}
 
 
-    <button id="new_petition">Click me to add a petition.</button>
+    <button class="create_petition">Click me to add a petition.</button>
 
-    <script>
-        $("#new_petition").click(function(){
-            $.post('/petition/create/',{"csrfmiddlewaretoken":get_csrf()},function(response){
-                window.location.href = "/petition/"+response;
-            });
-        });
-    </script>
 </body>
 </html>

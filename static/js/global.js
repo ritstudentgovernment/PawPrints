@@ -30,3 +30,10 @@ function get_csrf(){
     * */
     return getCookie('csrftoken');
 }
+$(document).ready(function(){
+    $(".create_petition").click(function(){
+        $.post('/petition/create/',{"csrfmiddlewaretoken":get_csrf()},function(response){
+            window.location.href = "/petition/"+response;
+        });
+    });
+});

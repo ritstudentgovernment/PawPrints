@@ -97,6 +97,8 @@
 <body>
     <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
 
+    <p id="petition_description" class="petition_data">{{petition.description}}</p>
+
     <section>
         <h4>Tags</h4>
         <ul class="petition_list_data">
@@ -111,8 +113,6 @@
         </ul>
     </section>
 
-    <p id="petition_description" class="petition_data">{{petition.description}}</p>
-
     {% if current_user.is_authenticated and not current_user_signed and not author == current_user.profile.id %}
         <!--
             The logic to enable an authenticated user to sign a petition.
@@ -124,6 +124,12 @@
                     window.location.reload();
                 });
             });
+        </script>
+    {% endif %}
+    {% if petition.status == 2 %}
+    {# This block of code redirects the user back to the home page if the petition they are trying to get to has been unpublished. #}
+        <script>
+            window.location.href='/';
         </script>
     {% endif %}
 
@@ -148,52 +154,63 @@
         example) must have the class "petition_data" and an ID. The ID must be the same as the template link, except
         with an underscore instead of a period.
      -->
-    <script>
-        $(document).ready(function(){
-            $(".petition_list_data").addClass("list_editable");
-        });
-        $(window).click(function(e){
-            var clicked_element = e.target ? $(e.target) : false;
-            if(!clicked_element.hasClass("editable")) {
-                $(".editable").each(function(){
+        {% if petition.status == 0 %}
+            <button id="publish">Publish!</button>
+        {% endif %}
+        <script>
+            $(document).ready(function(){
+                $(".petition_list_data").addClass("list_editable");
+            });
+            $(window).click(function(e){
+                var clicked_element = e.target ? $(e.target) : false;
+                if(!clicked_element.hasClass("editable")) {
+                    $(".editable").each(function(){
 
-                    var value = $(this).val();
-                    value = value.trim();
-                    var attribute = $(this).parent().attr("id");
-                    attribute = attribute.replace('petition_','');
-                    if (value != "" && value != null) {
-                        $(this).parent().html(value);
-                        $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                        var value = $(this).val();
+                        value = value.trim();
+                        var attribute = $(this).parent().attr("id");
+                        attribute = attribute.replace('petition_','');
+                        if (value != "" && value != null) {
+                            $(this).parent().html(value);
+                            $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                        }
+
+                    });
+                }
+                if(clicked_element.hasClass("petition_data")){
+                    var text = clicked_element.html();
+                    var title = clicked_element.attr("id").replace("_"," ");
+                    clicked_element.html("<span>"+title+":</span><textarea class='editable'>"+text+"</textarea>");
+
+                    $('.editable').each(function(){
+                        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+                    }).on('input', function () {
+                        this.style.height = '0px';
+                        this.style.height = (this.scrollHeight) + 'px';
+                    });
+                }
+            });
+            $(document).on("click",".new-tag",function(){
+                var id = $(this).attr("id");
+                $(this).removeClass("new-tag");
+                $(this).addClass("tag");
+                $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+            });
+            $(document).on("click",".tag",function(){
+                var id = $(this).attr("id");
+                $(this).removeClass("tag");
+                $(this).addClass("new-tag");
+                $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+            });
+            $("#publish").click(function(){
+                $.post("/petition/update/{{petition.id}}",{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(response){
+                    //Expecting a response of either true or false.
+                    if(response){
+                        window.location.reload();
                     }
-
                 });
-            }
-            if(clicked_element.hasClass("petition_data")){
-                var text = clicked_element.html();
-                var title = clicked_element.attr("id").replace("_"," ");
-                clicked_element.html("<span>"+title+":</span><textarea class='editable'>"+text+"</textarea>");
-
-                $('.editable').each(function(){
-                    this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-                }).on('input', function () {
-                    this.style.height = '0px';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
-            }
-        });
-        $(document).on("click",".new-tag",function(){
-            var id = $(this).attr("id");
-            $(this).removeClass("new-tag");
-            $(this).addClass("tag");
-            $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
-        });
-        $(document).on("click",".tag",function(){
-            var id = $(this).attr("id");
-            $(this).removeClass("tag");
-            $(this).addClass("new-tag");
-            $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
-        });
-    </script>
+            });
+        </script>
     {% endif %}
 
 </body>

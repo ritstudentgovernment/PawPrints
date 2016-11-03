@@ -16,7 +16,10 @@ class Petition(models.Model):
     author = models.ForeignKey(User)
     signatures = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField()
-    published = models.BooleanField(default=False)
+    # Changed "published (bool)" field to an int field for flagging different states of the petition
+    # These states include: 0 - new (unpublished), 1 - published, 2 - removed (unpublished)
+    status = models.PositiveSmallIntegerField(default=0)
+    # published = models.BooleanField(default=False)
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
