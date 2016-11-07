@@ -30,7 +30,7 @@ class PetitionTest(TestCase):
 
     def test_sign_petition(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/petition/sign/'+str(self.petition.id), {})
+        response = self.client.post('/petition/sign/'+str(self.petition.id), {'test':'test'})
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.signatures, 1)
 
