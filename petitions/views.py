@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import F
-from datetime import datetime
+from django.utils import timezone
 from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
@@ -55,7 +55,7 @@ def petition_sign(request, petition_id):
     user.profile.petitions_signed.add(petition)
     user.save()
     petition.signatures += 1
-    petition.last_signed = datetime.utcnow()
+    petition.last_signed = timezone.now()
     petition.save()
     
     return redirect('/petition/'+str(petition_id))
@@ -91,21 +91,21 @@ def petition_unpublish(request, petition_id):
 # PETITION SORTING 
 def most_recent():
     return Petition.objects.all() \
-            .filter(expires__gt=datetime.utcnow()) \
+            .filter(expires__gt=timezone.now()) \
             .exclude(has_response=True) \
             .filter(published=True) \
             .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
-            .filter(expires__gt=datetime.utcnow()) \
+            .filter(expires__gt=timezone.now()) \
             .exclude(has_response=True) \
             .filter(published=True) \
             .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-            .filter(expires__gt=datetime.utcnow()) \
+            .filter(expires__gt=timezone.now()) \
             .exclude(has_response=True) \
             .filter(published=True) \
             .order_by('-last_signed')
@@ -113,13 +113,13 @@ def last_signed():
 def all_active():
     """All petitions that have no yet expired"""
     return Petition.objects.all() \
-            .filter(expires__gt=datetime.utcnow()) \
+            .filter(expires__gt=timezone.now()) \
             .exclude(published=False) \
             .order_by('-created_at')
 
 def all_inactive():
     """All petitions that have expired and are published"""
     return Petition.objects.all() \
-            .filter(expires__lt=datetime.utcnow()) \
+            .filter(expires__lt=timezone.now()) \
             .exclude(published=False) \
             .order_by('-created_at')
