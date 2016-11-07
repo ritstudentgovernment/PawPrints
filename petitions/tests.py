@@ -7,7 +7,8 @@ Updated: Oct 26 2016
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from petitions.models import Petition, Tag
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 from .views import petition_sign
 
 class PetitionTest(TestCase):
@@ -22,9 +23,9 @@ class PetitionTest(TestCase):
         self.petition = Petition(title='Test petition',  
                 description='This is a test petition', 
                 author=self.user,
-                created_at=datetime.utcnow(),
+                created_at=timezone.now(),
                 published=True,
-                expires=datetime.utcnow()+timedelta(days=30)
+                expires=timezone.now()+timedelta(days=30)
                 )
         self.petition.save()
 
