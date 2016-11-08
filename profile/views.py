@@ -1,22 +1,26 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from .models import Profile
+
+@login_required
+def profile(request):
+    profile = Profile.objects.get(user=request.user)
+               
+    return render(request, 'profile.html',{'profile': profile})
 
 # ENDPOINTS #
 @login_required
 @require_POST
-def update_notification(request, user_id):
+def update_notifications(request, user_id):
     if request.user.id != int(user_id):
         return redirect('/')
 
     user = request.user
-    setting = request.POST.get('notification','')
-    value = request.POST.get('value','')
 
-    if setting == 'update': 
-        user.profile.notifications.update = True if value == '1' else False 
-    elif setting == 'response':
-        user.profile.notifications.update = True if value == '1' else False
+    user.profile.notifications.update = True if "updates" in request.POST else False 
+    user.profile.notifications.response = True if "response" in request.POST else False
+
     user.save()
     return redirect('profile/settings/'+str(user_id)) 

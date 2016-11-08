@@ -10,6 +10,6 @@ class ProfileTest(TestCase):
 
     def test_update_notification(self):
         self.client.force_login(self.testUser)
-        response = self.client.post('/profile/settings/notification/'+str(self.testUser.id), {'notification': 'update','value': '0'})
+        response = self.client.post('/profile/settings/notifications/'+str(self.testUser.id), {'response': '0'})
         user = User.objects.get(id=self.testUser.id)
         self.assertEqual(user.profile.notifications.update, False)

@@ -4,5 +4,6 @@ from . import views
 app_name='profile'
 
 urlpatterns = [
-    url(r'^settings/notification/(?P<user_id>\d+)$', views.update_notification),
+    url(r'^$', views.profile),
+    url(r'^settings/notifications/(?P<user_id>\d+)$', views.update_notifications, name='notification_update'),
 ]
