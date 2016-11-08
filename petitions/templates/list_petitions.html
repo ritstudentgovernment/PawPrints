@@ -1,0 +1,12 @@
+{% for petition in petitions %}
+    <article>
+        <h4>{{ petition.signatures }} Signatures</h4>
+        <h3><a href="/petition/{{ petition.id }}">{{ petition.title }}</a></h3>
+        <ul>
+            {% for tag in petition.tags.all %}
+                <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
+            {% endfor %}
+        </ul>
+    </article>
+    </h1>
+{% endfor %}
