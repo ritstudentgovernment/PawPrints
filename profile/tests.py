@@ -1,3 +1,9 @@
+"""
+Author: Peter Zujko (@zujko)
+Description: Tests for profile operations.
+Date Created: Nov 7 2016
+Updated: Nov 8 2016
+"""
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
