@@ -12,6 +12,8 @@ from django.utils import timezone
 from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.http import HttpResponse
 
 def petition(request, petition_id):
     """ Handles displaying A single petition. 
@@ -123,3 +125,8 @@ def all_inactive():
             .filter(expires__lt=timezone.now()) \
             .exclude(published=False) \
             .order_by('-created_at')
+
+
+def sendSimpleEmail(request, recipients):
+    res = send_mail("hello paul", "comment tu vas?", "sgnoreply@rit.edu", [recipients])
+    return HttpResponse('%s'%res)
