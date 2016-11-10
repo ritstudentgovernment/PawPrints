@@ -1,0 +1,64 @@
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--[if !mso]><!-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--<![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <!--[if (gte mso 9)|(IE)]>
+    <style type="text/css">
+        table {border-collapse: collapse;}
+    </style>
+    <![endif]-->
+</head>
+<body>
+    <center class="wrapper">
+        <div class="webkit">
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="600" align="center">
+            <tr>
+            <td>
+            <![endif]-->
+            <table class="outer" align="center">
+                <tr>
+                    <td class="email-header">
+                        <img src="/pawlogo.png" width="600" alt="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-body">
+                        <p>Hello,</p>
+                        <p>You're receiving this email because the petition <b>{{petition.title}}</b> by <b>{{oldPetition.author}}</b> has been approved.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-button">
+                        <p>Please click the link below if you would like to view this petition.</p>
+                        <a href="{{settings.public.root_url}}/petitions/{{oldPetition._id}}" class="viewButton">View Petition</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-signature">
+                        <p>Thanks,</p>
+                        <p>RIT Student Government</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="footer">
+                        <img class="footer-img" src="/sglogo.png" width="200" alt="" />
+                        <p class="footer-unsub">If you would like to stop receiving emails, please <a href="{{settings.public.root_url}}/unsubscribe">unsubscribe</a></p>
+                    </td>
+                <tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </div>
+    </center>
+</body>
+</html>
