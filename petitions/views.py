@@ -16,8 +16,15 @@ def index(request):
     # Get the current sorting key from the index page, if one is not set the default is 'most recent'
     sorting_key = request.POST.get('sort_by', 'most recent')
 
+    color_object = {
+        'highlight':"#f36e21",
+        'dark_text':'#0f0f0f',
+        'light_text':'#f0f0f0'
+    }
+
     data_object = {
         'tags': Tag.objects.all,
+        'colors':color_object,
         'petitions': sorting_controller(sorting_key)
     }
 
