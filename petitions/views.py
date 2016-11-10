@@ -13,6 +13,8 @@ from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.template.loader import get_template
+from django.template import Context
 from django.http import HttpResponse
 
 def petition(request, petition_id):
@@ -130,3 +132,27 @@ def all_inactive():
 def sendSimpleEmail(request, recipients):
     res = send_mail("hello paul", "comment tu vas?", "sgnoreply@rit.edu", [recipients])
     return HttpResponse('%s'%res)
+
+def sendEmail(request, recipients, petition_id, emailType):
+
+    petition = get_object_or_404(Petition, pk=petition_id)
+
+    if emailType == 'approved':
+        res = send_mail(
+
+            'Petition approved.',
+
+            get_template('email_templates/petition_approved.html').render(
+
+                Context({
+
+                    'title': petition.title,
+                    'author': petition.author
+                })
+            ),
+            'sgnoreply@rit.edu',
+            [recipients],
+            fail_silently=True
+        )
+    return HttpResponse('%s'%res)
+
