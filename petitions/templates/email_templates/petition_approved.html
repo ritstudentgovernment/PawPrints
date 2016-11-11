@@ -26,7 +26,7 @@
             <table class="outer" align="center">
                 <tr>
                     <td class="email-header">
-                        <img src="/pawlogo.png" width="600" alt="" />
+                        <img src="{{protocol}}://{{site_path}}/static/pawprints.png" width="600" alt="" />
                     </td>
                 </tr>
                 <tr>
@@ -38,7 +38,7 @@
                 <tr>
                     <td class="email-button">
                         <p>Please click the link below if you would like to view this petition.</p>
-                        <a href="{{settings.public.root_url}}/petitions/{{petition_id}}" class="viewButton">View Petition</a>
+                        <a href="{{protocol}}://{{site_path}}/petition/{{petition_id}}" class="viewButton">View Petition</a>
                     </td>
                 </tr>
                 <tr>
@@ -49,8 +49,8 @@
                 </tr>
                 <tr>
                     <td class="footer">
-                        <img class="footer-img" src="/sglogo.png" width="200" alt="" />
-                        <p class="footer-unsub">If you would like to stop receiving emails, please <a href="{{settings.public.root_url}}/unsubscribe">unsubscribe</a></p>
+                        <img class="footer-img" src="{{protocol}}://{{site_path}}/static/sglogo.png" width="200" alt="" />
+                        <p class="footer-unsub">If you would like to stop receiving emails, please <a href="{{protocol}}://{{site_path}}/unsubscribe">unsubscribe</a></p>
                     </td>
                 <tr>
             </table>

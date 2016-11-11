@@ -13,9 +13,12 @@ from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
+from django.http import HttpRequest
+import time
 
 def petition(request, petition_id):
     """ Handles displaying A single petition. 
@@ -130,7 +133,9 @@ def all_inactive():
 
 
 def sendSimpleEmail(request, recipients):
-    res = send_mail("hello paul", "comment tu vas?", "sgnoreply@rit.edu", [recipients])
+    email = EmailMessage("hello paul", "<b>comment tu vas?</b>", "sgnoreply@rit.edu", [recipients])
+    email.content_subtype = "html"
+    res = email.send()
     return HttpResponse('%s'%res)
 
 def sendEmail(request, recipients, petition_id, emailType):
@@ -138,21 +143,24 @@ def sendEmail(request, recipients, petition_id, emailType):
     petition = get_object_or_404(Petition, pk=petition_id)
 
     if emailType == 'approved':
-        res = send_mail(
+        email = EmailMessage(
 
             'Petition approved.',
-
-            get_template('email_templates/petition_approved.html').render(
+            get_template('email_inlined/petition_approved.html').render(
 
                 Context({
-
+                    'petition_id': petition_id,
                     'title': petition.title,
-                    'author': petition.author
+                    'author': petition.author.first_name + ' ' + petition.author.last_name,
+                    'site_path': request.META['HTTP_HOST'],
+                    'protocol': 'https' if request.is_secure() else 'http',
+                    'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
                 })
             ),
             'sgnoreply@rit.edu',
-            [recipients],
-            fail_silently=True
+            [recipients]
         )
+        email.content_subtype = "html"
+        res = email.send()
     return HttpResponse('%s'%res)
 
