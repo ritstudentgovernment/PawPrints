@@ -20,4 +20,5 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^petition/', include('petitions.urls')),
+    url(r'^email/', include('send_mail.urls'))
 ]
