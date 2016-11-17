@@ -1,11 +1,9 @@
 <!---
 File:          petition_approved.html
-Description:   Inlined email sent to users when a petition is approved.
+Description:   Inlined email sent to users when a petition has been reported.
 Creator:       Omar De La Hoz (oed7416)
-Date created:  11/11/16
-Date updated:  11/17/16
+Date created:  11/17/16
 !-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -39,13 +37,7 @@ Date updated:  11/17/16
                 <tr>
                     <td class="email-body" style="padding: 25px 25px 0 25px;text-align: justify;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
                         <p>Hello,</p>
-                        <p>You're receiving this email because the petition <strong>{{title}}</strong> by <strong>{{author}}</strong> has been approved.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="email-button" style="padding: 0 25px 0 25px;text-align: center;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
-                        <p>Please click the link below if you would like to view this petition.</p>
-                        <a href="{{protocol}}://{{site_path}}/petition/{{petition_id}}" class="viewButton" style="-moz-box-shadow: 0px 4px 0px 0px #519839;-webkit-box-shadow: 0px 4px 0px 0px #519839;box-shadow: 0px 4px 0px 0px #519839;background-color: #62bd4f;-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;display: inline-block;cursor: pointer;color: #ffffff;font-family: Arial;font-size: 19px;padding: 20px 33px;margin: 25px;padding-bottom: 20px;text-decoration: none;text-shadow: 0px 1px 0px #2f6627;">View Petition</a>
+                        <p>You're receiving this email because the petition <b>{{title}}</b> by <b>{{author}}</b> was reported as <b>{{reason}}.</b></p>
                     </td>
                 </tr>
                 <tr>

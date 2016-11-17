@@ -25,13 +25,13 @@
             <table class="outer" align="center">
                 <tr>
                     <td class="email-header">
-                        <img src="/pawlogo.png" width="600" alt="" />
+                        <img src="{{protocol}}://{{site_path}}/static/pawprints.png" width="600" alt="" />
                     </td>
                 </tr>
                 <tr>
                     <td class="email-body">
                         <p>Hello,</p>
-                        <p>You're receiving this email because the petition <b>{{petition.title}}</b> by <b>{{petition.author}}</b> was reported as <b>{{reason}}.</b></p>
+                        <p>You're receiving this email because the petition <b>{{title}}</b> by <b>{{author}}</b> was reported as <b>{{reason}}.</b></p>
                     </td>
                 </tr>
                 <tr>
@@ -42,8 +42,9 @@
                 </tr>
                 <tr>
                     <td class="footer">
-                        <img class="footer-img" src="/sglogo.png" width="200" alt="" />
-                        <p class="footer-unsub">If you would like to stop receiving emails, please <a href="{{settings.public.root_url}}/unsubscribe">unsubscribe</a></p>
+                        <img class="footer-img" src="{{protocol}}://{{site_path}}/static/sglogo.png" width="200" alt="" />
+                        <p class="footer-unsub">If you would like to stop receiving emails, please <a href="{{protocol}}://{{site_path}}/unsubscribe">unsubscribe</a></p>
+                        <p style="visibility: hidden; opacity: 0;">{{timestamp}}</p>
                     </td>
                 <tr>
             </table>

@@ -2,6 +2,7 @@
 Author: Omar De La Hoz (omardlhz)
 Description: Send email to pawprints users.
 Date Created: Nov 16 2016
+Date Updated: Nov 17 2016
 """
 
 from django.shortcuts import render
@@ -16,11 +17,19 @@ from django.http import HttpResponse
 import time
 
 
+"""
+Sends an email when a petition has been approved.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+"""
+
 def petition_approved(request, recipients, petition_id):
 
-	petition = get_object_or_404(Petition, pk=petition_id)
+    petition = get_object_or_404(Petition, pk=petition_id)
 
-	email = EmailMessage(
+    email = EmailMessage(
 
         'Petition approved.',
         get_template('email_inlined/petition_approved.html').render(
@@ -38,12 +47,20 @@ def petition_approved(request, recipients, petition_id):
         [recipients]
 	)
 
-	email.content_subtype = "html"
-	res = email.send()
+    email.content_subtype = "html"
+    res = email.send()
 
-	return HttpResponse('%s'%res)
+    return HttpResponse('%s'%res)
 
 
+"""
+Send an email when a petition is rejected.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+@param message      The reason why the  petition was rejected.
+"""
 def petition_rejected(request, recipients, petition_id, message):
 
 	petition = get_object_or_404(Petition, pk=petition_id)
@@ -72,6 +89,13 @@ def petition_rejected(request, recipients, petition_id, message):
 	return HttpResponse('%s'%res)
 
 
+"""
+Send an email when a petition is updated.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+"""
 def petition_update(request, recipients, petition_id):
 
 	petition = get_object_or_404(Petition, pk=petition_id)
@@ -99,6 +123,13 @@ def petition_update(request, recipients, petition_id):
 	return HttpResponse('%s'%res)
 
 
+"""
+Send an email when a petition has reached threshold.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+"""
 def petition_reached(request, recipients, petition_id):
 
 	petition = get_object_or_404(Petition, pk=petition_id)
@@ -106,7 +137,7 @@ def petition_reached(request, recipients, petition_id):
 	email = EmailMessage(
 
         'Petition treshold reached.',
-        get_template('email_inlined/petition_treshold_reached.html').render(
+        get_template('email_inlined/petition_threshold_reached.html').render(
 
             Context({
                 'petition_id': petition_id,
@@ -126,6 +157,14 @@ def petition_reached(request, recipients, petition_id):
 	return HttpResponse('%s'%res)
 
 
+"""
+Send an email when a petition is reported.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+@param reason       Reason why the petition was reported.
+"""
 def petition_report(request, recipients, petition_id, reason):
 
 	petition = get_object_or_404(Petition, pk=petition_id)
@@ -154,6 +193,13 @@ def petition_report(request, recipients, petition_id, reason):
 	return HttpResponse('%s'%res)
 
 
+"""
+Send an email when a petition is received.
+
+@param request      Request made by user.
+@param recipients   The email recipients, list or comma delimited.
+@param petition_id  The ID of the approved petition.
+"""
 def petition_received(request, recipients, petition_id):
 
 	petition = get_object_or_404(Petition, pk=petition_id)
@@ -167,7 +213,6 @@ def petition_received(request, recipients, petition_id):
                 'petition_id': petition_id,
                 'title': petition.title,
                 'author': petition.author.first_name + ' ' + petition.author.last_name,
-                'reason': reason,
                 'site_path': request.META['HTTP_HOST'],
                 'protocol': 'https' if request.is_secure() else 'http',
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
