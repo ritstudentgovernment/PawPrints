@@ -201,8 +201,7 @@ def petition_unpublish(request, petition_id):
     petition.status = 2
     petition.save()
 
-    return redirect('petition/' + str(petition_id))
-
+    return HttpResponse(True)
 
 # HELPER FUNCTIONS #
 def edit_check(user, petition):
