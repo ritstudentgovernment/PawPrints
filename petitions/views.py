@@ -1,10 +1,17 @@
+"""
+Author: Peter Zujko (@zujko)
+Description: Handles views and endpoints for all petition related operations.
+Date Created: Sept 15 2016
+Updated: Oct 26 2016
+"""
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.db.models import F
-from datetime import datetime, timedelta
+from datetime import timedelta
 from petitions.models import Petition, Tag
+from django.utils import timezone
 from profile.models import Profile
 from django.contrib.auth.models import User
 
@@ -148,6 +155,8 @@ def petition_edit(request, petition_id):
 
 
 
+# ENDPOINTS #
+
 @login_required
 @require_POST
 def petition_sign(request, petition_id):
@@ -167,6 +176,16 @@ def petition_sign(request, petition_id):
         petition.save()
     return HttpResponse(str(petition.id))
 
+@login_required
+@require_POST
+def petition_subscribe(request, petition_id):
+    """ Endpoint subscribes a user to the petition"""
+    petition = get_object_or_404(Petition, pk=petition_id)
+    user = request.user
+    user.profile.subscriptions.add(petition)
+    user.save()
+    
+    return redirect('petition/' + str(petition_id))
 
 @login_required
 @require_POST
