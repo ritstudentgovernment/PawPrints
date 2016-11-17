@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
-from django.http import HttpResponse
+from django.http import JsonResponse
 import time
 
 
@@ -24,7 +24,6 @@ Sends an email when a petition has been approved.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
 """
-
 def petition_approved(request, recipients, petition_id):
 
     petition = get_object_or_404(Petition, pk=petition_id)
@@ -50,8 +49,7 @@ def petition_approved(request, recipients, petition_id):
     email.content_subtype = "html"
     res = email.send()
 
-    return HttpResponse('%s'%res)
-
+    return JsonResponse({'sent': res})
 
 """
 Send an email when a petition is rejected.
@@ -86,7 +84,7 @@ def petition_rejected(request, recipients, petition_id, message):
 	email.content_subtype = "html"
 	res = email.send()
 
-	return HttpResponse('%s'%res)
+	return JsonResponse({'sent': res})
 
 
 """
@@ -120,7 +118,7 @@ def petition_update(request, recipients, petition_id):
 	email.content_subtype = "html"
 	res = email.send()
 
-	return HttpResponse('%s'%res)
+	return JsonResponse({'sent': res})
 
 
 """
@@ -154,7 +152,7 @@ def petition_reached(request, recipients, petition_id):
 	email.content_subtype = "html"
 	res = email.send()
 
-	return HttpResponse('%s'%res)
+	return JsonResponse({'sent': res})
 
 
 """
@@ -190,7 +188,7 @@ def petition_report(request, recipients, petition_id, reason):
 	email.content_subtype = "html"
 	res = email.send()
 
-	return HttpResponse('%s'%res)
+	return JsonResponse({'sent': res})
 
 
 """
@@ -224,4 +222,4 @@ def petition_received(request, recipients, petition_id):
 	email.content_subtype = "html"
 	res = email.send()
 
-	return HttpResponse('%s'%res)
+	return JsonResponse({'sent': res})
