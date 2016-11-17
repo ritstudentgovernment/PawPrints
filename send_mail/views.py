@@ -23,6 +23,8 @@ Sends an email when a petition has been approved.
 @param request      Request made by user.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_approved(request, recipients, petition_id):
 
@@ -58,6 +60,8 @@ Send an email when a petition is rejected.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
 @param message      The reason why the  petition was rejected.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_rejected(request, recipients, petition_id, message):
 
@@ -93,6 +97,8 @@ Send an email when a petition is updated.
 @param request      Request made by user.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_update(request, recipients, petition_id):
 
@@ -127,6 +133,8 @@ Send an email when a petition has reached threshold.
 @param request      Request made by user.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_reached(request, recipients, petition_id):
 
@@ -162,6 +170,8 @@ Send an email when a petition is reported.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
 @param reason       Reason why the petition was reported.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_report(request, recipients, petition_id, reason):
 
@@ -197,6 +207,8 @@ Send an email when a petition is received.
 @param request      Request made by user.
 @param recipients   The email recipients, list or comma delimited.
 @param petition_id  The ID of the approved petition.
+
+@return             {'sent': 1} if email was succesfully sent, {'sent': 0} if not.
 """
 def petition_received(request, recipients, petition_id):
 
