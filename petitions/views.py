@@ -97,7 +97,7 @@ def petition_create(request):
     user = request.user
 
     # Create a new blank petition.
-    date = datetime.now()
+    date = timezone.now()
     new_petition = Petition(title="New Petition", description="New Petition Description",author=user,signatures=0,created_at=date,expires=date + timedelta(days=30))
     new_petition.save()
 
@@ -108,7 +108,7 @@ def petition_create(request):
     # Auto-sign the author to the petition.
     user.profile.petitions_signed.add(new_petition)
     user.save()
-    new_petition.last_signed = datetime.utcnow()
+    new_petition.last_signed = timezone.now()
     new_petition.signatures = F('signatures')+1
     new_petition.save()
 
@@ -172,7 +172,7 @@ def petition_sign(request, petition_id):
         user.profile.petitions_signed.add(petition)
         user.save()
         petition.signatures = F('signatures')+1
-        petition.last_signed = datetime.utcnow()
+        petition.last_signed = timezone.now()
         petition.save()
     return HttpResponse(str(petition.id))
 
@@ -265,21 +265,21 @@ def sorting_controller(key):
 
 def most_recent():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
