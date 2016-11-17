@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Maven+Pro|Work+Sans|Muli|Montserrat" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{% static '/js/global.js' %}"></script>
+    <style>
+        html, body{
+            margin: 0;
+            padding: 0;
+            background-color: #fcfcfc;
+            font-family: "Muli", Arial;
+        }
+        .transition{
+            -webkit-transition: all 0.20s linear;
+            -moz-transition: all 0.20s linear;
+            -ms-transition: all 0.20s linear;
+            -o-transition: all 0.20s linear;
+        }
+        .material-icon-container{
+            display: inline-flex;
+            vertical-align: middle;
+            align-items: center;
+        }
+        h3{
+            font-family: "Work Sans", Arial;
+            font-weight: 400;
+        }
+        header{
+            background-color: #fff;
+        }
+        header nav{
+            width: 80%;
+            margin: 0 auto;
+        }
+        header nav ul{
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+        header nav ul li{
+            padding: 15px 12px;
+        }
+        header nav ul li i{
+            padding-right: 5px;
+        }
+        .right{
+            float: right;
+        }
+        .left{
+            float: left;
+        }
+        main{
+            width: 80%;
+            overflow: hidden;
+            margin: 20px auto 0;
+        }
+        aside{
+            margin-left: 15px;
+            padding-bottom: 15px;
+            width: calc(20% - 17px);
+            padding-left: 15px;
+            background-color: #fff;
+            border:1px solid #ccc;
+        }
+        aside nav{
+            width: calc(100% - 20px);
+        }
+        aside nav ul{
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        aside nav ul li{
+            display: block;
+            padding: 10px 5px;
+            text-align: left;
+            width: calc(100% - 10px);
+        }
+        .tag{
+            display: inline-block;
+        }
+        .tag:hover{
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .current-tag{
+            background-color: #f36e21 !important;
+            color: #fff;
+        }
+        #petitions{
+            width: calc(75% + 15px);
+            margin-right: 0.5%;
+            -webkit-column-count: 3;
+            -webkit-column-gap: 15px;
+            -webkit-column-fill: auto;
+            -moz-column-count: 3;
+            -moz-column-gap: 15px;
+            -moz-column-fill: auto;
+            column-count: 3;
+            column-gap: 15px;
+            column-fill: auto;
+            height: auto;
+            overflow: hidden;
+        }
+        #petitions article{
+            border: 1px solid #cfcfcf;
+            display: inline-block;
+            width: calc(100% - 35px);
+            padding: 15px;
+            height: auto;
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+        #petitions article ul{
+            padding:0;
+            margin:0;
+        }
+        #petitions article h4{
+            margin:0;
+            padding-bottom: 1em;
+            font-weight: 400;
+        }
+        #petitions article h3{
+            margin: 0;
+            padding-bottom: 1em;
+        }
+        #petitions article a{
+            color: #f36e21;
+            text-decoration: none;
+        }
+        #petitions article a:hover{
+            text-decoration: underline;
+            color: #d5560c;
+        }
+        #petitions article .tag{
+            padding: 4px 6px;
+            margin: 3px 0px 0px 0px;
+            background-color: #f36e21;
+            color: #fff;
+        }
+        #petitions article .tag:hover{
+            background-color: #d5560c !important;
+        }
+        @media screen and (max-width: 1100px){
+            main, header nav{
+                width: 95%;
+            }
+        }
+    </style>
+    <title>PawPrints - Make your mark</title>
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li class="material-icon-container"><i class="material-icons">pets</i>PawPrints</li>
+            <li class="material-icon-container"><i class="material-icons">visibility</i>Recognised</li>
+            <li class="material-icon-container"><i class="material-icons">done</i>Responded</li>
+            <li class="material-icon-container"><i class="material-icons">info</i>About</li>
+            <li class="material-icon-container create_petition"><i class="material-icons">create</i>Create</li>
+            <li class="material-icon-container"><i class="material-icons">search</i>Search</li>
+            {% if user.first_name %}
+                <li class="material-icon-container right"><i class="material-icons">person</i>{{ user.first_name }}</li>
+            {% else %}
+                <li class="material-icon-container right"><i class="material-icons">person</i>Login</li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+<main>
+
+    <aside class="left">
+        <nav>
+            <h3>Sort By:</h3>
+            <select id="sort" data-filter="all">
+                <option value="most recent" selected="selected">Most Recent</option>
+                <option value="most signatures">Most Signatures</option>
+                <option value="last signed">Last Signed</option>
+            </select>
+            <h3>Tags:</h3>
+            <ul>
+                <li id="tag-all" class="tag current-tag">All</li>
+                {% for tag in tags %}
+                    <li id="tag-{{ tag.id }}" class="tag transition">{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </aside>
+    <section id="petitions" class="right">
+        {% for petition in petitions %}
+            <article>
+                {% if petition.signatures == 1 %}
+                    <h4>{{ petition.signatures }} Signature</h4>
+                {% else %}
+                    <h4>{{ petition.signatures }} Signatures</h4>
+                {% endif %}
+                <h3><a href="/petition/{{ petition.id }}">{{ petition.title }}</a></h3>
+                <ul>
+                    {% for tag in petition.tags.all %}
+                        <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
+                    {% endfor %}
+                </ul>
+            </article>
+            </h1>
+        {% endfor %}
+    </section>
+
+</main>
+{% csrf_token %}
+</body>
+<script>
+    function reloadPetitions(sort_by, filter){
+        if($(".current-tag").attr("id") != filter){
+            $(".current-tag").removeClass("current-tag");
+        }
+        $("#tag-"+filter).addClass("current-tag");
+        $.post("/petitions/",{"sort_by":sort_by,"filter":filter,"csrfmiddlewaretoken":get_csrf()},function(response){
+            $("#petitions").html(response);
+        });
+    }
+    $(document).ready(function(){
+        $(document).on("click", ".tag", function(){
+            var filter_tag = $(this).attr("id").replace("tag-","");
+            filter_tag = filter_tag.replace("petition_","");
+            console.log(filter_tag);
+            var sort_by = $("#sort").val();
+            $("#sort").data("filter",filter_tag);
+            reloadPetitions(sort_by, filter_tag);
+        });
+        $("#sort").change(function(){
+            var filter_tag = $("#sort").data("filter");
+            var sort_by = $(this).val();
+            reloadPetitions(sort_by, filter_tag);
+        });
+    });
+    $(window).bind("load",function(){
+
+    });
+</script>
+</html>

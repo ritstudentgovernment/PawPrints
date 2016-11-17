@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from petitions import views
 
 urlpatterns = [
+    url(r'^$', views.index, name='index'),
+    url(r'^petitions/', views.load_petitions),
     url(r'^admin/', admin.site.urls),
-    url(r'^petition/', include('petitions.urls'))
+    url(r'^petition/', include('petitions.urls')),
+    url(r'^accounts/' , include('profile.urls'))
 ]

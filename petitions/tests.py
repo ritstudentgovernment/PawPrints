@@ -24,7 +24,7 @@ class PetitionTest(TestCase):
                 description='This is a test petition', 
                 author=self.user,
                 created_at=timezone.now(),
-                published=True,
+                status=1,
                 expires=timezone.now()+timedelta(days=30)
                 )
         self.petition.save()
@@ -48,15 +48,15 @@ class PetitionTest(TestCase):
         self.client.force_login(self.superUser)
         response = self.client.post('/petition/unpublish/'+str(self.petition.id))
         pet = Petition.objects.get(pk=self.petition.id)
-        self.assertEqual(pet.published, False)
+        self.assertEqual(pet.status, 2)
 
         # Test using not super user
         self.client.force_login(self.user)
-        pet.published = True
+        pet.status = 1
         pet.save()
         response = self.client.post('/petition/unpublish/'+str(self.petition.id))
         pet = Petition.objects.get(pk=self.petition.id)
-        self.assertEqual(pet.published, True)
+        self.assertEqual(pet.status, 1)
 
     def test_petition_page(self):
         response = self.client.get('/petition/'+str(self.petition.id))
