@@ -3,6 +3,7 @@ models.py
 Peter Zujko (pxz3370)
 Lukas Yelle (lxy5611)
 10/20/16
+Update: Nov 18 2016
 """
 from django.db import models
 from django.contrib.auth.models import User
@@ -12,7 +13,7 @@ from django.dispatch import receiver
 # Extends User model. Defines sn and notifications for a User.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    sn = models.CharField(max_length=60)
+    full_name = models.TextField()
     notifications = models.ForeignKey('profile.Notifications', on_delete=models.CASCADE)
     subscriptions = models.ManyToManyField('petitions.Petition', related_name='profile_subscriptions', blank=True)
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
