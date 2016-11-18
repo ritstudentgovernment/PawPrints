@@ -22,7 +22,9 @@ class Petition(models.Model):
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
-    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
+    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True) 
+    in_progress = models.BooleanField(default=False)
+    updates = models.ManyToManyField('petitions.Update', default=None)
 
     def __str__(self):
         return self.title
@@ -46,3 +48,10 @@ class Response(models.Model):
 
     def __str__(self):
         return self.author
+
+#
+# Defines an update model.
+#
+class Update(models.Model):
+    description = models.TextField()
+    created_at = models.DateTimeField()
