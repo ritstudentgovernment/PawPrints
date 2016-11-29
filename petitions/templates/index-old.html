@@ -193,7 +193,7 @@
     </aside>
     <section id="petitions" class="right">
         {% for petition in petitions %}
-            <article>
+            <article class="transition">
                 {% if petition.signatures == 1 %}
                     <h4>{{ petition.signatures }} Signature</h4>
                 {% else %}

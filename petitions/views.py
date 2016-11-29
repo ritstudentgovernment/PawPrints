@@ -19,7 +19,8 @@ def index(request):
     color_object = {
         'highlight':"#f36e21",
         'dark_text':'#0f0f0f',
-        'light_text':'#f0f0f0'
+        'light_text':'#f0f0f0',
+        'bright_text':'#fff'
     }
 
     data_object = {
@@ -188,8 +189,8 @@ def petition_unpublish(request, petition_id):
     # Set status to 2 to hide it from view.
     petition.status = 2
     petition.save()
-
-    return redirect('petition/' + str(petition_id))
+    response = True
+    return HttpResponse(response)
 
 
 # HELPER FUNCTIONS #
@@ -238,7 +239,8 @@ def filtering_controller(sorted_objects, tag):
     if tag == "all":
         return sorted_objects
     else:
-        return sorted_objects.all().filter(tags__in=tag)
+        queried_tag = Tag.objects.get(id=tag)
+        return sorted_objects.all().filter(tags=tag)
 
 
 # SORTING

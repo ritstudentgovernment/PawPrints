@@ -4,16 +4,17 @@
     {% load static %}
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway:300|Work+Sans:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway:300|Work+Sans:300" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="{% static '/js/global.js' %}"></script>
+    <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
     <style>
         /* -- Modified HTML Tags -- */
         html, body{
             margin: 0;
             padding: 0;
-            background-color: #fcfcfc;
             font-family: "Work Sans", Arial;
+            background-color: #fefefe;
         }
         header{
             top: 0px;
@@ -122,6 +123,8 @@
         }
         .tile-container{
             overflow: hidden;
+            padding-top: 1em;
+            padding-bottom: 1em;
         }
         .tile{
             line-height: 150px;
@@ -137,11 +140,25 @@
             padding: 7px;
             border-right: 1px solid #ccc;
         }
-        .three-tiles .tite:first-child{
+        .three-tiles .tile:first-child{
             margin-left: 1px;
         }
         .three-tiles .tile:last-child{
             border-right: none;
+        }
+        .material-shadow{
+            -webkit-box-shadow: 0px 0px 5px 0px #eee;
+            -moz-box-shadow:    0px 0px 5px 0px #eee;
+            -o-box-shadow:      0px 0px 5px 0px #eee;
+            box-shadow:         0px 0px 5px 0px #eee;
+        }
+        .tile:hover{
+            background-color: {{ colors.highlight }};
+            color: {{ colors.bright_text }};
+            cursor: pointer;
+        }
+        #search-tile:hover #search-term{
+            border-bottom-color: {{ colors.bright_text }} !important;
         }
         /* -- Global IDs -- */
         #logo{
@@ -155,16 +172,18 @@
             color: {{ colors.highlight }} !important;
         }
         /* -- Page-Specific IDs -- */
+        #tags-container{
+            background-color: #f5f5f5;
+            display: block;
+            overflow: hidden;
+            text-align: center;
+        }
         #tags{
-            padding-top: 10px;
-            padding-bottom: calc(10px + 0.75em);
-            padding-left: 10px;
-            padding-right: 10px;
+            padding: 10px 10px calc(10px + 0.75em);
             text-align: center;
             font-size: 0.8em;
             text-transform: uppercase;
             background-color: #f5f5f5;
-            margin-top:1em;
         }
         #tags .list-item{
             display: inline-block;
@@ -220,13 +239,40 @@
             overflow: hidden;
             display: none;
         }
+        #empty-set{
+            margin-top: 0;
+            padding-top: 2em;
+            font-weight: 300;
+        }
         /* -- Per-Element Styles -- */
         /* - Header - */
+        #about-link i{
+            margin-right: 0.5em;
+        }
+        #user-menu{
+            position: relative;
+        }
+        #user-menu button{
+            margin-left: 1em;
+        }
+        #user-menu #account-dropdown{
+            position: absolute;
+            top: 70px;
+            left: 0;
+            padding: 10px;
+
+        }
         .large-header #header-top{
             line-height: 70px;
         }
         .small-header #header-top{
-            line-height: 55px;
+            line-height: 50px;
+        }
+        .small-header #tags{
+            padding: 10px 0;
+        }
+        .small-header #tags h5{
+            display: none;
         }
         .header-scrolled{
             border-bottom: 1px solid #ccc;
@@ -235,9 +281,81 @@
             -moz-box-shadow: 0px 5px 5px -5px #ccc;
             -o-box-shadow: 0px 5px 5px -5px #ccc;
         }
+        /* - Petitions - */
+        #petitions{
+            background-color: #fcfcfc;
+            padding-bottom: 1em;
+        }
+        #petitions-container{
+            overflow: hidden;
+            -moz-column-count: 3;
+            -webkit-column-count:3;
+            column-count:3;
+            -moz-column-gap: 1em;
+            -webkit-column-gap: 1em;
+            column-gap: 1em;
+            width: calc(100% - 2em);
+            margin: 0 auto;
+        }
+        .petition{
+            background-color: #fff;
+            color: #0f0f0f;
+            padding: 1.2em;
+            width: calc(100% - 10px - 2.2em);
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            display: inline-block;
+            margin-top: 1.2em;
+        }
+        .petition-signatures{
+            margin-top: 0;
+            padding-top: 0;
+            font-weight: 300;
+        }
+        .petition-title{
+            font-weight: 300;
+            font-family: "Raleway", Arial;
+        }
+        .petition ul{
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        .petition .tag{
+            display: inline-block;
+            padding: 5px 7px;
+            margin: 5px 7px 0 0;
+            float: left;
+            background-color: {{ colors.highlight }};
+            color: {{ colors.bright_text }};
+        }
         /* -- Slide Show Styles -- */
-        .slide{
+        .slide {
             height: 100%;
+        }
+        /* -- Responsiveness -- */
+        @media screen and (max-width: 900px){
+            #tiles{
+                padding: 0;
+            }
+            .tile{
+                width: calc(100% - 15px) !important;
+                line-height: 75px;
+                border-top: 1px solid #ccc;
+            }
+            #petitions-container{
+                -moz-column-count: 2;
+                -webkit-column-count:2;
+                column-count:2;
+            }
+        }
+        @media screen and (max-width: 600px){
+            #petitions-container{
+                -moz-column-count: 1;
+                -webkit-column-count:1;
+                column-count:1;
+            }
         }
     </style>
     <title>PawPrints - Make your mark</title>
@@ -249,9 +367,10 @@
         <nav class="left">
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
             <ul class="list">
-                <li class="list-item left material-icon-container">
-                    <i class="material-icons">info_outline</i>
-                    <a class="modern-link" href="#">About</a>
+                <li id="about-link" class="list-item left">
+                    <a class="modern-link material-icon-container" href="#">
+                        <i class="material-icons">info_outline</i>About
+                    </a>
                 </li>
                 <li class="list-item left hidden">
                     <a class="modern-link" href="#">Recognised</a>
@@ -259,16 +378,17 @@
             </ul>
         </nav>
         <div class="right">
-            <span class="material-icon-container">
+            <span id="user-menu" class="material-icon-container">
                 <i class="material-icons">person</i>
-                {% if user.firstname %}
-                    {{ user.firstname }}
-                    <ul class="list">
+                {% if user.first_name %}
+                    Welcome, {{ user.first_name }}
+                    <i id="trigger-user-dropdown" class="material-icons">keyboard_arrow_down</i>
+                    <ul id="account-dropdown" class="list hidden">
                         <li class="list-item">Account</li>
                         <li class="list-item">Log Out</li>
                     </ul>
                 {% else %}
-                    <button class="material material-button">Login</button>
+                    <button onclick="window.location.href='/accounts/'" class="material material-button">Login</button>
                 {% endif %}
             </span>
         </div>
@@ -299,47 +419,63 @@
     <section id="sub-landing">
         <h1>Explore Petitions</h1>
         <div id="tiles" class="tile-container full-width three-tiles">
-            <div id="recognised-tile" class="tile">
-                <span>recognised</span>
+            <div id="recognised-tile" class="tile transition">
+                <span>in progress</span>
             </div>
-            <div id="search-tile" class="tile">
-                <label for="search-term" class="material-icon-container full-width transition">
-                    <i class="material-icons">search</i>
-                    <input id='search-term' class="material-input" type="text" />
-                    <span class="transition">Search</span>
+            <div id="search-tile" class="tile transition">
+                <label for="search-term" class="full-width">
+                    <div class="material-icon-container">
+                        <i class="material-icons">search</i>
+                        <input id='search-term' class="material-input" type="text" />
+                        <span class="">Search</span>
+                    </div>
                 </label>
             </div>
-            <div id="responded-tile" class="tile">
+            <div id="responded-tile" class="tile transition">
                 <span>responded</span>
             </div>
         </div>
     </section>
-    <nav id="tags">
-        <h5>Tags:</h5>
-        <ul class="list full-width">
-            <li id="tag-all" class="list-item tag current-tag">All</li>
-            {% for tag in tags %}
-                <li id="tag-{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
-            {% endfor %}
-        </ul>
-    </nav>
+    <div id="tags-container">
+        <h3>Sort By:</h3>
+        <select id="sort" data-filter="all">
+            <option value="most recent" selected="selected">Most Recent</option>
+            <option value="most signatures">Most Signatures</option>
+            <option value="last signed">Last Signed</option>
+        </select>
+        <nav id="tags">
+            <h5>Tags:</h5>
+            <ul class="list full-width">
+                <li id="tag-all" class="list-item tag current-tag">All</li>
+                {% for tag in tags %}
+                    <li id="tag-{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
     <section id="petitions">
-        {% for petition in petitions %}
-            <article class="petition">
-                {% if petition.signatures == 1 %}
-                    <h4>{{ petition.signatures }} Signature</h4>
-                {% else %}
-                    <h4>{{ petition.signatures }} Signatures</h4>
-                {% endif %}
-                <h3><a href="/petition/{{ petition.id }}">{{ petition.title }}</a></h3>
-                <ul>
-                    {% for tag in petition.tags.all %}
-                        <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
-                    {% endfor %}
-                </ul>
-            </article>
-            </h1>
-        {% endfor %}
+        <div id="petitions-container">
+            {% for petition in petitions %}
+                <article class="petition material-shadow transition">
+                    <h4 class="petition-signatures">
+                        {% if petition.signatures == 1 %}
+                            {{ petition.signatures }} Signature
+                        {% else %}
+                            {{ petition.signatures }} Signatures
+                        {% endif %}
+                    </h4>
+                    <h3 class="petition-title">
+                        <a class="text-highlight modern-link" href="/petition/{{ petition.id }}">{{ petition.title }}</a>
+                    </h3>
+                    <ul>
+                        {% for tag in petition.tags.all %}
+                            <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </article>
+                </h1>
+            {% endfor %}
+        </div>
     </section>
 </main>
 
@@ -355,11 +491,34 @@
             $("#petitions").html(response);
         });
     }
+    function initWaypoints(){
+        var scrolledWaypoint = $("main").waypoint(function(direction){
+            if(direction == "down"){
+                $("header").addClass("header-scrolled");
+            }
+            else{
+                $("header").removeClass("header-scrolled");
+            }
+        });
+        var tagsWaypoint = $('#tags').waypoint(function(direction){
+            if(direction == "down"){
+                $("#tags").appendTo('header');
+                $("header").addClass("small-header");
+                $("#tags-container").css({"padding-bottom":$("#tags").height()+40+"px"});
+            }
+            else{
+                $("#tags").appendTo('#tags-container');
+                $("header").removeClass("small-header");
+                $("#tags-container").removeAttr("style");
+            }
+        },{
+            offset: '50px'
+        });
+    }
     $(document).ready(function(){
         $(document).on("click", ".tag", function(){
             var filter_tag = $(this).attr("id").replace("tag-","");
             filter_tag = filter_tag.replace("petition_","");
-            console.log(filter_tag);
             var sort_by = $("#sort").val();
             $("#sort").data("filter",filter_tag);
             reloadPetitions(sort_by, filter_tag);
@@ -369,12 +528,56 @@
             var sort_by = $(this).val();
             reloadPetitions(sort_by, filter_tag);
         });
-        $("#parallax-slideshow").parallax();
-        $("#parallax-overlay").parallax({divisor:-3,offset:40});
+        $("#parallax-slideshow").parallax({divisor:-2.5});
+        $("#parallax-overlay").parallax({divisor:-5,offset:40});
         $(".slideshow-container").slideshow();
-    });
+        initWaypoints();
+        $("#is-logged-in").click(function(){
 
+
+
+        });
+    });
+    $(window).resize(function(){
+        Waypoint.refreshAll();
+    });
     (function( $ ){
+        // Custom CSS animations plugin.
+        $.fn.cssanimate = function( effect, options ){
+
+            var element = $(this);
+            var settings = $.extend({
+                duration: 400,
+                hide: true,
+                inline: false
+            }, options);
+
+            function stripAnimationClasses(element){
+                //This function strips all CSS Animation Classes from the given element.
+                var classesToStrip = ["Animated","bounce","flash","pulse","rubberBand","shake","headShake","swing","tada","wobble","jello","bounceIn","bounceInDown","bounceInLeft","bounceInRight","bounceInUp","bounceOut","bounceOutDown","bounceOutLeft","bounceOutRight","bounceOutUp","fadeIn","fadeInDown","fadeInDownBig","fadeInLeft","fadeInLeftBig","fadeInRight","fadeInRightBig","fadeInUp","fadeInUpBig","fadeOut","fadeOutDown","fadeOutDownBig","fadeOutLeft","fadeOutLeftBig","fadeOutRight","fadeOutRightBig","fadeOutUp","fadeOutUpBig","flipInX","flipInY","flipOutX","flipOutY","lightSpeedIn","lightSpeedOut","rotateIn","rotateInDownLeft","rotateInDownRight","rotateInUpLeft","rotateInUpRight","rotateOut","rotateOutDownLeft","rotateOutDownRight","rotateOutUpLeft","rotateOutUpRight","hinge","rollIn","rollOut","zoomIn","zoomInDown","zoomInLeft","zoomInRight","zoomInUp","zoomOut","zoomOutDown","zoomOutLeft","zoomOutRight","zoomOutUp","slideInDown","slideInLeft","slideInRight","slideInUp","slideOutDown","slideOutLeft","slideOutRight","slideOutUp"];
+                for(i=0;i<=classesToStrip.length;i++){
+                    if(element.hasClass(classesToStrip[i])){
+                        element.removeClass(classesToStrip[i]);
+                        console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
+                    }
+                    else{
+                        //console.log("Element '"+element+"' Does not have class "+classesToStrip[i]);
+                    }
+                }
+            }
+
+            stripAnimationClasses(element);
+            if(settings.hide){
+                element.css({"display":"none"});
+            }
+            if(!settings.inline){
+                element.css({"display":"block"}).addClass("animated "+effect);
+            }
+            else{
+                element.css({"display":"inline-block"}).addClass("animated "+effect);
+            }
+
+        }
         // Custom parallax element plugin.
         $.fn.parallax = function( options ){
             var selector = $(this);
