@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 from pawprints import secrets 
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -112,6 +114,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# LDAP configurations
+AUTH_LDAP_SERVER_URI = "ldaps://ldap.rit.edu"
+
+AUTH_LDAP_BIND_DN = "uid=" + secrets.LDAP_USER + ",ou=People,dc=rit,dc=edu"
+AUTH_LDAP_BIND_PASSWORD = secrets.LDAP_PASSWORD
+AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=Groups,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)")
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
