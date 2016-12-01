@@ -16,16 +16,9 @@ def index(request):
     # Get the current sorting key from the index page, if one is not set the default is 'most recent'
     sorting_key = request.POST.get('sort_by', 'most recent')
 
-    color_object = {
-        'highlight':"#f36e21",
-        'dark_text':'#0f0f0f',
-        'light_text':'#f0f0f0',
-        'bright_text':'#fff'
-    }
-
     data_object = {
         'tags': Tag.objects.all,
-        'colors':color_object,
+        'colors':colors(),
         'petitions': sorting_controller(sorting_key)
     }
 
@@ -78,7 +71,8 @@ def petition(request, petition_id):
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
         'additional_tags': additional_tags,
-        'edit': edit_check(user, petition)
+        'edit': edit_check(user, petition),
+        'colors':colors()
     }
 
     return render(request, 'petition.html', data_object)
@@ -194,6 +188,19 @@ def petition_unpublish(request, petition_id):
 
 
 # HELPER FUNCTIONS #
+def colors():
+
+    color_object = {
+        'highlight':"#f36e21",
+        'dark_text':'#0f0f0f',
+        'light_text':'#f0f0f0',
+        'bright_text':'#fff',
+        'light_background':'#fafafa'
+    }
+
+    return color_object
+
+
 def edit_check(user, petition):
     """
     Logic to determine if the user should be able to edit the petition
