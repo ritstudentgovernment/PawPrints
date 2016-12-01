@@ -24,7 +24,7 @@
             z-index:1000;
         }
         main{
-            margin-top: 70px;
+            margin-top: 40px;
         }
         /* -- Global Classes -- */
         .transition{
@@ -494,25 +494,25 @@
     function initWaypoints(){
         var scrolledWaypoint = $("main").waypoint(function(direction){
             if(direction == "down"){
+                $("header").addClass("small-header");
+            }
+            else{
+                $("header").removeClass("small-header");
+            }
+        });
+        var tagsWaypoint = $('#tags').find("ul").waypoint(function(direction){
+            if(direction == "down"){
                 $("header").addClass("header-scrolled");
+                $("#tags").appendTo('header');
+                $("#tags-container").css({"padding-bottom":$("#tags").height()+100+"px"});
             }
             else{
                 $("header").removeClass("header-scrolled");
-            }
-        });
-        var tagsWaypoint = $('#tags').waypoint(function(direction){
-            if(direction == "down"){
-                $("#tags").appendTo('header');
-                $("header").addClass("small-header");
-                $("#tags-container").css({"padding-bottom":$("#tags").height()+40+"px"});
-            }
-            else{
                 $("#tags").appendTo('#tags-container');
-                $("header").removeClass("small-header");
                 $("#tags-container").removeAttr("style");
             }
         },{
-            offset: '50px'
+            offset: '10px'
         });
     }
     $(document).ready(function(){
