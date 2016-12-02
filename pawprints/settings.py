@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
+    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

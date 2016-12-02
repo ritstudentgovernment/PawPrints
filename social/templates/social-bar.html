@@ -1,0 +1,48 @@
+<!--===========================================
+filename:	 	social-bar.html
+creator:	 	Omar De La Hoz (oed7416)
+description:	Template for horizontal social bar 
+				to share petitions.
+created on:	 	12/01/16
+updated on:		12/01/16
+================================================-->
+<html>
+	<style>
+		html, body{
+
+			margin: 0;
+			padding: 0;
+		}
+
+		.social-container-v{
+			top: 50%;
+  			z-index: 1000;
+  			position: absolute;
+  			transform: translateY(-50%);
+  			max-width: 50px;
+  			background-color: white; 
+		}
+
+		.social-button-v{
+			display: block;
+			width: 100%;
+		}
+
+		.social-container-v:hover .social-button-v{
+			-webkit-transition: all .2s ease;
+			opacity: 0.5;
+		}
+
+		.social-container-v .social-button-v:hover{
+			-webkit-transition: all .2s ease;
+			opacity: 1;
+		}
+	</style>
+	<div class="social-container-v">
+		<a href="http://www.facebook.com/sharer/sharer.php?u={{petition_url}}"><img class="social-button-v" src="/static/facebook-v.svg" /></a>
+		<a href="http://www.twitter.com/share?url={{petition_url}}"><img class="social-button-v" src="/static/twitter-v.svg" /></a>
+		<a href="http://www.reddit.com/submit?url={{petition_url}}"><img class="social-button-v" src="/static/reddit-v.svg" /></a>
+		<a href="https://plus.google.com/share?url={{petition_url}}"><img class="social-button-v" src="/static/gplus-v.svg" /></a>
+		<a href="https://www.linkedin.com/cws/share?url={{petition_url}}"><img class="social-button-v" src="/static/linkedin-v.svg" /></a>
+	</div>
+</html>

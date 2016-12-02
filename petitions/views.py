@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
-Updated: Oct 26 2016
+Updated: Nov 30 2016
 """
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
@@ -30,9 +30,16 @@ def petition(request, petition_id):
 
     # Get QuerySet of all users who signed this petition
     users_signed = Profile.objects.filter(petitions_signed=petition)
+
+    # Construct the petition url
+    protocol = 'https' if request.is_secure() else 'http'
+    site_path = request.META['HTTP_HOST']
+    petition_url = protocol + '://' + site_path + '/petition/' + str(petition_id)
+    
     
     data_object = {
         'petition': petition,
+        'petition_url': petition_url,
         'current_user': user,
         'curr_user_signed': curr_user_signed,
         'users_signed': users_signed,
