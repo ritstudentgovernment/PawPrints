@@ -16,8 +16,17 @@ def profile(request):
     and option to update their settings.
     """
     profile = Profile.objects.get(user=request.user)
+
+    data_object = {
+        first_name: profile.user.first_name,
+        last_name: profile.user.last_name,
+        petitions_created: user.profile.petitions_created.all
+    }
                
-    return render(request, 'profile.html',{'profile': profile})
+    return render(request, 'profile.html', data_object)
+
+def login(request):
+    return render(request, 'login.html')
 
 # ENDPOINTS #
 @login_required
@@ -42,14 +51,6 @@ def login_user(request):
     Endpoint that logs a user in.
     *Note: This is only a Temporary endpoint, as shibboleth SSO will be used in the future*
     """
-
-    # Get the next page from the url
-    next_url = request.GET.get("next", '')
-    if not next_url:
-        next_url = "/accounts/"
-
-    logout(request)
-    username = password = ''
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
