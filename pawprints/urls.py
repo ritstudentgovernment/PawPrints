@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/', login, name='login'),
     url(r'^petition/', include('petitions.urls')),
-    url(r'^accounts/' , include('profile.urls'))
+    url(r'^profile/', include('profile.urls'))
 ]

@@ -1,32 +1,41 @@
-from django.shortcuts import render, get_object_or_404, render, redirect
-from django.http import *
-from django.template import RequestContext
+"""
+Author: Peter Zujko (@zujko)
+Description: Handles views and endpoints for all profile related operations.
+Date Created: Nov 7 2016
+Updated: Nov 8 2016
+"""
+from django.shortcuts import render, redirect, render
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from .models import Profile
 
 @login_required
-def main(request):
+def profile(request):
+    """ Handles displaying information about the user
+    and option to update their settings.
     """
-    Redirects the user to whatever page they came from if they are logged in.
-    OR, if they do not have somewhere to be redirected, direct them to their
-    account page
-    """
+    profile = Profile.objects.get(user=request.user)
+               
+    return render(request, 'profile.html',{'profile': profile})
 
-    # Get the next page from the url
-    next_url = request.GET.get("next", '')
-    if next_url:
-        return redirect(next_url)
+# ENDPOINTS #
+@login_required
+@require_POST
+def update_notifications(request, user_id):
+    """ Handles updating a users
+    notification settings.
+    """
+    if request.user.id != int(user_id):
+        return redirect('/')
 
     user = request.user
 
-    data_object = {
-        'first_name':user.profile.user.first_name,
-        'last_name':user.profile.user.last_name,
-        'petitions_created':user.profile.petitions_created.all
-    }
+    user.profile.notifications.update = True if "updates" in request.POST else False 
+    user.profile.notifications.response = True if "response" in request.POST else False
 
-    return render(request, 'account.html', data_object)
-
+    user.save()
+    return redirect('profile/settings/'+str(user_id)) 
 
 def login_user(request):
     """
