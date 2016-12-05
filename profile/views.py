@@ -8,6 +8,8 @@ from django.shortcuts import render, redirect, render
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth import login as auth_login
 from .models import Profile
 
 @login_required
@@ -16,16 +18,31 @@ def profile(request):
     and option to update their settings.
     """
     profile = Profile.objects.get(user=request.user)
-
     data_object = {
-        first_name: profile.user.first_name,
-        last_name: profile.user.last_name,
-        petitions_created: user.profile.petitions_created.all
+        'first_name': profile.user.first_name,
+        'last_name': profile.user.last_name,
+        'petitions_created': profile.petitions_created.all
     }
                
     return render(request, 'profile.html', data_object)
 
-def login(request):
+def user_login(request):
+    """ Handles rendering login page and POST
+    endpoint for logging in a user
+    """
+    url_next = request.GET.get('next','/profile/')
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            user_obj = User.objects.get(username=user.username)
+            user_obj.is_active = True
+            user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
+            user_obj.save()
+            auth_login(request, user_obj)
+            return redirect(url_next)
+
     return render(request, 'login.html')
 
 # ENDPOINTS #
@@ -45,20 +62,3 @@ def update_notifications(request, user_id):
 
     user.save()
     return redirect('profile/settings/'+str(user_id)) 
-
-def login_user(request):
-    """
-    Endpoint that logs a user in.
-    *Note: This is only a Temporary endpoint, as shibboleth SSO will be used in the future*
-    """
-    if request.POST:
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(next_url)
-
-    return render(request, 'login.html')
