@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Handles views and endpoints for all profile related operations.
 Date Created: Nov 7 2016
-Updated: Nov 8 2016
+Updated: Dec 5 2016
 """
 from django.shortcuts import render, redirect, render
 from django.views.decorators.http import require_POST
