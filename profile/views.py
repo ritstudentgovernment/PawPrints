@@ -62,3 +62,12 @@ def update_notifications(request, user_id):
 
     user.save()
     return redirect('profile/settings/'+str(user_id)) 
+
+@login_required
+@require_POST
+def user_logout(request):
+    """ Handles logging a user out
+    """
+    logout(request)
+    url_next = request.GET.get('next','/')
+    return redirect(url_next)

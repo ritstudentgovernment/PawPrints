@@ -16,13 +16,14 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from petitions import views
-from profile.views import user_login
+from profile.views import user_login, user_logout
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^petitions/', views.load_petitions),
     url(r'^admin/', admin.site.urls),
     url(r'^login/', user_login, name='user_login'),
+    url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
     url(r'^profile/', include('profile.urls'))
 ]
