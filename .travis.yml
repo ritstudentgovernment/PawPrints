@@ -7,7 +7,7 @@ services:
 python:
   - "3.5"
 
-before_install: openssl aes-256-cbc -K $encrypted_b3c74f49840a_key -iv $encrypted_b3c74f49840a_iv -in secrets.py.enc -out secrets.py -d
+before_install: openssl aes-256-cbc -K $encrypted_b3c74f49840a_key -iv $encrypted_b3c74f49840a_iv -in secrets.py.enc -out pawprints/secrets.py -d
 
 install: 
   - pip install -r requirements.txt
