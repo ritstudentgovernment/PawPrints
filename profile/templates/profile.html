@@ -20,6 +20,12 @@
 
 
     <button class="create_petition">Click me to add a petition.</button>
+	  <form name="settings" method="post" action="{% url 'profile:notification_update'}">
+      {% csrf_token %}
+      <input type="checkbox" name="updates" {% if profile.notifications.update %} checked="checked" {% endif %}>E-mail me when new status updates are petitioned on petitions I sign<br>
+      <input type="checkbox" name="response" {% if profile.notifications.response %} checked="checked" {% endif %}>E-mail me when an official responses is petitioned on a petition I sign.
+      <input type="submit">
+    </form>
 
 </body>
 </html>

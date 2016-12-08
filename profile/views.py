@@ -1,54 +1,73 @@
-from django.shortcuts import render, get_object_or_404, render, redirect
-from django.http import *
-from django.template import RequestContext
+"""
+Author: Peter Zujko (@zujko)
+Description: Handles views and endpoints for all profile related operations.
+Date Created: Nov 7 2016
+Updated: Dec 5 2016
+"""
+from django.shortcuts import render, redirect, render
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth import login as auth_login
+from .models import Profile
 
 @login_required
-def main(request):
+def profile(request):
+    """ Handles displaying information about the user
+    and option to update their settings.
     """
-    Redirects the user to whatever page they came from if they are logged in.
-    OR, if they do not have somewhere to be redirected, direct them to their
-    account page
-    """
-
-    # Get the next page from the url
-    next_url = request.GET.get("next", '')
-    if next_url:
-        return redirect(next_url)
-
-    user = request.user
-
+    profile = Profile.objects.get(user=request.user)
     data_object = {
-        'first_name':user.profile.user.first_name,
-        'last_name':user.profile.user.last_name,
-        'petitions_created':user.profile.petitions_created.all
+        'first_name': profile.user.first_name,
+        'last_name': profile.user.last_name,
+        'petitions_created': profile.petitions_created.all
     }
+               
+    return render(request, 'profile.html', data_object)
 
-    return render(request, 'account.html', data_object)
-
-
-def login_user(request):
+def user_login(request):
+    """ Handles rendering login page and POST
+    endpoint for logging in a user
     """
-    Endpoint that logs a user in.
-    *Note: This is only a Temporary endpoint, as shibboleth SSO will be used in the future*
-    """
-
-    # Get the next page from the url
-    next_url = request.GET.get("next", '')
-    if not next_url:
-        next_url = "/accounts/"
-
-    logout(request)
-    username = password = ''
+    url_next = request.GET.get('next','/profile/')
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
-
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(next_url)
+            user_obj = User.objects.get(username=user.username)
+            user_obj.is_active = True
+            user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
+            user_obj.save()
+            auth_login(request, user_obj)
+            return redirect(url_next)
 
     return render(request, 'login.html')
+
+# ENDPOINTS #
+@login_required
+@require_POST
+def update_notifications(request, user_id):
+    """ Handles updating a users
+    notification settings.
+    """
+    if request.user.id != int(user_id):
+        return redirect('/')
+
+    user = request.user
+
+    user.profile.notifications.update = True if "updates" in request.POST else False 
+    user.profile.notifications.response = True if "response" in request.POST else False
+
+    user.save()
+    return redirect('profile/settings/'+str(user_id)) 
+
+@login_required
+@require_POST
+def user_logout(request):
+    """ Handles logging a user out
+    """
+    logout(request)
+    url_next = request.GET.get('next','/')
+    return redirect(url_next)
