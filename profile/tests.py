@@ -19,3 +19,8 @@ class ProfileTest(TestCase):
         response = self.client.post('/profile/settings/notifications/'+str(self.testUser.id), {'response': '0'})
         user = User.objects.get(id=self.testUser.id)
         self.assertEqual(user.profile.notifications.update, False)
+
+    def test_profile_page(self):
+        self.client.force_login(self.testUser)
+        response = self.client.get('/profile/')
+        self.assertEqual(response.status_code, 200)

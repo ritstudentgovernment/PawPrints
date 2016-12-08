@@ -62,3 +62,9 @@ class PetitionTest(TestCase):
         response = self.client.get('/petition/'+str(self.petition.id))
         self.assertEqual(response.status_code, 200)
 
+    def test_create_petition(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/petition/create/')
+        self.assertEqual(response.status_code, 200)
+        userobj = User.objects.get(pk=self.user.id)
+        self.assertEqual(userobj.profile.petitions_signed.all()[0].title, "New Petition")
