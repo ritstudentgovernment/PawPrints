@@ -31,6 +31,16 @@ function get_csrf(){
     return getCookie('csrftoken');
 }
 $(document).ready(function(){
+    var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
+        if(direction == "down"){
+            $("header").addClass("small-header header-scrolled");
+        }
+        else{
+            $("header").removeClass("small-header header-scrolled");
+        }
+    }, {
+        offset: '60px'
+    });
     $(".create_petition").click(function(){
         $.post('/petition/create/',{"csrfmiddlewaretoken":get_csrf()},function(response){
             window.location.href = "/petition/"+response;

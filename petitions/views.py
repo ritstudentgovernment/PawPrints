@@ -40,6 +40,18 @@ def load_petitions(request):
     return render(request, 'list_petitions.html', data_object)
 
 
+def petition_responded(request):
+    """
+    Handles displaying all petitions with
+    :param request:
+    :return:
+    """
+    data_object = {
+        'tags':Tag.objects.all
+    }
+    return render(request, 'index.html', data_object)
+
+
 def petition(request, petition_id):
     """ Handles displaying A single petition. 
     DB queried to get Petition object and User objects.
@@ -61,6 +73,7 @@ def petition(request, petition_id):
 
     # Get all of the current tags in pawprints.
     additional_tags = Tag.objects.all().exclude(name__in=[x.name for x in petition.tags.all()])
+
 
     # Generate the placeholders for the petition's page.
     # Note: 'edit' is how the system determines if the current user has the permission to edit a petition or not.

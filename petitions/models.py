@@ -23,7 +23,7 @@ class Petition(models.Model):
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
-    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
+    response = models.ManyToManyField('petitions.Response', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.title
