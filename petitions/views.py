@@ -1,10 +1,17 @@
+"""
+Author: Peter Zujko (@zujko)
+Description: Handles views and endpoints for all petition related operations.
+Date Created: Sept 15 2016
+Updated: Oct 26 2016
+"""
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.db.models import F
-from datetime import datetime, timedelta
+from datetime import timedelta
 from petitions.models import Petition, Tag
+from django.utils import timezone
 from profile.models import Profile
 from django.contrib.auth.models import User
 
@@ -110,7 +117,7 @@ def petition_create(request):
     user = request.user
 
     # Create a new blank petition.
-    date = datetime.now()
+    date = timezone.now()
     new_petition = Petition(title="New Petition", description="New Petition Description",author=user,signatures=0,created_at=date,expires=date + timedelta(days=30))
     new_petition.save()
 
@@ -121,7 +128,7 @@ def petition_create(request):
     # Auto-sign the author to the petition.
     user.profile.petitions_signed.add(new_petition)
     user.save()
-    new_petition.last_signed = datetime.utcnow()
+    new_petition.last_signed = timezone.now()
     new_petition.signatures = F('signatures')+1
     new_petition.save()
 
@@ -168,6 +175,8 @@ def petition_edit(request, petition_id):
 
 
 
+# ENDPOINTS #
+
 @login_required
 @require_POST
 def petition_sign(request, petition_id):
@@ -183,10 +192,20 @@ def petition_sign(request, petition_id):
         user.profile.petitions_signed.add(petition)
         user.save()
         petition.signatures = F('signatures')+1
-        petition.last_signed = datetime.utcnow()
+        petition.last_signed = timezone.now()
         petition.save()
     return HttpResponse(str(petition.id))
 
+@login_required
+@require_POST
+def petition_subscribe(request, petition_id):
+    """ Endpoint subscribes a user to the petition"""
+    petition = get_object_or_404(Petition, pk=petition_id)
+    user = request.user
+    user.profile.subscriptions.add(petition)
+    user.save()
+    
+    return redirect('petition/' + str(petition_id))
 
 @login_required
 @require_POST
@@ -201,9 +220,7 @@ def petition_unpublish(request, petition_id):
     # Set status to 2 to hide it from view.
     petition.status = 2
     petition.save()
-    response = True
-    return HttpResponse(response)
-
+    return HttpResponse(True)
 
 # HELPER FUNCTIONS #
 def colors():
@@ -284,21 +301,21 @@ def sorting_controller(key):
 
 def most_recent():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires__gt=datetime.utcnow()) \
+    .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')

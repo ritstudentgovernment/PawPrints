@@ -7,11 +7,15 @@ services:
 python:
   - "3.5"
 
-before_install: openssl aes-256-cbc -K $encrypted_c588fd94989d_key -iv $encrypted_c588fd94989d_iv -in secrets.py.enc -out pawprints/secrets.py -d
+before_install: openssl aes-256-cbc -K $encrypted_b3c74f49840a_key -iv $encrypted_b3c74f49840a_iv -in secrets.py.enc -out pawprints/secrets.py -d
 
-install: pip install -r requirements.txt
+install: 
+  - pip install -r requirements.txt
+  - pip install coveralls
 
 before_script:
   - psql -c 'CREATE DATABASE pawprints;' -U postgres
 
-script: python manage.py test
+script: coverage run --source=. manage.py test
+
+after_success: coveralls
