@@ -54,6 +54,13 @@
             padding-top: 0.5em;
             padding-bottom: 0.5em;
         }
+        .small-header p{
+            opacity: 0;
+            height: 0;
+        }
+        #petition_description{
+            font-family: "Raleway", Arial;
+        }
         /* ----------------------- */
         /* -- Page Specific Classes -- */
         .box{
@@ -164,6 +171,43 @@
             border-left: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
         }
+        #support .list{
+            width: 100%;
+            -moz-column-gap: 1em;
+            -webkit-column-gap: 1em;
+            column-gap: 1em;
+            margin: 0;
+            overflow: hidden;
+        }
+        #support .list li{
+            display: block;
+            text-align: center;
+            margin: 0;
+            line-height: 30px;
+        }
+        /* -- Responsiveness -- */
+        @media screen and (min-width: 801px) {
+            #support .list{
+                -webkit-column-count: 7;
+                -moz-column-count: 7;
+                column-count: 7;
+            }
+        }
+        @media screen and (max-width: 800px) and (min-width: 601px){
+            #support .list{
+                -webkit-column-count: 5;
+                -moz-column-count: 5;
+                column-count: 5;
+            }
+        }
+        @media screen and (max-width: 600px){
+            #support .list{
+                -webkit-column-count: 3;
+                -moz-column-count: 3;
+                column-count: 3;
+            }
+        }
+
     </style>
     <title>{{petition.title}}</title>
 
@@ -184,7 +228,7 @@
                     {% endfor %}
                 {% endif %}
             </ul>
-            <p>Petition by {{ author.first_name }} {{ author.last_name }}</p>
+            <p class="transition">Petition by {{ author.first_name }} {{ author.last_name }}</p>
         </section>
 
         {% if petition.has_response %}
@@ -214,9 +258,9 @@
             <ul class="list">
                 {% for user in users_signed.all %}
                     {% if not user.display_name %}
-                        <li class="list-item left padded">Unknown</li>
+                        <li class="list-item">Unknown</li>
                     {% else %}
-                        <li class="list-item left padded">{{ user.display_name }}</li>
+                        <li class="list-item">{{ user.display_name }}</li>
                     {% endif %}
                 {% endfor %}
             </ul>

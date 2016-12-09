@@ -46,10 +46,15 @@ def petition_responded(request):
     :param request:
     :return:
     """
+    sorting_key = request.POST.get('sort_by', 'most recent')
+    filter_key = request.POST.get('filter', 'all')
+
     data_object = {
-        'tags':Tag.objects.all
+        'tags': Tag.objects.all,
+        'colors': colors(),
+        "petitions": responded(filtering_controller(Petition.objects.all(), filter_key))
     }
-    return render(request, 'index.html', data_object)
+    return render(request, 'responded.html', data_object)
 
 
 def petition(request, petition_id):
@@ -261,6 +266,10 @@ def filtering_controller(sorted_objects, tag):
     else:
         queried_tag = Tag.objects.get(id=tag)
         return sorted_objects.all().filter(tags=tag)
+
+
+def responded(sorted_objects):
+    return sorted_objects.all().filter(has_response=True)
 
 
 # SORTING
