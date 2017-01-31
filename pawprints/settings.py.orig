@@ -42,7 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
+    'channels'
+=======
     'channels',
+>>>>>>> 38aa4703c997f392c6f96fdd4141a9bbd3008272
 ]
 
 CHANNEL_LAYERS = {
@@ -105,6 +109,13 @@ DATABASES = {
     }
 }
 
+# Channel Config
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "pawprints.routing.channel_routing",
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
