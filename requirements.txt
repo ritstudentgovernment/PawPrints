@@ -6,9 +6,11 @@ channels==1.0.2
 constantly==15.1.0
 daphne==1.0.1
 Django==1.10.5
+django-auth-ldap==1.2.8
 incremental==16.10.1
 msgpack-python==0.4.8
 packaging==16.8
+pyldap==2.4.28
 pyparsing==2.1.10
 redis==2.10.5
 six==1.10.0
