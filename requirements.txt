@@ -10,6 +10,7 @@ django-auth-ldap==1.2.8
 incremental==16.10.1
 msgpack-python==0.4.8
 packaging==16.8
+psycopg2==2.6.2
 pyldap==2.4.28
 pyparsing==2.1.10
 redis==2.10.5
