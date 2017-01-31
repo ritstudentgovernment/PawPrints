@@ -94,11 +94,12 @@ function inViewport (el) {
             element.css({"display":"none"});
         }
         if(!settings.inline){
-            element.css({"display":"block"}).addClass("animated "+effect);
+            element.css({"display":"block"});
         }
         else{
-            element.css({"display":"inline-block"}).addClass("animated "+effect);
+            element.css({"display":"inline-block"});
         }
+        element.addClass("animated "+effect)
 
     }
     // Custom parallax element plugin.

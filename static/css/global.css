@@ -15,6 +15,11 @@ header{
 main{
     margin-top: 40px;
 }
+* {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 /* -- Global Classes -- */
 .transition{
     -webkit-transition: all 0.20s linear;

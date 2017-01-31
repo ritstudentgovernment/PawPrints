@@ -54,9 +54,12 @@
             padding-top: 0.5em;
             padding-bottom: 0.5em;
         }
-        .small-header p{
+        .small-header p, .small-header #petition_title_section ul{
             opacity: 0;
             height: 0;
+        }
+        .small-header #petition_title{
+            margin: 0 0 0em;
         }
         #petition_description{
             font-family: "Raleway", Arial;
@@ -218,7 +221,7 @@
     <main>
         <section id="petition_title_section" class="full-width transition">
             <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
-            <ul class="petition_list_data">
+            <ul class="petition_list_data transition">
                 {% for tag in petition.tags.all %}
                     <li id="{{ tag.id }}" class="tag background-highlight">{{tag.name}}</li>
                 {% endfor %}
