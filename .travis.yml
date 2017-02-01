@@ -11,6 +11,7 @@ before_install: openssl aes-256-cbc -K $encrypted_b3c74f49840a_key -iv $encrypte
 
 install: 
   - pip install -r requirements.txt
+  - pip install coverage
 
 before_script:
   - psql -c 'CREATE DATABASE pawprints;' -U postgres
