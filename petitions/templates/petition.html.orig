@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
     {% load static %}
     <meta charset="utf-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -90,19 +91,20 @@
             border-bottom: 1px solid #ccc;
         }
     </style>
+    <title>{{petition.title}}</title>
+
+=======
+  <meta charset="utf-8">
   {% load social_tags %}
   <title>{{petition.title}}</title>
   {{ petition_url|social_bar }}
-
+>>>>>>> c31348b78d9792c8efb34f669c454a94201576c9
 </head>
-
 <body>
+<<<<<<< HEAD
     <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
 
     <p id="petition_description" class="petition_data">{{petition.description}}</p>
-    <div style="width: 200px;">
-    {{ petition_url|social_widget }}
-    </div>
 
     <section>
         <h4>Tags</h4>
@@ -218,5 +220,17 @@
         </script>
     {% endif %}
 
+=======
+  <h1>{{petition.title}}</h1>
+  <ul>
+  {% for tag in petition.tags.all %}
+    <li>{{tag.name}}</li>
+  {% endfor %}
+  </ul>
+  <p>{{petition.description}}</p>
+  <div style="width: 200px;">
+  {{ petition_url|social_widget }}
+  </div>
+>>>>>>> c31348b78d9792c8efb34f669c454a94201576c9
 </body>
 </html>

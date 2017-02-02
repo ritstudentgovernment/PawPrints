@@ -7,11 +7,11 @@ Updated: Nov 30 2016
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 from django.db.models import F
 from datetime import timedelta
 from petitions.models import Petition, Tag
 from django.utils import timezone
-from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
 
@@ -65,6 +65,7 @@ def petition(request, petition_id):
     # Note: This returns an abstract list of IDs that are not directly associated, at least to my knowledge, to specific user objects.
     users_signed = Profile.objects.filter(petitions_signed=petition)
 
+<<<<<<< HEAD
     # Get all of the current tags in pawprints.
     additional_tags = Tag.objects.all().exclude(name__in=[x.name for x in petition.tags.all()])
 
@@ -73,6 +74,17 @@ def petition(request, petition_id):
     data_object = {
         'petition': petition,
         'author':author,
+=======
+    # Construct the petition url
+    protocol = 'https' if request.is_secure() else 'http'
+    site_path = request.META['HTTP_HOST']
+    petition_url = protocol + '://' + site_path + '/petition/' + str(petition_id)
+    
+    
+    data_object = {
+        'petition': petition,
+        'petition_url': petition_url,
+>>>>>>> c31348b78d9792c8efb34f669c454a94201576c9
         'current_user': user,
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,

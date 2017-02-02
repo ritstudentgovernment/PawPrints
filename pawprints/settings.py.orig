@@ -166,6 +166,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+
+STATIC_URL = '/static/'
+
+<<<<<<< HEAD
+
+LOGIN_URL = '/login/'
+=======
 # Email settings
 
 EMAIL_HOST = secrets.EMAIL_HOST
@@ -173,7 +180,4 @@ EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD
 EMAIL_PORT = secrets.EMAIL_PORT
 EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
-
-STATIC_URL = '/static/'
-
-LOGIN_URL = '/login/'
+>>>>>>> c31348b78d9792c8efb34f669c454a94201576c9
