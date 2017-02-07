@@ -1,3 +1,7 @@
 from django.test import TestCase
+from channels import Channel
+from channels.tests import ChannelTestCase
 
-# Create your tests here.
+class EmailChannelTests(ChannelTestCase):
+    def petition_app(self):
+        return
