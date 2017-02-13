@@ -1,6 +1,23 @@
 """
 Author: Omar De La Hoz (omardlhz) & Peter Zujko (zujko)
 Description: Send email to pawprints users.
+
+Date Update: Feb 13 2017
+
+This runs on a worker. Messages are formatted as
+
+{
+    "petition_id": <id>,
+    "site_path": "<site_path>"
+}
+
+and formatted as the following for a rejection.
+
+{
+    "petition_id": <id>,
+    "site_path": "<site_path>",
+    "message": "<message>"
+}
 """
 
 from petitions.models import Petition
@@ -17,8 +34,6 @@ import time
 
 """
 Sends an email when a petition has been approved.
-
-@param message Channel Message
 """
 def petition_approved(message):
     try:
@@ -46,6 +61,9 @@ def petition_approved(message):
     email.content_subtype = "html"
     email.send()
 
+"""
+Sends email when a petition is rejected.
+"""
 def petition_rejected(message):
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
 
@@ -68,12 +86,18 @@ def petition_rejected(message):
     email.content_subtype = "html"
     email.send()
 
+"""
+Sends email when a petition is updated.
+"""
 def petition_update(message):
-    print("Updating")
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
+
+    # Gets all users that are subscribed or have signed the petition and if they want to receive email updates.
     users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__update=True).distinct("id")
     
+    # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
+
     email = EmailMessage(
             'Petition status update',
             get_template('email_inlined/petition_status_update.html').render(
