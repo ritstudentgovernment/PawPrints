@@ -113,5 +113,36 @@ def petition_update(message):
             'sgnoreply@rit.edu',
             [recipients]
             )
+    
+    email.content_subtype = "html"
+    email.send()
+
+"""
+Sends email once a petition reaches 200 signatures.
+"""
+def petition_reached(message):
+    petition = Petition.objects.get(pk=message.content.get("petition_id"))
+
+    # Gets all users that are subscribed or have signed the petition and if they want to receive emails about petition response.
+    users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__response=True).distinct("id")
+    
+    # Construct array of email addresses
+    recipients = [prof.user.email for prof in users]
+
+    email = EmailMessage(
+            'Petition threshold reached',
+            get_template('email_inlined/petition_threshold_reached.html').render(
+                    Context({
+                        'petition_id': petition.id,
+                        'title': petition.title,
+                        'author': petition.author.profile.full_name,
+                        'site_path': message.content.get('site_path'),
+                        'protocol': 'https',
+                        'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                        })
+                ),
+            'sgnoreply@rit.edu',
+            [recipients]
+            )
     email.content_subtype = "html"
     email.send()
