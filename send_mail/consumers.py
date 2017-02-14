@@ -146,3 +146,25 @@ def petition_reached(message):
             )
     email.content_subtype = "html"
     email.send()
+
+def petition_received(message):
+    petition = Petition.objects.get(pk=message.content.get('petition_id'))
+
+    email = EmailMessage(
+            'Petition received',
+            get_template('email_inlined/petition_rejected.html').render(
+                Context({
+                    'petition_id': petition.id,
+                    'title': petition.title,
+                    'author': petition.author.profile.full_name,
+                    'message': message.content.get('message'),
+                    'site_path': message.content.get('site_path'),
+                    'protocol': 'https',
+                    'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                    })
+                ),
+            'sgnoreply@rit.edu',
+            [petition.author.email]
+            )
+    email.content_subtype = "html"
+    email.send()
