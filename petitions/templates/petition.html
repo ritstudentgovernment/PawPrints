@@ -90,7 +90,9 @@
             border-bottom: 1px solid #ccc;
         }
     </style>
-    <title>{{petition.title}}</title>
+  {% load social_tags %}
+  <title>{{petition.title}}</title>
+  {{ petition_url|social_bar }}
 
 </head>
 
@@ -98,6 +100,9 @@
     <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
 
     <p id="petition_description" class="petition_data">{{petition.description}}</p>
+    <div style="width: 200px;">
+    {{ petition_url|social_widget }}
+    </div>
 
     <section>
         <h4>Tags</h4>

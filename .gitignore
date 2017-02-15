@@ -104,3 +104,5 @@ secrets.py
 .idea/workspace.xml
 
 .idea/PawPrints.iml
+
+*.orig
