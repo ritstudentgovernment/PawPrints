@@ -1,5 +1,6 @@
 """
 Author: Peter Zujko (@zujko)
+        Lukas Yelle (@lxy5611)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
 Updated: Oct 26 2016

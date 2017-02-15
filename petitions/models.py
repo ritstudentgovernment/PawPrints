@@ -1,13 +1,11 @@
 """ 
 Author: Peter Zujko (@zujko)
-        Lukas Yelle (@lukasyelle)
 Description: Contains models for Petition, Tag, and Response.
 Date Created: Sept 15 2016
 Updated: Oct 17 2016
 """
 from django.db import models
 from django.contrib.auth.models import User
-from channels.binding.websockets import WebsocketBinding
 
 #
 # Defines petition model.

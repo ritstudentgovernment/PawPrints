@@ -1,3 +1,8 @@
+"""
+Author: Peter Zujko (@zujko)
+        Lukas Yelle (@lxy5611)
+Desc: Implements channels routing for the petitions app.
+"""
 from channels.routing import route
 from . import consumers
 
