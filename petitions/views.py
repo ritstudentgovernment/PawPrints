@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
-Updated: Nov 30 2016
+Updated: Feb 15 2017
 """
 from django.shortcuts import render, get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
@@ -14,6 +14,7 @@ from django.utils import timezone
 from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
+from channels import Channel
 
 
 def index(request):
@@ -174,6 +175,12 @@ def petition_sign(request, petition_id):
         petition.signatures = F('signatures')+1
         petition.last_signed = timezone.now()
         petition.save()
+        # Check if petition reached 200 if so, email.
+        if petition.signatures == 200:
+            Channel('petition-reached').send({
+                "petition_id": petition.id,
+                "site_path": request.META['HTTP_HOST']
+                })
     return HttpResponse(str(petition.id))
 
 @login_required
