@@ -12,7 +12,7 @@ def serialize_petitions(petitions_obj):
     """
     Helper Function.
     Serializes petitions into JSON format for transmission back to the frontend via websocket.
-    :param petitions: Database object of petitions.
+    :param petitions_obj: Database object of petitions.
     :return: JSON formatted dump of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
     """
     # Initialize varriables

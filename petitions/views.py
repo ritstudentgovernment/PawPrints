@@ -15,7 +15,7 @@ from django.utils import timezone
 from profile.models import Profile
 from django.contrib.auth.models import User
 from channels import Group
-from django.core import serializers
+import json
 
 
 def index(request):
@@ -198,14 +198,14 @@ def petition_sign(request, petition_id):
         petition.last_signed = timezone.now()
         petition.save()
 
-        json = {
+        data = {
             "command":"update-sigs",
             "sigs":petition.signatures,
             "id":petition.id
         }
 
         Group("petitions").send({
-            "text": json
+            "text": json.dumps(data)
         })
 
     return HttpResponse(str(petition.id))
