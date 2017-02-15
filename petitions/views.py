@@ -14,6 +14,8 @@ from petitions.models import Petition, Tag
 from django.utils import timezone
 from profile.models import Profile
 from django.contrib.auth.models import User
+from channels import Group
+from django.core import serializers
 
 
 def index(request):
@@ -187,13 +189,25 @@ def petition_sign(request, petition_id):
           This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
+    # If the petition is still active 
     if petition.status != 2:
         user = request.user
         user.profile.petitions_signed.add(petition)
         user.save()
-        petition.signatures = F('signatures')+1
+        petition.signatures += 1
         petition.last_signed = timezone.now()
         petition.save()
+
+        json = {
+            "command":"update-sigs",
+            "sigs":petition.signatures,
+            "id":petition.id
+        }
+
+        Group("petitions").send({
+            "text": json
+        })
+
     return HttpResponse(str(petition.id))
 
 @login_required

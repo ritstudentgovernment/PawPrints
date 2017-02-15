@@ -3,4 +3,8 @@ from . import consumers
 
 channel_routing = [
 
+	route("websocket.connect", consumers.petitions_connect),
+	route("websocket.receive", consumers.petitions_command),
+	route("websocket.disconnect", consumers.petitions_disconnect),
+
 ]

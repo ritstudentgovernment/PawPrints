@@ -31,27 +31,6 @@ class Petition(models.Model):
     def __str__(self):
         return self.title
 
-
-
-class PetitionBinding(WebsocketBinding):
-
-    model = Petition
-    stream = "petitions"
-    fields = ["title",
-              "description",
-              "author",
-              "signatures",
-              "status",
-              "last_signed"]
-
-    @classmethod
-    def group_names(cls, instance):
-        return ["petition"]
-
-    def has_permission(self, user, action, pk):
-        return True
-
-
 #
 # Defines tag model.
 #
