@@ -13,7 +13,7 @@ from django.dispatch import receiver
 # Extends User model. Defines sn and notifications for a User.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # full_name = models.TextField()
+    full_name = models.TextField()
     notifications = models.ForeignKey('profile.Notifications', on_delete=models.CASCADE)
     subscriptions = models.ManyToManyField('petitions.Petition', related_name='profile_subscriptions', blank=True)
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
