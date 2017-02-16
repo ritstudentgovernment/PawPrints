@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="{% static '/js/global.js' %}"></script>
+    <title>Account | PawPrints</title>
+    <style>
+    </style>
+</head>
+<body>
+
+
+    {{ first_name }}
+    {{ last_name }}
+    {% for petition in petitions_created %}
+        {{ petition.title }}
+    {% endfor %}
+
+
+    <button class="create_petition">Click me to add a petition.</button>
+	  <form name="settings" method="post" action="{% url 'profile:notification_update'}">
+      {% csrf_token %}
+      <input type="checkbox" name="updates" {% if profile.notifications.update %} checked="checked" {% endif %}>E-mail me when new status updates are petitioned on petitions I sign<br>
+      <input type="checkbox" name="response" {% if profile.notifications.response %} checked="checked" {% endif %}>E-mail me when an official responses is petitioned on a petition I sign.
+      <input type="submit">
+    </form>
+
+</body>
+</html>

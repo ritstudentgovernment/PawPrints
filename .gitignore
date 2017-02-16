@@ -94,3 +94,15 @@ ENV/
 env
 *.swp
 secrets.py
+
+.idea/misc.xml
+
+.idea/PawPrints.iml
+
+.idea/vcs.xml
+
+.idea/workspace.xml
+
+.idea/PawPrints.iml
+
+*.orig

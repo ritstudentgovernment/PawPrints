@@ -1,0 +1,26 @@
+{% if petitions.count != 0 %}
+    <div id="petitions-container">
+    {% for petition in petitions %}
+        <article class="petition material-shadow">
+            <h4 class="petition-signatures">
+                {% if petition.signatures == 1 %}
+                    {{ petition.signatures }} Signature
+                {% else %}
+                    {{ petition.signatures }} Signatures
+                {% endif %}
+            </h4>
+            <h3 class="petition-title">
+                <a class="text-highlight modern-link" href="/petition/{{ petition.id }}">{{ petition.title }}</a>
+            </h3>
+            <ul>
+                {% for tag in petition.tags.all %}
+                    <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </article>
+        </h1>
+    {% endfor %}
+    </div>
+{% else %}
+    <h4 id="empty-set" class="text-center">No petitions yet with that search criteria. <br />Have an idea? Make your mark!</h4>
+{% endif %}
