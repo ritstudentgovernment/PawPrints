@@ -23,7 +23,7 @@ class Petition(models.Model):
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True) 
-    in_progress = models.BooleanField()
+    in_progress = models.NullBooleanField()
     updates = models.ManyToManyField('petitions.Update', default=None)
 
     def __str__(self):
