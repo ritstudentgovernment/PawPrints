@@ -1,5 +1,6 @@
 """
 Author: Peter Zujko (@zujko)
+        Lukas Yelle (@lxy5611)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
 Updated: Feb 15 2017
@@ -8,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 from django.db.models import F
 from datetime import timedelta
 from petitions.models import Petition, Tag
@@ -15,7 +17,8 @@ from django.utils import timezone
 from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
-from channels import Channel
+from channels import Group, Channel
+import json
 
 
 def index(request):
@@ -189,19 +192,32 @@ def petition_sign(request, petition_id):
           This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
+    # If the petition is still active 
     if petition.status != 2:
         user = request.user
         user.profile.petitions_signed.add(petition)
         user.save()
-        petition.signatures = F('signatures')+1
+        petition.signatures += 1
         petition.last_signed = timezone.now()
         petition.save()
-        # Check if petition reached 200 if so, email.
+
+        data = {
+            "command":"update-sigs",
+            "sigs":petition.signatures,
+            "id":petition.id
+        }
+
+        Group("petitions").send({
+            "text": json.dumps(data)
+        })
+	
+	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
             Channel('petition-reached').send({
                 "petition_id": petition.id,
                 "site_path": request.META['HTTP_HOST']
                 })
+
     return HttpResponse(str(petition.id))
 
 @login_required

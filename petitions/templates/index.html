@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway:300|Work+Sans:300" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="{% static '/js/global.js' %}"></script>
     <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
     <style>
@@ -276,27 +277,20 @@
         </nav>
     </div>
     <section id="petitions">
-        <div id="petitions-container">
-            {% for petition in petitions %}
-                <article class="petition material-shadow transition">
-                    <h4 class="petition-signatures">
-                        {% if petition.signatures == 1 %}
-                            {{ petition.signatures }} Signature
-                        {% else %}
-                            {{ petition.signatures }} Signatures
-                        {% endif %}
-                    </h4>
-                    <h3 class="petition-title">
-                        <a class="text-highlight modern-link" href="/petition/{{ petition.id }}">{{ petition.title }}</a>
-                    </h3>
-                    <ul>
-                        {% for tag in petition.tags.all %}
-                            <li id="petition_tag-{{ tag.id }}" class="tag">{{ tag.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </article>
-                </h1>
-            {% endfor %}
+        <div v-if="list.length > 0" id="petitions-container">
+            <!--      Vus.js template for listing petitions      -->
+            <article v-for="petition in list" class="petition material-shadow transition">
+                <h4 class="petition-signatures">
+                    {[ petition.signatures ]}
+                    <span v-if="petition.signatures == 1"> Signature</span>
+                    <span v-else> Signatures</span>
+                </h4>
+                <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
+                <ul>
+                    <li v-for="tag in petition.tags" class="tag">{[ tag.name ]}</li>
+                </ul>
+            </article>
+            <!--      End Vue.js template      -->
         </div>
     </section>
 </main>
@@ -304,14 +298,27 @@
 {% csrf_token %}
 </body>
 <script>
-    function reloadPetitions(sort_by, filter){
+    /* Initialize the Vue.js wrapper for the petitions.
+     *     el: the element to initialize on.
+     *   data:
+     *      - list: the list of petitions and all of their data
+     *      - map: the mapping of a petitions ID to its index in the list of petitions.
+     */
+    var petitions = new Vue({
+        el: "#petitions",
+        data: {
+            list: [],
+            map: {}
+        },
+        delimiters: ['{[', ']}']
+    });
+    function reloadPetitions(sort_by, filter, socket){
+        // load the petitions into the Vue instance.
         if($(".current-tag").attr("id") != filter){
             $(".current-tag").removeClass("current-tag");
         }
         $("#tag-"+filter).addClass("current-tag");
-        $.post("/petitions/",{"sort_by":sort_by,"filter":filter,"csrfmiddlewaretoken":get_csrf()},function(response){
-            $("#petitions").html(response);
-        });
+        socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
     }
     function initWaypoints(){
         var tagsWaypoint = $('#tags').find("ul").waypoint(function(direction){
@@ -327,18 +334,52 @@
             offset: '10px'
         });
     }
+
     $(document).ready(function(){
+
+        // Setup Web Socket.
+        var socket = new WebSocket("ws://" + window.location.host + "/");
+        socket.onmessage = function(e) {
+
+            console.log(e.data);
+            // Get Escape special characters so JSON.parse works.
+            var data = e.data.replace(/%/gi,'\%').replace(/"/gi,'\"').replace(/&/gi,'\&');
+            try{
+
+                // Parse the response as a JSON.
+                data = JSON.parse(data);
+                if(data["command"]){
+                    if(data["command"] == "update-sigs"){
+
+                        petitions.list[petitions.map[data["id"]]].signatures = data["sigs"];
+
+                    }
+                }
+                else{
+                    petitions.list = data["petitions"];
+                    petitions.map = data["map"];
+                }
+
+            }
+            catch(error){
+                console.log("Error: "+error+". Data: "+data);
+                petitions.list = [];
+                petitions.map = {};
+            }
+
+        }
+
         $(document).on("click", ".tag", function(){
             var filter_tag = $(this).attr("id").replace("tag-","");
             filter_tag = filter_tag.replace("petition_","");
             var sort_by = $("#sort").val();
             $("#sort").data("filter",filter_tag);
-            reloadPetitions(sort_by, filter_tag);
+            reloadPetitions(sort_by, filter_tag, socket);
         });
         $("#sort").change(function(){
             var filter_tag = $("#sort").data("filter");
             var sort_by = $(this).val();
-            reloadPetitions(sort_by, filter_tag);
+            reloadPetitions(sort_by, filter_tag, socket);
         });
         $("#parallax-slideshow").parallax({divisor:-2.5});
         $("#parallax-overlay").parallax({divisor:-5,offset:40});

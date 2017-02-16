@@ -1,13 +1,11 @@
 """ 
 Author: Peter Zujko (@zujko)
-        Lukas Yelle (@lukasyelle)
 Description: Contains models for Petition, Tag, and Response.
 Date Created: Sept 15 2016
 Updated: Oct 17 2016
 """
 from django.db import models
 from django.contrib.auth.models import User
-from channels.binding.websockets import WebsocketBinding
 
 #
 # Defines petition model.
@@ -30,27 +28,6 @@ class Petition(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
-class PetitionBinding(WebsocketBinding):
-
-    model = Petition
-    stream = "petitions"
-    fields = ["title",
-              "description",
-              "author",
-              "signatures",
-              "status",
-              "last_signed"]
-
-    @classmethod
-    def group_names(cls, instance):
-        return ["petition"]
-
-    def has_permission(self, user, action, pk):
-        return True
-
 
 #
 # Defines tag model.
