@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     {% include 'head.html' %}
@@ -111,13 +111,16 @@
             width: 100%;
         }
         .petition_list_data{
+            padding: 10px;
             margin: 0;
             overflow: hidden;
+            min-height: 40px;
             display: block;
             width: auto;
             padding:0;
         }
         .tag,.new-tag{
+            padding: 10px 5px;
             display: inline-block;
             padding: 5px 7px;
             margin: 5px 7px 0 0;
@@ -217,81 +220,23 @@
 </head>
 
 <body>
-    {% include 'header.html' %}
-    <main>
-        <section id="petition_title_section" class="full-width transition">
-            <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
-            <ul class="petition_list_data transition">
-                {% for tag in petition.tags.all %}
-                    <li id="{{ tag.id }}" class="tag background-highlight">{{tag.name}}</li>
+    <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
+
+    <p id="petition_description" class="petition_data">{{petition.description}}</p>
+
+    <section>
+        <h4>Tags</h4>
+        <ul class="petition_list_data">
+            {% for tag in petition.tags.all %}
+                <li id="{{ tag.id }}" class="tag">{{tag.name}}</li>
+            {% endfor %}
+            {% if edit %}
+                {% for tag in additional_tags %}
+                    <li id="{{ tag.id }}" class="new-tag">{{ tag.name }}</li>
                 {% endfor %}
-                {% if edit %}
-                    {% for tag in additional_tags %}
-                        <li id="{{ tag.id }}" class="new-tag">{{ tag.name }}</li>
-                    {% endfor %}
-                {% endif %}
-            </ul>
-            <p class="transition">Petition by {{ author.first_name }} {{ author.last_name }}</p>
-        </section>
-
-        {% if petition.has_response %}
-
-            <section id="sub-landing" class="ninety-width box material-shadow">
-                <h4 class="box-title">Responses</h4>
-                {% for response in petition.response.all %}
-                    {{ response.description }}
-                {% endfor %}
-                <div>
-
-                </div>
-            </section>
-            <section class="ninety-width box material-shadow">
-                <h4 class="box-title">Description</h4>
-                <div id="petition_description" class="petition_data">{{petition.description}}</div>
-            </section>
-        {% else %}
-            <section id="sub-landing" class="ninety-width box material-shadow">
-                <h4 class="box-title">Description</h4>
-                <div id="petition_description" class="petition_data">{{petition.description}}</div>
-            </section>
-        {% endif %}
-
-        <section id="support" class="ninety-width box material-shadow">
-            <h4 class="box-title">Support<span class="right">{{ petition.signatures }} / </span></h4>
-            <ul class="list">
-                {% for user in users_signed.all %}
-                    {% if not user.display_name %}
-                        <li class="list-item">Unknown</li>
-                    {% else %}
-                        <li class="list-item">{{ user.display_name }}</li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </section>
-    </main>
-    <script>
-        function getVars(){
-            height = $(window).height();
-            width = $(window).width();
-
-            header_height = $("header").height();
-        }
-        function adjustPage(){
-            getVars();
-            $("main").css({"padding-top":header_height+"px","min-height":height-header_height+"px"});
-        }
-        $(document).ready(function(){
-            var html_string = $("#petition_description").html().replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/gi," ");
-            html_string = html_string.replace(/&amp;nbsp;/g, " ");
-            var parsed_html = $.parseHTML(html_string);
-            $("#petition_title_section").appendTo("header");
-            $("#petition_description").html(parsed_html);
-            adjustPage();
-        });
-        $(window).resize(function(){
-            adjustPage();
-        });
-    </script>
+            {% endif %}
+        </ul>
+    </section>
 
     {% if current_user.is_authenticated and not current_user_signed and not author == current_user.profile.id %}
         <!--
@@ -312,6 +257,17 @@
             window.location.href='/';
         </script>
     {% endif %}
+
+    <section id="signatures">
+        <h4>Signatures</h4>
+        <ul>
+            {% for user in users_signed.all %}
+                <li>{{ user.display_name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <p>Number of signatures: {{ petition.signatures }}</p>
 
     {% if edit %}
     <!--

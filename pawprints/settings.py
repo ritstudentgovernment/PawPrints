@@ -36,6 +36,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
+    'send_mail.apps.SendMailConfig',
+    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,8 +166,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+# Email settings
+
+EMAIL_HOST = secrets.EMAIL_HOST
+EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD
+EMAIL_PORT = secrets.EMAIL_PORT
+EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
 
 STATIC_URL = '/static/'
-
 
 LOGIN_URL = '/login/'

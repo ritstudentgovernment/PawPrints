@@ -1,0 +1,73 @@
+<!---
+File:          petition_approved.html
+Description:   Inlined email sent to users when a petition is approved.
+Creator:       Omar De La Hoz (oed7416)
+Date created:  11/11/16
+Date updated:  11/17/16
+!-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!--[if !mso]><!-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!--[if (gte mso 9)|(IE)]>
+    <style type="text/css">
+        table {border-collapse: collapse;}
+    </style>
+    <![endif]-->
+</head>
+<body style="padding: 0;background-color: #F1F1F1;margin: 0 !important;">
+    <center class="wrapper" style="width: 100%;table-layout: fixed;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;">
+        <div class="webkit" style="max-width: 600px;margin: 0 auto;">
+            <!--[if (gte mso 9)|(IE)]>
+            <table width="600" align="center">
+            <tr>
+            <td>
+            <![endif]-->
+            <table class="outer" align="center" style="border-spacing: 0;font-family: sans-serif;color: #333333;height: 100vh;margin: 0 auto;width: 100%;max-width: 600px;">
+                <tr>
+                    <td class="email-header" style="padding: 0;width: 100%;max-width: 600px;height: auto;background-color: #f49e42;text-align: center;">
+                        <img src="{{protocol}}://{{site_path}}/static/pawprints.png" width="600" alt="" style="border: 0;width: 60%;padding: 30px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-body" style="padding: 25px 25px 0 25px;text-align: justify;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
+                        <p>Hello,</p>
+                        <p>You're receiving this email because the petition <strong>{{title}}</strong> by <strong>{{author}}</strong> has been approved.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-button" style="padding: 0 25px 0 25px;text-align: center;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
+                        <p>Please click the link below if you would like to view this petition.</p>
+                        <a href="{{protocol}}://{{site_path}}/petition/{{petition_id}}" class="viewButton" style="-moz-box-shadow: 0px 4px 0px 0px #519839;-webkit-box-shadow: 0px 4px 0px 0px #519839;box-shadow: 0px 4px 0px 0px #519839;background-color: #62bd4f;-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;display: inline-block;cursor: pointer;color: #ffffff;font-family: Arial;font-size: 19px;padding: 20px 33px;margin: 25px;padding-bottom: 20px;text-decoration: none;text-shadow: 0px 1px 0px #2f6627;">View Petition</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-signature" style="padding: 25px;text-align: left;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;margin-bottom: 10px;">
+                        <p style="margin: 0px;">Thanks,</p>
+                        <p style="margin: 0px;">RIT Student Government</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="footer" style="padding: 0;padding-top: 10px;text-align: center;">
+                        <img class="footer-img" src="{{protocol}}://{{site_path}}/static/sglogo.png" width="200" alt="" style="border: 0;width: 200px;max-width: 600px;height: auto;">
+                        <p class="footer-unsub" style="padding: 0px;font-size: 12px;">If you would like to stop receiving emails, please <a href="{{protocol}}://{{site_path}}/unsubscribe">unsubscribe</a></p>
+                        <p style="visibility: hidden; opacity: 0;">{{timestamp}}</p>
+                    </td>
+                </tr><tr>
+            </tr></table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </div>
+    </center>
+</body>
+</html>
