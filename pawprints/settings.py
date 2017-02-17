@@ -177,3 +177,41 @@ EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/info.log'),
+            'formatter': 'verbose',
+        },
+        'rotate_file':{
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/error.log'),
+            'formatter': 'verbose',
+            'maxBytes': 90000000,
+            'backupCount': 10,
+            'encoding': 'utf8'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
