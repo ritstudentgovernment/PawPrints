@@ -70,13 +70,13 @@ def petition_responded(request):
 
 
 def petition(request, petition_id):
-    """ Handles displaying A single petition. 
+    """ Handles displaying A single petition.
     DB queried to get Petition object and User objects.
     User object queries retrieve author
     and list of all users who signed the petition.
     """
     # Get petition of given id, if not found, display 404
-    petition = get_object_or_404(Petition, pk=petition_id) 
+    petition = get_object_or_404(Petition, pk=petition_id)
     # Get author of the petition
     author = User.objects.get(pk=petition.author.id)
     user = request.user
@@ -192,7 +192,7 @@ def petition_sign(request, petition_id):
           This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
-    # If the petition is still active 
+    # If the petition is still active
     if petition.status != 2:
         user = request.user
         user.profile.petitions_signed.add(petition)
@@ -210,7 +210,7 @@ def petition_sign(request, petition_id):
         Group("petitions").send({
             "text": json.dumps(data)
         })
-	
+
 	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
             Channel('petition-reached').send({
@@ -228,7 +228,18 @@ def petition_subscribe(request, petition_id):
     user = request.user
     user.profile.subscriptions.add(petition)
     user.save()
-    
+
+    return redirect('petition/' + str(petition_id))
+
+@login_required
+@require_POST
+def petition_unsubscribe(request, petition_id):
+    """ Endpoint unsubscribes a user to the petition"""
+    petition = get_object_or_404(Petition, pk=petition_id)
+    user = request.user
+    user.profile.subscriptions.remove(petition)
+    user.save()
+
     return redirect('petition/' + str(petition_id))
 
 @login_required
@@ -237,7 +248,7 @@ def petition_subscribe(request, petition_id):
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
-    the HTTP request method is a POST, and that the 
+    the HTTP request method is a POST, and that the
     user is an admin.
     """
     petition = get_object_or_404(Petition, pk=petition_id)

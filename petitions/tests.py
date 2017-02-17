@@ -20,8 +20,8 @@ class PetitionTest(TestCase):
         self.user = User.objects.create_user(username='axu7254', email='axu7254')
         self.tag = Tag(name='Test')
         self.tag.save()
-        self.petition = Petition(title='Test petition',  
-                description='This is a test petition', 
+        self.petition = Petition(title='Test petition',
+                description='This is a test petition',
                 author=self.user,
                 created_at=timezone.now(),
                 status=1,
@@ -41,8 +41,22 @@ class PetitionTest(TestCase):
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
         response = self.client.post('/petition/subscribe/'+str(self.petition.id),{})
         user = User.objects.get(pk=self.user.id)
-        
+
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
+
+    def test_petition_unsubscribe(self):
+        self.client.force_login(self.user)
+        user = User.objects.get(pk=self.user.id)
+        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
+        response = self.client.post('/petition/subscribe/'+str(self.petition.id),{})
+        user = User.objects.get(pk=self.user.id)
+
+        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
+
+        response = self.client.post('/petition/unsubscribe/'+str(self.petition.id),{})
+        user = User.objects.get(pk=self.user.id)
+
+        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
 
     def test_petition_unpublish(self):
         self.client.force_login(self.superUser)
