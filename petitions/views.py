@@ -242,6 +242,7 @@ def colors():
 
     color_object = {
         'highlight':"#f36e21",
+        'highlight_hover':'#e86920',
         'dark_text':'#0f0f0f',
         'light_text':'#f0f0f0',
         'bright_text':'#fff',

@@ -22,11 +22,22 @@ def serialize_petitions(petitions_obj):
     # Loop over ever object in the sent petitions object
     for x in range(len(petitions_obj)):
         petition = petitions_obj[x]
+
+        tags = []
+        all_tags = petition.tags.all()
+        for t in all_tags:
+            tags.append({
+                "name":t.name,
+                "id":t.id
+            })
+
         petitions.append({
             'title': petition.title,
             'description': json.dumps(petition.description.replace("'","\'")),
             'signatures': petition.signatures,
-            'author': petition.author.first_name +" "+ petition.author.last_name
+            'author': petition.author.first_name +" "+ petition.author.last_name,
+            'tags': tags,
+            'id': petition.id
         })
         petition_map[petition.id] = x
 
