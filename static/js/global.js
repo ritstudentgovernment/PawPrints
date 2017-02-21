@@ -30,6 +30,20 @@ function get_csrf(){
     * */
     return getCookie('csrftoken');
 }
+function getUrl(variable){
+    try{
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+    catch(err){
+        console.log("Error: " +err);
+    }
+}
 $(document).ready(function(){
     var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
         if(direction == "down"){
