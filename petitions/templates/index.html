@@ -134,6 +134,8 @@
             overflow: hidden;
             display: inline-block;
             margin-top: 1.2em;
+            -webkit-backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
         }
         .petition:hover{
             cursor: pointer;
@@ -148,7 +150,7 @@
             font-family: "Raleway", Arial;
         }
         .petition ul{
-            overflow: hidden;
+            overflow: visible;
             padding: 0;
             margin: 0;
         }
