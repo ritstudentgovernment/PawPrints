@@ -310,7 +310,7 @@
         <nav id="tags">
             <h5>Tags:</h5>
             <ul class="list full-width">
-                <li id="tag-all" class="list-item tag current-tag">All</li>
+                <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
                 {% for tag in tags %}
                     <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
                 {% endfor %}
