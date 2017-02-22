@@ -481,6 +481,12 @@
             $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
         });
 
+        $(document).on("click", ".petition", function(e){
+            if(!$(e.target).hasClass("tag")){
+                console.log("clicked");
+            }
+        });
+
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
         $("#parallax-overlay").parallax({divisor:-5,offset:40});
@@ -493,6 +499,7 @@
 
 
         });
+
     });
     $(window).resize(function(){
 
