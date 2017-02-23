@@ -237,7 +237,7 @@ function inViewport (el) {
 
     }
     // Custom CSS animations plugin.
-    $.fn.cssanimate = function( effect, options ){
+    $.fn.cssanimate = function( effect, options, callback ){
 
         var element = $(this);
         var settings = $.extend({
@@ -246,7 +246,11 @@ function inViewport (el) {
             inline: false
         }, options);
 
-        function stripAnimationClasses(element){
+        if(typeof callback != "function"){
+            callback = function(){};
+        }
+
+        function stripAnimationClasses(){
             //This function strips all CSS Animation Classes from the given element.
             var classesToStrip = ["Animated","bounce","flash","pulse","rubberBand","shake","headShake","swing","tada","wobble","jello","bounceIn","bounceInDown","bounceInLeft","bounceInRight","bounceInUp","bounceOut","bounceOutDown","bounceOutLeft","bounceOutRight","bounceOutUp","fadeIn","fadeInDown","fadeInDownBig","fadeInLeft","fadeInLeftBig","fadeInRight","fadeInRightBig","fadeInUp","fadeInUpBig","fadeOut","fadeOutDown","fadeOutDownBig","fadeOutLeft","fadeOutLeftBig","fadeOutRight","fadeOutRightBig","fadeOutUp","fadeOutUpBig","flipInX","flipInY","flipOutX","flipOutY","lightSpeedIn","lightSpeedOut","rotateIn","rotateInDownLeft","rotateInDownRight","rotateInUpLeft","rotateInUpRight","rotateOut","rotateOutDownLeft","rotateOutDownRight","rotateOutUpLeft","rotateOutUpRight","hinge","rollIn","rollOut","zoomIn","zoomInDown","zoomInLeft","zoomInRight","zoomInUp","zoomOut","zoomOutDown","zoomOutLeft","zoomOutRight","zoomOutUp","slideInDown","slideInLeft","slideInRight","slideInUp","slideOutDown","slideOutLeft","slideOutRight","slideOutUp"];
             for(i=0;i<=classesToStrip.length;i++){
@@ -260,7 +264,16 @@ function inViewport (el) {
             }
         }
 
-        stripAnimationClasses(element);
+        function addDelays(){
+            element.css({
+                "-webkit-transition-duration":settings.duration+"ms",
+                "transition-duration":settings.duration+"ms"
+            });
+        }
+
+        stripAnimationClasses();
+        addDelays();
+
         if(settings.hide){
             element.css({"display":"none"});
         }
@@ -271,6 +284,10 @@ function inViewport (el) {
             element.css({"display":"inline-block"});
         }
         element.addClass("animated "+effect)
+
+        setTimeout(function(){
+            callback();
+        },settings.duration);
 
     }
     // Custom parallax element plugin.

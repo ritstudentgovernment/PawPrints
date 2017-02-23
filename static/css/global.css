@@ -151,6 +151,60 @@ main{
 .padded{
     padding: 1em;
 }
+.cursor:hover{
+    cursor: pointer;
+}
+.padding{
+    padding: 10px;
+}
+.padding-left{
+    padding-left: 10px;
+}
+.padding-right{
+    padding-right: 10px;
+}
+.padding-top{
+    padding-top: 10px;
+}
+.padding-bottom{
+    padding-bottom: 10px;
+}
+.margin{
+    margin: 10px;
+}
+.margin-left{
+    margin-left: 10px;
+}
+.margin-right{
+    margin-right: 10px;
+}
+nav .margin-right{
+    margin-right: 40px;
+}
+.margin-top{
+    margin-top: 10px;
+}
+.margin-bottom{
+    margin-bottom: 10px;
+}
+.block{
+    display: block;
+}
+.inline-block{
+    display: inline-block;
+}
+.text-center{
+    text-align: center;
+}
+.overflow-hidden{
+    overflow: hidden;
+}
+.circle{
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border: 1px solid #000;
+}
 /* -- Global IDs -- */
 #logo{
     font-size: 2em;
@@ -216,8 +270,8 @@ main{
 }
 .modal-container{
     position: absolute;
-    left: 33.33%;
-    width: 33.33%;
+    left: 5%;
+    width: 90%;
     min-width: 300px;
     height: auto;
     max-height: 100vh;
@@ -267,6 +321,11 @@ main{
 }
 .modern-modal-body{
 
+}
+.modal .text-center span{
+    display: inline-flex;
+    width: auto;
+    min-width: 0;
 }
 @media screen and (max-width: 900px) and (min-width: 376px){
 

@@ -402,8 +402,6 @@
         var socket = new WebSocket("ws://" + window.location.host + "/");
         socket.onmessage = function(e) { // Bind to the onmessage event.
 
-            console.log(e.data);
-
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi,'\%').replace(/"/gi,'\"').replace(/&/gi,'\&');
             try{
@@ -448,11 +446,9 @@
 
             // Get the tag name
             var filter_tag = $(this).data("tag");
-            console.log(filter_tag);
 
             // Get the sort key
             var sort_by = $("#sort").val();
-            console.log(sort_by);
             $("#sort").data("filter",filter_tag);
 
             // Reload all of the petitions with the updated information.
@@ -483,7 +479,9 @@
 
         $(document).on("click", ".petition", function(e){
             if(!$(e.target).hasClass("tag")){
-                console.log("clicked");
+                var petitionID = $(this).data("petition-id");
+                var petition = petitions.list[petitions.map[petitionID]];
+                console.log(petition);
             }
         });
 
