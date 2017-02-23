@@ -184,20 +184,14 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(name)d : %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'log/info.log'),
-            'formatter': 'verbose',
-        },
-        'rotate_file':{
+        'rotate_file_errors':{
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'log/error.log'),
@@ -206,12 +200,26 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
+        'rotate_file_info':{
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/info.log'),
+            'formatter': 'verbose',
+            'maxBytes': 90000000,
+            'backupCount': 10,
+            'encoding': 'utf8'
+        },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
+        'pawprints': {
+            'handlers': ['rotate_file_info'],
             'level': 'INFO',
             'propagate': True,
         },
+        'pawprints': {
+            'handlers': ['rotate_file_errors'],
+            'level': 'ERROR',
+            'propagate': True,
+        }
     },
 }
