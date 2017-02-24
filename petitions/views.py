@@ -22,7 +22,7 @@ import json
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("pawprints."+__name__)
 
 def index(request):
     """
@@ -141,7 +141,7 @@ def petition_create(request):
     new_petition.signatures = F('signatures')+1
     new_petition.save()
 
-    logger.INFO("user "+user.email +" created a new petion called "+new_petition.title)
+    logger.info("user "+user.email +" created a new petion called "+new_petition.title)
 
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
@@ -182,7 +182,7 @@ def petition_edit(request, petition_id):
 
         petition.save()
 
-        logger.INFO('user '+request.user.email+' edited petition '+petition.title)
+        logger.info('user '+request.user.email+' edited petition '+petition.title)
 
     return redirect('/petition/' + str(petition_id))
 
@@ -218,7 +218,7 @@ def petition_sign(request, petition_id):
         Group("petitions").send({
             "text": json.dumps(data)
         })
-        logger.INFO('user '+request.user.email+' signed petition '+petition.title', which now has '+petition.signatures+' signatures')
+        logger.info('user '+request.user.email+' signed petition '+petition.title', which now has '+petition.signatures+' signatures')
 
 	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
@@ -226,7 +226,7 @@ def petition_sign(request, petition_id):
                 "petition_id": petition.id,
                 "site_path": request.META['HTTP_HOST']
                 })
-            logger.INFO('petition '+petition.title+' hit 200 signatures')
+            logger.info('petition '+petition.title+' hit 200 signatures')
 
     return HttpResponse(str(petition.id))
 
@@ -266,7 +266,7 @@ def petition_unpublish(request, petition_id):
     # Set status to 2 to hide it from view.
     petition.status = 2
     petition.save()
-    logger.INFO('user '+request.user.email+' unpublished petition '+petition.title)
+    logger.info('user '+request.user.email+' unpublished petition '+petition.title)
     return HttpResponse(True)
 
 # HELPER FUNCTIONS #

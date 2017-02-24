@@ -32,6 +32,7 @@ from django.http import JsonResponse
 import time
 
 
+
 """
 Sends an email when a petition has been approved.
 """
@@ -60,10 +61,10 @@ def petition_approved(message):
 
     email.content_subtype = "html"
     try:
-        logger.INFO("email about "+petition.title+" that has been approved was sent")
         email.send()
+        logger.info("email about "+petition.title+" that has been approved was sent")
     except:
-        logger.ERROR("email about "+petition.title+" that has been approved was NOT sent")
+        logger.error("email about "+petition.title+" that has been approved was NOT sent")
 
 """
 Sends email when a petition is rejected.
@@ -89,10 +90,10 @@ def petition_rejected(message):
             )
     email.content_subtype = "html"
     try:
-        logger.INFO("email about "+petition.title+" that was rejected was sent")
         email.send()
+        logger.info("email about "+petition.title+" that was rejected was sent")
     except:
-        logger.ERROR("email about "+petition.title+" that was rejected was NOT sent")
+        logger.error("email about "+petition.title+" that was rejected was NOT sent")
 
 """
 Sends email when a petition is updated.
@@ -124,10 +125,10 @@ def petition_update(message):
 
     email.content_subtype = "html"
     try:
-        logger.INFO("email about "+petition.title+" that was updated was sent")
         email.send()
+        logger.info("email about "+petition.title+" that was updated was sent")
     except:
-        logger.ERROR("email about "+petition.title+" that was updated was NOT sent")
+        logger.error("email about "+petition.title+" that was updated was NOT sent")
 
 """
 Sends email once a petition reaches 200 signatures.
@@ -158,10 +159,10 @@ def petition_reached(message):
             )
     email.content_subtype = "html"
     try:
-        logger.INFO("email about "+petition.title+" that reached 200 signatures was sent ")
         email.send()
+        logger.info("email about "+petition.title+" that reached 200 signatures was sent ")
     except:
-        logger.ERROR("email about "+petition.title+" that reached 200 signatures was NOT sent")
+        logger.error("email about "+petition.title+" that reached 200 signatures was NOT sent")
 
 def petition_received(message):
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
@@ -184,7 +185,7 @@ def petition_received(message):
             )
     email.content_subtype = "html"
     try:
-        logger.INFO("email about "+petition.title+" was sent")
         email.send()
+        logger.error("email about "+petition.title+" was sent")
     except:
-        logger.ERROR("email about "+petition.title+" was NOT sent")
+        logger.error("email about "+petition.title+" was NOT sent")
