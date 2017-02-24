@@ -355,6 +355,7 @@
         },
         delimiters: ['{[', ']}']
     });
+
     function reloadPetitions(sort_by, filter, socket){
 
         // load the petitions into the Vue instance.
@@ -394,6 +395,11 @@
             offset: '10px'
 
         });
+    }
+    function scroll(to_elem){
+        var offset = to_elem.offset().top;
+        offset -= 60;
+        $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
     }
 
     $(document).ready(function(){
@@ -454,6 +460,9 @@
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
 
+            var to_elem = $("#petitions");
+            scroll(to_elem);
+
         });
 
         $("#sort").change(function(){
@@ -472,9 +481,7 @@
         $("#back-up").click(function(e){
             e.preventDefault();
             var to_elem = $("#landing-marker");
-            var offset = to_elem.offset().top;
-            offset -= 60;
-            $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
+            scroll(to_elem);
         });
 
         $(document).on("click", ".petition", function(e){
