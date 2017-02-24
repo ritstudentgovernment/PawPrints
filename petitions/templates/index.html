@@ -310,7 +310,7 @@
         <nav id="tags">
             <h5>Tags:</h5>
             <ul class="list full-width">
-                <li id="tag-all" class="list-item tag current-tag">All</li>
+                <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
                 {% for tag in tags %}
                     <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
                 {% endfor %}
@@ -355,6 +355,7 @@
         },
         delimiters: ['{[', ']}']
     });
+
     function reloadPetitions(sort_by, filter, socket){
 
         // load the petitions into the Vue instance.
@@ -395,14 +396,17 @@
 
         });
     }
+    function scroll(to_elem){
+        var offset = to_elem.offset().top;
+        offset -= 60;
+        $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
+    }
 
     $(document).ready(function(){
 
         // Setup Web Socket.
         var socket = new WebSocket("ws://" + window.location.host + "/");
         socket.onmessage = function(e) { // Bind to the onmessage event.
-
-            console.log(e.data);
 
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi,'\%').replace(/"/gi,'\"').replace(/&/gi,'\&');
@@ -448,15 +452,16 @@
 
             // Get the tag name
             var filter_tag = $(this).data("tag");
-            console.log(filter_tag);
 
             // Get the sort key
             var sort_by = $("#sort").val();
-            console.log(sort_by);
             $("#sort").data("filter",filter_tag);
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
+
+            var to_elem = $("#petitions");
+            scroll(to_elem);
 
         });
 
@@ -476,9 +481,15 @@
         $("#back-up").click(function(e){
             e.preventDefault();
             var to_elem = $("#landing-marker");
-            var offset = to_elem.offset().top;
-            offset -= 60;
-            $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
+            scroll(to_elem);
+        });
+
+        $(document).on("click", ".petition", function(e){
+            if(!$(e.target).hasClass("tag")){
+                var petitionID = $(this).data("petition-id");
+                var petition = petitions.list[petitions.map[petitionID]];
+                console.log(petition);
+            }
         });
 
         // Bind parallax effects.
@@ -493,6 +504,7 @@
 
 
         });
+
     });
     $(window).resize(function(){
 
