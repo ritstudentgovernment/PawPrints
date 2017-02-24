@@ -220,6 +220,11 @@ LOGGING = {
             'handlers': ['rotate_file_errors'],
             'level': 'ERROR',
             'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['rotate_file_errors'],
+            'level': 'ERROR',
+            'propagate': True,
         }
     },
 }
