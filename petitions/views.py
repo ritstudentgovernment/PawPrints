@@ -218,7 +218,7 @@ def petition_sign(request, petition_id):
         Group("petitions").send({
             "text": json.dumps(data)
         })
-        logger.info('user '+request.user.email+' signed petition '+petition.title', which now has '+petition.signatures+' signatures')
+        logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+petition.signatures+' signatures')
 
 	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
