@@ -23,7 +23,7 @@ def profile(request):
         'last_name': profile.user.last_name,
         'petitions_created': profile.petitions_created.all
     }
-               
+
     return render(request, 'profile.html', data_object)
 
 def user_login(request):
@@ -41,7 +41,9 @@ def user_login(request):
             user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
             user_obj.save()
             auth_login(request, user_obj)
+            logger.INFO(user.username+" logged in")
             return redirect(url_next)
+
 
     return render(request, 'login.html')
 
@@ -57,11 +59,11 @@ def update_notifications(request, user_id):
 
     user = request.user
 
-    user.profile.notifications.update = True if "updates" in request.POST else False 
+    user.profile.notifications.update = True if "updates" in request.POST else False
     user.profile.notifications.response = True if "response" in request.POST else False
 
     user.save()
-    return redirect('profile/settings/'+str(user_id)) 
+    return redirect('profile/settings/'+str(user_id))
 
 @login_required
 @require_POST
