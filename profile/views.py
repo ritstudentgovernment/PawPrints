@@ -41,7 +41,7 @@ def user_login(request):
             user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
             user_obj.save()
             auth_login(request, user_obj)
-            logger.INFO(user.username+" logged in")
+            logger.info(user.username+" logged in")
             return redirect(url_next)
 
 
