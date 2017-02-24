@@ -59,7 +59,11 @@ def petition_approved(message):
 	)
 
     email.content_subtype = "html"
-    email.send()
+    try:
+        logger.INFO("email about "+petition.title+" that has been approved was sent")
+        email.send()
+    except:
+        logger.ERROR("email about "+petition.title+" that has been approved was NOT sent")
 
 """
 Sends email when a petition is rejected.
@@ -84,7 +88,11 @@ def petition_rejected(message):
             [petition.author.email]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        logger.INFO("email about "+petition.title+" that was rejected was sent")
+        email.send()
+    except:
+        logger.ERROR("email about "+petition.title+" that was rejected was NOT sent")
 
 """
 Sends email when a petition is updated.
@@ -94,7 +102,7 @@ def petition_update(message):
 
     # Gets all users that are subscribed or have signed the petition and if they want to receive email updates.
     users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__update=True).distinct("id")
-    
+
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
@@ -113,9 +121,13 @@ def petition_update(message):
             'sgnoreply@rit.edu',
             [recipients]
             )
-    
+
     email.content_subtype = "html"
-    email.send()
+    try:
+        logger.INFO("email about "+petition.title+" that was updated was sent")
+        email.send()
+    except:
+        logger.ERROR("email about "+petition.title+" that was updated was NOT sent")
 
 """
 Sends email once a petition reaches 200 signatures.
@@ -125,7 +137,7 @@ def petition_reached(message):
 
     # Gets all users that are subscribed or have signed the petition and if they want to receive emails about petition response.
     users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__response=True).distinct("id")
-    
+
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
@@ -145,7 +157,11 @@ def petition_reached(message):
             [recipients]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        logger.INFO("email about "+petition.title+" that reached 200 signatures was sent ")
+        email.send()
+    except:
+        logger.ERROR("email about "+petition.title+" that reached 200 signatures was NOT sent")
 
 def petition_received(message):
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
@@ -167,4 +183,8 @@ def petition_received(message):
             [petition.author.email]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        logger.INFO("email about "+petition.title+" was sent")
+        email.send()
+    except:
+        logger.ERROR("email about "+petition.title+" was NOT sent")
