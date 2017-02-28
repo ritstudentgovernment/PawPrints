@@ -227,7 +227,7 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['rotate_file_errors'],
+            'handlers': ['rotate_file_errors', 'slack_handler'],
             'level': 'ERROR',
             'propagate': True,
         }
