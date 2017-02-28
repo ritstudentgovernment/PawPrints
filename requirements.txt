@@ -7,7 +7,6 @@ constantly==15.1.0
 daphne==1.0.1
 Django==1.10.5
 django-auth-ldap==1.2.8
-django-slack==5.8.0
 incremental==16.10.1
 msgpack-python==0.4.8
 packaging==16.8
@@ -17,6 +16,7 @@ pyparsing==2.1.10
 redis==2.10.5
 requests==2.13.0
 six==1.10.0
+slacker==0.9.42
 Twisted==16.6.0
 txaio==2.6.0
 zope.interface==4.3.3

@@ -184,7 +184,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(name)d : %(message)s'
+            'format': '%(levelname)s %(asctime)s %(name)s : %(message)s'
         },
         'simple': {
             'format': '%(levelname)s %(message)s'
@@ -209,6 +209,11 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
+        'slack_handler': {
+            'level': 'ERROR',
+            'class': 'log.slackhandler.SlackHandler',
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'pawprints': {
@@ -217,7 +222,7 @@ LOGGING = {
             'propagate': True,
         },
         'pawprints': {
-            'handlers': ['rotate_file_errors'],
+            'handlers': ['rotate_file_errors', 'slack_handler'],
             'level': 'ERROR',
             'propagate': True,
         },

@@ -37,6 +37,8 @@ def index(request):
         'petitions': sorting_controller(sorting_key)
     }
 
+    logger.error('test')
+
     return render(request, 'index.html', data_object)
 
 
