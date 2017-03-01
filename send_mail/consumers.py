@@ -62,9 +62,9 @@ def petition_approved(message):
     email.content_subtype = "html"
     try:
         email.send()
-        logger.info("email about "+petition.title+" that has been approved was sent")
+        logger.info("Petition Approval email SENT \nPetition ID: "+str(petition.id))
     except:
-        logger.error("email about "+petition.title+" that has been approved was NOT sent")
+        logger.critical("Petition Approval email FAILED \nPetition ID: "+str(petition.id))
 
 """
 Sends email when a petition is rejected.
@@ -91,9 +91,9 @@ def petition_rejected(message):
     email.content_subtype = "html"
     try:
         email.send()
-        logger.info("email about "+petition.title+" that was rejected was sent")
+        logger.info("Petition Rejection email SENT \nPetition ID: "+str(petition.id))
     except:
-        logger.error("email about "+petition.title+" that was rejected was NOT sent")
+        logger.critical("Petition Rejection email FAILED \nPetition ID: "+str(petition.id))
 
 """
 Sends email when a petition is updated.
@@ -126,9 +126,9 @@ def petition_update(message):
     email.content_subtype = "html"
     try:
         email.send()
-        logger.info("email about "+petition.title+" that was updated was sent")
+        logger.info("Petition Update email SENT \nPetition ID: "+str(petition.id))
     except:
-        logger.error("email about "+petition.title+" that was updated was NOT sent")
+        logger.error("Petition Update email FAILED \nPetition ID: "+str(petition.id)+"\nRecipients:\n"+str(recipients))
 
 """
 Sends email once a petition reaches 200 signatures.
@@ -160,9 +160,9 @@ def petition_reached(message):
     email.content_subtype = "html"
     try:
         email.send()
-        logger.info("email about "+petition.title+" that reached 200 signatures was sent ")
+        logger.info("Petition Reached email SENT \nPetition ID: "+str(petition.id))
     except:
-        logger.error("email about "+petition.title+" that reached 200 signatures was NOT sent")
+        logger.critical("Petition Reached email FAILED\nPetition ID: "+str(petition.id)+"\nRecipients: "+recipients)
 
 def petition_received(message):
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
@@ -186,6 +186,6 @@ def petition_received(message):
     email.content_subtype = "html"
     try:
         email.send()
-        logger.error("email about "+petition.title+" was sent")
+        logger.info("Petition Received email SENT \nPetition ID: "+str(petition.id))
     except:
-        logger.error("email about "+petition.title+" was NOT sent")
+        logger.critical("Petition Received email FAILED \nPetition ID: "+str(petition.id))

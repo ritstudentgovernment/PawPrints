@@ -141,7 +141,7 @@ def petition_create(request):
     new_petition.signatures = F('signatures')+1
     new_petition.save()
 
-    logger.info("user "+user.email +" created a new petion called "+new_petition.title)
+    logger.info("user "+user.email +" created a new petion called "+new_petition.title+" ID: "+str(new_petition.id))
 
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
@@ -182,7 +182,7 @@ def petition_edit(request, petition_id):
 
         petition.save()
 
-        logger.info('user '+request.user.email+' edited petition '+petition.title)
+        logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
 
     return redirect('/petition/' + str(petition_id))
 
@@ -226,7 +226,7 @@ def petition_sign(request, petition_id):
                 "petition_id": petition.id,
                 "site_path": request.META['HTTP_HOST']
                 })
-            logger.info('petition '+petition.title+' hit 200 signatures')
+            logger.info('petition '+petition.title+' hit 200 signatures \n'+"ID: "+str(petition.id))
 
     return HttpResponse(str(petition.id))
 
@@ -238,7 +238,6 @@ def petition_subscribe(request, petition_id):
     user = request.user
     user.profile.subscriptions.add(petition)
     user.save()
-
 
     return redirect('petition/' + str(petition_id))
 
