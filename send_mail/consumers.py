@@ -32,6 +32,7 @@ from django.http import JsonResponse
 import time
 
 
+
 """
 Sends an email when a petition has been approved.
 """
@@ -59,7 +60,11 @@ def petition_approved(message):
 	)
 
     email.content_subtype = "html"
-    email.send()
+    try:
+        email.send()
+        logger.info("Petition Approval email SENT \nPetition ID: "+str(petition.id))
+    except:
+        logger.critical("Petition Approval email FAILED \nPetition ID: "+str(petition.id))
 
 """
 Sends email when a petition is rejected.
@@ -84,7 +89,11 @@ def petition_rejected(message):
             [petition.author.email]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        email.send()
+        logger.info("Petition Rejection email SENT \nPetition ID: "+str(petition.id))
+    except:
+        logger.critical("Petition Rejection email FAILED \nPetition ID: "+str(petition.id))
 
 """
 Sends email when a petition is updated.
@@ -94,7 +103,7 @@ def petition_update(message):
 
     # Gets all users that are subscribed or have signed the petition and if they want to receive email updates.
     users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__update=True).distinct("id")
-    
+
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
@@ -113,9 +122,13 @@ def petition_update(message):
             'sgnoreply@rit.edu',
             [recipients]
             )
-    
+
     email.content_subtype = "html"
-    email.send()
+    try:
+        email.send()
+        logger.info("Petition Update email SENT \nPetition ID: "+str(petition.id))
+    except:
+        logger.error("Petition Update email FAILED \nPetition ID: "+str(petition.id)+"\nRecipients:\n"+str(recipients))
 
 """
 Sends email once a petition reaches 200 signatures.
@@ -125,7 +138,7 @@ def petition_reached(message):
 
     # Gets all users that are subscribed or have signed the petition and if they want to receive emails about petition response.
     users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__response=True).distinct("id")
-    
+
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
@@ -145,7 +158,11 @@ def petition_reached(message):
             [recipients]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        email.send()
+        logger.info("Petition Reached email SENT \nPetition ID: "+str(petition.id))
+    except:
+        logger.critical("Petition Reached email FAILED\nPetition ID: "+str(petition.id)+"\nRecipients: "+recipients)
 
 def petition_received(message):
     petition = Petition.objects.get(pk=message.content.get('petition_id'))
@@ -167,4 +184,8 @@ def petition_received(message):
             [petition.author.email]
             )
     email.content_subtype = "html"
-    email.send()
+    try:
+        email.send()
+        logger.info("Petition Received email SENT \nPetition ID: "+str(petition.id))
+    except:
+        logger.critical("Petition Received email FAILED \nPetition ID: "+str(petition.id))

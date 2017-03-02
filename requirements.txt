@@ -14,7 +14,9 @@ psycopg2==2.6.2
 pyldap==2.4.28
 pyparsing==2.1.10
 redis==2.10.5
+requests==2.13.0
 six==1.10.0
+slacker==0.9.42
 Twisted==16.6.0
 txaio==2.6.0
 zope.interface==4.3.3
