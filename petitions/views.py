@@ -20,6 +20,9 @@ from django.contrib.auth.models import User
 from channels import Group, Channel
 import json
 
+import logging
+
+logger = logging.getLogger("pawprints."+__name__)
 
 def index(request):
     """
@@ -66,6 +69,7 @@ def petition_responded(request):
         'colors': colors(),
         "petitions": responded(filtering_controller(Petition.objects.all(), filter_key))
     }
+
     return render(request, 'responded.html', data_object)
 
 
@@ -137,6 +141,8 @@ def petition_create(request):
     new_petition.signatures = F('signatures')+1
     new_petition.save()
 
+    logger.info("user "+user.email +" created a new petion called "+new_petition.title+" ID: "+str(new_petition.id))
+
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
 
@@ -176,6 +182,8 @@ def petition_edit(request, petition_id):
 
         petition.save()
 
+        logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
+
     return redirect('/petition/' + str(petition_id))
 
 
@@ -210,6 +218,7 @@ def petition_sign(request, petition_id):
         Group("petitions").send({
             "text": json.dumps(data)
         })
+        logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
 
 	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
@@ -217,6 +226,7 @@ def petition_sign(request, petition_id):
                 "petition_id": petition.id,
                 "site_path": request.META['HTTP_HOST']
                 })
+            logger.info('petition '+petition.title+' hit 200 signatures \n'+"ID: "+str(petition.id))
 
     return HttpResponse(str(petition.id))
 
@@ -255,6 +265,7 @@ def petition_unpublish(request, petition_id):
     # Set status to 2 to hide it from view.
     petition.status = 2
     petition.save()
+    logger.info('user '+request.user.email+' unpublished petition '+petition.title)
     return HttpResponse(True)
 
 # HELPER FUNCTIONS #
