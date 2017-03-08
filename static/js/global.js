@@ -88,7 +88,12 @@ function inViewport (el) {
             console.log(this);
         }
 
-        this.element = $("#modal-template").find(".modal").clone();
+        if(this.settings.clone) {
+            this.element = $("#modal-template").find(".modal").clone();
+        }
+        else{
+            this.element = $("#modal-template").find(".modal");
+        }
 
         if(this.settings.exitButton){
 
@@ -113,8 +118,11 @@ function inViewport (el) {
         }
 
         this.element.find(".modal-header").addClass(this.settings.headerClass);
-        this.element.find(".modal-header-content").html(this.settings.headerContent);
+        if(this.settings.headerContent){
+            this.element.find(".modal-header-content").html(this.settings.headerContent);
+        }
 
+        var me = this;
         this.element.find(".modal-body").addClass(this.settings.bodyClass);
         if(this.settings.bodyContent){
             this.element.find(".modal-content").html(this.settings.bodyContent);
@@ -131,18 +139,23 @@ function inViewport (el) {
 
         }
 
-        $("body").append(this.element);
-
-        var me = this;
+        if(this.settings.clone){
+            $("body").append(me.element);
+        }
+        else{
+            me.element.css("display","block");
+        }
 
         me.element.removeClass("hidden");
 
-        var elementHeight = $(me.element).find(".modal-container").height();
-        var windowHeight = $(window).height();
-        var topOffset = (windowHeight / 2) - (elementHeight / 2);
-        topOffset = topOffset > 0 ? topOffset : 0;
-        me.element.find(".modal-container").css({"top":topOffset+"px"});
+        setTimeout(function(){
+            var elementHeight = $(me.element).find(".modal-container").height();
+            var windowHeight = $(window).height();
+            var topOffset = (windowHeight / 2) - (elementHeight / 2);
+            topOffset = topOffset > 0 ? topOffset : 0;
+            me.element.find(".modal-container").css({"top":topOffset+"px"});
 
+        },0);
         $(window).resize(function(){
             var elementHeight = $(me.element).find(".modal-container").height();
             var windowHeight = $(window).height();
@@ -150,6 +163,10 @@ function inViewport (el) {
             topOffset = topOffset > 0 ? topOffset : 0;
             me.element.find(".modal-container").css({"top":topOffset+"px"});
         });
+
+        if(this.settings.debug){
+            console.log(this);
+        }
 
         return this;
 
@@ -162,6 +179,13 @@ function inViewport (el) {
         if(this.settings.overlay && this.settings.exitOverlayOnClick){
             this.overlay.addEventListener('click', this.close.bind(this));
         }
+
+        if(this.settings.debug){
+            console.log(this);
+        }
+
+        return this;
+
     }
     function unbindModalEvents() {
         // Function that unbinds the exit events from the modal.
@@ -171,6 +195,13 @@ function inViewport (el) {
         if (this.settings.overlay && this.settings.exitOverlayOnClick) {
             this.overlay.removeEventListener('click');
         }
+
+        if(this.settings.debug){
+            console.log(this);
+        }
+
+        return this;
+
     }
 
     this.Modal = function(options){
@@ -204,7 +235,9 @@ function inViewport (el) {
             bodyClass: "padding highlight",
             bodyContent: null,
             bodyButtons: [["Next Section", "modern-button margin-bottom margin-top transition cursor",function(){}]],
-            debug: false
+            closeCallback: function(){},
+            debug: false,
+            clone: true
         },options);
 
         return this;
@@ -225,6 +258,11 @@ function inViewport (el) {
     };
     Modal.prototype.close = function(){
 
+        console.log("Close 1");
+        console.log(this);
+        unbindModalEvents.call(this);
+        console.log("Close 2");
+        console.log(this);
         if(this.overlay){
             $(this.overlay).fadeOut(this.settings.animationDuration);
         }
@@ -232,8 +270,19 @@ function inViewport (el) {
         var me = this;
 
         me.element.find(".modal-container").cssanimate(this.settings.outAnimation,{duration: this.settings.animationDuration * 2},function(){
-            me.element.remove();
+            if(me.settings.clone){
+                me.element.remove();
+            }
+            else{
+                me.element.css("display","none");
+            }
         });
+        console.log("Close 3");
+        console.log(this);
+
+        setTimeout(function(){
+            me.settings.closeCallback();
+        },this.settings.animationDuration);
 
     }
     // Custom CSS animations plugin.
@@ -336,14 +385,19 @@ function inViewport (el) {
             slideDuration:5000,     // Integer: How long to display one slide. (ms)
             transition:'dissolve',  // String:  The transition to use. (only 'dissolve' currently)
             transitionDuration:500, // Integer: How long the transition takes. (ms)
-            numSlides:0             // Integer: PRIVATE. The number of slides.
+            numSlides:0,            // Integer: PRIVATE. The number of slides.
+            debug: false
         },options)
         function setup(){
             selector.find('.'+settings.slideClass).each(function(){
                 var me = $(this);
-                console.log(me.data("backgroundimage"));
+                if(settings.debug){
+                    console.log(me.data("backgroundimage"));
+                }
                 var bg = "url('"+$(this).data("backgroundimage")+"')";
-                console.log(bg);
+                if(settings.debug){
+                    console.log(bg);
+                }
                 $(this).css({
                     "background-image":bg,
                     "background-size":"cover",

@@ -179,7 +179,6 @@ def petition_edit(request, petition_id):
     return redirect('/petition/' + str(petition_id))
 
 
-
 # ENDPOINTS #
 
 @login_required

@@ -17,6 +17,9 @@
         .text-highlight{
             color: {{ colors.highlight }} !important;
         }
+        .bright-text{
+            color: {{ colors.bright_text }} !important;
+        }
         .modern-link{
             color: {{ colors.dark_text }};
             text-decoration: none;
@@ -107,6 +110,29 @@
             margin-top: 0;
             padding-top: 2em;
             font-weight: 300;
+        }
+        #new-petition{
+            position: fixed;
+            bottom: 50px;
+            left: 50px;
+            height: 70px;
+            width: 70px;
+            text-align: center;
+            border-color: rgba(243, 110, 33, 0.8);
+            z-index:1000;
+            background-color: rgba(243, 110, 33, 0.8);
+            -webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+            -moz-box-shadow:    0px 5px 10px 0px rgba(0,0,0,0.3);
+            -o-box-shadow:      0px 5px 10px 0px rgba(0,0,0,0.3);
+            box-shadow:         0px 5px 10px 0px rgba(0,0,0,0.3);
+        }
+        #new-petition:hover{
+            background-color: rgba(243, 110, 33, 1);
+            -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.4);
+            -moz-box-shadow:    0px 2px 10px 0px rgba(0,0,0,0.4);
+            -o-box-shadow:      0px 2px 10px 0px rgba(0,0,0,0.4);
+            box-shadow:         0px 2px 10px 0px rgba(0,0,0,0.4);
+            text-shadow:        0px 5px 10px rgba(0,0,0,0.2);
         }
         /* - Petitions - */
         #petitions{
@@ -235,6 +261,14 @@
             text-decoration: none;
             display: none;
         }
+        #modal-template .modal-header h1{
+            margin-top: -5px;
+            margin-bottom: 0;
+            text-transform: capitalize;
+        }
+        #modal-template #description{
+            text-align: left;
+        }
         /* -- Responsiveness -- */
         @media screen and (max-width: 900px){
             #tiles{
@@ -264,6 +298,24 @@
 <body>
 
 {% include 'header.html' %}
+<div id="modal-template" class="">
+    <div class="modal hidden">
+        <div class="modal-overlay hidden"></div>
+        <div class="modal-container">
+            <button class="modal-close-button hidden">&times;</button>
+            <div class="modal-header text-center">
+                <span class="material-icon-container padding hidden"><i class="material-icons"></i></span>
+                <div class="modal-header-content overflow-hidden"><h1 class="text-highlight">{[ petition.title ]}</h1><p>Petition by {[ petition.author ]}</p></div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-content">
+                    <div id="description" class="padding" v-html="petition.description"></div>
+                </div>
+                <div class="modal-buttons hidden"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <main class="full-width">
     <a id="landing-marker"></a>
@@ -336,6 +388,18 @@
     </section>
 </main>
 
+{% if user.first_name %}
+    <button id="new-petition" class="cursor circle background-highlight bright-text light material-hover transition"><span class="material-icon-container"><i class="material-icons">add</i></span></button>
+    <script>
+        $(document).ready(function(){
+            $("#new-petition").click(function(){
+                console.log("-----------\nCreating new petition\n");
+                $.post("/create");
+            });
+        });
+    </script>
+{% endif %}
+
 <a id="back-up" href="#landing-marker" class="padding transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
 
 {% csrf_token %}
@@ -355,7 +419,28 @@
         },
         delimiters: ['{[', ']}']
     });
+    var modalData = new Vue({
+        el: "#modal-template",
+        data:{
+            petition: {}
+        },
+        delimiters: ['{[', ']}']
+    });
+    var petitionModal = new Modal({
 
+        icon: false,
+        headerContent: null,
+        headerClass:"",
+        bodyContent: null,
+        bodyButtons:[],
+        closeCallback:function(){
+            updatePetitionHistory(false);
+            console.log("close petition, remove url variable");
+        },
+        clone: false,
+        debug: true
+
+    });
     function reloadPetitions(sort_by, filter, socket){
 
         // load the petitions into the Vue instance.
@@ -401,6 +486,39 @@
         offset -= 60;
         $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
     }
+    function updatePetitionHistory(petitionID){
+        // Update history + URL.
+        var prevURL = window.location.href.split('?')[0];
+        prevURL = prevURL.slice(0, -1);
+        if(!petitionID){
+            window.history.pushState("object or string", "Title", prevURL);
+        }
+        else{
+            window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
+        }
+    }
+    function openPetition(petitionID, auto_open = false){
+        // Renders the petition data into a petition model and also updates browser history.
+
+        if(!auto_open){
+            // If the petition was not in the URL already on page load.
+            updatePetitionHistory(petitionID);
+
+        }
+
+        // Apply petition data to the modal.
+        modalData.petition = petitions.list[petitions.map[petitionID]];;
+        modalData.petition.description = modalData.petition.description
+                .replace(/\\"/g,"'")
+                .replace(/\"/g,'')
+                .replace(/"/g,"")
+                .replace(/\\n/g, "\n")
+                .replace(/(\\u201c|\\u201d)/g,'\"');
+
+        // Open the modal.
+        petitionModal.open();
+
+    }
 
     $(document).ready(function(){
 
@@ -432,6 +550,11 @@
                     // Default behaviour is to update everything on response if no command is given.
                     petitions.list = data["petitions"];
                     petitions.map = data["map"];
+
+                    var petitionID = getUrl("p");
+                    if(petitionID){
+                        openPetition(petitionID, true);
+                    }
 
                 }
 
@@ -487,9 +610,9 @@
         $(document).on("click", ".petition", function(e){
             if(!$(e.target).hasClass("tag")){
                 var petitionID = $(this).data("petition-id");
-                var petition = petitions.list[petitions.map[petitionID]];
-                console.log(petition);
+                openPetition(petitionID);
             }
+
         });
 
         // Bind parallax effects.
@@ -504,6 +627,11 @@
 
 
         });
+
+        window.onpopstate = function () {
+            //Refresh the page on back.
+            location.reload();
+        };
 
     });
     $(window).resize(function(){

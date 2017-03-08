@@ -31,12 +31,22 @@ def serialize_petitions(petitions_obj):
                 "id":t.id
             })
 
+        updates = []
+        all_updates = petition.updates.all()
+        for u in all_updates:
+            updates.append({
+                "description":u.description,
+                "timestamp":u.created_at
+            })
+
         petitions.append({
             'title': petition.title,
             'description': json.dumps(petition.description.replace("'","\'")),
             'signatures': petition.signatures,
             'author': petition.author.first_name +" "+ petition.author.last_name,
             'tags': tags,
+            'response':petition.response,
+            'updates':updates,
             'id': petition.id
         })
         petition_map[petition.id] = x
