@@ -341,7 +341,8 @@ def sorting_controller(key):
     result = {
         'most recent': most_recent(),
         'most signatures': most_signatures(),
-        'last signed': last_signed()
+        'last signed': last_signed(),
+        'reached no response': reached_no_response()
     }.get(key, None)
     return result
 
@@ -365,3 +366,10 @@ def last_signed():
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
+
+def reached_no_response():
+    return Petition.objects.all() \
+    .filter(signatures__gte=200) \
+    .exclude(has_response=True) \
+    .filter(status=1) \
+    .order_by('created_at')
