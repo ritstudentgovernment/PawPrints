@@ -18,6 +18,7 @@ from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
 from channels import Group, Channel
+from send_mail.tasks import *
 import json
 
 import logging
@@ -222,10 +223,7 @@ def petition_sign(request, petition_id):
 
 	# Check if petition reached 200 if so, email.
         if petition.signatures == 200:
-            Channel('petition-reached').send({
-                "petition_id": petition.id,
-                "site_path": request.META['HTTP_HOST']
-                })
+            petition_reached.delay(petition.id, request.META['HTTP_HOST'])
             logger.info('petition '+petition.title+' hit 200 signatures \n'+"ID: "+str(petition.id))
 
     return HttpResponse(str(petition.id))
