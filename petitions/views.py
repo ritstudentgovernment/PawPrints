@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.db.models import F
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from datetime import timedelta
 from petitions.models import Petition, Tag
 from django.utils import timezone
@@ -335,11 +336,13 @@ def responded(sorted_objects):
 
 # SORTING
 #
-def sorting_controller(key):
+def sorting_controller(key, query=None):
     result = {
         'most recent': most_recent(),
         'most signatures': most_signatures(),
-        'last signed': last_signed()
+        'last signed': last_signed(),
+        'search': search(query),
+        'similar': similar_petitions(query)
     }.get(key, None)
     return result
 
@@ -363,3 +366,18 @@ def last_signed():
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
+
+def search(query):
+    vector = SearchVector('title', 'description')
+    query = SearchQuery(query)
+    return Petition.objects.annotate(rank=SearchRank(vector, query)) \
+    .filter(status=1) \
+    .order_by('-rank')
+
+def similar_petitions(query):
+    vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
+    query = SearchQuery(query)
+    return Petition.objects.annotate(rank=SearchRank(vector, query)) \
+    .filter(rank__gte=0.3) \
+    .filter(status=1) \
+    .order_by('-rank') 
