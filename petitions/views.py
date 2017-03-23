@@ -178,6 +178,14 @@ def petition_edit(request, petition_id):
 
     return redirect('/petition/' + str(petition_id))
 
+def get_petition(petition_id):
+    """
+    Handles the
+    :param petition_id:
+    :return:
+    """
+    return Petition.objects.get(pk=petition_id)
+
 
 # ENDPOINTS #
 

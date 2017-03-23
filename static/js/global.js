@@ -258,11 +258,7 @@ function inViewport (el) {
     };
     Modal.prototype.close = function(){
 
-        console.log("Close 1");
-        console.log(this);
         unbindModalEvents.call(this);
-        console.log("Close 2");
-        console.log(this);
         if(this.overlay){
             $(this.overlay).fadeOut(this.settings.animationDuration);
         }
@@ -277,14 +273,12 @@ function inViewport (el) {
                 me.element.css("display","none");
             }
         });
-        console.log("Close 3");
-        console.log(this);
 
         setTimeout(function(){
             me.settings.closeCallback();
         },this.settings.animationDuration);
 
-    }
+    };
     // Custom CSS animations plugin.
     $.fn.cssanimate = function( effect, options, callback ){
 
@@ -336,7 +330,9 @@ function inViewport (el) {
 
         setTimeout(function(){
             callback();
-        },settings.duration);
+        },settings.duration * 2);
+
+        return element;
 
     }
     // Custom parallax element plugin.
