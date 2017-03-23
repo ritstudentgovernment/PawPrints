@@ -350,7 +350,9 @@ def sorting_controller(key, query=None):
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
-        'similar': similar_petitions(query)
+        'similar': similar_petitions(query),
+	'in progress': in_progress(),
+        'responded': responded()
     }.get(key, None)
     return result
 
@@ -389,3 +391,16 @@ def similar_petitions(query):
     .filter(rank__gte=0.3) \
     .filter(status=1) \
     .order_by('-rank') 
+
+def in_progress():
+    return Petition.objects.all() \
+    .filter(expires__gt=timezone.now()) \
+    .filter(status=1) \
+    .exclude(has_response=True) \
+    .order_by('-created_at')
+
+def responded():
+    return Petition.objects.all() \
+    .filter(status=1) \
+    .filter(has_response=True) \
+    .order_by('-created_at')
