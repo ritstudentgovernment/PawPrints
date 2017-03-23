@@ -36,7 +36,7 @@ def serialize_petitions(petitions_obj):
         for u in all_updates:
             updates.append({
                 "description":u.description,
-                "timestamp":u.created_at
+                "timestamp":u.created_at.strftime("%B %d, %Y")
             })
 
         petitions.append({
@@ -47,6 +47,9 @@ def serialize_petitions(petitions_obj):
             'tags': tags,
             'response':petition.response,
             'updates':updates,
+            'timestamp':petition.created_at.strftime("%B %d, %Y"),
+            'expires':petition.expires.strftime("%B %d, %Y"),
+            'status':petition.status,
             'id': petition.id
         })
         petition_map[petition.id] = x
@@ -98,23 +101,39 @@ def petitions_command(message):
     sent = message.content['text']
     if sent != "":
         data = json2obj(sent)
-        if data.command and data.command != '':
-            if data.command == 'list':
-                # Parse the List command. Required data = sort. Optional = filter.
-                # Sends the WS a sorted and optionally filtered list of petitions.
-                if data.sort:
-                    petitions = views.sorting_controller(data.sort)
-                    if data.filter:
-                        petitions = views.filtering_controller(petitions, data.filter)
+        if __name__ == '__main__':
+            if data.command and data.command != '':
+                if data.command == 'list':
+                    # Parse the List command. Required data = sort. Optional = filter.
+                    # Sends the WS a sorted and optionally filtered list of petitions.
+                    if data.sort:
+                        petitions = views.sorting_controller(data.sort)
+                        if data.filter:
+                            petitions = views.filtering_controller(petitions, data.filter)
+                        message.reply_channel.send({
+                            "text": serialize_petitions(petitions)
+                        })
+                        return None
+
                     message.reply_channel.send({
-                        "text": serialize_petitions(petitions)
+                        "text": "Error. Must send 'sort' parameter"
                     })
                     return None
+                elif data.command == 'get':
+                    # Parse the Get command. Required data = id.
+                    # Gets a single petition with a particular id.
+                    if data.id:
+                        petition = views.get_petition(data.id)
 
-                message.reply_channel.send({
-                    "text": "Error. Must send 'sort' parameter"
-                })
-                return None
+                        reply = {
+                            "command": "get",
+                            "petition": serialize_petitions(petition)
+                        }
+
+                        message.reply_channel.send({
+                            "text": json.dumps(reply)
+                        })
+                    return None
 
         message.reply_channel.send({
             "text": "Error must sent a non-empty 'command' parameter"

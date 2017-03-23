@@ -193,6 +193,9 @@ nav .margin-right{
 .inline-block{
     display: inline-block;
 }
+.relative{
+    position: relative;
+}
 .text-center{
     text-align: center;
 }
@@ -265,7 +268,6 @@ nav .margin-right{
     right: 0;
     bottom: 0;
     z-index: 5000;
-    font-family: "Open Sans", Arial;
     font-weight: 300;
 }
 .modal-container{
@@ -275,7 +277,6 @@ nav .margin-right{
     min-width: 300px;
     height: auto;
     max-height: 100vh;
-    display: none;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #fff;
@@ -289,7 +290,6 @@ nav .margin-right{
     bottom: 0;
     background-color: rgba(0,0,0,0.4);
     z-index: 5000;
-    display: none;
 }
 .modal-buttons{
     text-align: center;
