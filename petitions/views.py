@@ -339,7 +339,9 @@ def sorting_controller(key):
     result = {
         'most recent': most_recent(),
         'most signatures': most_signatures(),
-        'last signed': last_signed()
+        'last signed': last_signed(),
+        'in progress': in_progress(),
+        'responded': responded()
     }.get(key, None)
     return result
 
@@ -363,3 +365,16 @@ def last_signed():
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
+
+def in_progress():
+    return Petition.objects.all() \
+    .filter(expires__gt=timezone.now()) \
+    .filter(status=1) \
+    .exclude(has_response=True) \
+    .order_by('-created_at')
+
+def responded():
+    return Petition.objects.all() \
+    .filter(status=1) \
+    .filter(has_response=True) \
+    .order_by('-created_at')
