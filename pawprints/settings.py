@@ -30,6 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Celery Settings
+CELERY_BROKER_URL = secrets.RABBITMQ_URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_IMPORTS = ['send_mail.tasks']
 
 # Application definition
 
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'channels',
 ]
 
@@ -177,3 +183,59 @@ EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(name)s : %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'rotate_file_errors':{
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/error.log'),
+            'formatter': 'verbose',
+            'maxBytes': 90000000,
+            'backupCount': 10,
+            'encoding': 'utf8'
+        },
+        'rotate_file_info':{
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/info.log'),
+            'formatter': 'verbose',
+            'maxBytes': 90000000,
+            'backupCount': 10,
+            'encoding': 'utf8'
+        },
+        'slack_handler': {
+            'level': 'ERROR',
+            'class': 'log.slackhandler.SlackHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'pawprints': {
+            'handlers': ['rotate_file_info'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'pawprints': {
+            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'level': 'ERROR',
+            'propagate': True,
+        }
+    },
+}
