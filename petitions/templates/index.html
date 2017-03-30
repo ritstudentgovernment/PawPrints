@@ -336,13 +336,18 @@
             position: relative;
             max-height: 55vh;
             overflow: auto;
+            -webkit-transform: translateZ(0);
         }
-        #timeline-container:before{
+        .modal-body{
+            position: relative;
+        }
+        #petition-modal .modal-body:after{
             content: '';
             position: absolute;
             top: 0;
-            left: 50%;
-            margin-left: -2px;
+            bottom: 0;
+            margin-left: 20px;
+            float: left;
             height: 100%;
             width: 4px;
             background: #CCC;
@@ -351,9 +356,18 @@
             display: inline-block;
             padding: 10px;
             background-color: #fff;
+            margin-bottom: 20px;
         }
-        .timeline-element:last-child{
-
+        .timeline-element-arrow{
+            position: absolute;
+            top: 7px;
+            left: -15px;
+            -webkit-transform: rotateZ(45deg);
+            transform: rotateZ(45deg);
+            background-color: #fff;
+            width: 30px;
+            height: 30px;
+            z-index: -1;
         }
         .timeline-element-header{
             font-weight: 300;
@@ -379,7 +393,7 @@
             height: 30px;
             padding-top: 1px;
             padding-bottom: 1px;
-            margin-right: 10px;
+            margin-left: 10px;
         }
         .social-icon img{
             height: 30px;
@@ -387,16 +401,26 @@
             width: 30px;
         }
 
+        .petition-progress-container{
+            display: block;
+            height: 15px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .petition-progress{
+            width: 100%;
+        }
+        .petition-progress-label{
+            height: 30px;
+            margin-top: 8px;
+            line-height: 30px;
+            text-align: center;
+            display: block;
+        }
         progress{
             -webkit-appearance: none;
-            width: 100%;
             height: 15px;
             z-index:1;
-        }
-        .attached{
-            position: fixed !important;
-            top:90px !important;
-            left: 0;
         }
         progress[value]::-webkit-progress-bar {
             background-color: #eee;
@@ -467,7 +491,8 @@
             </div>
             <div class="modal-body relative">
                 <div id="timeline-container">
-                    <div class="timeline-element material-shadow animated zoomIn" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
+                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
+                        <div class="timeline-element-arrow"></div>
                         <div class="timeline-element-body">
                             <h4 class="timeline-element-header"><span>{[ element.type ]}</span> {[ element.date ]}</h4>
                             <div class="timeline-element-content" v-html="element.content"></div>
@@ -481,7 +506,10 @@
 
                 <!-- Petition is in progress, show the progress tracking and sharing features. -->
                 <div id="petition-actions overflow-hidden" v-if="petition.status == 1">
-                    <progress class="petition-progress" max="200" :value="petition.signatures"> {[ petition.signatures ]} </progress>
+                    <div class="petition-progress-container">
+                        <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                        <span class="petition-progress-label"> {[ petition.signatures ]} / 200 Signatures</span>
+                    </div>
                     <button id="sign-petition-button" class="material material-button material-shadow transition left">Sign This Petition</button>
                     <div class="right overflow-hidden">
                         <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
@@ -639,6 +667,7 @@
                     modalData.timeline = [];
                 });
                 modal.find(".modal-overlay").fadeOut(400);
+                updatePetitionHistory(false);
             }
         }
     });
@@ -712,10 +741,8 @@
             return petitions.list[petitions.map[petitionID]];
         }
         else{
-            socket.send('{"command":"get","sort":'+petitionID+'}');
-            return setTimeout(function(){
-                return petitions.list[petitions.map[petitionID]];
-            },400)
+            socket.send('{"command":"get","id":'+petitionID+'}');
+            return false;
         }
     }
     function openPetition(petitionID, auto_open = false){
@@ -727,48 +754,98 @@
         }
 
         var toPetition = getPetition(petitionID);
+        if(!toPetition){
 
-        // Apply petition data to the modal.
-        modalData.petition = {
-            title:toPetition.title,
-            author:toPetition.author,
-            signatures:toPetition.signatures,
-            threshold:200,
-            expires:toPetition.expires,
-            status:toPetition.status
-        };
+            setTimeout(function(){
+                openPetition(petitionID, auto_open);
+            },200);
 
-        var timelineData = {
-            type:"description",
-            author: toPetition.author,
-            content:toPetition.description
-                .replace(/\\"/g,"'")
-                .replace(/\"/g,'')
-                .replace(/"/g,"")
-                .replace(/\\n/g, "\n")
-                .replace(/(\\u201c|\\u201d)/g,'\"')
-                .replace(/\\u2014/g,'&mdash;')
-                .replace(/\\u2019/g,"'"),
-            date: toPetition.timestamp,
-        };
+        }
+        else{
+            // Apply petition data to the modal.
+            modalData.petition = {
+                title:toPetition.title,
+                author:toPetition.author,
+                signatures:toPetition.signatures,
+                threshold:200,
+                expires:toPetition.expires,
+                status:toPetition.status,
+                id:toPetition.id
+            };
 
-        modalData.timeline.push(timelineData);
+            var response = JSON.parse(toPetition.response);
+            if(typeof response == "object" && response.author != ""){
+                var responseBlock = {
+                    type:"response",
+                    author: response.author,
+                    content:response.description
+                            .replace(/\\"/g,"'")
+                            .replace(/\"/g,'')
+                            .replace(/"/g,"")
+                            .replace(/\\n/g, "\n")
+                            .replace(/(\\u201c|\\u201d)/g,'\"')
+                            .replace(/\\u2014/g,'&mdash;')
+                            .replace(/\\u2019/g,"'"),
+                    date: response.timestamp
+                }
+                modalData.timeline.push(responseBlock);
+            }
 
-        var modal = $("#petition-modal");
-        modal.removeClass("hidden");
-        modal.find(".modal-overlay").fadeIn(400,function(){
-            $(this).removeClass("hidden");
+            console.log(toPetition);
+            var updates = toPetition.updates;
+            var numUpdates = updates.length;
+            if(numUpdates > 0){
+                for(var i = 0; i < numUpdates; i++){
+                    var update = updates[i];
+                    var updateBlock = {
+                        type:"update",
+                        author: "",
+                        content:update.description
+                                .replace(/\\"/g,"'")
+                                .replace(/\"/g,'')
+                                .replace(/"/g,"")
+                                .replace(/\\n/g, "\n")
+                                .replace(/(\\u201c|\\u201d)/g,'\"')
+                                .replace(/\\u2014/g,'&mdash;')
+                                .replace(/\\u2019/g,"'"),
+                        date: update.timestamp
+                    }
+                    modalData.timeline.push(updateBlock);
+                }
+            }
 
-        });
+            var description = {
+                type:"description",
+                author: toPetition.author,
+                content:toPetition.description
+                        .replace(/\\"/g,"'")
+                        .replace(/\"/g,'')
+                        .replace(/"/g,"")
+                        .replace(/\\n/g, "\n")
+                        .replace(/(\\u201c|\\u201d)/g,'\"')
+                        .replace(/\\u2014/g,'&mdash;')
+                        .replace(/\\u2019/g,"'"),
+                date: toPetition.timestamp
+            };
 
-        verticalOffset(modal.find(".modal-container"), 0);
-        modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
-            $(this).removeClass("hidden");
-            verticalOffset(modal.find(".modal-container"));
-            $(window).resize(function(){
-                verticalOffset(modal.find(".modal-container"));
+            modalData.timeline.push(description);
+
+            var modal = $("#petition-modal");
+            modal.removeClass("hidden");
+            modal.find(".modal-overlay").fadeIn(400,function(){
+                $(this).removeClass("hidden");
+
             });
-        });
+
+            verticalOffset(modal.find(".modal-container"), 0);
+            modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
+                $(this).removeClass("hidden");
+                verticalOffset(modal.find(".modal-container"));
+                $(window).resize(function(){
+                    verticalOffset(modal.find(".modal-container"));
+                });
+            });
+        }
     }
 
     $(document).ready(function(){
@@ -792,16 +869,27 @@
                     // Command parsing.
                     if(command == "update-sigs"){
 
+
+                        var pid = data["id"];
+                        var sigs = data["sigs"];
                         // Find the petition from its location in the map, and update it's signatures value.
-                        petitions.list[petitions.map[data["id"]]].signatures = data["sigs"];
-                        petitions.list[petitions.map[data["id"]]]
+                        petitions.list[petitions.map[pid]].signatures = sigs;
+                        if(modalData.petition.id == pid){
+                            modalData.petition.signatures = sigs;
+                        }
+
+                    }
+                    else if(command == "new-update"){
+
                     }
                     else if(command == "get"){
 
-                        petitions.list.push(data["petition"]);
-                        var index = petitions.list.indexOf(data["petition"]);
+                        var petition = JSON.parse(data.petition).petitions[0];
+                        console.log(petition);
+                        petitions.list.push(petition);
+                        var index = petitions.list.indexOf(petition);
                         console.log(index);
-                        petitions.map[data["id"]] = index;
+                        petitions.map[petition.id] = index;
 
                     }
 
@@ -889,8 +977,9 @@
 
         });
 
-        $("#sign-petition-button").click(function(){
+        $(document).on("click","#sign-petition-button",function(){
             var petition = getUrl("p");
+            console.log("Sign Petition "+petition);
             $.post('/petition/sign/'+petition,{"csrfmiddlewaretoken":get_csrf()},function(r){
                 console.log(r);
             });

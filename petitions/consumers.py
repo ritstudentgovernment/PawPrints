@@ -45,7 +45,11 @@ def serialize_petitions(petitions_obj):
             'signatures': petition.signatures,
             'author': petition.author.first_name +" "+ petition.author.last_name,
             'tags': tags,
-            'response':petition.response,
+            'response': json.dumps({
+                'author':petition.response.author,
+                'description':petition.response.description,
+                'timestamp':petition.response.created_at.strftime("%B %d, %Y")
+            }) if petition.response is not None else json.dumps({'author':""}),
             'updates':updates,
             'timestamp':petition.created_at.strftime("%B %d, %Y"),
             'expires':petition.expires.strftime("%B %d, %Y"),
@@ -122,17 +126,31 @@ def petitions_command(message):
                 # Parse the Get command. Required data = id.
                 # Gets a single petition with a particular id.
                 if data.id:
-                    petition = views.get_petition(data.id)
-
+                    petition = [views.get_petition(data.id)]
+                    petition = serialize_petitions(petition)
+                    print(petition)
                     reply = {
                         "command": "get",
-                        "petition": serialize_petitions(petition)
+                        "petition": petition
                     }
 
                     message.reply_channel.send({
                         "text": json.dumps(reply)
                     })
                 return None
+            elif data.command == 'search':
+                # Parse the List command. Required query. Optional = filter.
+                # Sends the WS a sorted and optionally filtered list of petitions.
+                if data.query:
+                    petitions = views.sorting_controller("search", data.query)
+                    if data.filter:
+                        petitions = views.filtering_controller(petitions, data.filter)
+                    message.reply_channel.send({
+                        "text": serialize_petitions(petitions)
+                    })
+                    return None
+                return None
+
 
         message.reply_channel.send({
             "text": "Error must sent a non-empty 'command' parameter"
