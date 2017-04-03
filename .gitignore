@@ -94,6 +94,7 @@ ENV/
 env
 *.swp
 secrets.py
+profanity_list.py
 
 .idea/misc.xml
 
