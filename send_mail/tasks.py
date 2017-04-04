@@ -27,7 +27,7 @@ def petition_approved(petition_id, site_path):
         return
 
     email = EmailMessage(
-        'Petition approved.',
+        'PawPrints - Petition approved.',
         get_template('email_inlined/petition_approved.html').render(
             Context({
                 'petition_id': petition.id,
@@ -58,7 +58,7 @@ def petition_rejected(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-            'Petition rejected',
+            'PawPrints - Petition rejected',
             get_template('email_inlined/petition_rejected.html').render(
                 Context({
                     'petition_id': petition.id,
@@ -96,7 +96,7 @@ def petition_update(petition_id, site_path):
     recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
-            'Petition status update',
+            'PawPrints - Petition status update',
             get_template('email_inlined/petition_status_update.html').render(
                     Context({
                         'petition_id': petition.id,
@@ -134,7 +134,7 @@ def petition_reached(petition_id, site_path):
     recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
-            'Petition threshold reached',
+            'PawPrints - Petition threshold reached',
             get_template('email_inlined/petition_threshold_reached.html').render(
                     Context({
                         'petition_id': petition.id,
@@ -164,7 +164,7 @@ def petition_received(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-            'Petition received',
+            'PawPrints - Petition received',
             get_template('email_inlined/petition_rejected.html').render(
                 Context({
                     'petition_id': petition.id,
@@ -190,3 +190,33 @@ def petition_received(petition_id, site_path):
             logger.error("Petition Received email FAILED RETRYING\nPetition ID: "+str(petition.id), exc_info=True)
             petition_received.retry(countdown=int(random.uniform(1,4) ** petition_received.request.retries), exc=e)
 
+@shared_task
+def petition_needs_approval(petition_id, site_path):
+    petition = Petition.objects.get(pk=petition_id)
+
+    email = EmailMessage(
+            'PawPrints - Petition needs approval',
+            get_template('email_inlined/petition_needs_approval.html').render(
+                Context({
+                    'petition_id': petition.id,
+                    'title': petition.title,
+                    'author': petition.author.profile.full_name,
+                    'site_path': site_path,
+                    'protocol': 'https',
+                    'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                    })
+                ),
+            'sgnoreply@rit.edu',
+            [petition.author.email]
+            )
+    email.content_subtype = "html"
+    try:
+        email.send()
+        logger.info("Petition Needs Approval email SENT \nPetition ID: "+str(petition.id))
+    except Exception as e:
+        if petition_needs_approval.request.retries == 3:
+            logger.critical("Petition Needs Approval email FAILED \nPetition ID: "+str(petition.id))
+        else:
+            logger.error("Petition Needs Approval email FAILED \nPetition ID: "+str(petition.id), exc_info=True)
+            petition_needs_approval.retry(countdown=int(random.uniform(1, 4) ** petition_approved.request.retries), exc=e)
+            
