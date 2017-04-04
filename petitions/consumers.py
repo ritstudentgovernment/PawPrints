@@ -19,7 +19,7 @@ def serialize_petitions(petitions_obj):
     petition_map = {}
     petitions = []
 
-    # Loop over ever object in the sent petitions object
+    # Loop over every object in the petitions object passed to the function.
     for x in range(len(petitions_obj)):
         petition = petitions_obj[x]
 

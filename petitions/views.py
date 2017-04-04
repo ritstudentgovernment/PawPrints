@@ -212,21 +212,23 @@ def petition_sign(request, petition_id):
     # If the petition is still active
     if petition.status != 2:
         user = request.user
-        user.profile.petitions_signed.add(petition)
-        user.save()
-        petition.signatures += 1
-        petition.last_signed = timezone.now()
-        petition.save()
+        if not user.profile.petitions_signed.filter(id=petition_id).exists():
+            user.profile.petitions_signed.add(petition)
+            user.save()
+            petition.signatures += 1
+            petition.last_signed = timezone.now()
+            petition.save()
 
-        data = {
-            "command":"update-sigs",
-            "sigs":petition.signatures,
-            "id":petition.id
-        }
+            data = {
+                "command":"update-sigs",
+                "sigs":petition.signatures,
+                "id":petition.id
+            }
 
-        Group("petitions").send({
-            "text": json.dumps(data)
-        })
+            Group("petitions").send({
+                "text": json.dumps(data)
+            })
+
         logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
 
 	# Check if petition reached 200 if so, email.

@@ -312,7 +312,7 @@
             top: 10px;
         }
         #petition-modal .modal-body {
-            margin-bottom: 50px;
+            margin-bottom: 75px;
         }
         #petition-modal .modal-header h2, #petition-modal .modal-header span{
             max-width: calc(100% - 44px);
@@ -510,7 +510,7 @@
                         <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                         <span class="petition-progress-label"> {[ petition.signatures ]} / 200 Signatures</span>
                     </div>
-                    <button id="sign-petition-button" class="material material-button material-shadow transition left">Sign This Petition</button>
+                    <button id="sign-petition-button" class="material material-button material-shadow transition left" v-if="petition.isSigned == 0 && '{{ user.first_name }}' != ''">Sign This Petition</button>
                     <div class="right overflow-hidden">
                         <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
                     </div>
@@ -848,6 +848,12 @@
         }
     }
 
+    function parseOnePetition(data){
+        var petition = JSON.parse(data.petition).petitions[0];
+        console.log(petition);
+        return petition;
+    }
+
     $(document).ready(function(){
 
         // Setup Web Socket.
@@ -865,31 +871,75 @@
                 if(data["command"]){
 
                     var command = data["command"];
+                    var petition;
 
                     // Command parsing.
                     if(command == "update-sigs"){
-
+                        // Handle the live updating of signatures for petitions.
 
                         var pid = data["id"];
                         var sigs = data["sigs"];
                         // Find the petition from its location in the map, and update it's signatures value.
                         petitions.list[petitions.map[pid]].signatures = sigs;
-                        if(modalData.petition.id == pid){
+                        if(modalData.petition.id && modalData.petition.id == pid){
+                            // If the petition is the one that is open at the moment
+
                             modalData.petition.signatures = sigs;
+
                         }
 
                     }
                     else if(command == "new-update"){
+                        // Handle petitions getting an update.
+
+                        petition = parseOnePetition(data);
+                        var pos = petitions.map[petition.id];
+                        var oldPetition = petitions.list[pos];
+
+                        if(petition.updates != oldPetition.updates){
+                            // If the sent data contains updates that the stored petition doesn't have
+
+                            petitions.list[pos].updates = petition.updates;
+                            if(modalData.petition.id && modalData.petition.id == petition.id) {
+                                // If the petition is the one open at the moment
+
+                                for (var i = 0; i < petition.updates.length; i++) {
+                                    // Loop over all of the updates.
+
+                                    var update = petition.updates[i];
+                                    var updateBlock = {
+                                        type:"update",
+                                        author: "",
+                                        content:update.description
+                                                .replace(/\\"/g,"'")
+                                                .replace(/\"/g,'')
+                                                .replace(/"/g,"")
+                                                .replace(/\\n/g, "\n")
+                                                .replace(/(\\u201c|\\u201d)/g,'\"')
+                                                .replace(/\\u2014/g,'&mdash;')
+                                                .replace(/\\u2019/g,"'"),
+                                        date: update.timestamp
+                                    }
+
+                                    if (modalData.timeline.indexOf(updateBlock) == -1) {
+                                        // If the current update doesn't exist in the petition's visible data.
+
+                                        modalData.timeline.unshift(updateBlock);
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
 
                     }
                     else if(command == "get"){
 
-                        var petition = JSON.parse(data.petition).petitions[0];
-                        console.log(petition);
+                        petition = parseOnePetition(data);
                         petitions.list.push(petition);
-                        var index = petitions.list.indexOf(petition);
-                        console.log(index);
-                        petitions.map[petition.id] = index;
+                        petitions.map[petition.id] = petitions.list.indexOf(petition);
 
                     }
 

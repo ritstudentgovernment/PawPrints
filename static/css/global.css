@@ -212,6 +212,10 @@ nav .margin-right{
 #logo{
     font-size: 2em;
 }
+#logo img{
+    height: 40px;
+    margin-top: 15px;
+}
 /* -- Per-Element Styles -- */
 /* - Header - */
 #about-link i{
@@ -242,6 +246,12 @@ nav .margin-right{
 .small-header #tags h5{
     display: none;
 }
+.small-header #logo{
+    height: 60px;
+}
+.small-header #logo img{
+    margin-top: 10px;
+}
 .header-scrolled{
     border-bottom: 1px solid #ccc;
     box-shadow: 0px 5px 5px -5px #ccc;
@@ -252,7 +262,6 @@ nav .margin-right{
 #logo span{
     display: inline-block;
     width: auto;
-    min-width: 0;
 }
 @media screen and (max-width: 400px){
     #logo span{
