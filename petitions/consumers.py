@@ -128,7 +128,6 @@ def petitions_command(message):
                 if data.id:
                     petition = [views.get_petition(data.id)]
                     petition = serialize_petitions(petition)
-                    print(petition)
                     reply = {
                         "command": "get",
                         "petition": petition
@@ -139,12 +138,14 @@ def petitions_command(message):
                     })
                 return None
             elif data.command == 'search':
-                # Parse the List command. Required query. Optional = filter.
+                # Parse the search command. Required query. Optional = filter.
                 # Sends the WS a sorted and optionally filtered list of petitions.
                 if data.query:
                     petitions = views.sorting_controller("search", data.query)
-                    if data.filter:
+                    try:
                         petitions = views.filtering_controller(petitions, data.filter)
+                    except AttributeError:
+                        pass
                     message.reply_channel.send({
                         "text": serialize_petitions(petitions)
                     })

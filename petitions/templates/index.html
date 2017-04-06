@@ -510,7 +510,7 @@
                         <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                         <span class="petition-progress-label"> {[ petition.signatures ]} / 200 Signatures</span>
                     </div>
-                    <button id="sign-petition-button" class="material material-button material-shadow transition left" v-if="petition.isSigned == 0 && '{{ user.first_name }}' != ''">Sign This Petition</button>
+                    <button id="sign-petition-button" class="material material-button material-shadow transition left" v-if="'{{ user.first_name }}' != ''">Sign This Petition</button>
                     <div class="right overflow-hidden">
                         <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
                     </div>
@@ -547,7 +547,7 @@
                 <label for="search-term" class="full-width">
                     <div class="material-icon-container">
                         <i class="material-icons">search</i>
-                        <input id='search-term' class="material-input" type="text" />
+                        <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
                         <span class="">Search</span>
                     </div>
                 </label>
@@ -668,6 +668,22 @@
                 });
                 modal.find(".modal-overlay").fadeOut(400);
                 updatePetitionHistory(false);
+            }
+        }
+    });
+    timeout = setTimeout(function(){},0);
+    var search = new Vue({
+        el:"#sub-landing",
+        data:{
+            searchString: ""
+        },
+        methods:{
+            search: function(){
+                clearTimeout(timeout);
+                timeout = setTimeout(function(){
+                    console.log("Search: "+search.searchString);
+                    socket.send('{"command":"search","query":"'+search.searchString+'"}');
+                },500);
             }
         }
     });
@@ -942,6 +958,9 @@
                         petitions.map[petition.id] = petitions.list.indexOf(petition);
 
                     }
+                    else{
+                        console.log(data);
+                    }
 
                 }
                 else{
@@ -1029,6 +1048,7 @@
 
         $(document).on("click","#sign-petition-button",function(){
             var petition = getUrl("p");
+            petitions.list[petition].isSigned = 1;
             console.log("Sign Petition "+petition);
             $.post('/petition/sign/'+petition,{"csrfmiddlewaretoken":get_csrf()},function(r){
                 console.log(r);
