@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 from django.db.models import F
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from datetime import timedelta
 from petitions.models import Petition, Tag
 from django.utils import timezone
@@ -187,6 +188,13 @@ def petition_edit(request, petition_id):
 
     return redirect('/petition/' + str(petition_id))
 
+def get_petition(petition_id):
+    """
+    Handles the
+    :param petition_id:
+    :return:
+    """
+    return Petition.objects.get(pk=petition_id)
 
 
 # ENDPOINTS #
@@ -204,21 +212,23 @@ def petition_sign(request, petition_id):
     # If the petition is still active
     if petition.status != 2:
         user = request.user
-        user.profile.petitions_signed.add(petition)
-        user.save()
-        petition.signatures += 1
-        petition.last_signed = timezone.now()
-        petition.save()
+        if not user.profile.petitions_signed.filter(id=petition_id).exists():
+            user.profile.petitions_signed.add(petition)
+            user.save()
+            petition.signatures += 1
+            petition.last_signed = timezone.now()
+            petition.save()
 
-        data = {
-            "command":"update-sigs",
-            "sigs":petition.signatures,
-            "id":petition.id
-        }
+            data = {
+                "command":"update-sigs",
+                "sigs":petition.signatures,
+                "id":petition.id
+            }
 
-        Group("petitions").send({
-            "text": json.dumps(data)
-        })
+            Group("petitions").send({
+                "text": json.dumps(data)
+            })
+
         logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
 
 	# Check if petition reached 200 if so, email.
@@ -271,6 +281,7 @@ def colors():
 
     color_object = {
         'highlight':"#f36e21",
+        'highlight_hover':'#e86920',
         'dark_text':'#0f0f0f',
         'light_text':'#f0f0f0',
         'bright_text':'#fff',
@@ -335,18 +346,21 @@ def responded(sorted_objects):
 
 # SORTING
 #
-def sorting_controller(key):
+def sorting_controller(key, query=None):
     result = {
         'most recent': most_recent(),
         'most signatures': most_signatures(),
         'last signed': last_signed(),
-        'in progress': in_progress(),
+        'search': search(query),
+	'in progress': in_progress(),
         'responded': responded()
     }.get(key, None)
     return result
 
 def most_recent():
     return Petition.objects.all() \
+    .select_related('author') \
+    .prefetch_related('tags') \
     .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
@@ -365,6 +379,16 @@ def last_signed():
     .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
+
+def search(query):
+    vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
+    query = SearchQuery(query)
+    return Petition.objects.annotate(rank=SearchRank(vector, query)) \
+    .select_related('author', 'response') \
+    .prefetch_related('tags', 'updates') \
+    .filter(status=1) \
+    .filter(rank__gte=0.35) \
+    .order_by('-rank')
 
 def in_progress():
     return Petition.objects.all() \
