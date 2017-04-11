@@ -353,7 +353,7 @@ def sorting_controller(key, query=None):
         'last signed': last_signed(),
         'search': search(query),
         'similar': similar_petitions(query),
-	'in progress': in_progress(),
+	    'in progress': in_progress(),
         'responded': responded()
     }.get(key, None)
     return result
@@ -384,7 +384,7 @@ def search(query):
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
     .filter(status=1) \
-    .order_by('-rank')
+    .order_by('-rank')[:50][::-1]
 
 def similar_petitions(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
