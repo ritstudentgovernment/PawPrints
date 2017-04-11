@@ -350,15 +350,14 @@ def sorting_controller(key, query=None):
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
-	'in progress': in_progress(),
+        'similar': similar_petitions(query),
+	    'in progress': in_progress(),
         'responded': responded()
     }.get(key, None)
     return result
 
 def most_recent():
     return Petition.objects.all() \
-    .select_related('author') \
-    .prefetch_related('tags') \
     .filter(expires__gt=timezone.now()) \
     .exclude(has_response=True) \
     .filter(status=1) \
@@ -379,14 +378,19 @@ def last_signed():
     .order_by('-last_signed')
 
 def search(query):
+    vector = SearchVector('title', 'description')
+    query = SearchQuery(query)
+    return Petition.objects.annotate(rank=SearchRank(vector, query)) \
+    .filter(status=1) \
+    .order_by('-rank')[:50][::-1]
+
+def similar_petitions(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
-    .select_related('author', 'response') \
-    .prefetch_related('tags', 'updates') \
+    .filter(rank__gte=0.3) \
     .filter(status=1) \
-    .filter(rank__gte=0.35) \
-    .order_by('-rank')
+    .order_by('-rank') 
 
 def in_progress():
     return Petition.objects.all() \
