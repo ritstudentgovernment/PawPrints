@@ -552,7 +552,7 @@
                     </div>
                 </label>
             </div>
-            <div id="responded-tile" class="tile transition" onclick="window.location.href = 'petition/responded/'">
+            <div id="responded-tile" class="tile transition">
                 <span>responded</span>
             </div>
         </div>
@@ -997,6 +997,39 @@
             // Get the sort key
             var sort_by = $("#sort").val();
             $("#sort").data("filter",filter_tag);
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+
+            var to_elem = $("#petitions");
+            scroll(to_elem);
+
+        });
+
+        $(document).on("click", "#recognised-tile", function(){
+
+            console.log("Progress Click");
+
+            var filter_tag = $("#sort").data("filter");
+
+            // Get the sort key
+            var sort_by = "in progress";
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+
+            var to_elem = $("#petitions");
+            scroll(to_elem);
+
+        });
+        $(document).on("click", "#responded-tile", function(){
+            // Bind the click event on elements with the tag class
+
+            // Get the tag name
+            var filter_tag = $("#sort").data("filter");
+
+            // Get the sort key
+            var sort_by = "responded";
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
