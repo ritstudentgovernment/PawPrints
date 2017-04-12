@@ -20,6 +20,8 @@ from django.contrib.auth.models import User
 from channels import Group, Channel
 from send_mail.tasks import *
 import json
+from django.db.models import Q
+
 
 import logging
 
@@ -394,8 +396,9 @@ def similar_petitions(query):
 
 def in_progress():
     return Petition.objects.all() \
-    .filter(expires__gt=timezone.now()) \
     .filter(status=1) \
+    .filter(expires__gt=timezone.now()) \
+    .filter( (Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None) ) \
     .exclude(has_response=True) \
     .order_by('-created_at')
 
