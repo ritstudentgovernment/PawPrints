@@ -474,6 +474,199 @@
                 column-count:1;
             }
         }
+        #loading-petitions{
+            text-align: center;
+        }
+        .load-container * {
+            box-sizing: border-box;
+            -o-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .load-container {
+            margin: 0 auto;
+            max-width: 545px;
+        }
+
+        .load-container ul li{
+            list-style: none;
+        }
+
+        .load-flex-container {
+            display: flex;
+            display: -o-flex;
+            display: -ms-flex;
+            display: -webkit-flex;
+            display: -moz-flex;
+            flex-direction: row;
+            -o-flex-direction: row;
+            -ms-flex-direction: row;
+            -webkit-flex-direction: row;
+            -moz-flex-direction: row;
+            flex-wrap: wrap;
+            -o-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            -webkit-flex-wrap: wrap;
+            -moz-flex-wrap: wrap;
+            justify-content: space-around;
+            padding-left: 0;
+            margin-top: 0;
+            padding-top: 40px;
+            margin-bottom: 0;
+        }
+        .load-flex-container li {
+            height: 97px;
+            width: 97px;
+            margin: 3px 19px;
+            margin-top: 6px;
+            position: relative;
+            text-align: center;
+        }
+
+        .load-loading, .load-loading:after, .load-loading:before {
+            display: inline-block;
+            position: relative;
+            width: 5px;
+            height: 49px;
+            background: #f36e21;
+            margin-top: 5px;
+            border-radius: 975px;
+            -o-border-radius: 975px;
+            -ms-border-radius: 975px;
+            -webkit-border-radius: 975px;
+            -moz-border-radius: 975px;
+            animation: load-upDown2 1.15s ease infinite;
+            -o-animation: load-upDown2 1.15s ease infinite;
+            -ms-animation: load-upDown2 1.15s ease infinite;
+            -webkit-animation: load-upDown2 1.15s ease infinite;
+            -moz-animation: load-upDown2 1.15s ease infinite;
+            animation-direction: alternate;
+            -o-animation-direction: alternate;
+            -ms-animation-direction: alternate;
+            -webkit-animation-direction: alternate;
+            -moz-animation-direction: alternate;
+            animation-delay: 0.29s;
+            -o-animation-delay: 0.29s;
+            -ms-animation-delay: 0.29s;
+            -webkit-animation-delay: 0.29s;
+            -moz-animation-delay: 0.29s;
+        }
+        .load-loading:after, .load-loading:before {
+            position: absolute;
+            content: '';
+            animation: load-upDown 1.15s ease infinite;
+            -o-animation: load-upDown 1.15s ease infinite;
+            -ms-animation: load-upDown 1.15s ease infinite;
+            -webkit-animation: load-upDown 1.15s ease infinite;
+            -moz-animation: load-upDown 1.15s ease infinite;
+            animation-direction: alternate;
+            -o-animation-direction: alternate;
+            -ms-animation-direction: alternate;
+            -webkit-animation-direction: alternate;
+            -moz-animation-direction: alternate;
+        }
+        .load-loading:before {
+            left: -10px;
+        }
+        .load-loading:after {
+            left: 10px;
+            animation-delay: 0.58s;
+            -o-animation-delay: 0.58s;
+            -ms-animation-delay: 0.58s;
+            -webkit-animation-delay: 0.58s;
+            -moz-animation-delay: 0.58s;
+        }
+
+        @keyframes load-upDown {
+            from {
+                transform: translateY(19px);
+            }
+            to {
+                transform: translateY(-19px);
+            }
+        }
+
+        @-o-keyframes load-upDown {
+            from {
+                -o-transform: translateY(19px);
+            }
+            to {
+                -o-transform: translateY(-19px);
+            }
+        }
+
+        @-ms-keyframes load-upDown {
+            from {
+                -ms-transform: translateY(19px);
+            }
+            to {
+                -ms-transform: translateY(-19px);
+            }
+        }
+
+        @-webkit-keyframes load-upDown {
+            from {
+                -webkit-transform: translateY(19px);
+            }
+            to {
+                -webkit-transform: translateY(-19px);
+            }
+        }
+
+        @-moz-keyframes load-upDown {
+            from {
+                -moz-transform: translateY(19px);
+            }
+            to {
+                -moz-transform: translateY(-19px);
+            }
+        }
+
+        @keyframes load-upDown2 {
+            from {
+                transform: translateY(29px);
+            }
+            to {
+                transform: translateY(-19px);
+            }
+        }
+
+        @-o-keyframes load-upDown2 {
+            from {
+                -o-transform: translateY(29px);
+            }
+            to {
+                -o-transform: translateY(-19px);
+            }
+        }
+
+        @-ms-keyframes load-upDown2 {
+            from {
+                -ms-transform: translateY(29px);
+            }
+            to {
+                -ms-transform: translateY(-19px);
+            }
+        }
+
+        @-webkit-keyframes load-upDown2 {
+            from {
+                -webkit-transform: translateY(29px);
+            }
+            to {
+                -webkit-transform: translateY(-19px);
+            }
+        }
+
+        @-moz-keyframes load-upDown2 {
+            from {
+                -moz-transform: translateY(29px);
+            }
+            to {
+                -moz-transform: translateY(-19px);
+            }
+        }
     </style>
     <title>PawPrints - Make your mark</title>
 </head>
@@ -575,6 +768,16 @@
         </nav>
     </div>
     <section id="petitions">
+        <div v-if="loading" id="loading-petitions">
+            <div class="load-container">
+                <ul class="load-flex-container">
+                    <li>
+                        <span class="load-loading"></span>
+                    </li>
+            </div>
+            Loading Petitions...
+        </div>
+        </div>
         <div v-if="list.length > 0" id="petitions-container">
             <!--      Vus.js template for listing petitions      -->
             <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
@@ -619,6 +822,7 @@
     var petitions = new Vue({
         el: "#petitions",
         data: {
+            loading: true,
             list: [],
             map: {}
         },
@@ -681,9 +885,12 @@
             search: function(){
                 clearTimeout(timeout);
                 timeout = setTimeout(function(){
-                    console.log("Search: "+search.searchString);
-                    socket.send('{"command":"search","query":"'+search.searchString+'"}');
-                },500);
+                    if(search.searchString.trim() != ""){
+                        petitions.loading = true;
+                        console.log("Search: "+search.searchString);
+                        socket.send('{"command":"search","query":"'+search.searchString+'"}');
+                    }
+                },300);
             }
         }
     });
@@ -696,6 +903,7 @@
 
         }
         $("#tag-"+filter).addClass("current-tag");
+        petitions.loading = true;
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
 
     }
@@ -973,6 +1181,7 @@
                     if(petitionID){
                         openPetition(petitionID, true);
                     }
+                    petitions.loading = false;
 
                 }
 
@@ -1006,36 +1215,26 @@
 
         });
 
-        $(document).on("click", "#recognised-tile", function(){
+        $(document).on("click", ".tile", function(){
 
-            console.log("Progress Click");
+            var sort_by = false;
+            var id = $(this).attr("id");
+            if(id == "recognised-tile"){
+                sort_by = "in progress";
+            }
+            else if(id == "responded-tile"){
+                sort_by = "responded";
+            }
 
-            var filter_tag = $("#sort").data("filter");
+            if(sort_by){
+                var filter_tag = $("#sort").data("filter");
 
-            // Get the sort key
-            var sort_by = "in progress";
+                // Reload all of the petitions with the updated information.
+                reloadPetitions(sort_by, filter_tag, socket);
 
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
-
-            var to_elem = $("#petitions");
-            scroll(to_elem);
-
-        });
-        $(document).on("click", "#responded-tile", function(){
-            // Bind the click event on elements with the tag class
-
-            // Get the tag name
-            var filter_tag = $("#sort").data("filter");
-
-            // Get the sort key
-            var sort_by = "responded";
-
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
-
-            var to_elem = $("#petitions");
-            scroll(to_elem);
+                var to_elem = $("#petitions");
+                scroll(to_elem);
+            }
 
         });
 
