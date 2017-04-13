@@ -906,6 +906,8 @@
         }
         $("#tag-"+filter).addClass("current-tag");
         petitions.loading = true;
+        petitions.map = {};
+        petitions.list = [];
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
 
     }
