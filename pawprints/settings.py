@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 from pawprints import secrets 
-import ldap
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -131,29 +129,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend'
-)
-
-# LDAP configurations
-AUTH_LDAP_GLOBAL_OPTIONS = {
-    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER
-}
-AUTH_LDAP_SERVER_URI = "ldaps://ldap.rit.edu"
-
-AUTH_LDAP_BIND_DN = "uid=" + secrets.LDAP_USER + ",ou=People,dc=rit,dc=edu"
-AUTH_LDAP_BIND_PASSWORD = secrets.LDAP_PASSWORD
-AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=Groups,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)")
-AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
-
-#Require student, prevent others
-AUTH_LDAP_REQUIRE_GROUP = "cn=student,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=staff,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=faculty,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=studemp,ou=Groups,dc=rit,dc=edu"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
