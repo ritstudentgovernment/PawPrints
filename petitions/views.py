@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
-from django.db.models import F
+from django.db.models import F, Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from datetime import timedelta
 from petitions.models import Petition, Tag
@@ -21,7 +21,6 @@ from django.contrib.auth.models import User
 from channels import Group, Channel
 from send_mail.tasks import *
 import json
-from django.db.models import Q
 
 
 import logging
@@ -354,8 +353,7 @@ def sorting_controller(key, query=None):
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
-        'similar': similar_petitions(query),
-	    'in progress': in_progress(),
+	'in progress': in_progress(),
         'responded': responded()
     }.get(key, None)
     return result
@@ -382,19 +380,14 @@ def last_signed():
     .order_by('-last_signed')
 
 def search(query):
-    vector = SearchVector('title', 'description')
-    query = SearchQuery(query)
-    return Petition.objects.annotate(rank=SearchRank(vector, query)) \
-    .filter(status=1) \
-    .order_by('-rank')[:50][::-1]
-
-def similar_petitions(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
-    .filter(rank__gte=0.3) \
+    .select_related('author', 'response') \
+    .prefetch_related('tags', 'updates') \
     .filter(status=1) \
-    .order_by('-rank') 
+    .filter(rank__gte=0.35) \
+    .order_by('-rank')
 
 def in_progress():
     return Petition.objects.all() \
