@@ -316,6 +316,7 @@
         }
         #petition-modal .modal-body {
             margin-bottom: 75px;
+            background-color: #f0f0f0;
         }
         #petition-modal .modal-header h2, #petition-modal .modal-header span{
             max-width: calc(100% - 44px);
@@ -403,6 +404,33 @@
             margin-top: 6px;
             width: 30px;
         }
+        #petition-modal .modal-container{
+            overflow-y: hidden;
+        }
+
+        #petition-modal .modal-footer{
+            overflow: visible;
+        }
+
+        #petition-modal .modal-footer .hide-box{
+            position:absolute;
+            top:-25px;
+            left: calc( 50% - (55px / 2) );
+            display: block;
+            width: 45px;
+            height: 25px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            color: #0f0f0f;
+            content: "V";
+            text-align: center;
+            line-height: 25px;
+            font-size: 1em;
+        }
+        #petition-modal .modal-footer .hide-box:hover{
+            cursor:pointer;
+        }
 
         .petition-progress-container{
             display: block;
@@ -470,11 +498,31 @@
                 column-count:2;
             }
         }
+        @media screen and (max-width: 700px){
+            #sign-petition-button,#social-share{
+                margin-top: 38px;
+            }
+            #petition-modal .modal-body:after{
+                margin-left:0;
+            }
+        }
         @media screen and (max-width: 600px){
             #petitions-container{
                 -moz-column-count: 1;
                 -webkit-column-count:1;
                 column-count:1;
+            }
+            .timeline-element-content{
+                font-size: 18px !important;
+            }
+        }
+        @media screen and (max-width: 500px){
+            #sign-petition-button{
+                width: 100%;
+            }
+            #social-share{
+                margin-top: 10px;
+                margin-right: calc(50% - 95px);
             }
         }
         #loading-petitions{
@@ -697,7 +745,10 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer overflow-hidden relative material-shadow">
+            <div class="modal-footer overflow-hidden relative material-shadow transition" data-hidden="false">
+                <div class="hide-box">
+                    <span><i class="material-icons">keyboard_arrow_down</i></span>
+                </div>
                 <!-- This section changes based on the state the petition is in. -->
 
                 <!-- Petition is in progress, show the progress tracking and sharing features. -->
@@ -707,7 +758,7 @@
                         <span class="petition-progress-label"> {[ petition.signatures ]} / 200 Signatures</span>
                     </div>
                     <button id="sign-petition-button" class="material material-button material-shadow transition left" v-if="'{{ user.first_name }}' != ''">Sign This Petition</button>
-                    <div class="right overflow-hidden">
+                    <div id="social-share" class="right overflow-hidden transition">
                         <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
                     </div>
                 </div>
@@ -1245,7 +1296,7 @@
             }
 
             if(sort_by){
-                var filter_tag = $("#sort").data("filter");
+                var filter_tag = "all";
 
                 // Reload all of the petitions with the updated information.
                 reloadPetitions(sort_by, filter_tag, socket);
@@ -1294,6 +1345,24 @@
 
 
 
+        });
+
+        $(".hide-box").click(function(){
+            var modalFooter = $("#petition-modal").find(".modal-footer");
+            var height = modalFooter.height() + 10;
+            console.log(modalFooter.data("hidden"));
+            if(!modalFooter.data("hidden")){
+                modalFooter.data("hidden",true);
+                modalFooter.css({"bottom":-height+"px"});
+                $(this).find("i").html("keyboard_arrow_up");
+                $("#petition-modal").find(".modal-body").css({"margin-bottom":"0px","padding-bottom":"75px"});
+            }
+            else{
+                modalFooter.data("hidden",false);
+                modalFooter.css({"bottom":"0px"});
+                $(this).find("i").html("keyboard_arrow_down");
+                $("#petition-modal").find(".modal-body").animate({"margin-bottom":"75px","padding-bottom":"0"},400);
+            }
         });
 
         $(document).on("click","#sign-petition-button",function(){
