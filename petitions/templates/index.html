@@ -887,6 +887,8 @@
                 timeout = setTimeout(function(){
                     if(search.searchString.trim() != ""){
                         petitions.loading = true;
+                        petitions.map = {};
+                        petitions.list = [];
                         console.log("Search: "+search.searchString);
                         socket.send('{"command":"search","query":"'+search.searchString+'"}');
                     }
@@ -1069,6 +1071,13 @@
                     verticalOffset(modal.find(".modal-container"));
                 });
             });
+
+            $(document).on("keyup",function(e){
+                if(e.charCode = 27){
+                    modalData.closePetition();
+                }
+            });
+
         }
     }
 
