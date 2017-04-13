@@ -777,6 +777,9 @@
             </div>
             Loading Petitions...
         </div>
+        <div class="block padding text-center" v-if="list.length == 0">
+            <span class="padding-top">No petitions fit that query!</span>
+        </div>
         </div>
         <div v-if="list.length > 0" id="petitions-container">
             <!--      Vus.js template for listing petitions      -->
@@ -1075,7 +1078,8 @@
             });
 
             $(document).on("keyup",function(e){
-                if(e.charCode = 27){
+                console.log(e);
+                if(e.keyCode == 27){
                     modalData.closePetition();
                 }
             });
