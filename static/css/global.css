@@ -268,6 +268,17 @@ nav .margin-right{
         display: none;
     }
 }
+@media screen and (max-width: 630px){
+    #user-welcome,#about-text{
+        display:none;
+    }
+    .header-scrolled #tags .tag:not(.current-tag){
+        display: none;
+    }
+    .header-scrolled #tags .current-tag{
+        font-size: 1.2em;
+    }
+}
 
 /* -- Modern Modal -- */
 .modal{
