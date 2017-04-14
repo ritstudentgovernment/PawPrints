@@ -15,13 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.decorators.csrf import csrf_exempt
 from petitions import views
 from profile.views import user_login, user_logout
+from auth.views import MetadataView, CompleteAuthView, InitAuthView
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^petitions/', views.load_petitions),
     url(r'^admin/', admin.site.urls),
+    url(r'^metadata/$', MetadataView.as_view(), name='metadata'),
+    url(r'^login/', InitAuthView.as_view(), name='init-auth'),
+    url(r'^complete-auth/', csrf_exempt(CompleteAuthView.as_view()), name='complete-auth'),
     url(r'^login/', user_login, name='user_login'),
     url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
