@@ -5,7 +5,7 @@ Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
 Updated: Feb 15 2017
 """
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
