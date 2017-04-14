@@ -383,7 +383,7 @@ function inViewport (el) {
             transitionDuration:500, // Integer: How long the transition takes. (ms)
             numSlides:0,            // Integer: PRIVATE. The number of slides.
             debug: false
-        },options)
+        },options);
         function setup(){
             selector.find('.'+settings.slideClass).each(function(){
                 var me = $(this);
