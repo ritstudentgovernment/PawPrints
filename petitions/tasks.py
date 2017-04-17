@@ -36,7 +36,7 @@ def publish_petition_task(user_id, petition_id, site_path):
         petition.save()
         petition_needs_approval.delay(petition_id, site_path)
         # Send Message
-    else 
+    else: 
         petition.status = 1
         petition.body = bleach.clean(petition.body)
         petition.save()

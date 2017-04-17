@@ -19,8 +19,6 @@ def load_words(filename):
         
 
 def has_profanity(petition_body):
-    prof = False
-    blockedWords = []
     profanities = load_words('profanity.csv')
     body = petition_body.split(' ')
 
