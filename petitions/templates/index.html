@@ -85,17 +85,15 @@
             width: 100%;
             height: 100%;
         }
-        #search-tile label{
+        #search-container{
             text-align: center;
             display: block;
-        }
-        #search-tile label:hover{
-            cursor: pointer;
         }
         #search-term{
             width: 0;
             opacity:0;
             padding:1px;
+            color: #fff;
         }
         #search-term:focus{
             opacity: 1;
@@ -263,7 +261,7 @@
             -o-box-shadow:      0px 0px 5px 0px #ddd;
             box-shadow:         0px 0px 5px 0px #ddd;
         }
-        #search-tile:hover #search-term{
+        #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
         }
         #back-up{
@@ -782,26 +780,13 @@
         <div id="parallax-overlay" class="full-width">
             <h1>Make Your Mark</h1>
             <h3>Create and vote on petitions.<br />Receive official responses from Student Government.</h3>
-        </div>
-    </section>
-    <section id="sub-landing">
-        <h1>Explore Petitions</h1>
-        <div id="tiles" class="tile-container full-width three-tiles">
-            <div id="recognised-tile" class="tile transition">
-                <span>in progress</span>
-            </div>
-            <div id="search-tile" class="tile transition">
-                <label for="search-term" class="full-width">
-                    <div class="material-icon-container">
-                        <i class="material-icons">search</i>
-                        <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                        <span class="">Search</span>
-                    </div>
-                </label>
-            </div>
-            <div id="responded-tile" class="tile transition">
-                <span>responded</span>
-            </div>
+            <label id="search-container" for="search-term" class="full-width cursor">
+                <div class="material-icon-container">
+                    <i class="material-icons">search</i>
+                    <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
+                    <span class="">Search</span>
+                </div>
+            </label>
         </div>
     </section>
     <div id="tags-container">
@@ -810,6 +795,8 @@
             <option value="most recent" selected="selected">Most Recent</option>
             <option value="most signatures">Most Signatures</option>
             <option value="last signed">Last Signed</option>
+            <option value="in progress">In Progress</option>
+            <option value="responded">Responded</option>
         </select>
         <nav id="tags">
             <h5>Tags:</h5>
@@ -934,7 +921,7 @@
     });
     timeout = setTimeout(function(){},0);
     var search = new Vue({
-        el:"#sub-landing",
+        el:"#search-container",
         data:{
             searchString: ""
         },
@@ -1281,29 +1268,6 @@
 
             var to_elem = $("#petitions");
             scroll(to_elem);
-
-        });
-
-        $(document).on("click", ".tile", function(){
-
-            var sort_by = false;
-            var id = $(this).attr("id");
-            if(id == "recognised-tile"){
-                sort_by = "in progress";
-            }
-            else if(id == "responded-tile"){
-                sort_by = "responded";
-            }
-
-            if(sort_by){
-                var filter_tag = "all";
-
-                // Reload all of the petitions with the updated information.
-                reloadPetitions(sort_by, filter_tag, socket);
-
-                var to_elem = $("#petitions");
-                scroll(to_elem);
-            }
 
         });
 
