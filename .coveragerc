@@ -1,0 +1,14 @@
+[run]
+source = .
+
+[report]
+show_missing = False
+
+omit =
+  */migrations/*
+  manage.py
+  settings.py
+  */pawprints/wsgi.py
+  asgi.py
+  */log/*
+
