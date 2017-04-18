@@ -9,6 +9,8 @@ Exponential backoff with random jitter is used when retrying tasks.
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from petitions.models import *
+from profile.models import Profile
+from django.db.models import Q
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
@@ -29,14 +31,14 @@ def petition_approved(petition_id, site_path):
     email = EmailMessage(
         'Petition approved.',
         get_template('email_inlined/petition_approved.html').render(
-            Context({
+            {
                 'petition_id': petition.id,
                 'title': petition.title,
                 'author': petition.author.first_name + ' ' + petition.author.last_name,
                 'site_path': site_path,
                 'protocol': 'https',
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
-            })
+            }
         ),
         'sgnoreply@rit.edu',
         [petition.author.email],
@@ -60,15 +62,14 @@ def petition_rejected(petition_id, site_path):
     email = EmailMessage(
             'Petition rejected',
             get_template('email_inlined/petition_rejected.html').render(
-                Context({
+                {
                     'petition_id': petition.id,
                     'title': petition.title,
                     'author': petition.author.profile.full_name,
-                    'message': message.content.get('message'),
                     'site_path': site_path,
                     'protocol': 'https',
                     'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
-                    })
+                }
                 ),
             'sgnoreply@rit.edu',
             [petition.author.email]
@@ -98,14 +99,14 @@ def petition_update(petition_id, site_path):
     email = EmailMessage(
             'Petition status update',
             get_template('email_inlined/petition_status_update.html').render(
-                    Context({
+                    {
                         'petition_id': petition.id,
                         'title': petition.title,
                         'author': petition.author.profile.full_name,
                         'site_path': site_path,
                         'protocol': 'https',
                         'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
-                        })
+                    }
                 ),
             'sgnoreply@rit.edu',
             [recipients]
@@ -136,14 +137,14 @@ def petition_reached(petition_id, site_path):
     email = EmailMessage(
             'Petition threshold reached',
             get_template('email_inlined/petition_threshold_reached.html').render(
-                    Context({
+                    {
                         'petition_id': petition.id,
                         'title': petition.title,
                         'author': petition.author.profile.full_name,
                         'site_path': site_path,
                         'protocol': 'https',
                         'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
-                        })
+                    }
                 ),
             'sgnoreply@rit.edu',
             [recipients]
@@ -166,15 +167,14 @@ def petition_received(petition_id, site_path):
     email = EmailMessage(
             'Petition received',
             get_template('email_inlined/petition_rejected.html').render(
-                Context({
+                {
                     'petition_id': petition.id,
                     'title': petition.title,
                     'author': petition.author.profile.full_name,
-                    'message': message.content.get('message'),
                     'site_path': site_path,
                     'protocol': 'https',
                     'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
-                    })
+                }
                 ),
             'sgnoreply@rit.edu',
             [petition.author.email]
