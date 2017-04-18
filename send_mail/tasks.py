@@ -22,11 +22,7 @@ logger = logging.getLogger("pawprints."+__name__)
 
 @shared_task
 def petition_approved(petition_id, site_path):
-    try:
-        petition = Petition.objects.get(pk=petition_id)
-    except Petition.DoesNotExist:
-        # Handle this error
-        return
+    petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
         'Petition approved.',

@@ -33,21 +33,6 @@ def user_login(request):
     """ Handles rendering login page and POST
     endpoint for logging in a user
     """
-    url_next = request.GET.get('next','/profile/')
-    if request.POST:
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            user_obj = User.objects.get(username=user.username)
-            user_obj.is_active = True
-            user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
-            user_obj.save()
-            auth_login(request, user_obj)
-            logger.info(user.username+" logged in")
-            return redirect(url_next)
-
-
     return render(request, 'login.html')
 
 # ENDPOINTS #
