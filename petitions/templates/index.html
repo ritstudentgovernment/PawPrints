@@ -2,14 +2,9 @@
 <html lang="en">
 <head>
     {% load static %}
-    <meta charset="UTF-8">
-    <link href="{% static '/css/global.css' %}" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway:300|Work+Sans:300" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    {% include 'head.html' %}
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="{% static '/js/global.js' %}"></script>
-    <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+
     <style>
         .background-highlight{
             background-color: {{ colors.highlight }};
@@ -61,16 +56,22 @@
             color: #fff;
         }
         #parallax-overlay h1{
-            font-family: "Montserrat",Arial;
-            text-transform: uppercase;
-            padding: 0.5em;
             min-width: 45%;
-            margin: 0;
-            background-color: {{ colors.highlight }};
             display: inline-block;
+            text-transform: capitalize;
+            padding: 0.5em 0.5em calc(0.5em - 1vh - 1.5vw);
+            font-family: "Montserrat",sans-serif;
+            font-size: calc(4em - (20px - 2vw));
+            text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
+            font-weight: 700;
+            margin: 0;
         }
         #parallax-overlay h3{
-            line-height: 1.5em;
+            margin-top: 0;
+            font-family: "Slabo 27px",serif;
+            font-size: calc(2em - (10px - 1vw));
+            text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.8);
+            font-weight: 400;
         }
         #sub-landing{
             text-align: center;
@@ -286,7 +287,6 @@
             text-align: left;
         }
         #petition-modal .modal-container{
-            border-radius: 25px 0 25px 0;
             max-height: 95vh;
         }
         #petition-modal .modal-header{
@@ -831,7 +831,7 @@
             </div>
             Loading Petitions...
         </div>
-        <div class="block padding text-center" v-if="list.length == 0">
+        <div class="block padding text-center" v-if="list.length == 0 && !loading">
             <span class="padding-top">No petitions fit that query!</span>
         </div>
         </div>
@@ -1070,7 +1070,7 @@
                             .replace(/\\n/g, "\n")
                             .replace(/(\\u201c|\\u201d)/g,'\"')
                             .replace(/\\u2014/g,'&mdash;')
-                            .replace(/\\u2019/g,"'"),
+                            .replace(/(\\u2019|\\u2018)/g,"'"),
                     date: response.timestamp
                 }
                 modalData.timeline.push(responseBlock);
@@ -1092,7 +1092,7 @@
                                 .replace(/\\n/g, "\n")
                                 .replace(/(\\u201c|\\u201d)/g,'\"')
                                 .replace(/\\u2014/g,'&mdash;')
-                                .replace(/\\u2019/g,"'"),
+                                .replace(/(\\u2019|\\u2018)/g,"'"),
                         date: update.timestamp
                     }
                     modalData.timeline.push(updateBlock);
@@ -1109,7 +1109,7 @@
                         .replace(/\\n/g, "\n")
                         .replace(/(\\u201c|\\u201d)/g,'\"')
                         .replace(/\\u2014/g,'&mdash;')
-                        .replace(/\\u2019/g,"'"),
+                        .replace(/(\\u2019|\\u2018)/g,"'"),
                 date: toPetition.timestamp
             };
 
@@ -1336,7 +1336,7 @@
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
-        $("#parallax-overlay").parallax({divisor:-5,offset:40});
+        $("#parallax-overlay").parallax({divisor:-5,offset:30});
         $(".slideshow-container").slideshow();
 
         initWaypoints();
