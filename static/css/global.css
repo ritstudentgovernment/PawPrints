@@ -8,7 +8,7 @@ html, body{
 header{
     top: 0px;
     left: 0px;
-    font-family: "Raleway", Arial;
+    font-family: "Montserrat", Arial;
     background-color: #fff;
     z-index:1000;
 }
@@ -226,6 +226,7 @@ nav .margin-right{
 }
 #user-menu button{
     margin-left: 1em;
+    font-weight: 600;
 }
 #user-menu #account-dropdown{
     position: absolute;
