@@ -354,7 +354,8 @@ def sorting_controller(key, query=None):
         'last signed': last_signed(),
         'search': search(query),
 	'in progress': in_progress(),
-        'responded': responded()
+        'responded': responded(),
+        'archived': archived()
     }.get(key, None)
     return result
 
@@ -402,3 +403,9 @@ def responded():
     .filter(status=1) \
     .filter(has_response=True) \
     .order_by('-created_at')
+
+def archived():
+    return Petition.objects.all()\
+        .filter(expires__lt=timezone.now())\
+        .filter( Q(response=None) )\
+        .order_by('-created_at')
