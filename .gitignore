@@ -118,5 +118,9 @@ profanity.csv
 
 .idea/modules.xml
 
+*.xml
+
+PawPrints - Make your mark.webarchive
+
 *.key
 *.crt
