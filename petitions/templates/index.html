@@ -88,6 +88,7 @@
         #search-container{
             text-align: center;
             display: block;
+            text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
         }
         #search-term{
             width: 0;
@@ -772,9 +773,7 @@
     <section id="landing" class="parallax-container">
         <div id="parallax-slideshow" class="full-width">
             <div class="slideshow-container">
-                <div id="c1" class="slide full-width" data-backgroundimage="{% static 'images/carousel_1.png' %}"></div>
-                <div id="c2" class="slide full-width" data-backgroundimage="{% static 'images/carousel_2.png' %}"></div>
-                <div id="c3" class="slide full-width" data-backgroundimage="{% static 'images/carousel_3.png' %}"></div>
+                <div v-for="(image, index) in images" v-if="index < limit || limit == 0" :id="id_pre+(index+1)" class="slide full-width" :data-backgroundimage="image.url"></div>
             </div>
         </div>
         <div id="parallax-overlay" class="full-width">
@@ -784,7 +783,7 @@
                 <div class="material-icon-container">
                     <i class="material-icons">search</i>
                     <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                    <span class="">Search</span>
+                    <span class="">Search Petitions</span>
                 </div>
             </label>
         </div>
@@ -857,7 +856,7 @@
 {% csrf_token %}
 </body>
 <script>
-    /* Initialize the Vue.js wrapper for the petitions.
+    /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
      *   data:
      *      - list: the list of petitions and all of their data
@@ -938,6 +937,63 @@
                     }
                 },300);
             }
+        }
+    });
+    /**
+     * slideshow_images is the Vue instance that builds slide show images.
+     * The data set is randomized before displaying the images in the slide show.
+     * Change the limit to change the amount of images in the slide show (set to 0 to show all images).
+     * Add more images by copying one of the objects in the images list.
+     *  - Setting the sort_rank to anything but 0 will force it to have that value.
+     **/
+    var slideshow_images = new Vue({
+        el:"#parallax-slideshow",
+        data:{
+            limit:3,
+            id_pre:"c",
+            images:[
+                {
+                    url:"/static/images/CampusStock_11.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_25.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_95.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_8.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_1.png",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_2.png",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_3.png",
+                    sort_rank:0
+                }
+            ]
+        },
+        delimiters: ['{[', ']}'],
+        methods:{
+            randomize:function(){
+                for(var i = 0; i < this.images.length; i++){
+                    var img = this.images[i];
+                    if(img.sort_rank == 0) img.sort_rank = Math.random() * this.images.length;
+                }
+                this.images.sort(function(a,b){return b.sort_rank - a.sort_rank});
+            }
+        },
+        mounted: function(){
+            this.randomize();
         }
     });
     function reloadPetitions(sort_by, filter, socket){
