@@ -481,8 +481,52 @@ function inViewport (el) {
             }
             setTimeout(function(){rotate();},settings.slideDuration);
         }
+        function countDecimalPlaces(num) {
+            var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+            if (!match) { return 0; }
+            return Math.max(
+                0,
+                // Number of digits right of decimal point.
+                (match[1] ? match[1].length : 0)
+                // Adjust for scientific notation.
+                - (match[2] ? +match[2] : 0));
+        }
+        function roundToNumDecimalPlaces(num, decimalPlaces){
+            return +(num.toFixed(decimalPlaces));
+        }
+        function breathe(start, end, step, current = start, reverse = false){
+
+            var delay = settings.transitionDuration;
+            if( (start <= current) && (current < end) && !reverse){
+
+                current += step;
+                current = roundToNumDecimalPlaces(current, countDecimalPlaces(step));
+                setTimeout(function(){
+                    breathe(start,end,step,current);
+                },delay);
+
+            }
+            else {
+
+                current -= step;
+                current = roundToNumDecimalPlaces(current, countDecimalPlaces(step));
+                setTimeout(function(){
+                    if(current == start){
+                        breathe(start,end,step);
+                    }
+                    else{
+                        breathe(start, end, step, current, true);
+                    }
+                },delay);
+
+            }
+
+            $("."+settings.slideClass).css("transform","scale("+current+")");
+
+        }
         setup();
         rotate();
+        breathe(1,1.1,0.002);
     }
 }( jQuery ));
 
