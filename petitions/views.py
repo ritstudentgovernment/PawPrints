@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
-from django.db.models import F
+from django.db.models import F, Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from datetime import timedelta
 from petitions.models import Petition, Tag
@@ -352,6 +352,7 @@ def sorting_controller(key, query=None):
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
+        'archived': archived(),
         'similar': similar_petitions(query),
 	    'in progress': in_progress(),
         'responded': responded()
@@ -380,19 +381,22 @@ def last_signed():
     .order_by('-last_signed')
 
 def search(query):
-    vector = SearchVector('title', 'description')
+    vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
+    .select_related('author', 'response') \
+    .prefetch_related('tags', 'updates') \
     .filter(status=1) \
-    .order_by('-rank')[:50][::-1]
+    .filter(rank__gte=0.35) \
+    .order_by('-rank')
 
 def similar_petitions(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
-    .filter(rank__gte=0.3) \
-    .filter(status=1) \
-    .order_by('-rank') 
+        .filter(rank__gte=0.3) \
+        .filter(status=1) \
+        .order_by('-rank')
 
 def in_progress():
     return Petition.objects.all() \
@@ -407,3 +411,9 @@ def responded():
     .filter(status=1) \
     .filter(has_response=True) \
     .order_by('-created_at')
+
+def archived():
+    return Petition.objects.all()\
+        .filter(expires__lt=timezone.now())\
+        .filter( Q(response=None) )\
+        .order_by('-created_at')

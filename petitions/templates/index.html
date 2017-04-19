@@ -220,48 +220,7 @@
         .slide {
             height: 100%;
         }
-        /* -- Tiles -- */
-        .tile-container{
-            overflow: hidden;
-            padding-top: 1em;
-            padding-bottom: 1em;
-        }
-        .tile{
-            line-height: 150px;
-            text-transform: uppercase;
-            font-size: 1.3em !important;
-            float: left;
-            margin-bottom: 5px;
-        }
-        .tile .material-icons{
-            font-size: 1.3em !important;
-        }
-        .three-tiles .tile{
-            width: calc(33.33% - 15px);
-            padding: 7px;
-        }
-        .three-tiles .tile:first-child{
-            border-right: 1px solid #ccc;
-            margin-left: 1px;
-        }
-        .three-tiles .tile:last-child{
-            border-right: none;
-            border-left: 1px solid #ccc;
-        }
-        .tile:hover{
-            background-color: {{ colors.highlight }};
-            color: {{ colors.bright_text }};
-            cursor: pointer;
-            -webkit-transform: translateY(-10px);
-            -moz-transform: translateY(-10px);
-            -ms-transform: translateY(-10px);
-            -o-transform: translateY(-10px);
-            transform: translateY(-10px);
-            -webkit-box-shadow: 0px 0px 5px 0px #ddd;
-            -moz-box-shadow:    0px 0px 5px 0px #ddd;
-            -o-box-shadow:      0px 0px 5px 0px #ddd;
-            box-shadow:         0px 0px 5px 0px #ddd;
-        }
+        /* -- END slide show styling -- */
         #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
         }
@@ -769,6 +728,7 @@
 </div>
 
 <main class="full-width">
+
     <a id="landing-marker"></a>
     <section id="landing" class="parallax-container">
         <div id="parallax-slideshow" class="full-width">
@@ -788,17 +748,20 @@
             </label>
         </div>
     </section>
-    <div id="tags-container">
-        <h3>Sort By:</h3>
-        <select id="sort" data-filter="all">
-            <option value="most recent" selected="selected">Most Recent</option>
-            <option value="most signatures">Most Signatures</option>
-            <option value="last signed">Last Signed</option>
-            <option value="in progress">In Progress</option>
-            <option value="responded">Responded</option>
-        </select>
-        <nav id="tags">
-            <h5>Tags:</h5>
+
+    <section id="sub-landing">
+
+        <nav id="filter-sort">
+            <h3>Sort By:</h3>
+            <select id="sort" data-filter="all">
+                <option value="most recent" selected="selected">Most Recent</option>
+                <option value="most signatures">Most Signatures</option>
+                <option value="last signed">Last Signed</option>
+                <option value="in progress">In Progress</option>
+                <option value="responded">Responded</option>
+                <option value="archived">Archived</option>
+            </select>
+            <h5>Filter By Tag:</h5>
             <ul class="list full-width">
                 <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
                 {% for tag in tags %}
@@ -806,37 +769,38 @@
                 {% endfor %}
             </ul>
         </nav>
-    </div>
-    <section id="petitions">
-        <div v-if="loading" id="loading-petitions">
-            <div class="load-container">
-                <ul class="load-flex-container">
-                    <li>
-                        <span class="load-loading"></span>
-                    </li>
+
+        <div id="petitions">
+            <div v-if="loading" id="loading-petitions">
+                <div class="load-container">
+                    <ul class="load-flex-container">
+                        <li>
+                            <span class="load-loading"></span>
+                        </li>
+                    </ul>
+                </div>
+                Loading Petitions...
             </div>
-            Loading Petitions...
+            <div class="block padding text-center" v-if="list.length == 0 && !loading">
+                <span class="padding-top">No petitions fit that query!</span>
+            </div>
+            <div v-if="list.length > 0" id="petitions-container">
+                <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
+                    <h4 class="petition-signatures">
+                        {[ petition.signatures ]}
+                        <span v-if="petition.signatures == 1"> Signature</span>
+                        <span v-else> Signatures</span>
+                    </h4>
+                    <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
+                    <ul>
+                        <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
+                    </ul>
+                </article>
+            </div>
         </div>
-        <div class="block padding text-center" v-if="list.length == 0 && !loading">
-            <span class="padding-top">No petitions fit that query!</span>
-        </div>
-        </div>
-        <div v-if="list.length > 0" id="petitions-container">
-            <!--      Vus.js template for listing petitions      -->
-            <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
-                <h4 class="petition-signatures">
-                    {[ petition.signatures ]}
-                    <span v-if="petition.signatures == 1"> Signature</span>
-                    <span v-else> Signatures</span>
-                </h4>
-                <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
-                <ul>
-                    <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
-                </ul>
-            </article>
-            <!--      End Vue.js template      -->
-        </div>
+
     </section>
+
 </main>
 
 {% if user.first_name %}
@@ -862,6 +826,9 @@
      *      - list: the list of petitions and all of their data
      *      - map: the mapping of a petitions ID to its index in the list of petitions.
      */
+    /**
+     * "petitions" holds all of the data for all petitions.
+     **/
     var petitions = new Vue({
         el: "#petitions",
         data: {
@@ -871,6 +838,10 @@
         },
         delimiters: ['{[', ']}']
     });
+    /**
+     * "modalData" defines the state for the modal popup.
+     * Social buttons may be added / configured here.
+     **/
     var modalData = new Vue({
         el: "#petition-modal",
         data:{
@@ -918,6 +889,10 @@
             }
         }
     });
+    /**
+     * "search" defines how searching petitions is handled.
+     * It is bound to the search-container element.
+     **/
     timeout = setTimeout(function(){},0);
     var search = new Vue({
         el:"#search-container",
@@ -940,7 +915,7 @@
         }
     });
     /**
-     * slideshow_images is the Vue instance that builds slide show images.
+     * "slideshow_images" is the Vue instance that builds slide show images.
      * The data set is randomized before displaying the images in the slide show.
      * Change the limit to change the amount of images in the slide show (set to 0 to show all images).
      * Add more images by copying one of the objects in the images list.
@@ -1011,34 +986,6 @@
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
 
     }
-    function initWaypoints(){
-        // Setup the scroll waypoints for the page.
-
-        var tagsWaypoint = $('#tags').find("ul").waypoint(function(direction){
-
-            if(direction == "down"){
-
-                $("#tags").appendTo('header');
-                $("#tags-container").css({"padding-bottom":$("#tags").height()+90+"px"});
-                $("#back-up").fadeIn(300,function(){
-                    $(this).addClass("transition");
-                });
-
-            }
-            else{
-
-                $("#tags").appendTo('#tags-container');
-                $("#tags-container").removeAttr("style");
-                $("#back-up").removeClass("transition").fadeOut(300);
-
-            }
-
-        },{
-
-            offset: '10px'
-
-        });
-    }
     function scroll(to_elem){
         var offset = to_elem.offset().top;
         offset -= 60;
@@ -1073,6 +1020,15 @@
             return false;
         }
     }
+    function unescape(string){
+        return string.replace(/\\"/g,"'")
+                     .replace(/\"/g,'')
+                     .replace(/"/g,"")
+                     .replace(/\\n/g, "\n")
+                     .replace(/(\\u201c|\\u201d)/g,'\"')
+                     .replace(/\\u2014/g,'&mdash;')
+                     .replace(/(\\u2019|\\u2018)/g,"'");
+    }
     function openPetition(petitionID, auto_open = false){
         // Renders the petition data into a petition model and also updates browser history.
 
@@ -1106,14 +1062,7 @@
                 var responseBlock = {
                     type:"response",
                     author: response.author,
-                    content:response.description
-                            .replace(/\\"/g,"'")
-                            .replace(/\"/g,'')
-                            .replace(/"/g,"")
-                            .replace(/\\n/g, "\n")
-                            .replace(/(\\u201c|\\u201d)/g,'\"')
-                            .replace(/\\u2014/g,'&mdash;')
-                            .replace(/(\\u2019|\\u2018)/g,"'"),
+                    content:unescape(response.description),
                     date: response.timestamp
                 }
                 modalData.timeline.push(responseBlock);
@@ -1128,14 +1077,7 @@
                     var updateBlock = {
                         type:"update",
                         author: "",
-                        content:update.description
-                                .replace(/\\"/g,"'")
-                                .replace(/\"/g,'')
-                                .replace(/"/g,"")
-                                .replace(/\\n/g, "\n")
-                                .replace(/(\\u201c|\\u201d)/g,'\"')
-                                .replace(/\\u2014/g,'&mdash;')
-                                .replace(/(\\u2019|\\u2018)/g,"'"),
+                        content:unescape(update.description),
                         date: update.timestamp
                     }
                     modalData.timeline.push(updateBlock);
@@ -1145,14 +1087,7 @@
             var description = {
                 type:"description",
                 author: toPetition.author,
-                content:toPetition.description
-                        .replace(/\\"/g,"'")
-                        .replace(/\"/g,'')
-                        .replace(/"/g,"")
-                        .replace(/\\n/g, "\n")
-                        .replace(/(\\u201c|\\u201d)/g,'\"')
-                        .replace(/\\u2014/g,'&mdash;')
-                        .replace(/(\\u2019|\\u2018)/g,"'"),
+                content:unescape(toPetition.description),
                 date: toPetition.timestamp
             };
 
@@ -1246,14 +1181,7 @@
                                     var updateBlock = {
                                         type:"update",
                                         author: "",
-                                        content:update.description
-                                                .replace(/\\"/g,"'")
-                                                .replace(/\"/g,'')
-                                                .replace(/"/g,"")
-                                                .replace(/\\n/g, "\n")
-                                                .replace(/(\\u201c|\\u201d)/g,'\"')
-                                                .replace(/\\u2014/g,'&mdash;')
-                                                .replace(/\\u2019/g,"'"),
+                                        content:unescape(update.description),
                                         date: update.timestamp
                                     }
 
@@ -1358,8 +1286,6 @@
         $("#parallax-slideshow").parallax({divisor:-2.5});
         $("#parallax-overlay").parallax({divisor:-5,offset:30});
         $(".slideshow-container").slideshow();
-
-        initWaypoints();
 
         $("#is-logged-in").click(function(){
 
