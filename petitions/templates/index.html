@@ -26,31 +26,17 @@
         #logo{
             font-size: 2em;
         }
-        /* -- Page-Specific Classes -- */
         .tag:hover{
             cursor: pointer;
         }
-        .current-tag{
-            color: {{ colors.highlight }} !important;
+
+        /* -- Slide Show Styles -- */
+        .slide {
+            height: 100%;
         }
+        /* -- END slide show styling -- */
+
         /* -- Page-Specific IDs -- */
-        #tags-container{
-            background-color: #f5f5f5;
-            display: block;
-            overflow: hidden;
-            text-align: center;
-        }
-        #tags{
-            padding: 10px 10px calc(10px + 0.75em);
-            text-align: center;
-            font-size: 0.8em;
-            text-transform: uppercase;
-            background-color: #f5f5f5;
-        }
-        #tags .list-item{
-            display: inline-block;
-            padding: 5px;
-        }
         #parallax-overlay{
             text-align: center;
             color: #fff;
@@ -73,28 +59,19 @@
             text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.8);
             font-weight: 400;
         }
-        #sub-landing{
-            text-align: center;
-        }
-        #tiles{
-            position: relative;
-        }
-        #tile-background-parallax{
-            background-size:cover;
-            background: no-repeat center;
-            width: 100%;
-            height: 100%;
-        }
         #search-container{
             text-align: center;
             display: block;
             text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
         }
         #search-term{
             width: 0;
             opacity:0;
             padding:1px;
             color: #fff;
+            font-family: inherit;
         }
         #search-term:focus{
             opacity: 1;
@@ -110,6 +87,11 @@
             margin-top: 0;
             padding-top: 2em;
             font-weight: 300;
+        }
+        #sub-landing{
+            min-height: calc(100vh - 65px);
+            background-color: #f5f5f5;
+            overflow: hidden;
         }
         #new-petition{
             position: fixed;
@@ -134,10 +116,72 @@
             box-shadow:         0px 2px 10px 0px rgba(0,0,0,0.4);
             text-shadow:        0px 5px 10px rgba(0,0,0,0.2);
         }
+        #filter-sort{
+            width: 300px;
+            overflow-y: auto;
+            position: relative;
+            max-height: calc(100vh - 65px);
+        }
+        #filter-sort h3, #filter-sort h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            color: #757575;
+        }
+        #filter-sort select{
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            -o-appearance: none;
+            appearance: none;
+            width: 196px;
+            padding:10px;
+            border: none;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 0.9em;
+            color: #757575;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAhklEQVR4Ae3NsQ3CYAxE4VdmA/KvgygQLAtdJgkZhVSmQ8hFLKwr76tP9zAzMytdOFEZnGm6s7MWicHGmysNN3aCyIl8TxC9xJMgDhOD13fz4G8Ty2Fi/rlfmECQENwXCcF9kZDcF4mZNd9rE/L7nEj38kS61yfSvT6R7vWJdK9PdO7NzMw+ihJ379BDyXQAAAAASUVORK5CYII=');
+            background-position: 90% 50%;
+            background-repeat: no-repeat;
+            background-size: 30px;
+            background-color: #fff;
+        }
+        #filter-sort-content-box{
+            width: 200px;
+            margin-left: 50px;
+            text-align: left;
+        }
+        #filter-sort .tag{
+            text-transform: capitalize;
+            font-size: 1em;
+            padding-top: 5px;
+            padding-bottom:5px;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top:5px;
+        }
+        #filter-sort .tag:hover:not(.current-tag){
+            background-color:#fff;
+            -webkit-box-shadow: 0px 0px 5px 0px #eee;
+            -moz-box-shadow:    0px 0px 5px 0px #eee;
+            -o-box-shadow:      0px 0px 5px 0px #eee;
+            box-shadow:         0px 0px 5px 0px #eee;
+        }
+        #filter-sort .current-tag{
+            color: {{ colors.highlight }} !important;
+            background-color: #fff;
+            -webkit-box-shadow: 0px 0px 5px 0px #eee;
+            -moz-box-shadow:    0px 0px 5px 0px #eee;
+            -o-box-shadow:      0px 0px 5px 0px #eee;
+            box-shadow:         0px 0px 5px 0px #eee;
+        }
         /* - Petitions - */
         #petitions{
-            background-color: #fafafa;
             padding-bottom: 1em;
+            width: calc(100% - 300px);
+
         }
         #petitions-container{
             overflow: hidden;
@@ -153,8 +197,8 @@
         .petition{
             background-color: #fff;
             color: #0f0f0f;
-            padding: 1.2em;
-            width: calc(100% - 10px - 2.2em);
+            padding-bottom: 1.2em;
+            width: calc(100% - 10px);
             margin-left: 5px;
             margin-right: 5px;
             overflow: hidden;
@@ -166,14 +210,30 @@
         .petition:hover{
             cursor: pointer;
         }
+        .petition progress{
+            height: 10px;
+            display: block;
+            border-radius: 0 !important;
+        }
+        progress[value]::-webkit-progress-bar {
+            border-radius: 0 !important;
+        }
+        progress[value]::-moz-progress-bar {
+            border-radius: 0 !important;
+        }
+        .petition-body{
+            padding: 1.2em;
+        }
         .petition-signatures{
             margin-top: 0;
             padding-top: 0;
             font-weight: 300;
         }
         .petition-title{
-            font-weight: 300;
-            font-family: "Raleway", Arial;
+            font-weight: 700;
+            font-family: "Montserrat", sans-serif;
+            text-transform: capitalize;
+            font-size: 1.5em;
         }
         .petition ul{
             overflow: visible;
@@ -185,14 +245,15 @@
         }
         .petition .tag{
             display: inline-block;
-            padding: 5px 7px;
-            margin: 5px 7px 0 0;
+            padding: 5px 10px;
+            margin: 5px 7px 0 0px;
             float: left;
             background-color: {{ colors.highlight }};
             color: {{ colors.bright_text }};
             -webkit-border-radius:40px;
             -moz-border-radius:40px;
             border-radius:40px;
+            font-weight: 400;
         }
         .petition .tag:hover{
             -webkit-box-shadow: 0px 0px 5px 0px #aaa;
@@ -201,26 +262,6 @@
             box-shadow:         0px 0px 5px 0px #aaa;
             background-color: {{ colors.highlight_hover }};
         }
-        .box{
-            padding: 5px 20px 15px 20px;
-        }
-        .box-title{
-            font-weight: 300;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ccc;
-            text-align: left;
-            margin-top: 0;
-            padding-top: 1em;
-            padding-bottom: 1em;
-            margin-bottom: 1.5em;
-            color: #696969;
-            font-size: 0.8em;
-        }
-        /* -- Slide Show Styles -- */
-        .slide {
-            height: 100%;
-        }
-        /* -- END slide show styling -- */
         #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
         }
@@ -412,9 +453,8 @@
             z-index:1;
         }
         progress[value]::-webkit-progress-bar {
-            background-color: #eee;
+            background-color: #cfcfcf;
             border-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
             content: "1";
             color:#fff;
             text-align: center;
@@ -441,6 +481,22 @@
 
 
         /* -- Responsiveness -- */
+        @media screen and (max-width: 1020px){
+            #filter-sort{
+                width: 200px;
+                position: relative;
+            }
+            #filter-sort-content-box{
+                width: 180px;
+                margin-left: 10px;
+            }
+            #filter-sort select{
+                width: 177px;
+            }
+            #petitions{
+                width: calc(100% - 200px);
+            }
+        }
         @media screen and (max-width: 900px){
             #tiles{
                 padding: 0;
@@ -456,6 +512,19 @@
                 column-count:2;
             }
         }
+        @media screen and (max-width: 600px){
+            #filter-sort{
+                float: none;
+                position: relative !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0;
+            }
+            #petitions{
+                float: none;
+                width: 100%;
+            }
+        }
         @media screen and (max-width: 700px){
             #sign-petition-button,#social-share{
                 margin-top: 38px;
@@ -463,8 +532,6 @@
             #petition-modal .modal-body:after{
                 margin-left:0;
             }
-        }
-        @media screen and (max-width: 600px){
             #petitions-container{
                 -moz-column-count: 1;
                 -webkit-column-count:1;
@@ -751,26 +818,28 @@
 
     <section id="sub-landing">
 
-        <nav id="filter-sort">
-            <h3>Sort By:</h3>
-            <select id="sort" data-filter="all">
-                <option value="most recent" selected="selected">Most Recent</option>
-                <option value="most signatures">Most Signatures</option>
-                <option value="last signed">Last Signed</option>
-                <option value="in progress">In Progress</option>
-                <option value="responded">Responded</option>
-                <option value="archived">Archived</option>
-            </select>
-            <h5>Filter By Tag:</h5>
-            <ul class="list full-width">
-                <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
-                {% for tag in tags %}
-                    <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
-                {% endfor %}
-            </ul>
+        <nav id="filter-sort" class="left attach" data-top="61" data-left="0">
+            <div id="filter-sort-content-box">
+                <h3>Sort By:</h3>
+                <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
+                    <option value="most recent" selected="selected">Most Recent</option>
+                    <option value="most signatures">Most Signatures</option>
+                    <option value="last signed">Last Signed</option>
+                    <option value="in progress">In Progress</option>
+                    <option value="responded">Responded</option>
+                    <option value="archived">Archived</option>
+                </select>
+                <h5>Filter By Tag:</h5>
+                <ul class="list full-width">
+                    <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
+                    {% for tag in tags %}
+                        <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </nav>
 
-        <div id="petitions">
+        <div id="petitions" class="right">
             <div v-if="loading" id="loading-petitions">
                 <div class="load-container">
                     <ul class="load-flex-container">
@@ -786,15 +855,18 @@
             </div>
             <div v-if="list.length > 0" id="petitions-container">
                 <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
-                    <h4 class="petition-signatures">
-                        {[ petition.signatures ]}
-                        <span v-if="petition.signatures == 1"> Signature</span>
-                        <span v-else> Signatures</span>
-                    </h4>
-                    <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
-                    <ul>
-                        <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
-                    </ul>
+                    <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                    <div class="petition-body">
+                        <h4 class="petition-signatures">
+                            {[ petition.signatures ]}
+                            <span v-if="petition.signatures == 1"> Signature</span>
+                            <span v-else> Signatures</span>
+                        </h4>
+                        <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
+                        <ul>
+                            <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
+                        </ul>
+                    </div>
                 </article>
             </div>
         </div>
@@ -910,6 +982,12 @@
                         console.log("Search: "+search.searchString);
                         socket.send('{"command":"search","query":"'+search.searchString+'"}');
                     }
+                    else{
+                        var sort = $("#sort");
+                        var filter_tag = sort.data("filter");
+                        var sort_by = sort.val();
+                        reloadPetitions(sort_by, filter_tag, socket);
+                    }
                 },300);
             }
         }
@@ -988,7 +1066,7 @@
     }
     function scroll(to_elem){
         var offset = to_elem.offset().top;
-        offset -= 60;
+        offset -= $("header").height() - 1;
         $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
     }
     function updatePetitionHistory(petitionID){

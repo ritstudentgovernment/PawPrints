@@ -2,7 +2,8 @@
 html, body{
     margin: 0;
     padding: 0;
-    font-family: "Work Sans", Arial;
+    font-family: "Raleway", Arial;
+    font-weight: 300;
     background-color: #fefefe;
 }
 header{
@@ -34,6 +35,14 @@ main{
 }
 .full-width{
     width: 100%;
+    overflow: hidden;
+}
+.one-quarter-width{
+    width: 25%;
+    overflow: hidden;
+}
+.three-quarter-width{
+    width: 75%;
     overflow: hidden;
 }
 .ninety-width {
@@ -207,6 +216,9 @@ nav .margin-right{
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
     border: 1px solid #000;
+}
+.attached{
+    position: fixed !important;
 }
 /* -- Global IDs -- */
 #logo{

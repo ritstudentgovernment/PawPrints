@@ -48,9 +48,49 @@ $(document).ready(function(){
     var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
         if(direction == "down"){
             $("header").addClass("small-header header-scrolled");
+            $(".attach").each(function(){
+                var me = $(this);
+                var topPos = me.data("top");
+                var leftPos = me.data("left");
+                var rightPos = me.data("right");
+                var bottomPos = me.data("bottom");
+                me.addClass("attached");
+                if(topPos !== undefined){
+                    me.css({"top":topPos+"px"});
+                }
+                if(leftPos !== undefined){
+                    me.css({"left":leftPos+"px"});
+                }
+                if(rightPos !== undefined){
+                    me.css({"right":rightPos+"px"});
+                }
+                if(bottomPos !== undefined){
+                    me.css({"bottom":bottomPos+"px"});
+                }
+            });
         }
         else{
             $("header").removeClass("small-header header-scrolled");
+            $(".attach").each(function(){
+                var me = $(this);
+                var topPos = me.data("top");
+                var leftPos = me.data("left");
+                var rightPos = me.data("right");
+                var bottomPos = me.data("bottom");
+                me.removeClass("attached");
+                if(topPos !== undefined){
+                    me.css({"top":""});
+                }
+                if(leftPos !== undefined){
+                    me.css({"left":""});
+                }
+                if(rightPos !== undefined){
+                    me.css({"right":""});
+                }
+                if(bottomPos !== undefined){
+                    me.css({"bottom":""});
+                }
+            });
         }
     }, {
         offset: '60px'
