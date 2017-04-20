@@ -2,7 +2,7 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.views.generic import View
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest, HttpResponseNotFound
 from .util import prepare_django_request
 from onelogin.saml2.settings import OneLogin_Saml2_Settings
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
@@ -22,6 +22,9 @@ class InitAuthView(SettingsMixin, View):
         return redirect(auth.login(return_to=return_url))
 
 class CompleteAuthView(SettingsMixin, View):
+    def get(self, request):
+        return HttpResponseNotFound()
+
     def post(self, request):
         req = prepare_django_request(request)
         auth = OneLogin_Saml2_Auth(req, self.get_settings())
@@ -31,7 +34,7 @@ class CompleteAuthView(SettingsMixin, View):
         errors = auth.get_errors()
 
         if not errors:
-            if auth.is_authenticated():
+            if auth.is_authenticated:
                 user = authenticate(saml_authentication=auth)
                 login(self.request, user)
                 if 'RelayState' in req['post_data'] and OneLogin_Saml2_Utils.get_self_url(req) != req['post_data']['RelayState']:

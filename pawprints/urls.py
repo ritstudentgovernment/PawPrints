@@ -26,8 +26,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^metadata/$', MetadataView.as_view(), name='metadata'),
     url(r'^login/', InitAuthView.as_view(), name='init-auth'),
-    url(r'^complete-auth/', csrf_exempt(CompleteAuthView.as_view()), name='complete-auth'),
-    url(r'^login/', user_login, name='user_login'),
+    url(r'^acs/', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
     url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
     url(r'^profile/', include('profile.urls'))
