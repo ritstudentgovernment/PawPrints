@@ -736,6 +736,7 @@
 </head>
 <body>
 
+<div id="wrapper">
 {% include 'header.html' %}
 <div id="petition-modal" class="hidden">
     <div class="modal">
@@ -876,7 +877,7 @@
 {% endif %}
 
 <a id="back-up" href="#landing-marker" class="padding transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
-
+</div>
 {% csrf_token %}
 </body>
 <script>
