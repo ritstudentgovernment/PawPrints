@@ -33,7 +33,11 @@
                         <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
                     {% endif %}
                 </span>
-                <i id="menu-icon" class="material-icons hidden">menu</i>
+                <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
+                  <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                  </span>
+                </button>
             </span>
         </div>
         <div class="text-center">
@@ -43,5 +47,35 @@
                 </a>
             </span>
         </div>
+        <nav id="mobile-nav">
+            <div>
+                <ul>
+                    {% if user.first_name %}
+                        <li>
+                            <span>
+                                View Your Account
+                            </span>
+                            <ul>
+                                <li><span><h3>Hi there, {{ user.first_name }}.</h3></span></li>
+                                <li><a>Log Out</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                            <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
+                    {% endif %}
+                    <li><a href="/">Home</a></li>
+                    <li>
+                        <span>Student Government</span>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/">About</a></li>
+                            <li><a href="/">Services</a></li>
+                            <li><a href="/">Resources</a></li>
+                            <li><a href="/">Get Involved</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </header>
