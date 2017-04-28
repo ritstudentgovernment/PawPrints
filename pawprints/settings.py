@@ -14,6 +14,7 @@ import os
 from pawprints import secrets 
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,9 +37,16 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = ['send_mail.tasks']
 
+# Sentry Settings
+RAVEN_CONFIG = {
+    'dsn': secrets.RAVEN_DSN,
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
+
 # Application definition
 
 INSTALLED_APPS = [
+    'raven.contrib.django.raven_compat',
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
