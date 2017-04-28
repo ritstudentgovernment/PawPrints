@@ -200,6 +200,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'formatter': 'verbose',
+        },
         'rotate_file_errors':{
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -218,11 +223,6 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
-        'slack_handler': {
-            'level': 'ERROR',
-            'class': 'log.slackhandler.SlackHandler',
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'pawprints': {
@@ -231,12 +231,12 @@ LOGGING = {
             'propagate': True,
         },
         'pawprints': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         }
