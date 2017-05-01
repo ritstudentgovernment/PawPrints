@@ -24,9 +24,9 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^petitions/', views.load_petitions),
     url(r'^admin/', admin.site.urls),
-    url(r'^metadata/$', MetadataView.as_view(), name='metadata'),
+    url(r'^saml$', MetadataView.as_view(), name='metadata'),
     url(r'^login/', InitAuthView.as_view(), name='init-auth'),
-    url(r'^acs/', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
+    url(r'^acs$', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
     url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
     url(r'^profile/', include('profile.urls'))

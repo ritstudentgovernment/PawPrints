@@ -2,9 +2,9 @@
     "strict": true,
     "debug": true,
     "sp": {
-        "entityId": "http://<URL>/metadata/",
+        "entityId": "http://<URL>/saml",
         "assertionConsumerService": {
-            "url": "http://<URL>/acs/",
+            "url": "http://<URL>/acs",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
         },
         "singleLogoutService": {
