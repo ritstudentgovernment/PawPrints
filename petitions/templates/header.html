@@ -1,13 +1,318 @@
-<header class="full-width fixed large-header">
-    <div id="sg-nav" class="transition overflow-hidden">
-        <a href="" title="Go to the RIT SG Website!" class="left">RIT Student Government</a>
-        <ul class="list right overflow-hidden padding-left margin-left">
-            <li class="list-item inline-block left padding-left margin-left"><a href="">About</a></li>
-            <li class="list-item inline-block left padding-left margin-left"><a href="">Services</a></li>
-            <li class="list-item inline-block left padding-left margin-left"><a href="">Resources</a></li>
-            <li class="list-item inline-block left padding-left margin-left"><a href="">Get Involved</a></li>
-        </ul>
+<script>
+    function openDropdown(id) {
+        console.log(document.getElementById(id));
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (i = 0; i != dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+        document.getElementById("myDropdown"+id).classList.toggle("show");
+    }
+
+
+    function closeDropdown(id) {
+        console.log(document.getElementById(id)+"close");
+        document.getElementById("myDropdown"+id).classList.remove("show");
+
+    }
+
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i != dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+<nav>
+    <div class = "header-top">
+
+        <div class="dropdown-left">
+            <a href="https://sg.rit.edu/">RIT Student Government</a>
+        </div>
+
+        <div class="dropdown-right-main">
+            <button id="1" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">
+                About
+                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
+                <div id="myDropdown1" class="dropdown-content">
+                    <a href="https://sg.rit.edu/about/leadership/">Leadership</a>
+                    <a href="https://sg.rit.edu/about/">Structure</a>
+                    <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
+                    <a href="https://sg.rit.edu/about/committees/">Committees</a>
+                    <a href="https://sg.rit.edu/about/msos/">MSO's</a>
+                    <a href="https://sg.rit.edu/awards/">Awards</a>
+                </div>
+            </button>
+
+            <button id="2" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Services
+                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
+                <div id="myDropdown2" class="dropdown-content">
+                    <a href="https://sg.rit.edu/services/">Services Overview</a>
+                    <a href="https://pawprints.rit.edu/">Paw Prints</a>
+                    <a href="https://bikeshare.rit.edu/">Bike Share</a>
+                    <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
+                    <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
+                    <a href="https://openevals.rit.edu/">Open Evals</a>
+                    <a href="https://sites.sg.rit.edu/">SG Sites</a>
+                    <a href="https://sg.rit.edu/finance/">Finance</a>
+                    <a href="https://sg.rit.edu/breakbus/">Bike Share</a>
+                </div>
+            </button>
+
+            <button id="3" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Resources
+                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
+                <div id="myDropdown3" class="dropdown-content">
+                    <a href="https://sg.rit.edu/sgupdates/">SG Updates</a>
+                    <a href="https://sg.rit.edu/resources/">Resourse List</a>
+                    <a href="https://sg.rit.edu/resources/sg-logos/">SG Logos</a>
+                </div>
+            </button>
+
+            <button id="4" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Get Involved
+                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
+                <div id="myDropdown4" class="dropdown-content">
+                    <a href="https://sg.rit.edu/spirit/">Project SpiRIT</a>
+                    <a href="https://sg.rit.edu/get-involved/events-calendar/">Event Calendar</a>
+                    <a href="https://sg.rit.edu/get-involved/">Opportunities</a>
+                </div>
+            </button>
+        </div>
+
+        <div class="dropdown-right-mobile">
+            <button id="10" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn-mobile">
+                <i class="material-icons">dehaze</i>
+
+                <div id="myDropdown10" class="dropdown-content-mobile">
+
+                    <p>About</p>
+                    <a href="https://sg.rit.edu/about/leadership/">Leadership</a>
+                    <a href="https://sg.rit.edu/about/">Structure</a>
+                    <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
+                    <a href="https://sg.rit.edu/about/committees/">Committees</a>
+                    <a href="https://sg.rit.edu/about/msos/">MSO's</a>
+                    <a href="https://sg.rit.edu/awards/">Awards</a>
+
+                    <p>Services</p>
+                    <a href="https://sg.rit.edu/services/">Overview</a>
+                    <a href="https://pawprints.rit.edu/">Paw Prints</a>
+                    <a href="https://bikeshare.rit.edu/">Bike Share</a>
+                    <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
+                    <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
+                    <a href="https://openevals.rit.edu/">Open Evals</a>
+                    <a href="https://sites.sg.rit.edu/">SG Sites</a>
+                    <a href="https://sg.rit.edu/finance/">Finance</a>
+                    <a href="https://sg.rit.edu/breakbus/">Bike Share</a>
+
+                    <p>Resources</p>
+                    <a href="https://sg.rit.edu/sgupdates/">SG Updates</a>
+                    <a href="https://sg.rit.edu/resources/">Resourse List</a>
+                    <a href="https://sg.rit.edu/resources/sg-logos/">SG Logos</a>
+
+                    <p>Get Involved</p>
+                    <a href="https://sg.rit.edu/spirit/">Project SpiRIT</a>
+                    <a href="https://sg.rit.edu/get-involved/events-calendar/">Event Calendar</a>
+                    <a href="https://sg.rit.edu/get-involved/">Opportunities</a>
+                </div>
+            </button>
+
+        </div>
+
     </div>
+</nav>
+
+
+<style>
+
+    .dropbtn {
+        background-color: #ff7700;
+        color: white;
+        font-size: 12px;
+        padding-right: 20px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        outline: 0;
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+
+    .dropbtn-mobile {
+        background-color: #ff7700;
+        color: white;
+        font-size: 12px;
+        padding-right: 40px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        outline: 0;
+        height: 20px;
+    }
+
+    .dropdown-left {
+        text-align: left;
+        position: fixed;
+        display: inline-block;
+        width: 50%;
+        z-index: 99;
+        height: 30px;
+        padding-left: 30px;
+        margin-right: 50%;
+        font-family: "Montserrat";
+        padding-top: 2px;
+    }
+
+    .dropdown-right-main {
+        position: fixed;
+        display: inline-block;
+        width: 50%;
+        z-index: 99;
+        height: 30px;
+        padding-right: 75px;
+        margin-left: 50%;
+        font-family: "Montserrat";
+        text-align: right;
+    }
+
+
+    .dropdown-right-mobile {
+        display: none;
+        position: fixed;
+        width: 50%;
+        z-index: 99;
+        height: 30px;
+        padding-right: 75px;
+        margin-left: 50%;
+        font-family: "Montserrat";
+        text-align: right;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        font-size: 12px;
+        border-top: 8px;
+        border-top-style: solid;
+        border-top-color: #ff7700;
+        margin-top: 5px;
+        font-family: "Montserrat";
+        text-align: left;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-family: "Montserrat";
+    }
+
+    .dropdown-content-mobile p {
+        color: black;
+        padding: 8px 12px;
+        text-decoration: none;
+        display: block;
+        font-family: "Montserrat";
+        margin-bottom: 0px;
+        background-color: lightgrey;
+    }
+
+    .dropdown-content a:hover
+    {
+        color: grey;
+    }
+
+    .dropdown-content-mobile a
+    {
+        color: black;
+        padding: 0px 8px;
+        text-decoration: none;
+        display: block;
+        font-family: "Montserrat";
+    }
+
+    .dropdown-content-mobile a:hover
+    {
+        color: grey;
+    }
+
+    .dropdown-content-mobile
+    {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        font-size: 12px;
+        border-top-style: solid;
+        border-top-color: #ff7700;
+        font-family: "Montserrat";
+        text-align: left;
+    }
+
+    .dropdown-left a {
+        background-color: #ff7700;
+        font-weight: bold;
+        color: white;
+        font-size: 12px;
+        border: none;
+        cursor: pointer;
+        font-family: "Montserrat";
+        height: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .dropdown-left a:hover {
+        text-decoration: none;
+    }
+
+
+    .header-top{
+        height: 30px;
+        background-color: #ff7700;
+        z-index: 1001;
+        position: fixed;
+        top:0;
+        left:0;
+        right:0;
+    }
+    html,body{
+        position: relative;
+    }
+
+    .show {display:block;}
+
+    @media screen and (max-width: 992px)
+    {
+        .dropdown-right-main
+        {
+            display: none;
+        }
+        .dropdown-right-mobile{
+            display: inline-block;;
+        }
+    }
+
+</style>
+<header class="full-width fixed transition large-header">
     <div id="header-top" class="transition">
         <nav class="left">
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
@@ -20,10 +325,10 @@
             </ul>
         </nav>
         <div class="right">
-            <span id="menu" class="material-icon-container">
-                <span id="menu-content">
+            <div id="menu">
+                <div id="menu-content" class="material-icon-container">
                     {% if user.first_name %}
-                        <span id="user-welcome">Welcome, {{ user.first_name }}</span>
+                        <span>Hi there, {{ user.first_name }}</span>
                         <i class="material-icons">keyboard_arrow_down</i>
                         <ul id="account-dropdown" class="list hidden">
                             <li class="list-item">Account</li>
@@ -32,13 +337,13 @@
                     {% else %}
                         <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
                     {% endif %}
-                </span>
+                </div>
                 <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
                   <span class="hamburger-box">
                     <span class="hamburger-inner"></span>
                   </span>
                 </button>
-            </span>
+            </div>
         </div>
         <div class="text-center">
             <span id="logo" class="transition">
