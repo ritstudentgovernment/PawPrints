@@ -3,12 +3,14 @@ file: consumers.py
 desc: Implements WebSocket bindings for Django Channels.
 auth: Lukas Yelle (@lxy5611)
 """
-from channels import Group
-from collections import namedtuple
-import petitions.views as views
 import json, string
+import petitions.views as views
+from collections import namedtuple
+from channels import Channel, Group
+from channels.sessions import channel_session
+from channels.auth import channel_session_user, channel_session_user_from_http
 
-def serialize_petitions(petitions_obj):
+def serialize_petitions(petitions_obj, user = None):
     """
     Helper Function.
     Serializes petitions into JSON format for transmission back to the frontend via websocket.
@@ -39,6 +41,8 @@ def serialize_petitions(petitions_obj):
                 "timestamp":u.created_at.strftime("%B %d, %Y")
             })
 
+        profile = user.profile
+
         petitions.append({
             'title': petition.title,
             'description': json.dumps(petition.description.replace("'","\'")),
@@ -49,14 +53,17 @@ def serialize_petitions(petitions_obj):
                 'author':petition.response.author,
                 'description':petition.response.description,
                 'timestamp':petition.response.created_at.strftime("%B %d, %Y")
-            }) if petition.response is not None else json.dumps({'author':""}),
+            }) if petition.response is not None else False,
             'updates':updates,
             'timestamp':petition.created_at.strftime("%B %d, %Y"),
             'expires':petition.expires.strftime("%B %d, %Y"),
             'status':petition.status,
+            'isSigned':profile.petitions_signed.filter(id=petition.id).exists() if user is not None else False,
             'id': petition.id
         })
         petition_map[petition.id] = x
+
+    print(user.id)
 
     return json.dumps({
         "petitions":petitions,
@@ -66,6 +73,7 @@ def serialize_petitions(petitions_obj):
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
+@channel_session_user_from_http
 def petitions_connect(message):
     """
     Endpoint for the petitions_connect route. Fires when web socket(WS) connections are made to the server.
@@ -83,9 +91,10 @@ def petitions_connect(message):
 
     # Send the user back the JSON serialized petition objects.
     message.reply_channel.send({
-        "text": serialize_petitions(petitions)
+        "text": serialize_petitions(petitions, message.user)
     })
 
+@channel_session_user
 def petitions_disconnect(message):
     """
     Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
@@ -94,6 +103,7 @@ def petitions_disconnect(message):
     """
     Group("petitions").discard(message.reply_channel)
 
+@channel_session_user
 def petitions_command(message):
     """
     Endpoint for the petitions_command route. Fires when a WS sends a message.
@@ -114,7 +124,7 @@ def petitions_command(message):
                     if data.filter:
                         petitions = views.filtering_controller(petitions, data.filter)
                     message.reply_channel.send({
-                        "text": serialize_petitions(petitions)
+                        "text": serialize_petitions(petitions, message.user)
                     })
                     return None
 
@@ -127,7 +137,7 @@ def petitions_command(message):
                 # Gets a single petition with a particular id.
                 if data.id:
                     petition = [views.get_petition(data.id)]
-                    petition = serialize_petitions(petition)
+                    petition = serialize_petitions(petition, message.user)
                     reply = {
                         "command": "get",
                         "petition": petition
@@ -147,7 +157,7 @@ def petitions_command(message):
                     except AttributeError:
                         pass
                     message.reply_channel.send({
-                        "text": serialize_petitions(petitions)
+                        "text": serialize_petitions(petitions, message.user)
                     })
                     return None
                 return None
