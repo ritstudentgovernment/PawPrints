@@ -175,7 +175,7 @@ def get_petition(petition_id):
     :param petition_id:
     :return:
     """
-    return Petition.objects.get(pk=petition_id)
+    return Petition.objects.get(pk=petition_id) if Petition.objects.filter(pk=petition_id).exists() else False
 
 
 # ENDPOINTS #
@@ -391,5 +391,6 @@ def responded():
 def archived():
     return Petition.objects.all()\
         .filter(expires__lt=timezone.now())\
-        .filter( Q(response=None) )\
+        .filter( Q(response=None) ) \
+        .filter(status=1) \
         .order_by('-created_at')

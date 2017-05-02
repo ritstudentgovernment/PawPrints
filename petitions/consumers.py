@@ -137,7 +137,7 @@ def petitions_command(message):
                 # Gets a single petition with a particular id.
                 if data.id:
                     petition = [views.get_petition(data.id)]
-                    petition = serialize_petitions(petition, message.user)
+                    petition = serialize_petitions(petition, message.user) if petition[0] else False
                     reply = {
                         "command": "get",
                         "petition": petition

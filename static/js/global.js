@@ -4,13 +4,14 @@
  * Auth: Lukas Yelle (lxy5611)
  * Date: 10/17/16.
  * Lang: JavaScript
- */
+ **/
 
 function getCookie(cname) {
-    /*
+    /**
     * This function was created by W3Schools.
     * It's purpose is to get a specified cookie's value.
-    * */
+    **/
+
     var name = cname + "=";
     var ca = document.cookie.split(';');
     for(var i = 0; i <ca.length; i++) {
@@ -24,13 +25,20 @@ function getCookie(cname) {
     }
     return "";
 }
+
+
 function get_csrf(){
-    /*
+    /**
     * This function returns the CSRF token for easier future use.
-    * */
+    **/
     return getCookie('csrftoken');
 }
+
+
 function getUrl(variable){
+    /**
+     * This function returns a given URL variable's value if it exists, false otherwise.
+     **/
     try{
         var query = window.location.search.substring(1);
         var vars = query.split("&");
@@ -44,6 +52,30 @@ function getUrl(variable){
         console.log("Error: " +err);
     }
 }
+
+function scroll(to_elem){
+    /**
+     * This function smoothly scrolls the viewport to a given element.
+     **/
+    var offset = to_elem.offset().top;
+    offset -= $("header").height() - 1;
+    $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
+}
+
+function verticalOffset(element, givenOffset = false){
+    /**
+     * This function is responsible for positioning (via top property) an element in the center of its
+     * parent.
+     **/
+    var elementHeight = element.height();
+    var windowHeight = $(window).height();
+    var topOffset = (windowHeight / 2) - (elementHeight / 2);
+    topOffset = topOffset > 0 ? topOffset : 0;          // Prevent negative values.
+    topOffset = !givenOffset ? topOffset : givenOffset; // Provide a offset override.
+    console.log(elementHeight + " | " + windowHeight + " = "+ topOffset);
+    element.css({"top":topOffset+"px"});
+}
+
 $(document).ready(function(){
     var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
         if(direction == "down"){

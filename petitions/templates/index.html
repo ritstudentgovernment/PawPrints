@@ -839,7 +839,8 @@
                     <div id="signature-card" class="petition-action-card left margin-left">
                         <button id="sign-petition-button" class="material material-button material-shadow transition" v-if="'{{ user.first_name }}' != ''" :disabled="petition.expired || petition.response || petition.isSigned">
                             <span v-if="petition.response && !petition.isSigned">This petition has received a response</span>
-                            <span v-else-if="!petition.response && !petition.isSigned">Sign This Petition</span>
+                            <span v-else-if="!petition.response && !petition.isSigned && !petition.expired">Sign This Petition</span>
+                            <span v-else-if="!petition.response && !petition.isSigned">This petition has expired</span>
                             <span v-else>You have signed this petition</span>
                         </button>
                         <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
@@ -858,7 +859,8 @@
                     </div>
                     <div class="petition-action-card margin-right padding-right right">
                         <h3>Status</h3>
-                        <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response">In Progress</span>
+                        <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
+                        <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
                         <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
                         <span class="alternate-font" v-else>Responded</span>
                     </div>
@@ -1141,6 +1143,11 @@
         }
     });
     function reloadPetitions(sort_by, filter, socket){
+        /**
+         * This function is responsible for loading all petitions that fit in the given filter + sort set.
+         * It just calls "list" on the socket, the actual listing action is handled upon recieving data from the socket
+         * (NOT IN THIS FUNCTION).
+         **/
 
         // load the petitions into the Vue instance.
         if($(".current-tag").attr("id") != filter){
@@ -1155,12 +1162,11 @@
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
 
     }
-    function scroll(to_elem){
-        var offset = to_elem.offset().top;
-        offset -= $("header").height() - 1;
-        $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
-    }
     function updatePetitionHistory(petitionID){
+        /**
+         * This function is responsible for handling browser history. When called it updates your browser history so you
+         * can use back/forward buttons to open / close petitions.
+         **/
         // Update history + URL.
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
@@ -1171,16 +1177,11 @@
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
-    function verticalOffset(element, givenOffset = false){
-        var elementHeight = element.height();
-        var windowHeight = $(window).height();
-        var topOffset = (windowHeight / 2) - (elementHeight / 2);
-        topOffset = topOffset > 0 ? topOffset : 0;          // Prevent negative values.
-        topOffset = !givenOffset ? topOffset : givenOffset; // Provide a offset override.
-        console.log(elementHeight + " | " + windowHeight + " = "+ topOffset);
-        element.css({"top":topOffset+"px"});
-    }
     function getPetition(petitionID){
+        /**
+         * This function is responsible for grabbing petitions. If the given petition does not exist in the data we have
+         * it calls the backend, which then grabs it.
+         **/
         if(petitions.map[petitionID] != undefined){
             return petitions.list[petitions.map[petitionID]];
         }
@@ -1190,6 +1191,9 @@
         }
     }
     function unescape(string){
+        /**
+         * This function unescapes certain characters sent in the JSON response for each petition so they show up correctly.
+         **/
         return string.replace(/\\"/g,"'")
                      .replace(/\"/g,'')
                      .replace(/"/g,"")
@@ -1199,30 +1203,37 @@
                      .replace(/(\\u2019|\\u2018)/g,"'");
     }
     function getDayDifference(date1, date2){
+        /**
+         * This function computes the difference in days between two EPOCH timestamps.
+         **/
         var timeDiff = Math.abs(date2 - date1);
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
+    openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false){
         // Renders the petition data into a petition model and also updates browser history.
 
-        if(!auto_open){
-            // If the petition was not in the URL already on page load.
-            updatePetitionHistory(petitionID);
-        }
-
-        var toPetition = getPetition(petitionID);
+        var toPetition = getPetition(petitionID); // getPetition returns false if it has to grab a petition not loaded yet.
         if(!toPetition){
 
-            setTimeout(function(){
+            openPetitionLoop = setTimeout(function(){
+                console.log("loop");
                 openPetition(petitionID, auto_open);
             },200);
 
         }
         else{
+
+            if(!auto_open){
+                // If the petition was not in the URL already on page load.
+                updatePetitionHistory(petitionID);
+            }
+
             // Apply petition data to the modal.
             var createdJSDate = new Date(toPetition.timestamp).getTime();
             var expiresJSDate = new Date(toPetition.expires).getTime();
             var currentJSDate = new Date().getTime();
+            console.log(expiresJSDate+"E : C"+currentJSDate);
             console.log(toPetition);
             modalData.petition = {
                 title:toPetition.title,
@@ -1303,8 +1314,10 @@
     }
 
     function parseOnePetition(data){
-        var petition = JSON.parse(data.petition).petitions[0];
-        console.log(petition);
+        var petition = false;
+        if(data.petition != false){
+             petition = JSON.parse(data.petition).petitions[0];
+        }
         return petition;
     }
 
@@ -1394,8 +1407,13 @@
                     else if(command == "get"){
 
                         petition = parseOnePetition(data);
-                        petitions.list.push(petition);
-                        petitions.map[petition.id] = petitions.list.indexOf(petition);
+                        if(petition){
+                            petitions.list.push(petition);
+                            petitions.map[petition.id] = petitions.list.indexOf(petition);
+                        }
+                        else{
+                            clearTimeout(openPetitionLoop);
+                        }
 
                     }
                     else{
