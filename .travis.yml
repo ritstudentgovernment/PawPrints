@@ -1,6 +1,8 @@
 ---
 language: python
 
+dist: trusty
+
 services:
   - postgresql
   - redis-server
@@ -17,8 +19,11 @@ before_install:
 install: 
   - pip install -r requirements.txt
   - pip install coverage
+  - pip install codecov
 
 before_script:
   - psql -c 'CREATE DATABASE pawprints;' -U postgres
 
-script: coverage run --source=. manage.py test
+script: coverage run manage.py test
+
+after_script: codecov

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
-    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -107,10 +106,6 @@ DATABASES = {
         'PASSWORD': secrets.DB_PASSWORD,
         'HOST': secrets.DB_HOST,
         'PORT': secrets.DB_PORT,
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
