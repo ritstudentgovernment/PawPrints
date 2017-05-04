@@ -63,8 +63,6 @@ def serialize_petitions(petitions_obj, user = None):
         })
         petition_map[petition.id] = x
 
-    print(user.id)
-
     return json.dumps({
         "petitions":petitions,
         "map":petition_map
