@@ -339,7 +339,7 @@
         #timeline-container{
             background-color: #f0f0f0;
             color: #0f0f0f;
-            padding: 5%;
+            padding: 0 5% 5%;
             position: relative;
             max-height: 55vh;
             overflow: auto;
@@ -348,23 +348,29 @@
         .modal-body{
             position: relative;
         }
-        #petition-modal .modal-body:before{
+        .timeline-element:before{
             content: '';
             position: absolute;
             top: 0;
             bottom: 0;
-            margin-left: 20px;
+            left: calc(-3vw + 3px);
             float: left;
             height: 100%;
             width: 4px;
-            background: transparent;
+            background: #ccc;
             z-index: 1;
         }
         .timeline-element{
             display: inline-block;
+            padding-top: 30px;
+        }
+        .timeline-element-wrap{
             padding: 10px;
+            position: relative;
             background-color: #fff;
-            margin-bottom: 20px;
+        }
+        .timeline-element[data-type="created"] .timeline-element-wrap{
+            background-color: transparent;
         }
         .timeline-element-arrow{
             position: absolute;
@@ -379,10 +385,11 @@
         }
         .timeline-element-dot{
             position: absolute;
-            top: 39px;
-            left: -15px;
-            height: 5px;
-            width: 5px;
+            top: 17px;
+            border: none;
+            left: calc(0px - 3vw);
+            height: 9px;
+            width: 9px;
             background-color: #f36e21;
             z-index: 3;
         }
@@ -408,10 +415,11 @@
         }
         .petition-action-card{
             font-family: "Montserrat", sans-serif;
+            height:53px;
+            max-height: 53px;
+            padding-top:7px;
         }
         .petition-action-card:not(#signature-card){
-            padding-top:7px;
-            padding-bottom:7px;
             padding-right: 1vw;
         }
         .petition-action-card h3{
@@ -421,7 +429,7 @@
             font-weight: 500;
         }
         #signature-card{
-            line-height: 60px;
+            line-height: 45px;
             font-weight: 700;
         }
         #sign-petition-button{
@@ -816,14 +824,19 @@
             <div class="modal-body relative">
                 <div id="timeline-container">
                     <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
-                        <div class="timeline-element-arrow-container">
-                            <div class="timeline-element-arrow"></div>
-                            <div class="timeline-element-dot circle"></div>
-                        </div>
-                        <div class="timeline-element-body">
-                            <h4 class="timeline-element-header"><span>{[ element.type ]}</span> {[ element.date ]} Days Ago</h4>
-                            <div class="timeline-element-content" v-html="element.content"></div>
-                            <span class="timeline-element-author" v-if="element.type != 'description'">{[ element.author ]}</span>
+                        <div class="timeline-element-wrap">
+                            <div class="timeline-element-arrow-container">
+                                <div class="timeline-element-arrow" v-if="element.type != 'created'"></div>
+                                <div class="timeline-element-dot circle"></div>
+                            </div>
+                            <div class="timeline-element-body" v-if="element.type != 'created'">
+                                <h4 class="timeline-element-header"><span>{[ element.type ]}</span> {[ element.date ]} Days Ago</h4>
+                                <div class="timeline-element-content" v-html="element.content"></div>
+                                <span class="timeline-element-author" v-if="element.type != 'Petition Description'">{[ element.author ]}</span>
+                            </div>
+                            <div class="timeline-element-body" v-else>
+                                <span> Created by {[ element.author ]} on {[ petition.timestamp ]}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1257,7 +1270,7 @@
                     author: response.author,
                     content:unescape(response.description),
                     date: getDayDifference(responseJSDate, currentJSDate)
-                }
+                };
                 modalData.timeline.push(responseBlock);
             }
 
@@ -1273,7 +1286,7 @@
                         author: "",
                         content:unescape(update.description),
                         date: getDayDifference(updateJSDate, currentJSDate)
-                    }
+                    };
                     modalData.timeline.push(updateBlock);
                 }
             }
@@ -1284,8 +1297,13 @@
                 content:unescape(toPetition.description),
                 date: getDayDifference(createdJSDate, currentJSDate)
             };
-
             modalData.timeline.push(description);
+
+            var createdBlock = {
+                type:"created",
+                author:toPetition.author
+            };
+            modalData.timeline.push(createdBlock);
 
             var modal = $("#petition-modal");
             modal.removeClass("hidden");
