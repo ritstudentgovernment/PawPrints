@@ -528,6 +528,28 @@
 
 
         /* -- Responsiveness -- */
+        @media screen and (max-width: 1170px){
+            #signature-card{
+                float: none;
+                margin: 0 auto;
+                display: block;
+                text-align: center ;
+            }
+        }
+        @media screen and (max-width: 1170px) and (min-width: 890px){
+            #action-cards{
+                width: 100%;
+                float: none;
+                -webkit-column-count: 5; /* Chrome, Safari, Opera */
+                -moz-column-count: 5; /* Firefox */
+                column-count: 5;
+                -moz-column-gap: 0.5em;
+                -webkit-column-gap: 0.5em;
+                column-gap: 0.5em;
+                white-space:nowrap;
+                overflow: visible;
+            }
+        }
         @media screen and (max-width: 1020px){
             #filter-sort{
                 width: 200px;
@@ -546,6 +568,48 @@
                 -moz-column-count: 2;
                 -webkit-column-count:2;
                 column-count:2;
+            }
+            #timeline-container{
+                padding-bottom: 135px;
+            }
+        }
+        @media screen and (max-width: 890px){
+            #petition-actions{
+                text-align: center;
+            }
+            #action-cards{
+                float:none;
+                display:inline-block;
+                margin: 0 auto;
+            }
+        }
+        @media screen and (max-width: 730px){
+            #timeline-container{
+                padding-bottom: 200px;
+                max-height: calc(55vh - 180px);
+            }
+            .petition-action-card:not(#signature-card){
+                width: 50%;
+                padding:0;
+                margin:0;
+                float: left !important;
+                text-align: center;
+            }
+            .social-icon{
+                float: none;
+            }
+        }
+        @media screen and (max-width: 700px){
+            #petition-modal .modal-body:after{
+                margin-left:0;
+            }
+            #petitions-container{
+                -moz-column-count: 1;
+                -webkit-column-count:1;
+                column-count:1;
+            }
+            .timeline-element-content{
+                font-size: 18px !important;
             }
         }
         @media screen and (max-width: 600px){
@@ -596,23 +660,18 @@
                 width: 100%;
             }
         }
-        @media screen and (max-width: 700px){
-            #sign-petition-button,#social-share{
-                margin-top: 38px;
-            }
-            #petition-modal .modal-body:after{
-                margin-left:0;
-            }
-            #petitions-container{
-                -moz-column-count: 1;
-                -webkit-column-count:1;
-                column-count:1;
-            }
-            .timeline-element-content{
-                font-size: 18px !important;
-            }
-        }
         @media screen and (max-width: 500px){
+            #signature-card{
+                width: calc(100% - 20px);
+                max-height: none;
+                height: auto;
+            }
+            #signature-card span{
+                width: 100%;
+                text-align: center;
+                display: block;
+                padding:0;
+            }
             #sign-petition-button{
                 width: 100%;
             }
@@ -858,28 +917,30 @@
                         </button>
                         <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
                     </div>
-                    <div id="social-share" class="right overflow-hidden transition petition-action-card">
-                        <h3>Share</h3>
-                        <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
-                    </div>
-                    <div class="petition-action-card margin-right padding-right right">
-                        <h3>Expires</h3>
-                        <span class="alternate-font">{[ petition.expires ]}</span>
-                    </div>
-                    <div class="petition-action-card margin-right padding-right right">
-                        <h3>Submitted</h3>
-                        <span class="alternate-font">{[ petition.timestamp ]}</span>
-                    </div>
-                    <div class="petition-action-card margin-right padding-right right">
-                        <h3>Status</h3>
-                        <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
-                        <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
-                        <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
-                        <span class="alternate-font" v-else>Responded</span>
-                    </div>
-                    <div class="petition-action-card margin-right padding-right right">
-                        <h3>Discuss</h3>
-                        <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                    <div id="action-cards" class="block overflow-hidden right">
+                        <div id="social-share" class="right overflow-hidden transition petition-action-card">
+                            <h3>Share</h3>
+                            <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                        </div>
+                        <div class="petition-action-card margin-right padding-right right">
+                            <h3>Expires</h3>
+                            <span class="alternate-font">{[ petition.expires ]}</span>
+                        </div>
+                        <div class="petition-action-card margin-right padding-right right">
+                            <h3>Submitted</h3>
+                            <span class="alternate-font">{[ petition.timestamp ]}</span>
+                        </div>
+                        <div class="petition-action-card margin-right padding-right right">
+                            <h3>Status</h3>
+                            <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
+                            <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
+                            <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
+                            <span class="alternate-font" v-else>Responded</span>
+                        </div>
+                        <div class="petition-action-card margin-right padding-right right">
+                            <h3>Discuss</h3>
+                            <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                        </div>
                     </div>
                     <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                 </div>
