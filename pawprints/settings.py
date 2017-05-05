@@ -27,9 +27,9 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = []
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
