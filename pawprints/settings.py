@@ -27,9 +27,9 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
@@ -85,7 +85,7 @@ ROOT_URLCONF = 'pawprints.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'pawprints/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
