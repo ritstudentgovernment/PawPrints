@@ -6,6 +6,7 @@ show_missing = False
 
 exclude_lines = 
   except Exception as e:
+  pragma: no cover
 
 omit =
   */migrations/*

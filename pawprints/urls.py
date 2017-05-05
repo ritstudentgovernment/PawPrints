@@ -31,9 +31,9 @@ urlpatterns = [
     url(r'^profile/', include('profile.urls'))
 ]
 
-def handler500(request):
+def handler500(request): # pragma: no cover
     t = loader.get_template('500.html')
-    return HttpResponseServerError(t.render({'request': request}))
+    return HttpResponseServerError(t.render({'request': request})) 
 
 def handler404(request):
     t = loader.get_template('404.html')

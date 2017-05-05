@@ -43,6 +43,11 @@ class PetitionTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
 
+    def test_404(self):
+        response = self.client.get('/doesnotexist')
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, '404.html')
+
     def test_load_petitions(self):
         response = self.client.post('/petitions/',{'sort_by': 'most signatures', 'filter': 'all'})
         self.assertEqual(response.status_code, 200)
