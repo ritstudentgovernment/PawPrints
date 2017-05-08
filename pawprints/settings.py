@@ -78,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'log.ip_log_middleware.IPLogMiddleware',
 ]
 
 ROOT_URLCONF = 'pawprints.urls'
@@ -239,6 +240,11 @@ LOGGING = {
             'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'IPRequest': {
+            'handlers': ['rotate_file_info'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
