@@ -17,12 +17,12 @@
     },
     "contactPerson": {
         "technical": {
-            "givenName": "technical_name",
-            "emailAddress": "technical@example.com"
+            "givenName": "Web Developer",
+            "emailAddress": "sgweb@rit.edu"
         },
         "support": {
-            "givenName": "support_name",
-            "emailAddress": "support@example.com"
+            "givenName": "Systems Administrator",
+            "emailAddress": "sgprod@rit.edu"
         }
     },
     "organization": {
