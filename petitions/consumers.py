@@ -19,14 +19,42 @@ def serialize_petitions(petitions_obj):
     petition_map = {}
     petitions = []
 
-    # Loop over ever object in the sent petitions object
+    # Loop over every object in the petitions object passed to the function.
     for x in range(len(petitions_obj)):
         petition = petitions_obj[x]
+
+        tags = []
+        all_tags = petition.tags.all()
+        for t in all_tags:
+            tags.append({
+                "name":t.name,
+                "id":t.id
+            })
+
+        updates = []
+        all_updates = petition.updates.all()
+        for u in all_updates:
+            updates.append({
+                "description":u.description,
+                "timestamp":u.created_at.strftime("%B %d, %Y")
+            })
+
         petitions.append({
             'title': petition.title,
             'description': json.dumps(petition.description.replace("'","\'")),
             'signatures': petition.signatures,
-            'author': petition.author.first_name +" "+ petition.author.last_name
+            'author': petition.author.first_name +" "+ petition.author.last_name,
+            'tags': tags,
+            'response': json.dumps({
+                'author':petition.response.author,
+                'description':petition.response.description,
+                'timestamp':petition.response.created_at.strftime("%B %d, %Y")
+            }) if petition.response is not None else json.dumps({'author':""}),
+            'updates':updates,
+            'timestamp':petition.created_at.strftime("%B %d, %Y"),
+            'expires':petition.expires.strftime("%B %d, %Y"),
+            'status':petition.status,
+            'id': petition.id
         })
         petition_map[petition.id] = x
 
@@ -94,6 +122,36 @@ def petitions_command(message):
                     "text": "Error. Must send 'sort' parameter"
                 })
                 return None
+            elif data.command == 'get':
+                # Parse the Get command. Required data = id.
+                # Gets a single petition with a particular id.
+                if data.id:
+                    petition = [views.get_petition(data.id)]
+                    petition = serialize_petitions(petition)
+                    reply = {
+                        "command": "get",
+                        "petition": petition
+                    }
+
+                    message.reply_channel.send({
+                        "text": json.dumps(reply)
+                    })
+                return None
+            elif data.command == 'search':
+                # Parse the search command. Required query. Optional = filter.
+                # Sends the WS a sorted and optionally filtered list of petitions.
+                if data.query:
+                    petitions = views.sorting_controller("search", data.query)
+                    try:
+                        petitions = views.filtering_controller(petitions, data.filter)
+                    except AttributeError:
+                        pass
+                    message.reply_channel.send({
+                        "text": serialize_petitions(petitions)
+                    })
+                    return None
+                return None
+
 
         message.reply_channel.send({
             "text": "Error must sent a non-empty 'command' parameter"

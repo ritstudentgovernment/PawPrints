@@ -14,6 +14,7 @@ import os
 from pawprints import secrets 
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,19 +37,26 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = ['send_mail.tasks','petitions.tasks']
 
+# Sentry Settings
+RAVEN_CONFIG = {
+    'dsn': secrets.RAVEN_DSN,
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
+
 # Application definition
 
 INSTALLED_APPS = [
+    'raven.contrib.django.raven_compat',
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
-    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'channels',
 ]
 
@@ -70,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'log.ip_log_middleware.IPLogMiddleware',
 ]
 
 ROOT_URLCONF = 'pawprints.urls'
@@ -77,7 +86,7 @@ ROOT_URLCONF = 'pawprints.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'pawprints/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,10 +114,6 @@ DATABASES = {
         'PASSWORD': secrets.DB_PASSWORD,
         'HOST': secrets.DB_HOST,
         'PORT': secrets.DB_PORT,
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -196,6 +201,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'formatter': 'verbose',
+        },
         'rotate_file_errors':{
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -214,11 +224,6 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
-        'slack_handler': {
-            'level': 'ERROR',
-            'class': 'log.slackhandler.SlackHandler',
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'pawprints': {
@@ -227,14 +232,19 @@ LOGGING = {
             'propagate': True,
         },
         'pawprints': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'IPRequest': {
+            'handlers': ['rotate_file_info'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
