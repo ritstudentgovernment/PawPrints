@@ -94,6 +94,7 @@ ENV/
 env
 *.swp
 secrets.py
+profanity_list.py
 
 .idea/misc.xml
 
@@ -106,6 +107,7 @@ secrets.py
 .idea/PawPrints.iml
 
 *.orig
+profanity.csv
 
 #logs
 *.log

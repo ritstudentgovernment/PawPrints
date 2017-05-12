@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_IMPORTS = ['send_mail.tasks']
+CELERY_IMPORTS = ['send_mail.tasks','petitions.tasks']
 
 # Sentry Settings
 RAVEN_CONFIG = {
