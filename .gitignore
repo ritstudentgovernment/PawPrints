@@ -107,6 +107,7 @@ profanity_list.py
 .idea/PawPrints.iml
 
 *.orig
+profanity.csv
 
 #logs
 *.log
