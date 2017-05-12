@@ -21,28 +21,28 @@ class EmailTests(TestCase):
         petition_approved(self.petition.id, 'test_path')
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Petition approved.')
+        self.assertEqual(mail.outbox[0].subject, 'PawPrints - Petition approved.')
 
     def test_petition_rejected(self):
         petition_rejected(self.petition.id, 'test_path')
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Petition rejected')
+        self.assertEqual(mail.outbox[0].subject, 'PawPrints - Petition rejected')
 
     def test_petition_update(self):
         petition_update(self.petition.id, 'test_path')
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Petition status update')
+        self.assertEqual(mail.outbox[0].subject, 'PawPrints - Petition status update')
 
     def test_petition_reached(self):
         petition_reached(self.petition.id, 'test_path')
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Petition threshold reached')
+        self.assertEqual(mail.outbox[0].subject, 'PawPrints - Petition threshold reached')
 
     def test_petition_received(self):
         petition_received(self.petition.id, 'test_path')
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Petition received')
+        self.assertEqual(mail.outbox[0].subject, 'PawPrints - Petition received')

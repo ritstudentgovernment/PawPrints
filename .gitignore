@@ -117,3 +117,6 @@ profanity.csv
 .idea/copyright/profiles_settings.xml
 
 .idea/modules.xml
+
+*.key
+*.crt
