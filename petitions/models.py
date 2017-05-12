@@ -17,7 +17,7 @@ class Petition(models.Model):
     author = models.ForeignKey(User)
     signatures = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField()
-    # These states include: 0 - new (unpublished), 1 - published, 2 - removed (unpublished)
+    # These states include: 0 - new (unpublished), 1 - published, 2 - removed (unpublished), 3 - Needs Review
     status = models.PositiveSmallIntegerField(default=0)
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)

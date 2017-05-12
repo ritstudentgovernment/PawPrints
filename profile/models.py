@@ -19,6 +19,8 @@ class Profile(models.Model):
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
     petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed',blank=True)
     display_name = models.CharField(max_length=3,blank=True)
+    # 1 - Student, 2 - Alumni, 3 - Employee
+    affiliation = models.PositiveSmallIntegerField(default=1)
 
     def __unicode__(self):
         return self.user.username

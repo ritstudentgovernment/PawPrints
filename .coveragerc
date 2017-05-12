@@ -1,0 +1,18 @@
+[run]
+source = .
+
+[report]
+show_missing = False
+
+exclude_lines = 
+  except Exception as e:
+  pragma: no cover
+
+omit =
+  */migrations/*
+  manage.py
+  settings.py
+  */pawprints/wsgi.py
+  */pawprints/celery.py
+  */pawprints/asgi.py
+  */log/*

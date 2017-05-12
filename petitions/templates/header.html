@@ -24,15 +24,14 @@
                         <li class="list-item">Log Out</li>
                     </ul>
                 {% else %}
-                    <button onclick="window.location.href='/accounts/'" class="material material-button">Login</button>
+                    <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
                 {% endif %}
             </span>
         </div>
         <div class="text-center">
-            <span id="logo" class="material-icon-container">
+            <span id="logo" class="transition">
                 <a class="modern-link text-highlight" href="/">
-                    <i class="material-icons">pets</i>
-                    <span>PawPrints</span>
+                    <img class='transition' src="/static/images/pawprints.svg" alt="PawPrints" />
                 </a>
             </span>
         </div>
