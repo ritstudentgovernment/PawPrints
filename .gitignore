@@ -121,6 +121,7 @@ profanity.csv
 *.xml
 
 PawPrints - Make your mark.webarchive
+/pawprints/secrets.py
 
 *.key
 *.crt
