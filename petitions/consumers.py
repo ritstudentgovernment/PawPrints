@@ -41,7 +41,8 @@ def serialize_petitions(petitions_obj, user = None):
                 "timestamp":u.created_at.strftime("%B %d, %Y")
             })
 
-        profile = user.profile
+        if hasattr(user, "profile"):
+            profile = user.profile
 
         petitions.append({
             'title': petition.title,
@@ -58,7 +59,7 @@ def serialize_petitions(petitions_obj, user = None):
             'timestamp':petition.created_at.strftime("%B %d, %Y"),
             'expires':petition.expires.strftime("%B %d, %Y"),
             'status':petition.status,
-            'isSigned':profile.petitions_signed.filter(id=petition.id).exists() if user is not None else False,
+            'isSigned':profile.petitions_signed.filter(id=petition.id).exists() if hasattr(user, "profile") else False,
             'id': petition.id
         })
         petition_map[petition.id] = x

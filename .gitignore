@@ -119,3 +119,4 @@ secrets.py
 *.xml
 
 PawPrints - Make your mark.webarchive
+/pawprints/secrets.py
