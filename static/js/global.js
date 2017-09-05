@@ -59,7 +59,7 @@ function scroll(to_elem){
      **/
     var offset = to_elem.offset().top;
     var fsh = $("#filter-sort").height();
-    if(fsh < 300) offset -= fsh - 10;
+    if(fsh < 300) offset -= fsh - 7;
     offset -= $("header").height() + $("nav").find(".header-top").height() - 1;
     $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
 }
