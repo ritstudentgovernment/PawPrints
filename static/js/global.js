@@ -58,6 +58,8 @@ function scroll(to_elem){
      * This function smoothly scrolls the viewport to a given element.
      **/
     var offset = to_elem.offset().top;
+    var fsh = $("#filter-sort").height();
+    if(fsh < 300) offset -= fsh - 10;
     offset -= $("header").height() + $("nav").find(".header-top").height() - 1;
     $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
 }

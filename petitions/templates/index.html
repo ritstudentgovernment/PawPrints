@@ -271,8 +271,8 @@
         }
         #back-up{
             position: fixed;
-            bottom: 50px;
-            right: 50px;
+            bottom: 30px;
+            right: 30px;
             background-color: rgba(0,0,0,0.7);
             color: #fff;
             font-size: 1.2em;
@@ -291,15 +291,17 @@
         }
         #petition-modal .modal-container{
             max-height: 95vh;
+            height:95vh;
         }
         #petition-modal .modal-header{
             padding: 10px;
+            border-bottom: 1px solid #ccc;
         }
         #petition-modal .modal-header h2{
             margin-top: 10px;
             margin-bottom: 10px;
             margin-left: 10px;
-            font-family: "Montserrat", Arial;
+            font-family: "Montserrat", sans-serif;
             color: {{ colors.highlight }};
             text-transform: capitalize;
         }
@@ -320,10 +322,15 @@
         }
         #petition-modal .modal-body {
             margin-bottom: 75px;
+            height: calc(95vh - 140px);
+            overflow: auto;
             background-color: #f0f0f0;
         }
         #petition-modal .modal-header h2, #petition-modal .modal-header span{
             max-width: calc(100% - 44px);
+        }
+        #petition-modal .modal-header span.inline-block{
+            margin-right: 60px;
         }
         #petition-modal .modal-footer{
             position: absolute;
@@ -339,11 +346,12 @@
         #timeline-container{
             background-color: #f0f0f0;
             color: #0f0f0f;
-            padding: 0 5% 5%;
+            padding: 0 5% 2% 5%;
             position: relative;
-            max-height: 55vh;
-            overflow: auto;
             -webkit-transform: translateZ(0);
+        }
+        #timeline-container p:first-child{
+            margin-top: 0;
         }
         .modal-body{
             position: relative;
@@ -353,7 +361,7 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            left: calc(-3vw + 3px);
+            left: calc(-3.5vw + 3px);
             float: left;
             height: 100%;
             width: 4px;
@@ -374,20 +382,20 @@
         }
         .timeline-element-arrow{
             position: absolute;
-            top: 7px;
-            left: -15px;
+            top: 9px;
+            left: -23px;
             -webkit-transform: rotateZ(45deg);
             transform: rotateZ(45deg);
             background-color: #fff;
-            width: 30px;
-            height: 30px;
+            width: 3em;
+            height: 3em;
             z-index: -1;
         }
         .timeline-element-dot{
             position: absolute;
-            top: 17px;
+            top: 29px;
             border: none;
-            left: calc(0px - 3vw);
+            left: calc(1px - 3.55vw);
             height: 9px;
             width: 9px;
             background-color: #f36e21;
@@ -396,22 +404,26 @@
         .timeline-element-header{
             font-weight: 300;
             font-family: "Work Sans", Arial;
-            border-bottom: 1px solid #ccc;
             margin: 0;
-            padding-top: calc(0.5em - 10px);
-            padding-bottom: 0.5em;
-            margin-bottom: 10px;
+            padding-top: 1em;
+            padding-bottom: 1em;
             text-align: right;
             overflow: hidden;
         }
         .timeline-element-header span{
             text-transform: uppercase;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
             float: left;
         }
         .timeline-element-content, .timeline-element-content *{
             font-family: "Muli", "Work Sans", Arial !important;
             font-size: 21px !important;
             font-weight: 300 !important;
+        }
+        .timeline-element-content img{
+            margin: 0 auto;
+            display: block;
         }
         .petition-action-card{
             font-family: "Montserrat", sans-serif;
@@ -526,8 +538,8 @@
 
         }
 
-
         /* -- Responsiveness -- */
+
         @media screen and (max-width: 1170px){
             #signature-card{
                 float: none;
@@ -570,24 +582,50 @@
                 column-count:2;
             }
             #timeline-container{
-                padding-bottom: 135px;
+                width:85%;
+                padding-left: 10%;
+            }
+            .timeline-element:before{
+                left: calc(-6vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 6.1vw);
             }
         }
-        @media screen and (max-width: 890px){
-            #petition-actions{
+        @media screen and (max-width: 890px) {
+            #petition-actions {
                 text-align: center;
             }
-            #action-cards{
-                float:none;
-                display:inline-block;
+
+            #action-cards {
+                float: none;
+                display: inline-block;
                 margin: 0 auto;
             }
-        }
-        @media screen and (max-width: 730px){
-            #timeline-container{
-                padding-bottom: 200px;
-                max-height: calc(55vh - 180px);
+
+            #timeline-container {
+                width: 85%;
+                padding-left: 11%;
+                overflow: auto;
+                overflow-x: visible;
             }
+
+            .timeline-element:before {
+                left: calc(-8vw + 3px);
+            }
+
+            .timeline-element-dot {
+                left: calc(1px - 8.1vw);
+            }
+            .timeline-element-wrap{
+                width:60vw;
+            }
+            .timeline-element-wrap img{
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
+        @media screen and (max-width: 830px){
             .petition-action-card:not(#signature-card){
                 width: 50%;
                 padding:0;
@@ -599,7 +637,7 @@
                 float: none;
             }
         }
-        @media screen and (max-width: 700px){
+        @media screen and (max-width: 800px){
             #petition-modal .modal-body:after{
                 margin-left:0;
             }
@@ -612,7 +650,7 @@
                 font-size: 18px !important;
             }
         }
-        @media screen and (max-width: 600px){
+        @media screen and (max-width: 700px){
             #sub-landing{
                 padding-top: 110px;
             }
@@ -661,7 +699,7 @@
                 padding-top:10px;
             }
         }
-        @media screen and (max-width: 500px){
+        @media screen and (max-width: 600px){
             #signature-card{
                 width: calc(100% - 20px);
                 max-height: none;
@@ -679,6 +717,21 @@
             #social-share{
                 margin-top: 10px;
                 margin-right: calc(50% - 95px);
+            }
+            .timeline-element:before{
+                left: calc(-8vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 8.1vw);
+            }
+            .timeline-element-header{
+                text-align: left;
+                padding-top: 0.4em;
+            }
+            .timeline-element-header .text-highlight{
+                display: block;
+                width: 100%;
+                text-align: left
             }
         }
         #loading-petitions{
@@ -877,11 +930,11 @@
         <div class="modal-overlay hidden" @click="closePetition()"></div>
         <div class="modal-container hidden">
             <div class="modal-header overflow-hidden material-shadow">
-                <h2 class="inline-block">{[ petition.title ]}</h2>
+                <h2 class="inline-block text-highlight">{[ petition.title ]}</h2>
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
             </div>
-            <div class="modal-body relative">
+            <div class="modal-body relative block">
                 <div id="timeline-container">
                     <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
                         <div class="timeline-element-wrap">
@@ -890,11 +943,11 @@
                                 <div class="timeline-element-dot circle"></div>
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
-                                <h4 class="timeline-element-header"><span>{[ element.type ]}</span> {[ element.date ]} Days Ago</h4>
+                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span> {[ element.date ]} Days Ago</h4>
                                 <div class="timeline-element-content" v-html="element.content"></div>
                                 <span class="timeline-element-author" v-if="element.type != 'Petition Description'">{[ element.author ]}</span>
                             </div>
-                            <div class="timeline-element-body" v-else>
+                            <div class="timeline-element-body" style="padding-top:14px;" v-else>
                                 <span> Created by {[ element.author ]} on {[ petition.timestamp ]}</span>
                             </div>
                         </div>
@@ -1143,7 +1196,7 @@
             search: function(){
                 clearTimeout(timeout);
                 timeout = setTimeout(function(){
-                    if(search.searchString.trim() != ""){
+                    if(search.searchString.trim() !== ""){
                         petitions.loading = true;
                         petitions.map = {};
                         petitions.list = [];
@@ -1284,6 +1337,11 @@
         var timeDiff = Math.abs(date2 - date1);
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
+    function setContentAvailableSpace(modal){
+        // Compute the available space for the content of the petition based on the used space.
+        var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20;
+        modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
+    }
     openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false){
         // Renders the petition data into a petition model and also updates browser history.
@@ -1325,7 +1383,7 @@
             };
 
             var response = JSON.parse(toPetition.response);
-            if(typeof response == "object"){
+            if(typeof response === "object"){
                 var responseJSDate = new Date(response.timestamp).getTime();
                 var responseBlock = {
                     type:"Official Response",
@@ -1336,7 +1394,6 @@
                 modalData.timeline.push(responseBlock);
             }
 
-            console.log(toPetition);
             var updates = toPetition.updates;
             var numUpdates = updates.length;
             if(numUpdates > 0){
@@ -1367,6 +1424,7 @@
             };
             modalData.timeline.push(createdBlock);
 
+            // Begin the fade in animation
             var modal = $("#petition-modal");
             modal.removeClass("hidden");
             modal.find(".modal-overlay").fadeIn(400,function(){
@@ -1376,9 +1434,13 @@
 
             verticalOffset(modal.find(".modal-container"), 0);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
-                $(this).removeClass("hidden");
+
+                setContentAvailableSpace(modal);
+
+                // Center the modal on the screen
                 verticalOffset(modal.find(".modal-container"));
                 $(window).resize(function(){
+                    setContentAvailableSpace(modal);
                     verticalOffset(modal.find(".modal-container"));
                 });
             });
@@ -1404,7 +1466,7 @@
     $(document).ready(function(){
 
         $("#sub-landing").waypoint(function(direction){
-            if(direction == "down"){
+            if(direction === "down"){
                 $("#back-up").stop().fadeIn(100);
             }
             else{
@@ -1430,7 +1492,7 @@
                     var petition;
 
                     // Command parsing.
-                    if(command == "update-sigs"){
+                    if(command === "update-sigs"){
                         // Handle the live updating of signatures for petitions.
 
                         var pid = data["id"];
@@ -1445,18 +1507,18 @@
                         }
 
                     }
-                    else if(command == "new-update"){
+                    else if(command === "new-update"){
                         // Handle petitions getting an update.
 
                         petition = parseOnePetition(data);
                         var pos = petitions.map[petition.id];
                         var oldPetition = petitions.list[pos];
 
-                        if(petition.updates != oldPetition.updates){
+                        if(petition.updates !== oldPetition.updates){
                             // If the sent data contains updates that the stored petition doesn't have
 
                             petitions.list[pos].updates = petition.updates;
-                            if(modalData.petition.id && modalData.petition.id == petition.id) {
+                            if(modalData.petition.id && modalData.petition.id === petition.id) {
                                 // If the petition is the one open at the moment
 
                                 for (var i = 0; i < petition.updates.length; i++) {
@@ -1470,7 +1532,7 @@
                                         date: update.timestamp
                                     }
 
-                                    if (modalData.timeline.indexOf(updateBlock) == -1) {
+                                    if (modalData.timeline.indexOf(updateBlock) === -1) {
                                         // If the current update doesn't exist in the petition's visible data.
 
                                         modalData.timeline.unshift(updateBlock);
@@ -1484,7 +1546,7 @@
                         }
 
                     }
-                    else if(command == "get"){
+                    else if(command === "get"){
 
                         petition = parseOnePetition(data);
                         if(petition){
@@ -1525,7 +1587,7 @@
 
             }
 
-        }
+        };
 
         $(document).on("click", ".tag", function(){
             // Bind the click event on elements with the tag class
@@ -1534,8 +1596,12 @@
             var filter_tag = $(this).data("tag");
 
             // Get the sort key
-            var sort_by = $("#sort").val();
-            $("#sort").data("filter",filter_tag);
+            var sort = $("#sort");
+            var sort_by = sort.val();
+            sort.data("filter",filter_tag);
+
+            // Update the select field for mobile devices
+            $("#mobile-filter").val(filter_tag);
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
@@ -1601,10 +1667,10 @@
             var petition = getUrl("p");
             petitions.list[petitions.map[petition]].isSigned = 1;
             $.post('/petition/sign/'+petition,{"csrfmiddlewaretoken":get_csrf()},function(r){
-                if(r != petition){
+                if(r !== petition){
                     console.log("Sign Petition response: "+r);
                 }
-                if(modalData.petition.id = petition){
+                if(modalData.petition.id == petition){
 
                     modalData.petition.isSigned = 1;
 

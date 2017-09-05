@@ -45,6 +45,14 @@ main{
     width: 75%;
     overflow: hidden;
 }
+.one-third-width{
+    width: 33%;
+    overflow: hidden;
+}
+.two-third-width{
+    width: 66%;
+    overflow: hidden;
+}
 .ninety-width {
     width: calc(90% - 40px);
     padding: 40px;
