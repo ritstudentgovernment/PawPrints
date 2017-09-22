@@ -79,56 +79,6 @@ function verticalOffset(element, givenOffset = false){
 }
 
 $(document).ready(function(){
-    var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
-        if(direction == "down"){
-            $("header").addClass("small-header header-scrolled");
-            $(".attach").each(function(){
-                var me = $(this);
-                var topPos = me.data("top");
-                var leftPos = me.data("left");
-                var rightPos = me.data("right");
-                var bottomPos = me.data("bottom");
-                me.addClass("attached");
-                if(topPos !== undefined){
-                    me.css({"top":topPos+"px"});
-                }
-                if(leftPos !== undefined){
-                    me.css({"left":leftPos+"px"});
-                }
-                if(rightPos !== undefined){
-                    me.css({"right":rightPos+"px"});
-                }
-                if(bottomPos !== undefined){
-                    me.css({"bottom":bottomPos+"px"});
-                }
-            });
-        }
-        else{
-            $("header").removeClass("small-header header-scrolled");
-            $(".attach").each(function(){
-                var me = $(this);
-                var topPos = me.data("top");
-                var leftPos = me.data("left");
-                var rightPos = me.data("right");
-                var bottomPos = me.data("bottom");
-                me.removeClass("attached");
-                if(topPos !== undefined){
-                    me.css({"top":""});
-                }
-                if(leftPos !== undefined){
-                    me.css({"left":""});
-                }
-                if(rightPos !== undefined){
-                    me.css({"right":""});
-                }
-                if(bottomPos !== undefined){
-                    me.css({"bottom":""});
-                }
-            });
-        }
-    }, {
-        offset: '60px'
-    });
     $(".create_petition").click(function(){
         $.post('/petition/create/',{"csrfmiddlewaretoken":get_csrf()},function(response){
             window.location.href = "/petition/"+response;
@@ -139,20 +89,26 @@ $(document).ready(function(){
             position: "right",
             pageSelector: "#wrapper"
         },
-        "navbars": false,
-        "extensions": [
+        navbar: {
+            title:"PawPrints"
+        },
+        extensions: [
             "pagedim-black"
         ]
     });
-    console.log($mobile.data("mmenu"));
+    console.log("MMENU: "+$mobile.data("mmenu"));
     var $icon = $("#menu-icon");
     var API = $mobile.data( "mmenu" );
-
     $icon.on( "click", function() {
-        API.open();
+        if(!$(this).hasClass("is-active"))API.open();
+        else API.close();
     });
     API.bind( "open:start", function() {
         $icon.addClass( "is-active" );
+        $("#wrapper").click(function(){
+            API.close();
+            $("#wrapper").unbind("click");
+        });
         var resize = $(window).resize(function(){
             API.close();
             resize = null;
@@ -177,6 +133,19 @@ function inViewport (el) {
         && r.left <= html.clientWidth
     );
 
+}
+
+function publishPetition(petition){
+    $.post("/petition/update/"+petition,{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(response){
+        //Expecting a response of either true or false.
+        if(response){
+            window.location.reload();
+        }
+    });
+}
+
+function ucfirst(string){
+    return string.charAt(0).toUpperCase() + string.substr(1);
 }
 
 (function( $ ){
@@ -214,7 +183,7 @@ function inViewport (el) {
         if(this.settings.icon){
 
             this.element.find(".material-icon-container").addClass(this.settings.iconContainerClass).removeClass("hidden");
-            this.element.find(".material-icons").html(this.settings.iconText);
+            this.element.find(".material-icons").addClass(this.settings.iconClass).html(this.settings.iconText);
 
         }
 
@@ -291,10 +260,10 @@ function inViewport (el) {
     function unbindModalEvents() {
         // Function that unbinds the exit events from the modal.
         if (this.exitButton) {
-            this.exitButton.removeEventListener('click');
+            this.exitButton.removeEventListener('click', this.close.bind(this));
         }
         if (this.settings.overlay && this.settings.exitOverlayOnClick) {
-            this.overlay.removeEventListener('click');
+            this.overlay.removeEventListener('click', this.close.bind(this));
         }
 
         if(this.settings.debug){
@@ -330,6 +299,7 @@ function inViewport (el) {
             animationDuration: 400,
             icon: true,
             iconContainerClass: " circle green-border green-text",
+            iconClass:"",
             iconText: "check",
             headerContent: "<h2>Great Work!</h2><p>All Tests Have Passed!</p>",
             headerClass: "",
@@ -337,7 +307,7 @@ function inViewport (el) {
             bodyContent: null,
             bodyButtons: [["Next Section", "modern-button margin-bottom margin-top transition cursor",function(){}]],
             closeCallback: function(){},
-            debug: false,
+            debug: true,
             clone: true
         },options);
 
@@ -435,7 +405,7 @@ function inViewport (el) {
 
         return element;
 
-    }
+    };
     // Custom parallax element plugin.
     $.fn.parallax = function( options ){
         var selector = $(this);

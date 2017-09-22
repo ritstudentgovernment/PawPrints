@@ -346,7 +346,7 @@
         #timeline-container{
             background-color: #f0f0f0;
             color: #0f0f0f;
-            padding: 0 5% 2% 5%;
+            padding: 0 5%;
             position: relative;
             -webkit-transform: translateZ(0);
         }
@@ -369,7 +369,7 @@
             z-index: 1;
         }
         .timeline-element{
-            display: inline-block;
+            /*display: inline-block;*/
             padding-top: 30px;
         }
         .timeline-element-wrap{
@@ -410,7 +410,7 @@
             text-align: right;
             overflow: hidden;
         }
-        .timeline-element-header span{
+        .timeline-element-header span.text-highlight{
             text-transform: uppercase;
             font-family: "Montserrat", sans-serif;
             font-weight: 800;
@@ -424,6 +424,9 @@
         .timeline-element-content img{
             margin: 0 auto;
             display: block;
+        }
+        .timeline-element:last-child{
+            padding-bottom: 34px;
         }
         .petition-action-card{
             font-family: "Montserrat", sans-serif;
@@ -504,7 +507,6 @@
             margin-bottom: -1px;
             float: left;
         }
-
         .petition-progress{
             width: 100%;
         }
@@ -536,6 +538,12 @@
         }
         progress::-moz-progress-bar {
 
+        }
+
+        #edit-button, #publish-button{
+            width: calc(50% - 14px);
+            font-size: 0.8em;
+            text-transform: capitalize;
         }
 
         /* -- Responsiveness -- */
@@ -733,6 +741,19 @@
                 width: 100%;
                 text-align: left
             }
+        }
+        @media screen and (max-width: 375px) {
+
+            #timeline-container{
+                padding-left: 19%;
+            }
+            .timeline-element:before{
+                left: calc(-13vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 13.2vw);
+            }
+
         }
         #loading-petitions{
             text-align: center;
@@ -943,7 +964,7 @@
                                 <div class="timeline-element-dot circle"></div>
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
-                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span> {[ element.date ]} Days Ago</h4>
+                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span> {[ element.date ]} Day<span v-if="element.date>1">s</span> Ago</h4>
                                 <div class="timeline-element-content" v-html="element.content"></div>
                                 <span class="timeline-element-author" v-if="element.type != 'Petition Description'">{[ element.author ]}</span>
                             </div>
@@ -961,42 +982,52 @@
                 <!-- This section changes based on the state the petition is in. -->
 
                 <!-- Petition is in progress, show the progress tracking and sharing features. -->
-                <div id="petition-actions" class="overflow-hidden" v-if="petition.status == 1">
-                    <div id="signature-card" class="petition-action-card left margin-left">
-                        <button id="sign-petition-button" class="material material-button material-shadow transition" v-if="'{{ user.first_name }}' != ''" :disabled="petition.expired || petition.response || petition.isSigned">
-                            <span v-if="petition.response && !petition.isSigned">This petition has received a response</span>
-                            <span v-else-if="!petition.response && !petition.isSigned && !petition.expired">Sign This Petition</span>
-                            <span v-else-if="!petition.response && !petition.isSigned">This petition has expired</span>
-                            <span v-else>You have signed this petition</span>
-                        </button>
-                        <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
+                <div id="petition-actions" class="overflow-hidden">
+                    <div v-if="petition.status == 1">
+                        <div id="signature-card" class="petition-action-card left margin-left">
+                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == ''">
+                                <!-- You must be logged in to sign a petition -->   <span v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
+                                <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
+                                <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
+                                <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
+                                <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
+                            </button>
+                            <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
+                        </div>
+                        <div id="action-cards" class="block overflow-hidden right">
+                            <div id="social-share" class="right overflow-hidden transition petition-action-card">
+                                <h3>Share</h3>
+                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Expires</h3>
+                                <span class="alternate-font">{[ petition.expires ]}</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Submitted</h3>
+                                <span class="alternate-font">{[ petition.timestamp ]}</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Status</h3>
+                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
+                                <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
+                                <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
+                                <span class="alternate-font" v-else>Responded</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Discuss</h3>
+                                <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                            </div>
+                        </div>
+                        <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                     </div>
-                    <div id="action-cards" class="block overflow-hidden right">
-                        <div id="social-share" class="right overflow-hidden transition petition-action-card">
-                            <h3>Share</h3>
-                            <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
-                        </div>
-                        <div class="petition-action-card margin-right padding-right right">
-                            <h3>Expires</h3>
-                            <span class="alternate-font">{[ petition.expires ]}</span>
-                        </div>
-                        <div class="petition-action-card margin-right padding-right right">
-                            <h3>Submitted</h3>
-                            <span class="alternate-font">{[ petition.timestamp ]}</span>
-                        </div>
-                        <div class="petition-action-card margin-right padding-right right">
-                            <h3>Status</h3>
-                            <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
-                            <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
-                            <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
-                            <span class="alternate-font" v-else>Responded</span>
-                        </div>
-                        <div class="petition-action-card margin-right padding-right right">
-                            <h3>Discuss</h3>
-                            <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                    <div v-else-if="petition.status == 0">
+                        <div class="ninety-width">
+                            <div class="padding-bottom">You are previewing this petition</div>
+                            <button id="edit-button" onclick="window.location.href='/petition/'+getUrl('p')" class="material material-button material-shadow transition left minimal">Still Need Work? Edit it.</button>
+                            <button id="publish-button" class="material material-button material-shadow transition left">Look good? Publish it!</button>
                         </div>
                     </div>
-                    <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                 </div>
                 <!-- End Petition in progress features. -->
 
@@ -1082,6 +1113,10 @@
                             {[ petition.signatures ]}
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
+                            <!-- Signature icon by Icons8 -->
+                            <img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">
+                            <!-- Signature icon by Icons8 -->
+                            <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/p1em/64" title="You signed this petition" alt="You signed this petition" width="32" height="32" class="right" style="margin-top: -8px">-->
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>
@@ -1102,7 +1137,12 @@
         $(document).ready(function(){
             $("#new-petition").click(function(){
                 console.log("-----------\nCreating new petition\n");
-                $.post("/create");
+                $.post("/petition/create/",{"csrfmiddlewaretoken":get_csrf()},function(r){
+                    console.log(r);
+                    if(!isNaN(Number(r))){
+                        openPetition(r);
+                    }
+                });
             });
         });
     </script>
@@ -1343,15 +1383,27 @@
         modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
     }
     openPetitionLoop = null;
-    function openPetition(petitionID, auto_open = false){
+    function openPetition(petitionID, auto_open = false, counter = 0){
         // Renders the petition data into a petition model and also updates browser history.
 
         var toPetition = getPetition(petitionID); // getPetition returns false if it has to grab a petition not loaded yet.
         if(!toPetition){
 
+            // The petition that was asked for was not loaded in the initial page load, wait for the server to send it over the socket.
             openPetitionLoop = setTimeout(function(){
-                console.log("loop");
-                openPetition(petitionID, auto_open);
+
+                if(counter < 10){ // Only loop for a max of 2 seconds.
+
+                    console.log("loop" + counter);
+                    openPetition(petitionID, auto_open, counter+1);
+
+                }
+                else{
+
+                    console.log("Error: could not load petition.")
+
+                }
+
             },200);
 
         }
@@ -1361,6 +1413,9 @@
                 // If the petition was not in the URL already on page load.
                 updatePetitionHistory(petitionID);
             }
+
+            // Update the title of the tab
+            window.document.title = ucfirst(toPetition.title);
 
             // Apply petition data to the modal.
             var createdJSDate = new Date(toPetition.timestamp).getTime();
@@ -1429,7 +1484,6 @@
             modal.removeClass("hidden");
             modal.find(".modal-overlay").fadeIn(400,function(){
                 $(this).removeClass("hidden");
-
             });
 
             verticalOffset(modal.find(".modal-container"), 0);
@@ -1446,9 +1500,9 @@
             });
 
             $(document).on("keyup",function(e){
-                console.log(e);
-                if(e.keyCode == 27){
+                if(e.keyCode === 27){ // Close the petition when you press the escape key.
                     modalData.closePetition();
+                    $(document).unbind("keyup");
                 }
             });
 
@@ -1465,13 +1519,57 @@
 
     $(document).ready(function(){
 
-        $("#sub-landing").waypoint(function(direction){
-            if(direction === "down"){
+        var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
+            if(direction == "down"){
+                $("header").addClass("small-header header-scrolled");
                 $("#back-up").stop().fadeIn(100);
+                $(".attach").each(function(){
+                    var me = $(this);
+                    var topPos = me.data("top");
+                    var leftPos = me.data("left");
+                    var rightPos = me.data("right");
+                    var bottomPos = me.data("bottom");
+                    me.addClass("attached");
+                    if(topPos !== undefined){
+                        me.css({"top":topPos+"px"});
+                    }
+                    if(leftPos !== undefined){
+                        me.css({"left":leftPos+"px"});
+                    }
+                    if(rightPos !== undefined){
+                        me.css({"right":rightPos+"px"});
+                    }
+                    if(bottomPos !== undefined){
+                        me.css({"bottom":bottomPos+"px"});
+                    }
+                });
             }
             else{
+                $("header").removeClass("small-header header-scrolled");
                 $("#back-up").stop().fadeOut(200);
+                $(".attach").each(function(){
+                    var me = $(this);
+                    var topPos = me.data("top");
+                    var leftPos = me.data("left");
+                    var rightPos = me.data("right");
+                    var bottomPos = me.data("bottom");
+                    me.removeClass("attached");
+                    if(topPos !== undefined){
+                        me.css({"top":""});
+                    }
+                    if(leftPos !== undefined){
+                        me.css({"left":""});
+                    }
+                    if(rightPos !== undefined){
+                        me.css({"right":""});
+                    }
+                    if(bottomPos !== undefined){
+                        me.css({"bottom":""});
+                    }
+                });
             }
+        }, {
+            offset: '60px'
         });
 
         // Setup Web Socket.
@@ -1657,12 +1755,6 @@
         $("#parallax-overlay").parallax({divisor:-5,offset:30});
         $(".slideshow-container").slideshow();
 
-        $("#is-logged-in").click(function(){
-
-
-
-        });
-
         $(document).on("click","#sign-petition-button",function(){
             var petition = getUrl("p");
             petitions.list[petitions.map[petition]].isSigned = 1;
@@ -1676,6 +1768,24 @@
 
                 }
             });
+        });
+
+        $(document).on("click","#publish-button",function(){
+            var petition = getUrl("p");
+
+            window.popup = new Modal({
+                headerContent:"<h2>Are you sure you want to publish this petition?</h2>",
+                bodyContent:"<p class='padding-bottom'>You cannot edit or delete it once it is published.</p>",
+                iconContainerClass:"text-highlight",
+                iconClass:"md-48",
+                iconText:"warning",
+                bodyButtons: [
+                    ["Cancel","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"],
+                    ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition+")"]
+                ]
+            });
+            popup.open();
+
         });
 
         window.onpopstate = function () {

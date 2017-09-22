@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
+from django.http import HttpResponse
+from petitions.views import colors
 from .models import Profile
 import logging
 
@@ -24,7 +26,11 @@ def profile(request):
     data_object = {
         'first_name': profile.user.first_name,
         'last_name': profile.user.last_name,
-        'petitions_created': profile.petitions_created.all
+        'email': profile.user.email,
+        'uid': profile.user.id,
+        'notification_settings': profile.notifications,
+        'petitions_created': profile.petitions_created.all,
+        "colors":colors()
     }
 
     return render(request, 'profile.html', data_object)
@@ -46,9 +52,10 @@ def user_login(request):
             auth_login(request, user_obj)
             logger.info(user.username+" logged in")
             return redirect(url_next)
-
-
-    return render(request, 'login.html')
+    data_object = {
+        "colors":colors()
+    }
+    return render(request, 'login.html', data_object)
 
 # ENDPOINTS #
 @login_required
@@ -58,7 +65,7 @@ def update_notifications(request, user_id):
     notification settings.
     """
     if request.user.id != int(user_id):
-        return redirect('/')
+        return HttpResponse(False)
 
     user = request.user
 
@@ -66,10 +73,9 @@ def update_notifications(request, user_id):
     user.profile.notifications.response = True if "response" in request.POST else False
 
     user.save()
-    return redirect('profile/settings/'+str(user_id))
+    return HttpResponse(True)
 
 @login_required
-@require_POST
 def user_logout(request):
     """ Handles logging a user out
     """

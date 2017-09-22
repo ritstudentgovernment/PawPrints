@@ -42,6 +42,15 @@ def index(request):
 
     return render(request, 'index.html', data_object)
 
+def about(request):
+    """
+    Handles displaying the about page
+    """
+    data_object = {
+        'colors':colors(),
+    }
+
+    return render(request, 'about.html', data_object)
 
 def load_petitions(request):
     """
@@ -109,9 +118,24 @@ def petition_create(request):
     # Build the user reference.
     user = request.user
 
+    new_user_petitions = user.profile.petitions_created.filter(Q(status=0))
+    if new_user_petitions.count() > 0:
+        return HttpResponse(new_user_petitions.first().id)
+
+    last_petition = Petition.objects.all().last()
+
     # Create a new blank petition.
     date = timezone.now()
-    new_petition = Petition(title="New Petition", description="New Petition Description",author=user,signatures=0,created_at=date,expires=date + timedelta(days=30))
+    new_petition = Petition(
+        title="Action-oriented, one-line statement",
+        description="Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?",
+        author=user,
+        signatures=0,
+        created_at=date,
+        expires=date + timedelta(days=30),
+        in_progress=False,
+        id=last_petition.id+1
+    )
     new_petition.save()
 
     # Add the petition's ID to the user's created petitions list.
@@ -170,13 +194,25 @@ def petition_edit(request, petition_id):
 
     return redirect('/petition/' + str(petition_id))
 
-def get_petition(petition_id):
+def get_petition(petition_id, user):
     """
-    Handles the
-    :param petition_id:
-    :return:
+    Handles grabbing one petition
+    :param petition_id: The id of the petition to grab
+    :return: A petition object or False
     """
-    return Petition.objects.get(pk=petition_id) if Petition.objects.filter(pk=petition_id).exists() else False
+
+    if hasattr(user, "profile"):
+        profile = user.profile
+    else:
+        profile = False
+
+    petition = Petition.objects.filter(pk=petition_id)
+    if petition.exists():
+        petition = petition.first()
+        if (petition.status != 0 and petition.status != 2) or (profile and profile.user.username == petition.author.username):
+            return petition
+        print("Cannot view petition")
+    return False
 
 
 # ENDPOINTS #
@@ -191,8 +227,8 @@ def petition_sign(request, petition_id):
           This will allow AJAX to interface with the view better.
     """
     petition = get_object_or_404(Petition, pk=petition_id)
-    # If the petition is still active
-    if petition.status != 2:
+    # If the petition is published and still active
+    if petition.status != 0 and petition.status != 2:
         user = request.user
         if not user.profile.petitions_signed.filter(id=petition_id).exists():
             user.profile.petitions_signed.add(petition)
@@ -272,7 +308,6 @@ def colors():
 
     return color_object
 
-
 def edit_check(user, petition):
     """
     Logic to determine if the user should be able to edit the petition
@@ -301,13 +336,18 @@ def edit_check(user, petition):
 def petition_publish(user, petition):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
-    the HTTP request method is a POST, the petition is new,
-    and that the user is the petition's author.
+    the petition is new, and that the user is the
+    petition's author.
     """
     response = False
     if petition.status == 0 and user.id == petition.author.id:
         # Set status to 1 to publish it to the world.
         petition.status = 1
+        # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
+        date = timezone.now()
+        petition.created_at = date
+        petition.expires = date + timedelta(days=30)
+        # Save the petition.
         petition.save()
         response = True
     return HttpResponse(response)
@@ -329,7 +369,7 @@ def sorting_controller(key, query=None):
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
-	'in progress': in_progress(),
+	    'in progress': in_progress(),
         'responded': responded(),
         'archived': archived()
     }.get(key, None)

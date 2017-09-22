@@ -20,7 +20,7 @@ from profile.views import user_login, user_logout
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^petitions/', views.load_petitions),
+    url(r'^about/', views.about, name='about'),
     url(r'^admin/', admin.site.urls),
     url(r'^login/', user_login, name='user_login'),
     url(r'^logout/', user_logout, name='user_logout'),
