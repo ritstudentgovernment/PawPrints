@@ -1,6 +1,6 @@
 <script>
     function openDropdown(id) {
-        console.log(document.getElementById(id));
+//        console.log(document.getElementById(id));
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (i = 0; i != dropdowns.length; i++) {
             var openDropdown = dropdowns[i];
@@ -13,7 +13,7 @@
 
 
     function closeDropdown(id) {
-        console.log(document.getElementById(id)+"close");
+//        console.log(document.getElementById(id)+"close");
         document.getElementById("myDropdown"+id).classList.remove("show");
 
     }
@@ -153,12 +153,12 @@
         background-color: #ff7700;
         color: white;
         font-size: 12px;
-        padding-right: 40px;
+        padding-right: 5%;
         border: none;
         font-weight: bold;
         cursor: pointer;
         outline: 0;
-        height: 20px;
+        height: 30px;
     }
 
     .dropdown-left {
@@ -168,7 +168,7 @@
         width: 50%;
         z-index: 99;
         height: 30px;
-        padding-left: 30px;
+        padding-left: 5%;
         margin-right: 50%;
         font-family: "Montserrat";
         padding-top: 2px;
@@ -193,7 +193,7 @@
         width: 50%;
         z-index: 99;
         height: 30px;
-        padding-right: 75px;
+        /*padding-right: 75px;*/
         margin-left: 50%;
         font-family: "Montserrat";
         text-align: right;
@@ -265,6 +265,8 @@
         border-top-color: #ff7700;
         font-family: "Montserrat";
         text-align: left;
+        right:10px;
+        padding-bottom:10px;
     }
 
     .dropdown-left a {
@@ -318,7 +320,7 @@
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
             <ul class="list">
                 <li id="about" class="list-item left">
-                    <a id="about-link" class="modern-link material-icon-container" href="#">
+                    <a id="about-link" class="modern-link material-icon-container" href="/about">
                         <i class="material-icons hidden">info_outline</i><span id="about-text">About</span>
                     </a>
                 </li>
@@ -330,9 +332,9 @@
                     {% if user.first_name %}
                         <span>Hi there, {{ user.first_name }}</span>
                         <i class="material-icons">keyboard_arrow_down</i>
-                        <ul id="account-dropdown" class="list hidden">
-                            <li class="list-item">Account</li>
-                            <li class="list-item">Log Out</li>
+                        <ul id="account-dropdown" class="list hidden transition">
+                            <li><a href="/profile" class="modern-link">Profile</a></li>
+                            <li><a href="/logout/?next=/" class="modern-link">Log Out</a></li>
                         </ul>
                     {% else %}
                         <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
@@ -355,32 +357,39 @@
         <nav id="mobile-nav">
             <div>
                 <ul>
+                    <li><span><h3>Pages</h3></span></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
                     {% if user.first_name %}
                         <li>
-                            <span>
-                                View Your Account
-                            </span>
+                            <a>Account</a>
                             <ul>
                                 <li><span><h3>Hi there, {{ user.first_name }}.</h3></span></li>
-                                <li><a>Log Out</a></li>
+                                <li><a href="/profile" class="modern-link">Profile</a></li>
+                                <li><a href="/logout/?next=/" class="modern-link">Log Out</a></li>
                             </ul>
                         </li>
                     {% else %}
-                            <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
+                        <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
                     {% endif %}
-                    <li><a href="/">Home</a></li>
-                    <li>
-                        <span>Student Government</span>
-                        <ul>
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/">About</a></li>
-                            <li><a href="/">Services</a></li>
-                            <li><a href="/">Resources</a></li>
-                            <li><a href="/">Get Involved</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </nav>
     </div>
 </header>
+<div id="modal-template" class="">
+    <div class="modal hidden">
+        <div class="modal-overlay hidden"></div>
+        <div class="modal-container">
+            <button class="modal-close-button hidden">&times;</button>
+            <div class="modal-header text-center padding-top">
+                <span class="material-icon-container padding hidden"><i class="material-icons"></i></span>
+                <div class="modal-header-content overflow-hidden"></div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-content"></div>
+                <div class="modal-buttons hidden"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include 'head.html' %}
+    <title>Account | PawPrints</title>
+    <style>
+        .background-highlight{
+        background-color: {{ colors.highlight }};
+        }
+        .text-highlight{
+        color: {{ colors.highlight }} !important;
+        }
+        .bright-text{
+        color: {{ colors.bright_text }} !important;
+        }
+        .dark-text{
+            color: {{ colors.dark_text }} !important;
+        }
+        .modern-link{
+        color: {{ colors.dark_text }};
+        text-decoration: none;
+        }
+        .material-input:focus{
+        border-color: {{ colors.highlight }};
+        }
+        .alternate-font{
+            font-family: "Slabo 27px", sans-serif;
+        }
+        .tag:hover{
+            cursor: pointer;
+        }
+        body{
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        h1,h2,h3,h4,h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+        }
+        #landing{
+            margin-top: 109px;
+        }
+        #sub-landing{
+            padding-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    {% include 'header.html' %}
+    <main class="full-width">
+        <section id="landing" class="text-left overflow-hidden padding-top">
+            <h1 class="text-highlight text-center block margin-bottom">About PawPrints</h1>
+            <article class="ninety-width padding-top">
+                <h1 class="dark-text text-left">History</h1>
+                <p>
+                    Student Government President Ashley Carrington and Vice President Tyler Pierce (2014-2015) sought to improve engagement of RIT Students through a Petition site. The site creates a place for the RIT community to converse on important issues.
+                </p>
+                <p>
+                    To remain transparent, this site is an open source project available on GitHub.
+                </p>
+            </article>
+        </section>
+        <section id="sub-landing" class="ninety-width">
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

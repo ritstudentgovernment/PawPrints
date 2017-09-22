@@ -25,7 +25,7 @@ from auth.views import MetadataView, CompleteAuthView, InitAuthView
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^petitions/', views.load_petitions),
+    url(r'^about/', views.about, name='about'),
     url(r'^admin/', admin.site.urls),
     url(r'^saml$', MetadataView.as_view(), name='metadata'),
     url(r'^login/', InitAuthView.as_view(), name='init-auth'),

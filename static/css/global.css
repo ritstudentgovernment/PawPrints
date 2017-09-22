@@ -1,10 +1,12 @@
 /* -- Modified HTML Tags -- */
 html, body{
-    margin: 0;
-    padding: 0;
-    font-family: "Raleway", Arial;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Raleway", Arial !important;
     font-weight: 300;
-    background-color: #fefefe;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    display: block !important;
 }
 header{
     top: 30px;
@@ -35,7 +37,9 @@ main{
 }
 .full-width{
     width: 100%;
-    overflow: hidden;
+}
+.half-width{
+    width: 50%;
 }
 .one-quarter-width{
     width: 25%;
@@ -68,12 +72,15 @@ main{
 .text-center{
     text-align: center;
 }
-.text-center span{
+.text-center span:not(.switchery){
     display: block;
     margin: 0 auto;
     width: 30%;
     min-width: 200px;
     text-align: center;
+}
+.text-left{
+    text-align: left;
 }
 .fixed{
     position: fixed;
@@ -158,6 +165,11 @@ main{
     -o-box-shadow:      0px 0px 5px 0px #ddd;
     box-shadow:         0px 0px 5px 0px #ddd;
 }
+.material-button.minimal{
+    background-color: #fff;
+    border: 1px solid #fff;
+    color:#0f0f0f;
+}
 .parallax-container{
     height: calc(90vh - 70px);
     display: block;
@@ -228,6 +240,21 @@ nav .margin-right{
 .attached{
     position: fixed !important;
 }
+.white-background{
+    background-color: #fff;
+}
+.italics{
+    font-style: italic;
+}
+.center{
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+}
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
 /* -- Global IDs -- */
 #logo{
     font-size: 2em;
@@ -237,6 +264,10 @@ nav .margin-right{
     margin-top: 15px;
 }
 /* -- Per-Element Styles -- */
+#wrapper{
+    /*z-index: 150;*/
+    overflow: hidden;
+}
 /* - Header - */
 #sg-nav{
     height: 35px;
@@ -328,14 +359,54 @@ nav .margin-right{
     margin-top: -13px;
 }
 #mobile-nav button{
-    width: calc(80% - 10px);
-    margin: 0 auto;
+    width: calc(90%);
     display: block;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin: 10px auto;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    font-size: 1em;
+}
+#mobile_login_form{
+    width: 90%;
+    background-color:#fff;
+    margin: 50px auto 0;
 }
 .mm-opened+#wrapper main{
     margin-top: 0;
+}
+.mm-navbar{
+    background-color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+}
+.mm-navbar *{
+    color: #f36e21 !important;
+}
+#menu-content:hover #account-dropdown{
+    display: block !important;
+    height: 48px;
+    border: 1px solid #ccc;
+}
+header.small-header #menu-content:hover #account-dropdown{
+    top: 80px;
+}
+#account-dropdown{
+    position: fixed;
+    top: 100px;
+    right: 1em;
+    min-width: 115px;
+    padding: 10px;
+    background-color: #fff;
+    line-height: 1.5em;
+    text-align: center;
+    height:0;
+}
+#account-dropdown li:hover{
+    text-decoration: underline;
+}
+
+#mobile-nav.mm-opened{
+    /*z-index:100;*/
 }
 @media screen and (min-width: 630px){
     #menu-icon, #mobile-nav{

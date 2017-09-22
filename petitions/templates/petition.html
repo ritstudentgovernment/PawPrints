@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% load static %}
     {% include 'head.html' %}
+    <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <style>
         /* -- Colors -- */
         .background-highlight{
@@ -22,320 +26,234 @@
 
         main{
             margin-top: 40px;
-            background-color: {{ colors.light_background }};
-        }
-        section{
-            background-color: #fff;
         }
         p iframe{
             display: block;
             margin: 0 auto;
+        }
 
+        #landing{
+            margin-top: 109px;
+            border-top: 3px solid #f36e21;
         }
         /* ------------------------ */
-        /* -- Page Specific IDs -- */
-        #petition_title_section{
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid #ccc;
-{#            border-top: 1px solid #ccc;#}
-{#            font-family: "Work Sans", Arial;#}
-            font-weight: 100;
-            padding-top: 1em;
-            padding-bottom: 1em;
-        }
-        #petition_title_section h1{
-            margin: 0 0 0.5em;
-        }
-        #petition_title_section p{
-            margin: 1em 0 0;
-        }
-        .small-header #petition_title_section{
-            padding-top: 0.5em;
-            padding-bottom: 0.5em;
-        }
-        .small-header p, .small-header #petition_title_section ul{
-            opacity: 0;
-            height: 0;
-        }
-        .small-header #petition_title{
-            margin: 0 0 0em;
-        }
-        #petition_description{
-            font-family: "Raleway", Arial;
-        }
-        /* ----------------------- */
-        /* -- Page Specific Classes -- */
-        .box{
-            padding: 5px 20px 15px 20px;
-            margin-bottom: 20px;
-            font-family: "Work Sans", Arial;
-        }
-        .box-title{
-            font-weight: 300;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ccc;
-            text-align: left;
-            margin-top: 0;
-            padding-top: 1em;
-            padding-bottom: 1em;
-            margin-bottom: 1.5em;
-            color: #696969;
-            font-size: 0.8em;
-        }
-        /* --------------------------- */
-        .petition_data span{
-            font-weight: normal;
-            font-size: 16px;
+        /* -- Page Specific -- */
+        #petition_title{
+            font-family: "Montserrat", sans-serif;
+            color: #f36e21;
+            font-size: 1.3em;
             text-transform: capitalize;
         }
-        textarea {
-            display: inline-block;
-            font-size: inherit;
-            font-family: inherit;
-            font-weight: inherit;
-            height: 0px;
-            width: 100%;
-            padding: 1px 0px;
-            white-space: normal;
-            border: 1px dashed #cfcfcf;
-            border-bottom: 2px solid #0f0f0f;
-            resize: none;
+        #publish{
+            font-size: 0.8em;
         }
-        textarea:focus, textarea:active{
-            outline: none;
+        .fieldTitle{
+            margin:0;
+            text-decoration: underline;
         }
-        .hidden{
-            display: none;
-        }
-        .full-width{
-            width: 100%;
-        }
-        .petition_list_data{
-            padding: 10px;
-            margin: 0;
-            overflow: hidden;
-            min-height: 40px;
+        .editable  img{
+            margin: 0 auto;
             display: block;
-            width: auto;
-            padding:0;
         }
-        .tag,.new-tag{
-            padding: 10px 5px;
-            display: inline-block;
-            padding: 5px 7px;
-            margin: 5px 7px 0 0;
-            font-size: 0.7em;
-            font-family: "Montserrat", Arial;
-            text-transform: uppercase;
-        }
-        .tag{
-            color: #fff;
-        }
-        .list_editable{
-            border: 1px dashed #cfcfcf;
-        }
-        .new-tag{
-            border: 1px solid #0c0c0c;
-        }
-        .new-tag:hover{
-            background-color: #0c0c0c;
-            color: #fff;
-            cursor: pointer;
-        }
-        .new-tag:hover:after{
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            width: 50%;
-            height: 50%;
-            text-align: center;
-            content: "+";
-            line-height: 1em;
-            background-color: #fff;
-            color: #000;
-            border-left: 1px solid #fff;
-            border-bottom: 1px solid #fff;
-        }
-        .list_editable .tag{
-            border: 1px solid rgba(255,255,255,0);
-        }
-        .list_editable .tag:hover{
-            cursor: pointer;
-            border: 1px solid #c0c0c0;
-        }
-        .list_editable .tag:hover:after{
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            width: 50%;
-            height: 50%;
-            text-align: center;
-            content: "-";
-            line-height: 1em;
-            background-color: #fff;
-            color: #000;
-            border-left: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-        }
-        #support .list{
-            width: 100%;
-            -moz-column-gap: 1em;
-            -webkit-column-gap: 1em;
-            column-gap: 1em;
-            margin: 0;
-            overflow: hidden;
-        }
-        #support .list li{
-            display: block;
-            text-align: center;
-            margin: 0;
-            line-height: 30px;
-        }
-        /* -- Responsiveness -- */
-        @media screen and (min-width: 801px) {
-            #support .list{
-                -webkit-column-count: 7;
-                -moz-column-count: 7;
-                column-count: 7;
-            }
-        }
-        @media screen and (max-width: 800px) and (min-width: 601px){
-            #support .list{
-                -webkit-column-count: 5;
-                -moz-column-count: 5;
-                column-count: 5;
-            }
-        }
-        @media screen and (max-width: 600px){
-            #support .list{
-                -webkit-column-count: 3;
-                -moz-column-count: 3;
-                column-count: 3;
-            }
-        }
-
     </style>
-    <title>{{petition.title}}</title>
+    <title>Edit {{petition.title}}</title>
 
 </head>
 
 <body>
-    <h1 id="petition_title" class="petition_data">{{petition.title}}</h1>
 
-    <p id="petition_description" class="petition_data">{{petition.description}}</p>
+<div id="wrapper">
+    {% include 'header.html' %}
 
-    <section>
-        <h4>Tags</h4>
-        <ul class="petition_list_data">
-            {% for tag in petition.tags.all %}
-                <li id="{{ tag.id }}" class="tag">{{tag.name}}</li>
-            {% endfor %}
-            {% if edit %}
-                {% for tag in additional_tags %}
-                    <li id="{{ tag.id }}" class="new-tag">{{ tag.name }}</li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </section>
+    <main class="ninety-width">
+        <section id="landing" class="material-shadow margin">
 
-    {% if current_user.is_authenticated and not current_user_signed and not author == current_user.profile.id %}
-        <!--
-            The logic to enable an authenticated user to sign a petition.
-        -->
-        <button id="sign-petition">Click me to sign this petition!</button>
+            <div class="white-background padding-left padding-right padding-bottom overflow-hidden">
+                <h3>Instructions</h3>
+                <p>
+                    To edit the title or description of this petition, click on each respective area.
+                    <br/><br/>
+                    Your changes are automatically saved.
+                </p>
+            </div>
+
+        </section>
+
+        <section class="margin-top padding-top">
+            <article class="padding">
+                <h4 class="fieldTitle">Petition Title:</h4>
+                <h1 id="petition_title" class="editable margin-top verify" data-verify-fail-message="The Title of your petition must not be blank">{{petition.title}}</h1>
+            </article>
+            <article class="padding">
+                <h4 class="fieldTitle">Petition Description:</h4>
+                <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="The Description of your petition must not be blank">{{petition.description}}</div>
+            </article>
+            <article class="padding-bottom padding-left padding-right margin-bottom">
+                <h4 class="padding-bottom fieldTitle">Tags</h4>
+                <select id="tags-select" name="tags[]" multiple="multiple" class="full-width verify" data-verify-fail-message="You must assign at least one tag to your petition">
+                    {% for tag in petition.tags.all %}
+                    <option value="{{tag.id}}" selected="selected">{{tag.name}}</option>
+                    {% endfor %}
+                    {% for tag in additional_tags %}
+                    <option value="{{tag.id}}">{{tag.name}}</option>
+                    {% endfor %}
+                </select>
+            </article>
+        </section>
+
+        <div class="text-center">
+            <button id="preview" class="material material-button minimal material-shadow inline transition" onclick="window.location.href='/?p={{petition.id}}'">Preview</button>
+            <button id="publish" class="material material-button material-shadow transition inline">Publish!</button>
+        </div>
+
+
+    </main>
+
+
+
+    {% if petition.status != 0 or petition.author.id != user.id %}
+    {# This block of code redirects the user back to the home page if the petition they are trying to get to has been published or unpublished. #}
         <script>
-            $("#sign-petition").click(function(){
-
-                $.post('/petition/sign/{{petition.id}}',{"csrfmiddlewaretoken":get_csrf()},function(){
-                    window.location.reload();
-                });
-            });
+            window.location.href='/?p={{petition.id}}';
         </script>
     {% endif %}
-    {% if petition.status == 2 %}
-    {# This block of code redirects the user back to the home page if the petition they are trying to get to has been unpublished. #}
-        <script>
-            window.location.href='/';
-        </script>
-    {% endif %}
-
-    <section id="signatures">
-        <h4>Signatures</h4>
-        <ul>
-            {% for user in users_signed.all %}
-                <li>{{ user.display_name }}</li>
-            {% endfor %}
-        </ul>
-    </section>
-
-    <p>Number of signatures: {{ petition.signatures }}</p>
 
     {% if edit %}
     <!--
         The logic to make the petition editable, if the user has permission.
 
         If the user does have permission, they can edit an element by clicking on editable places
-
-        Note for design: In order to ensure that the editing works, editable rows like the title and description (for
-        example) must have the class "petition_data" and an ID. The ID must be the same as the template link, except
-        with an underscore instead of a period.
      -->
-        {% if petition.status == 0 %}
-            <button id="publish">Publish!</button>
-        {% endif %}
+
         <script>
-            $(document).ready(function(){
-                $(".petition_list_data").addClass("list_editable");
-            });
-            $(window).click(function(e){
-                var clicked_element = e.target ? $(e.target) : false;
-                if(!clicked_element.hasClass("editable")) {
-                    $(".editable").each(function(){
-
-                        var value = $(this).val();
-                        value = value.trim();
-                        var attribute = $(this).parent().attr("id");
-                        attribute = attribute.replace('petition_','');
-                        if (value != "" && value != null) {
-                            $(this).parent().html(value);
-                            $.post("/petition/update/{{petition.id}}",{"attribute":attribute,"value":value,"csrfmiddlewaretoken":get_csrf()});
+            function verifyInputs(){
+                var allPass = true;
+                var message = "";
+                $(".verify").each(function(){
+                    var thisPass = true;
+                    var input = $(this);
+                    var value;
+                    if(input.hasClass("editable")){
+                        value = tinyMCE.get(input.attr("id")).getContent();
+                        if(value.trim() === ""){
+                            allPass = thisPass = false;
+                            input.addClass("error");
                         }
-
-                    });
-                }
-                if(clicked_element.hasClass("petition_data")){
-                    var text = clicked_element.html();
-                    var title = clicked_element.attr("id").replace("_"," ");
-                    clicked_element.html("<span>"+title+":</span><textarea class='editable'>"+text+"</textarea>");
-
-                    $('.editable').each(function(){
-                        this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
-                    }).on('input', function () {
-                        this.style.height = '0px';
-                        this.style.height = (this.scrollHeight) + 'px';
-                    });
-                }
-            });
-            $(document).on("click",".new-tag",function(){
-                var id = $(this).attr("id");
-                $(this).removeClass("new-tag");
-                $(this).addClass("tag");
-                $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
-            });
-            $(document).on("click",".tag",function(){
-                var id = $(this).attr("id");
-                $(this).removeClass("tag");
-                $(this).addClass("new-tag");
-                $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
-            });
-            $("#publish").click(function(){
-                $.post("/petition/update/{{petition.id}}",{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(response){
-                    //Expecting a response of either true or false.
-                    if(response){
-                        window.location.reload();
+                    }
+                    else{
+                        value = input.val();
+                        if(value.length === 0){
+                            allPass = thisPass = false;
+                            input.addClass("error");
+                        }
+                    }
+                    if(!thisPass){
+                        var failMessage = input.data("verify-fail-message");
+                        message += failMessage + "\n";
                     }
                 });
+                return allPass;
+            }
+            function unescape(string){
+                /**
+                 * This function unescapes certain characters sent in the JSON response for each petition so they show up correctly.
+                 **/
+                return string.replace(/\\"/g,"'")
+                    .replace(/\"/g,'')
+                    .replace(/&lt;/g,"<")
+                    .replace(/&gt;/g,">")
+                    .replace(/&amp;/g,"&")
+                    .replace(/nbps;/g," ")
+                    .replace(/"/g,"")
+                    .replace(/\\n/g, "\n")
+                    .replace(/(\\u201c|\\u201d)/g,'\"')
+                    .replace(/\\u2014/g,'&mdash;')
+                    .replace(/(\\u2019|\\u2018)/g,"'");
+            }
+            $(document).ready(function(){
+                tinymce.init({
+                    selector: '#petition_description',
+                    inline: true,
+                    menubar: false,
+                    plugins: "image",
+                    toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",
+                    init_instance_callback: function (editor) {
+                        editor.on('Change', function (e) {
+                            console.log('Editor contents was changed.');
+                            var attribute_changed = e.target.id.replace("petition_","");
+                            var value = e.level.content.trim();
+                            if(value !== ""){
+                                $.post("/petition/update/{{petition.id}}",{"attribute":attribute_changed,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                            }
+                        });
+                    }
+                });
+                tinymce.init({
+                    selector: '#petition_title',
+                    inline: true,
+                    menubar: false,
+                    toolbar: false,
+                    init_instance_callback: function (editor) {
+                        editor.on('Change', function (e) {
+                            console.log('Editor contents was changed.');
+                            var attribute_changed = e.target.id.replace("petition_","");
+                            var value = ucfirst(e.level.content.trim().replace(/<\/?[^>]+(>|$)/g, ""));
+                            if(value !== ""){
+                                $.post("/petition/update/{{petition.id}}",{"attribute":attribute_changed,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                            }
+                        });
+                    }
+                });
+                $(document).ready(function() {
+                    $('#tags-select').select2({
+                        placeholder: "Petition Tags",
+                        width: "resolve",
+                        maximumSelectionLength: 3,
+                        noResults: function(){return "No tags found."},
+                        formatSelectionTooBig: "You can only select up to 3 tags."
+                    });
+                });
+                var desc = $("#petition_description");
+                var html = desc.html();
+                desc.html(unescape(html));
+
+            });
+            var tags = $('#tags-select');
+            tags.on('select2:select', function (e) {
+                var data = e.params.data;
+                var id = data.id;
+                $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+            });
+            tags.on('select2:unselect', function (e) {
+                var data = e.params.data;
+                var id = data.id;
+                $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+            });
+            $(document).on("click","#publish",function(){
+                var petition = getUrl("p");
+
+                if(verifyInputs()){
+                    window.popup = new Modal({
+                        headerContent:"<h2>Are you sure you want to publish this petition?</h2>",
+                        bodyContent:"<p class='padding-bottom'>You cannot edit or delete it once it is published.</p>",
+                        iconContainerClass:"text-highlight",
+                        iconClass:"md-48",
+                        iconText:"warning",
+                        bodyButtons: [
+                            ["Cancel","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"],
+                            ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition+")"]
+                        ]
+                    });
+
+                    popup.open();
+
+                }
+                else{
+
+
+
+                }
+
             });
         </script>
     {% endif %}
