@@ -55,6 +55,21 @@
             margin: 0 auto;
             display: block;
         }
+        .select2-container--default .select2-results__option--highlighted[aria-selected]{
+            background-color: #f36e21;
+        }
+        .select2-selection__choice__remove{
+            color: #fff !important;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice{
+            background-color: #f36e21;
+            border: none;
+            color: #FFF;
+            padding: 5px;
+        }
+        .select2-search.select2-search--inline{
+            padding-top:2px;
+        }
     </style>
     <title>Edit {{petition.title}}</title>
 
@@ -152,7 +167,7 @@
                         message += failMessage + "\n";
                     }
                 });
-                return allPass;
+                return allPass ? allPass : message;
             }
             function unescape(string){
                 /**
@@ -232,7 +247,9 @@
             $(document).on("click","#publish",function(){
                 var petition = getUrl("p");
 
-                if(verifyInputs()){
+                var verified = verifyInputs();
+                if(verified === true){
+
                     window.popup = new Modal({
                         headerContent:"<h2>Are you sure you want to publish this petition?</h2>",
                         bodyContent:"<p class='padding-bottom'>You cannot edit or delete it once it is published.</p>",
@@ -244,13 +261,22 @@
                             ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition+")"]
                         ]
                     });
-
                     popup.open();
 
                 }
                 else{
 
-
+                    window.popup = new Modal({
+                        headerContent:"<h2>There is an error in your petition content.</h2>",
+                        bodyContent:"<p class='padding-bottom'>"+verified+"</p>",
+                        iconContainerClass:"text-highlight",
+                        iconClass:"md-48",
+                        iconText:"error",
+                        bodyButtons: [
+                            ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"]
+                        ]
+                    });
+                    popup.open();
 
                 }
 

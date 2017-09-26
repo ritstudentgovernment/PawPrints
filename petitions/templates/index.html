@@ -540,6 +540,30 @@
 
         }
 
+        #action-drawer-icon-container{
+            display: none;
+            height: 15px;
+            width: 50px;
+            padding-bottom: 5px;
+            text-align: center;
+            position: absolute;
+            top: -22px;
+            left: calc(50% - 25px);
+            border: 1px solid #ccc;
+            border-top: 3px solid #ccc;
+            border-bottom: none;
+            background-color: #fff;
+            color: #a0a0a0;
+        }
+        #action-drawer-icon-container:hover{
+            border-top-color: #aaa;
+            height: 17px;
+            line-height: 17px;
+            top: -24px;
+            cursor: pointer;
+            color: #f36e21;
+        }
+
         #edit-button, #publish-button{
             width: calc(50% - 14px);
             font-size: 0.8em;
@@ -634,6 +658,9 @@
             }
         }
         @media screen and (max-width: 830px){
+            #action-drawer-icon-container{
+                display: block;
+            }
             .petition-action-card:not(#signature-card){
                 width: 50%;
                 padding:0;
@@ -994,6 +1021,9 @@
                             </button>
                             <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
                         </div>
+                        <div id="action-drawer-icon-container" class="transition">
+                            <i class="material-icons">keyboard_arrow_down</i>
+                        </div>
                         <div id="action-cards" class="block overflow-hidden right">
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
@@ -1211,6 +1241,7 @@
         delimiters: ['{[', ']}'],
         methods:{
             closePetition: function () {
+                window.document.title = "PawPrints - Make your mark";
                 var modal = $("#petition-modal");
                 modal.find(".modal-container").cssanimate("fadeOutDown",{hide:false},function(){
                     modal.addClass("hidden").removeAttr("style");
@@ -1377,9 +1408,9 @@
         var timeDiff = Math.abs(date2 - date1);
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
     }
-    function setContentAvailableSpace(modal){
+    function setContentAvailableSpace(modal, additional_margin = 0){
         // Compute the available space for the content of the petition based on the used space.
-        var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20;
+        var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
         modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
     }
     openPetitionLoop = null;
@@ -1415,7 +1446,7 @@
             }
 
             // Update the title of the tab
-            window.document.title = ucfirst(toPetition.title);
+            window.document.title = ucfirst("PawPrints - "+toPetition.title);
 
             // Apply petition data to the modal.
             var createdJSDate = new Date(toPetition.timestamp).getTime();
@@ -1687,6 +1718,12 @@
 
         };
 
+        // Bind parallax effects.
+        $("#parallax-slideshow").parallax({divisor:-2.5});
+        $("#parallax-overlay").parallax({divisor:-5,offset:30});
+        $(".slideshow-container").slideshow();
+
+        // Event Listeners.
         $(document).on("click", ".tag", function(){
             // Bind the click event on elements with the tag class
 
@@ -1742,6 +1779,22 @@
             scroll(to_elem);
         });
 
+        $(document).on("click","#action-drawer-icon-container",function(){
+            var me = $(this);
+            var icon = me.find("i");
+            var actionCards = $("#action-cards");
+            if(icon.html() === "keyboard_arrow_down"){
+                icon.html("keyboard_arrow_up");
+            }
+            else{
+                icon.html("keyboard_arrow_down");
+            }
+            setContentAvailableSpace($("#petition-modal"),200); // Extend the petition modal box too much so the animation is smooth
+            actionCards.toggle(200,"linear",function(){
+                setContentAvailableSpace($("#petition-modal")); // Resize the box so it is the correct size.
+            });
+        });
+
         $(document).on("click", ".petition", function(e){
             if(!$(e.target).hasClass("tag")){
                 var petitionID = $(this).data("petition-id");
@@ -1749,11 +1802,6 @@
             }
 
         });
-
-        // Bind parallax effects.
-        $("#parallax-slideshow").parallax({divisor:-2.5});
-        $("#parallax-overlay").parallax({divisor:-5,offset:30});
-        $(".slideshow-container").slideshow();
 
         $(document).on("click","#sign-petition-button",function(){
             var petition = getUrl("p");
