@@ -96,7 +96,12 @@ $(document).ready(function(){
             "pagedim-black"
         ]
     });
-    console.log("MMENU: "+$mobile.data("mmenu"));
+    $().smartWebBanner({
+        title: 'PawPrints',
+        author: 'RIT Student Government',
+        url: '/',
+        autoApp: true
+    });
     var $icon = $("#menu-icon");
     var API = $mobile.data( "mmenu" );
     $icon.on( "click", function() {
