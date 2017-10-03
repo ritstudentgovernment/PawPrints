@@ -20,6 +20,10 @@ class ProfileTest(TestCase):
         user = User.objects.get(id=self.testUser.id)
         self.assertEqual(user.profile.notifications.update, False)
 
+        # Make sure other people can't update users notifications
+        response = self.client.post('/profile/settings/notifications/99999', {'response': '0'})
+        self.assertRedirects(response, '/')
+
     def test_profile_page(self):
         self.client.force_login(self.testUser)
         response = self.client.get('/profile/')

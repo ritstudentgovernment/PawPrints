@@ -28,7 +28,7 @@ SECRET_KEY = secrets.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["129.21.145.110"]
+ALLOWED_HOSTS = ["129.21.147.101"]
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
