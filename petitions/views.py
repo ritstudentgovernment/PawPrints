@@ -3,7 +3,7 @@ Author: Peter Zujko (@zujko)
         Lukas Yelle (@lxy5611)
 Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
-Updated: Feb 15 2017
+Updated: Oct 03 2017
 """
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
@@ -20,8 +20,6 @@ from django.contrib.auth.models import User
 from channels import Group, Channel
 from send_mail.tasks import *
 import json
-from django.db.models import Q
-
 
 import logging
 
@@ -211,7 +209,6 @@ def get_petition(petition_id, user):
         petition = petition.first()
         if (petition.status != 0 and petition.status != 2) or (profile and profile.user.username == petition.author.username):
             return petition
-        print("Cannot view petition")
     return False
 
 
@@ -417,6 +414,7 @@ def similar_petitions(query):
 
 def in_progress():
     return Petition.objects.all() \
+    .filter(expires__gt=timezone.now()) \
     .filter(status=1) \
     .filter(expires__gt=timezone.now()) \
     .filter( (Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None) ) \
