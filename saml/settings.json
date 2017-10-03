@@ -1,0 +1,30 @@
+{
+    "strict": true,
+    "debug": true,
+    "sp": {
+        "entityId": "http://<URL>/saml",
+        "assertionConsumerService": {
+            "url": "http://<URL>/acs",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        },
+        "singleLogoutService": {
+            "url": "http://<URL>/sls",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+        "x509cert": "",
+        "privateKey": ""
+    },
+    "idp": {
+        "entityId": "https://shibboleth.main.ad.rit.edu/idp/shibboleth",
+        "singleSignOnService": {
+            "url": "https://shibboleth.main.ad.rit.edu/idp/profile/SAML2/Redirect/SSO",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "singleLogoutService": {
+            "url": "https://shibboleth.main.ad.rit.edu/logout.html",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "x509cert":"MIIDVDCCAjygAwIBAgIVAMPFek+px9vIGJ0/+QhwyptEXQqaMA0GCSqGSIb3DQEB BQUAMCUxIzAhBgNVBAMTGnNoaWJib2xldGgubWFpbi5hZC5yaXQuZWR1MB4XDTA4 MTEyNTE4MzU0N1oXDTI4MTEyNTE4MzU0N1owJTEjMCEGA1UEAxMac2hpYmJvbGV0 aC5tYWluLmFkLnJpdC5lZHUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB AQC3LLiBrUjXO+LFsfrk4u5lQ62FfXJEPJnmL6/4WVsOtpLWMQZesuiOlyhFTsTN dlmFp37UTcZ9MJsTeG/1M87BxUnPB22Qn7TPNLh7Oi3QDinVyukPXRl6B/bHdtMh lq5V+E8rNyITaOc7YB6GkNLBOVBRemBcttmlwz5whHWwU/MNdQlBf4/KIu7mV5dp WQrnPvaTk3nle4vOtbPThipD5jiD2r/a4/l5gROJRuLvxQaiNfBfACwowp9R9DHK lpqD4EPSEv2v0RXJyFx4pMi/hnfmSjvIQi9s+J5sKzyNN3JtCzrVO5GSiddO46bR tvp5H/rz0cNpp5rnjz+NRkarAgMBAAGjezB5MFgGA1UdEQRRME+CGnNoaWJib2xl dGgubWFpbi5hZC5yaXQuZWR1hjFodHRwczovL3NoaWJib2xldGgubWFpbi5hZC5y aXQuZWR1L2lkcC9zaGliYm9sZXRoMB0GA1UdDgQWBBRJRQ19Vjpa3qktIoVtEqdL onWQFTANBgkqhkiG9w0BAQUFAAOCAQEAmXDiVgm0fmvvhtzYO2GFBIpZNNzd+8ou jnUNTKNAliKToarQvLDTQUENh2L558u3OvwFXlC7hcnGNKin4VjQ/GWps+J7dQ67 gCiYMquyf5i9UE/j5ilriNXmSwzwvB/YPJzEMIFd2XBI550ODeIMf5B0gGx1EMB1 jyWpy4iOZbMCBbGn0Vo2/AeGyiUmT6/qcDnrMTg4fvAqG26kujwPBb42UpkwSo2E OZDp3OGGicpNhWVWca74r8KHYJGNBwXYmZ5ntP5Yfd9cElJKFLS21igLGkhr/o4N Im4Q86WvRXW4cHfy8OB9fEIURxSmGeZMYsd0YLh8ouPlWuLl3hWsyQ=="
+    }
+}

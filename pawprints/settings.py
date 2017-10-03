@@ -12,12 +12,12 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 from pawprints import secrets 
-import ldap
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+SAML_FOLDER = os.path.join(BASE_DIR, 'saml')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -34,15 +34,21 @@ ALLOWED_HOSTS = ["129.21.147.101"]
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_IMPORTS = ['send_mail.tasks']
+CELERY_IMPORTS = ['send_mail.tasks','petitions.tasks']
+
+# Sentry Settings
+RAVEN_CONFIG = {
+    'dsn': secrets.RAVEN_DSN,
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+    'raven.contrib.django.raven_compat',
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
-    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'channels',
 ]
+
+AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
 
 CHANNEL_LAYERS = {
     "default": {
@@ -71,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'log.ip_log_middleware.IPLogMiddleware',
 ]
 
 ROOT_URLCONF = 'pawprints.urls'
@@ -78,7 +87,7 @@ ROOT_URLCONF = 'pawprints.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'pawprints/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,10 +115,6 @@ DATABASES = {
         'PASSWORD': secrets.DB_PASSWORD,
         'HOST': secrets.DB_HOST,
         'PORT': secrets.DB_PORT,
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -131,29 +136,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend'
-)
-
-# LDAP configurations
-AUTH_LDAP_GLOBAL_OPTIONS = {
-    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER
-}
-AUTH_LDAP_SERVER_URI = "ldaps://ldap.rit.edu"
-
-AUTH_LDAP_BIND_DN = "uid=" + secrets.LDAP_USER + ",ou=People,dc=rit,dc=edu"
-AUTH_LDAP_BIND_PASSWORD = secrets.LDAP_PASSWORD
-AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=Groups,dc=rit,dc=edu", ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)")
-AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
-
-#Require student, prevent others
-AUTH_LDAP_REQUIRE_GROUP = "cn=student,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=staff,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=faculty,ou=Groups,dc=rit,dc=edu"
-AUTH_LDAP_DENY_GROUP = "cn=studemp,ou=Groups,dc=rit,dc=edu"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -197,6 +179,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'formatter': 'verbose',
+        },
         'rotate_file_errors':{
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -215,11 +202,6 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
-        'slack_handler': {
-            'level': 'ERROR',
-            'class': 'log.slackhandler.SlackHandler',
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'pawprints': {
@@ -228,14 +210,19 @@ LOGGING = {
             'propagate': True,
         },
         'pawprints': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['rotate_file_errors', 'slack_handler'],
+            'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'IPRequest': {
+            'handlers': ['rotate_file_info'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }

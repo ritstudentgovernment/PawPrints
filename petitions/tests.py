@@ -10,7 +10,10 @@ from django.contrib.auth.models import User
 from petitions.models import Petition, Tag
 from datetime import timedelta
 from django.utils import timezone
+from channels.test import ChannelTestCase
+from channels import Channel
 from .views import petition_sign, edit_check
+from .consumers import serialize_petitions
 
 class PetitionTest(TestCase):
     def setUp(self):
@@ -34,6 +37,52 @@ class PetitionTest(TestCase):
                 expires=timezone.now()+timedelta(days=30)
                 )
         self.petition.save()
+
+    def test_index_page(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'index.html')
+
+    def test_404(self):
+        response = self.client.get('/doesnotexist')
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, '404.html')
+
+    def test_load_petitions(self):
+        response = self.client.post('/petitions/',{'sort_by': 'most signatures', 'filter': 'all'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'list_petitions.html')
+
+    def test_petition_edit(self):
+        self.client.force_login(self.superUser)
+        # Change petition title to 'New'
+        obj = {
+            "attribute": "title",
+            "value": "New"
+        }
+        response = self.client.post('/petition/update/'+str(self.petition.id),obj)
+        # Check that it doesn't 404
+        self.assertNotEqual(response.status_code, 404)
+        self.assertRedirects(response, '/petition/'+str(self.petition.id))
+
+        # Check that petition was actually changed
+        pet = Petition.objects.get(pk=self.petition.id)
+        self.assertEqual(pet.title, 'New')
+
+    def test_petition_publish(self):
+        self.client.force_login(self.user)
+        obj = {
+            "attribute": "publish",
+            "value": "foo"
+        }
+        self.petition.status = 0
+        self.petition.save()
+        response = self.client.post('/petition/update/'+str(self.petition.id), obj)
+        # Make sure there is no 404
+        self.assertNotEqual(response.status_code, 404)
+        # Check that petition was published
+        pet = Petition.objects.get(pk=self.petition.id)
+        self.assertEqual(pet.status, 1)  
 
     def test_sign_petition(self):
         self.client.force_login(self.superUser)
@@ -96,3 +145,9 @@ class PetitionTest(TestCase):
         self.assertEqual(edit_check(self.superUser, self.petition),True)
         self.assertEqual(edit_check(self.superUser2, self.petition),False)
         self.assertEqual(edit_check(self.user2, self.petition),False)
+
+    def test_serialize_petitions(self):
+        petitions = Petition.objects.all()
+        json_response = serialize_petitions(petitions)
+        # TODO: Improve this test to be more thorough
+        self.assertNotEquals(json_response, None) 
