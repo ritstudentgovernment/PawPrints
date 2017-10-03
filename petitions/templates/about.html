@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
         color: {{ colors.bright_text }} !important;
         }
         .dark-text{
-            color: {{ colors.dark_text }} !important;
+        color: {{ colors.dark_text }} !important;
         }
         .modern-link{
         color: {{ colors.dark_text }};
@@ -99,7 +100,6 @@
         .fade-enter-active, .fade-leave-active {
             transition: opacity 0.25s ease-out;
         }
-
         .fade-enter, .fade-leave-to {
             opacity: 0;
         }
@@ -189,14 +189,6 @@
                     sections.sections[i].active = false;
                 }
                 me.active = !was_active;
-                $("article").each(function(){
-                   var article = $(this);
-                   var description = article.find("div");
-                   if(description.length > 0){
-                       var article_height = article.height();
-                       var description_height = description.height();
-                   }
-                });
             }
         },
         delimiters: ['{[', ']}']
