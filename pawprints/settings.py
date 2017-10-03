@@ -28,7 +28,7 @@ SECRET_KEY = secrets.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["lymbp.student.rit.edu"]
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
