@@ -269,17 +269,6 @@
         #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
         }
-        #back-up{
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: rgba(0,0,0,0.7);
-            color: #fff;
-            font-size: 1.2em;
-            padding: 10px;
-            text-decoration: none;
-            display: none;
-        }
         #modal-template .modal-header h1{
             margin-top: -5px;
             margin-bottom: 0;
@@ -1550,59 +1539,6 @@
 
     $(document).ready(function(){
 
-        var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
-            if(direction == "down"){
-                $("header").addClass("small-header header-scrolled");
-                $("#back-up").stop().fadeIn(100);
-                $(".attach").each(function(){
-                    var me = $(this);
-                    var topPos = me.data("top");
-                    var leftPos = me.data("left");
-                    var rightPos = me.data("right");
-                    var bottomPos = me.data("bottom");
-                    me.addClass("attached");
-                    if(topPos !== undefined){
-                        me.css({"top":topPos+"px"});
-                    }
-                    if(leftPos !== undefined){
-                        me.css({"left":leftPos+"px"});
-                    }
-                    if(rightPos !== undefined){
-                        me.css({"right":rightPos+"px"});
-                    }
-                    if(bottomPos !== undefined){
-                        me.css({"bottom":bottomPos+"px"});
-                    }
-                });
-            }
-            else{
-                $("header").removeClass("small-header header-scrolled");
-                $("#back-up").stop().fadeOut(200);
-                $(".attach").each(function(){
-                    var me = $(this);
-                    var topPos = me.data("top");
-                    var leftPos = me.data("left");
-                    var rightPos = me.data("right");
-                    var bottomPos = me.data("bottom");
-                    me.removeClass("attached");
-                    if(topPos !== undefined){
-                        me.css({"top":""});
-                    }
-                    if(leftPos !== undefined){
-                        me.css({"left":""});
-                    }
-                    if(rightPos !== undefined){
-                        me.css({"right":""});
-                    }
-                    if(bottomPos !== undefined){
-                        me.css({"bottom":""});
-                    }
-                });
-            }
-        }, {
-            offset: '60px'
-        });
-
         // Setup Web Socket.
         socket = new WebSocket("ws://" + window.location.host + "/");
         socket.onmessage = function(e) { // Bind to the onmessage event.
@@ -1771,12 +1707,6 @@
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
 
-        });
-
-        $("#back-up").click(function(e){
-            e.preventDefault();
-            var to_elem = $("#landing-marker");
-            scroll(to_elem);
         });
 
         $(document).on("click","#action-drawer-icon-container",function(){

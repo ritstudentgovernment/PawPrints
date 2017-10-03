@@ -263,6 +263,18 @@ nav .margin-right{
     height: 40px;
     margin-top: 15px;
 }
+#back-up{
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 1.2em;
+    padding: 10px;
+    text-decoration: none;
+    display: none;
+    z-index:1000;
+}
 /* -- Per-Element Styles -- */
 #wrapper{
     /*z-index: 150;*/
