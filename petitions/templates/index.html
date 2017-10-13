@@ -1453,7 +1453,7 @@
             randomize:function(){
                 for(var i = 0; i < this.images.length; i++){
                     var img = this.images[i];
-                    if(img.sort_rank == 0) img.sort_rank = Math.random() * this.images.length;
+                    if(img.sort_rank === 0) img.sort_rank = Math.random() * this.images.length;
                 }
                 this.images.sort(function(a,b){return b.sort_rank - a.sort_rank});
             }
@@ -1470,7 +1470,7 @@
          **/
 
         // load the petitions into the Vue instance.
-        if($(".current-tag").attr("id") != filter){
+        if($(".current-tag").attr("id") !== filter){
 
             $(".current-tag").removeClass("current-tag");
 
@@ -1502,7 +1502,7 @@
          * This function is responsible for grabbing petitions. If the given petition does not exist in the data we have
          * it calls the backend, which then grabs it.
          **/
-        if(petitions.map[petitionID] != undefined){
+        if(petitions.map[petitionID] !== undefined){
             return petitions.list[petitions.map[petitionID]];
         }
         else{
@@ -1733,7 +1733,7 @@
                                         author: "",
                                         content:unescape(update.description),
                                         date: update.timestamp
-                                    }
+                                    };
 
                                     if (modalData.timeline.indexOf(updateBlock) === -1) {
                                         // If the current update doesn't exist in the petition's visible data.
@@ -1880,7 +1880,7 @@
                 if(r !== petition){
                     console.log("Sign Petition response: "+r);
                 }
-                if(modalData.petition.id == petition){
+                if(modalData.petition.id === petition){
 
                     modalData.petition.isSigned = 1;
 
