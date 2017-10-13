@@ -248,6 +248,12 @@ function ucfirst(string){
             this.element.find(".material-icons").addClass(this.settings.iconClass).html(this.settings.iconText);
 
         }
+        else{
+
+            this.element.find(".material-icon-container").remove();
+            this.element.find(".modal-header").removeClass("padding-top");
+
+        }
 
         this.element.find(".modal-header").addClass(this.settings.headerClass);
         if(this.settings.headerContent){

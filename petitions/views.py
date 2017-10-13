@@ -152,9 +152,8 @@ def petition_create(request):
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
 
-
-@login_required
 @require_POST
+@login_required
 def petition_edit(request, petition_id):
     """
     Handles the updating of a particular petition.
@@ -186,9 +185,32 @@ def petition_edit(request, petition_id):
         if attribute == "remove-tag":
             petition.tags.remove(value)
 
-        petition.save()
+        if attribute == "updates":
+            if request.user.is_staff:
+                update = Update(
+                    description=value,
+                    created_at=timezone.now()
+                )
+                update.save()
+                petition.updates.add(update)
 
-        logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
+        if attribute == "response":
+            if request.user.is_staff:
+                response = Response(
+                    description="",
+                    created_at=timezone.now(),
+                    author = request.user
+                )
+                response.save()
+                petition.response.add(response)
+
+        if attribute == "unpublish":
+            if request.user.is_staff:
+                petition.status = 2
+
+    petition.save()
+
+    logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
 
     return redirect('/petition/' + str(petition_id))
 
