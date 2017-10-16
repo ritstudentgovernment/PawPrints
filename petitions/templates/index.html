@@ -1518,6 +1518,7 @@
                      .replace(/\"/g,'')
                      .replace(/"/g,"")
                      .replace(/\\n/g, "\n")
+                     .replace(/\\u2013/g,"<br/>–")
                      .replace(/(\\u201c|\\u201d)/g,'\"')
                      .replace(/\\u2014/g,'&mdash;')
                      .replace(/(\\u2019|\\u2018)/g,"'");
@@ -1678,7 +1679,8 @@
     $(document).ready(function(){
 
         // Setup Web Socket.
-        socket = new WebSocket("ws://" + window.location.host + "/");
+        var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
+        socket = new WebSocket(socket_type+"://" + window.location.host + "/");
         socket.onmessage = function(e) { // Bind to the onmessage event.
 
             // Get Escape special characters so JSON.parse works.
