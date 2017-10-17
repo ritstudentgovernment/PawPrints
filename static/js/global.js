@@ -206,6 +206,30 @@ function publishPetition(petition){
     });
 }
 
+function update(what, value){
+    $.post("/petition/update/"+getUrl("p"),{"attribute":what,"value":value,"csrfmiddlewaretoken":get_csrf()},function(r){
+        try{
+            if(r.hasOwnProperty("Error")){
+                window.errorModal = new Modal({
+                    iconText:"error",
+                    iconClass:"bright-text md-48",
+                    iconContainerClass:"",
+                    headerClass:"error-background bright-text",
+                    headerContent: "<h2>Error</h2>",
+                    bodyContent:"<p>"+r.Error+"</p>",
+                    bodyButtons:[
+                        ["OK","material-button material-hover material-shadow cursor transition minimal","window.errorModal.close()"]
+                    ]
+                });
+                errorModal.open();
+            }
+        }
+        catch(e){
+            console.log("Error: "+ e + "\nResponse: " + r);
+        }
+    });
+}
+
 function ucfirst(string){
     return string.charAt(0).toUpperCase() + string.substr(1);
 }

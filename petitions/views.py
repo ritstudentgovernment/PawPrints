@@ -8,7 +8,7 @@ Updated: Oct 03 2017
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models import F, Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from datetime import timedelta
@@ -19,6 +19,7 @@ from profile.models import Profile
 from django.contrib.auth.models import User
 from channels import Group, Channel
 from send_mail.tasks import *
+import petitions.profanity
 import json
 
 import logging
@@ -86,7 +87,6 @@ def petition(request, petition_id):
     # Get all of the current tags in pawprints.
     additional_tags = Tag.objects.all().exclude(name__in=[x.name for x in petition.tags.all()])
 
-
     # Generate the placeholders for the petition's page.
     # Note: 'edit' is how the system determines if the current user has the permission to edit a petition or not.
     data_object = {
@@ -153,7 +153,7 @@ def petition_create(request):
     return HttpResponse(str(petition_id))
 
 @require_POST
-@login_required
+# @login_required
 def petition_edit(request, petition_id):
     """
     Handles the updating of a particular petition.
@@ -170,6 +170,11 @@ def petition_edit(request, petition_id):
         value = request.POST.get("value")
 
         if attribute == "publish":
+
+            # Be sure the person cannot publish a petition that contains profanity.
+            if petitions.profanity.has_profanity(value):
+                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+
             user = request.user.profile
             return petition_publish(user, petition)
 
@@ -185,7 +190,7 @@ def petition_edit(request, petition_id):
         if attribute == "remove-tag":
             petition.tags.remove(value)
 
-        if attribute == "updates":
+        if attribute == "add_update":
             if request.user.is_staff:
                 update = Update(
                     description=value,
@@ -193,6 +198,8 @@ def petition_edit(request, petition_id):
                 )
                 update.save()
                 petition.updates.add(update)
+            else:
+                return JsonResponse({"Error":"Operation Not Permitted."})
 
         if attribute == "response":
             if request.user.is_staff:
@@ -203,21 +210,29 @@ def petition_edit(request, petition_id):
                 )
                 response.save()
                 petition.response.add(response)
+            else:
+                return JsonResponse({"Error":"Operation Not Permitted."})
 
         if attribute == "unpublish":
             if request.user.is_staff:
                 petition.status = 2
+            else:
+                return JsonResponse({"Error":"Operation Not Permitted."})
+    else:
+        # User was unable to perform any edit operation on this petition.
+        return JsonResponse({"Error":"Operation Not Permitted."})
 
     petition.save()
 
     logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
 
-    return redirect('/petition/' + str(petition_id))
+    return JsonResponse({"petition":petition_id})
 
 def get_petition(petition_id, user):
     """
     Handles grabbing one petition
-    :param petition_id: The id of the petition to grab
+    :param: petition_id: The id of the petition to grab
+            user: The logged in user object from request.user
     :return: A petition object or False
     """
 
@@ -239,7 +254,8 @@ def get_petition(petition_id, user):
 @login_required
 @require_POST
 def petition_sign(request, petition_id):
-    """ Endpoint for signing a petition.
+    """
+    Endpoint for signing a petition.
     This endpoint requires the user be signed in
     and that the HTTP request method is a POST.
     Note: This endpoint returns the ID of the petition signed.
@@ -268,7 +284,7 @@ def petition_sign(request, petition_id):
 
         logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
 
-	# Check if petition reached 200 if so, email.
+    # Check if petition reached 200 if so, email.
         if petition.signatures == 200:
             petition_reached.delay(petition.id, request.META['HTTP_HOST'])
             logger.info('petition '+petition.title+' hit 200 signatures \n'+"ID: "+str(petition.id))
@@ -296,6 +312,25 @@ def petition_unsubscribe(request, petition_id):
     user.save()
 
     return redirect('petition/' + str(petition_id))
+
+def petition_publish(user, petition):
+    """ Endpoint for publishing a petition.
+    This endpoint requires that the user be signed in,
+    the petition is new, and that the user is the
+    petition's author.
+    """
+    response = False
+    if petition.status == 0 and user.id == petition.author.id:
+        # Set status to 1 to publish it to the world.
+        petition.status = 1
+        # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
+        date = timezone.now()
+        petition.created_at = date
+        petition.expires = date + timedelta(days=30)
+        # Save the petition.
+        petition.save()
+        response = True
+    return HttpResponse(response)
 
 @login_required
 @require_POST
@@ -347,30 +382,10 @@ def edit_check(user, petition):
         # Check if the user's account is active (it may be disabled)
         if user.is_active:
             # Check if the user is a staff member or the author of the petition
-            if user.is_staff or (user.id == petition.author.id and petition.status != 2 ):
+            if user.is_staff or (user.id == petition.author.id and petition.status == 0 ):
                 # The user is authenticated, and can edit the petition!
                 edit = True
     return edit
-
-def petition_publish(user, petition):
-    """ Endpoint for publishing a petition.
-    This endpoint requires that the user be signed in,
-    the petition is new, and that the user is the
-    petition's author.
-    """
-    response = False
-    if petition.status == 0 and user.id == petition.author.id:
-        # Set status to 1 to publish it to the world.
-        petition.status = 1
-        # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
-        date = timezone.now()
-        petition.created_at = date
-        petition.expires = date + timedelta(days=30)
-        # Save the petition.
-        petition.save()
-        response = True
-    return HttpResponse(response)
-
 
 # FILTERING
 def filtering_controller(sorted_objects, tag):

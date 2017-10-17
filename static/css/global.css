@@ -510,15 +510,12 @@ header.small-header #menu-content:hover #account-dropdown{
     font-family: "Open Sans", Arial;
     font-weight: 300;
 }
-.modal .modern-button:hover{
-
-}
 .modal-content{
     overflow: hidden;
     text-align: center;
 }
-.modern-modal-body{
-
+.modal-header span.material-icon-container{
+    padding-bottom: 0;
 }
 .modal .text-center span{
     display: inline-flex;

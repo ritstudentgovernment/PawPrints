@@ -205,11 +205,6 @@ LOGGING = {
     },
     'loggers': {
         'pawprints': {
-            'handlers': ['rotate_file_info'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'pawprints': {
             'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',
             'propagate': True,

@@ -195,11 +195,9 @@
                     toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",
                     init_instance_callback: function (editor) {
                         editor.on('Change', function (e) {
-                            console.log('Editor contents was changed.');
-                            var attribute_changed = e.target.id.replace("petition_","");
                             var value = e.level.content.trim();
                             if(value !== ""){
-                                $.post("/petition/update/{{petition.id}}",{"attribute":attribute_changed,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                                update("description",value);
                             }
                         });
                     }
@@ -211,11 +209,9 @@
                     toolbar: false,
                     init_instance_callback: function (editor) {
                         editor.on('Change', function (e) {
-                            console.log('Editor contents was changed.');
-                            var attribute_changed = e.target.id.replace("petition_","");
                             var value = ucfirst(e.level.content.trim().replace(/<\/?[^>]+(>|$)/g, ""));
                             if(value !== ""){
-                                $.post("/petition/update/{{petition.id}}",{"attribute":attribute_changed,"value":value,"csrfmiddlewaretoken":get_csrf()});
+                                update("title",value);
                             }
                         });
                     }
