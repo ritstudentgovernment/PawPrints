@@ -132,7 +132,7 @@ def petition_create(request):
         created_at=date,
         expires=date + timedelta(days=30),
         in_progress=False,
-        id=last_petition.id+1
+        id=last_petition.id+1 if last_petition is not None else 0
     )
     new_petition.save()
 
