@@ -22,6 +22,9 @@ def has_profanity(petition_body):
     profanities = load_words('profanity.csv')
     body = petition_body.split(' ')
 
+    if type(body) == "string":
+        body = petition_body.split('&nbsp;')
+
     for word in body:
         print(word)
         for profanity in profanities:
