@@ -32,8 +32,10 @@ class SAMLSPBackend(object):
                 # If user does not exist in DB, Create a user object and save to DB
                 user = User(username=username, email=username+"@rit.edu")
                 user.set_unusable_password()
-                # Set user attributes 
+                user.first_name = first_name
+                user.last_name = last_name
                 user.save()
+                # Set user profile attributes
                 user.profile.full_name = "{} {}".format(first_name, last_name) 
                 user.profile.display_name = "{}{}".format(first_name[0],last_name[0])
                 if 'Employee' in affiliation:
