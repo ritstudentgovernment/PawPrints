@@ -1489,13 +1489,14 @@
          * This function is responsible for handling browser history. When called it updates your browser history so you
          * can use back/forward buttons to open / close petitions.
          **/
-        // Update history + URL.
+        // Update history + URL
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
         if(!petitionID){
             window.history.pushState("object or string", "Title", prevURL);
         }
         else{
+            console.log("THIS SHOULD UPDATE THE URL TO INCLUDE A /?p="+petitionID);
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
