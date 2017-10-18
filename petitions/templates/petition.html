@@ -142,6 +142,7 @@
      -->
 
         <script>
+            var petition_id = {{petition.id}};
             function verifyInputs(){
                 var allPass = true;
                 var message = "";
@@ -197,7 +198,7 @@
                         editor.on('Change', function (e) {
                             var value = e.level.content.trim();
                             if(value !== ""){
-                                update("description",value,getUrl("p"));
+                                update("description",value,petition_id);
                             }
                         });
                     }
@@ -211,7 +212,7 @@
                         editor.on('Change', function (e) {
                             var value = ucfirst(e.level.content.trim().replace(/<\/?[^>]+(>|$)/g, ""));
                             if(value !== ""){
-                                update("title",value,getUrl("p"));
+                                update("title",value,petition_id);
                             }
                         });
                     }
@@ -234,15 +235,14 @@
             tags.on('select2:select', function (e) {
                 var data = e.params.data;
                 var id = data.id;
-                $.post("/petition/update/{{petition.id}}",{"attribute":"add-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+                update("add-tag",id,petition_id);
             });
             tags.on('select2:unselect', function (e) {
                 var data = e.params.data;
                 var id = data.id;
-                $.post("/petition/update/{{petition.id}}",{"attribute":"remove-tag","value":id,"csrfmiddlewaretoken":get_csrf()});
+                update("remove-tag",id,petition_id);
             });
             $(document).on("click","#publish",function(){
-                var petition = getUrl("p");
 
                 var verified = verifyInputs();
                 if(verified === true){
@@ -255,7 +255,7 @@
                         iconText:"warning",
                         bodyButtons: [
                             ["Cancel","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"],
-                            ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition+")"]
+                            ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition_id+")"]
                         ]
                     });
                     popup.open();
