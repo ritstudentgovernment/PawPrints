@@ -1493,6 +1493,7 @@
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
         if(!petitionID){
+            console.log("CLEARING PETITION ID FROM URL");
             window.history.pushState("object or string", "Title", prevURL);
         }
         else{
@@ -1574,6 +1575,8 @@
             else{
                 console.log("Auto Open on petition. Do not update URL.");
             }
+
+            console.log("Petition with ID '"+petitionID+"' has been opened.");
 
             // Update the title of the tab
             window.document.title = ucfirst("PawPrints - "+toPetition.title);
