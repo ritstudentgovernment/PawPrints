@@ -1492,7 +1492,7 @@
         // Update history + URL
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
-        if(!petitionID){
+        if(!petitionID && petitionID !== 0){
             console.log("CLEARING PETITION ID FROM URL");
             window.history.pushState("object or string", "Title", prevURL);
         }
