@@ -197,7 +197,7 @@
                         editor.on('Change', function (e) {
                             var value = e.level.content.trim();
                             if(value !== ""){
-                                update("description",value);
+                                update("description",value,getUrl("p"));
                             }
                         });
                     }
@@ -211,7 +211,7 @@
                         editor.on('Change', function (e) {
                             var value = ucfirst(e.level.content.trim().replace(/<\/?[^>]+(>|$)/g, ""));
                             if(value !== ""){
-                                update("title",value);
+                                update("title",value,getUrl("p"));
                             }
                         });
                     }

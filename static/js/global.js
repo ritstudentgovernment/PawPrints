@@ -206,8 +206,8 @@ function publishPetition(petition){
     });
 }
 
-function update(what, value){
-    $.post("/petition/update/"+getUrl("p"),{"attribute":what,"value":value,"csrfmiddlewaretoken":get_csrf()},function(r){
+function update(what, value, petition_id){
+    $.post("/petition/update/"+petition_id,{"attribute":what,"value":value,"csrfmiddlewaretoken":get_csrf()},function(r){
         try{
             if(r.hasOwnProperty("Error")){
                 window.errorModal = new Modal({
