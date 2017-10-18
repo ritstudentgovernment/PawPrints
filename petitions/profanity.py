@@ -23,6 +23,7 @@ def has_profanity(petition_body):
     body = petition_body.split(' ')
 
     for word in body:
+        print(word)
         for profanity in profanities:
             if profanity == word:
                 return True
