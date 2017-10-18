@@ -26,5 +26,6 @@ def has_profanity(petition_body):
         print(word)
         for profanity in profanities:
             if profanity == word:
+                print(profanity)
                 return True
     return False
