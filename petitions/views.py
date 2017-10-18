@@ -184,6 +184,7 @@ def petition_edit(request, petition_id):
             petition.title = value
 
         if attribute == "description":
+            print(petitions.profanity.has_profanity(value))
             if petitions.profanity.has_profanity(value):
                 return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
             petition.description = value
