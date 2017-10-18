@@ -179,9 +179,13 @@ def petition_edit(request, petition_id):
             return petition_publish(user, petition)
 
         if attribute == "title":
+            if petitions.profanity.has_profanity(value):
+                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
             petition.title = value
 
         if attribute == "description":
+            if petitions.profanity.has_profanity(value):
+                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
             petition.description = value
 
         if attribute == "add-tag":
