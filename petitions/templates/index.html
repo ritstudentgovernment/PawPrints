@@ -217,7 +217,7 @@
             cursor: pointer;
         }
         .petition progress{
-            height: 10px;
+            height: 5px;
             display: block;
         }
         progress{
@@ -256,8 +256,9 @@
             padding: 5px 10px;
             margin: 5px 7px 0 0px;
             float: left;
-            background-color: {{ colors.highlight }};
-            color: {{ colors.bright_text }};
+            background-color: {{ colors.bright_text }};
+            color:{{ colors.highlight }};
+            border:1px solid {{ colors.highlight }};
             -webkit-border-radius:40px;
             -moz-border-radius:40px;
             border-radius:40px;
@@ -269,6 +270,7 @@
             -o-box-shadow:      0px 0px 5px 0px #aaa;
             box-shadow:         0px 0px 5px 0px #aaa;
             background-color: {{ colors.highlight_hover }};
+            color: {{ colors.bright_text }};
         }
         #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
