@@ -172,21 +172,17 @@ def petition_edit(request, petition_id):
         if attribute == "publish":
 
             # Be sure the person cannot publish a petition that contains profanity.
-            if petitions.profanity.has_profanity(value):
-                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+            # This is being removed for the time being
+            # if petitions.profanity.has_profanity(value):
+            #     return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
             user = request.user.profile
             return petition_publish(user, petition)
 
         if attribute == "title":
-            if petitions.profanity.has_profanity(value):
-                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
             petition.title = value
 
         if attribute == "description":
-            print(petitions.profanity.has_profanity(value))
-            if petitions.profanity.has_profanity(value):
-                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
             petition.description = value
 
         if attribute == "add-tag":
