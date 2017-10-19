@@ -5,6 +5,7 @@ Author: Peter Zujko
 """
 import csv
 import os
+import re
 
 def load_words(filename):
     """
@@ -22,14 +23,12 @@ def has_profanity(petition_body):
     profanities = load_words('profanity.csv')
     body = petition_body.split(' ')
 
-    print(type(body))
-    print(type(petition_body))
-
     index = 0
     for word in body:
+        re.sub("<[^<]+?>","",word)
         print("Is word " + str(index) + " (" + word + ") profane?")
         for profanity in profanities:
-            if profanity == word:
+            if profanity == word.lower():
                 print("YES, that word should be cast to the depths of H3ll.")
                 return True
         print("No. That word is totally biblical.")
