@@ -1272,7 +1272,7 @@
                             bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);(window.responseModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.responseModal.close();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
