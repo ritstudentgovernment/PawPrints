@@ -34,4 +34,5 @@ def has_profanity(petition_body):
             print("YES, that word should be cast to the depths of H3ll.")
             return True
         print("No. That word is totally biblical.")
+        index += 1
     return False
