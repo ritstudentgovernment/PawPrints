@@ -21,13 +21,13 @@ def load_words(filename):
 
 def has_profanity(petition_body):
     profanities = load_words('profanity.csv')
-    re.sub(r"<[^<]+?>","",petition_body)
+    petition_body = re.sub(r"<[^<]+?>","",petition_body)
 
     body = petition_body.split(' ')
 
     index = 0
     for word in body:
-        re.sub(r"[^a-zA-Z]+","",word)
+        word = re.sub(r"[^a-zA-Z]+","",word)
         word = word.lower()
         print("Is word " + str(index) + " (" + word + ") profane?")
         if word in profanities:
