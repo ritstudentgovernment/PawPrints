@@ -27,7 +27,7 @@ def has_profanity(petition_body):
 
     index = 0
     for word in body:
-        print("Is word " + index + " (" + word + ") profane?")
+        print("Is word " + str(index) + " (" + word + ") profane?")
         for profanity in profanities:
             if profanity == word:
                 print("YES, that word should be cast to the depths of H3ll.")
