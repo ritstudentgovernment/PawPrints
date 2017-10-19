@@ -26,7 +26,7 @@ def has_profanity(petition_body):
     index = 0
     for word in body:
         word = word.lower()
-        re.sub("/<[^<]+?>/g","",word)
+        re.sub(r"<[^<]+?>","",word)
         print("Is word " + str(index) + " (" + word + ") profane?")
         for profanity in profanities:
             if profanity == word:
