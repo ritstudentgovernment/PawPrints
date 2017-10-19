@@ -206,7 +206,7 @@ function publishPetition(petition){
     });
 }
 
-function update(what, value, petition_id){
+function update(what, value, petition_id, callback=false){
     $.post("/petition/update/"+petition_id,{"attribute":what,"value":value,"csrfmiddlewaretoken":get_csrf()},function(r){
         try{
             if(r.hasOwnProperty("Error")){
@@ -222,6 +222,11 @@ function update(what, value, petition_id){
                     ]
                 });
                 errorModal.open();
+            }
+            else{
+                if(callback && typeof callback === "function"){
+                    callback.call(r);
+                }
             }
         }
         catch(e){
