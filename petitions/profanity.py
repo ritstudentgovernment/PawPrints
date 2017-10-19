@@ -22,13 +22,15 @@ def has_profanity(petition_body):
     profanities = load_words('profanity.csv')
     body = petition_body.split(' ')
 
-    if type(body) == "string":
-        body = petition_body.split('&nbsp;')
+    print(type(body))
+    print(type(petition_body))
 
+    index = 0
     for word in body:
-        print(word+"\n")
+        print("Is word " + index + " (" + word + ") profane?")
         for profanity in profanities:
             if profanity == word:
-                print(profanity)
+                print("YES, that word should be cast to the depths of H3ll.")
                 return True
+        print("No. That word is totally biblical.")
     return False

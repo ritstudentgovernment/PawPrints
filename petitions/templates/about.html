@@ -121,7 +121,6 @@
 
             <div id="sub-landing"></div>
             <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
-
                 <h1>{[ section.title ]}</h1>
                 <transition name="fade">
                     <div v-if="section.active" class="transition">

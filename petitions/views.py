@@ -180,10 +180,18 @@ def petition_edit(request, petition_id):
             return petition_publish(user, petition)
 
         if attribute == "title":
-            petition.title = value
+
+            if not petitions.profanity.has_profanity(value):
+                petition.title = value
+            else:
+                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
         if attribute == "description":
-            petition.description = value
+
+            if not petitions.profanity.has_profanity(value):
+                petition.description = value
+            else:
+                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
         if attribute == "add-tag":
             petition.tags.add(value)

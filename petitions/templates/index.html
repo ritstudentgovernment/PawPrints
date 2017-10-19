@@ -100,7 +100,7 @@
         #new-petition{
             position: fixed;
             bottom: 30px;
-            left: 30px;
+            left: 200px;
             height: 70px;
             width: 70px;
             text-align: center;
@@ -442,9 +442,14 @@
             line-height: 45px;
             font-weight: 700;
         }
-        #sign-petition-button{
+        #sign-petition-button {
             font-weight: 700;
             font-size: 0.9em;
+            padding: 0 !important;
+        }
+        #sign-petition-button span{
+            display: block;
+            padding: 7px 15px 7px 15px;
         }
         #sign-petition-button{
             background-color: transparent;
@@ -720,6 +725,9 @@
         @media screen and (max-width: 700px){
             #sub-landing{
                 padding-top: 110px;
+            }
+            #new-petition{
+                left: 30px;
             }
             #filter-sort{
                 float: none;
@@ -1041,7 +1049,7 @@
                     <div v-if="petition.status == 1">
                         <div id="signature-card" class="petition-action-card left margin-left">
                             <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == ''">
-                                <!-- You must be logged in to sign a petition -->   <span v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
+                                <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/'" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
                                 <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
                                 <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
