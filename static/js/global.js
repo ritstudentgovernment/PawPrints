@@ -225,7 +225,7 @@ function update(what, value, petition_id, callback=false){
             }
             else{
                 if(callback && typeof callback === "function"){
-                    callback.call(r);
+                    callback(r);
                 }
             }
         }
