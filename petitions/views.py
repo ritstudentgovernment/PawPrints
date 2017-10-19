@@ -55,6 +55,7 @@ def load_petitions(request):
     """
     Handles requests for the list of petitions by AJAX.
     """
+
     sorting_key = request.POST.get('sort_by', 'most recent')
     filter_key = request.POST.get('filter', 'all')
 

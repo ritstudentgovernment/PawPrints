@@ -15,7 +15,7 @@ def load_words(filename):
     dirname = os.path.dirname(__file__)
     csvfile = open(os.path.join(dirname,filename), 'r')
     for line in csvfile:
-        words = line.strip().split(',')
+        words.append(line.strip())
     return words
         
 
