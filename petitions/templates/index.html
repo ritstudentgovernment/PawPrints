@@ -1252,7 +1252,7 @@
                             bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.updateModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.updateModal.close();window.location.refresh();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
@@ -1272,7 +1272,7 @@
                             bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"))']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p")),function(r){console.log(r);window.responseModal.close();window.location.refresh();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
@@ -1292,7 +1292,7 @@
                             bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"))']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p")),function(r){console.log(r);window.deleteModal.close();window.location.refresh();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
