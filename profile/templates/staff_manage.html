@@ -60,6 +60,9 @@
             padding: 1em;
             line-height: 2em;
         }
+        .user .material-icons{
+            line-height: 1.4em;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +77,7 @@
             <h1>Super Users</h1>
             <p>Super users have the ability to add new staff members.</p>
             {% for superuser in superusers %}
-                <h4 class="user material-icon-container block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from superusers role.">delete</i></h4>
+                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from superusers role.">delete</i></h4>
             {% endfor %}
         </section>
         <section class="ninety-width">
