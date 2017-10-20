@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from petitions.views import colors
 from .models import Profile
 import logging
@@ -83,7 +83,7 @@ def add_superuser(request, user_id):
             user.is_superuser = True
             user.is_staff = True
             user.save()
-            return HttpResponse(True)
+            return JsonResponse(True)
     return HttpResponse(False)
 
 @require_POST
