@@ -250,6 +250,9 @@ nav .margin-right{
 .italics{
     font-style: italic;
 }
+.capitalize{
+    text-transform: capitalize;
+}
 .center{
     margin: 0 auto;
     text-align: center;

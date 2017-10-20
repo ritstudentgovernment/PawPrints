@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
+    {% include 'head.html' %}
+    <title>Staff Manager | PawPrints</title>
+    <style>
+        .background-highlight{
+        background-color: {{ colors.highlight }};
+        }
+        .text-highlight{
+        color: {{ colors.highlight }} !important;
+        }
+        .bright-text{
+        color: {{ colors.bright_text }} !important;
+        }
+        .modern-link{
+        color: {{ colors.dark_text }};
+        text-decoration: none;
+        }
+        .material-input:focus{
+        border-color: {{ colors.highlight }};
+        }
+        .alternate-font{
+            font-family: "Slabo 27px", sans-serif;
+        }
+        .tag:hover{
+            cursor: pointer;
+        }
+        body{
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        h1,h2,h3,h4,h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+        }
+        #landing{
+            margin-top: 109px;
+        }
+        #sub-landing{
+            padding-top: 0;
+        }
+        #settings ul li{
+            background-color: #fff;
+            border-bottom: 1px solid #ccc;
+        }
+        #settings ul li:last-child{
+            border-bottom: none;
+        }
+        #settings ul li label{
+            overflow: hidden;
+            width: calc(100% - 65px);
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    {% include 'header.html' %}
+    <main class="full-width">
+        <section id="landing" class="text-center overflow-hidden">
+
+        </section>
+        <section id="sub-landing" class="ninety-width">
+            <h1>Super Users</h1>
+            <p>Super users have the ability to add new staff members.</p>
+            {% for superuser in superusers %}
+                <article>
+                    <h3>{{ superuser.first_name }} {{ superuser.first_name }} ({{ superuser.user_name }})</h3>
+                </article>
+            {% endfor %}
+        </section>
+        <section>
+            <h1>Staff Members</h1>
+            <p>Staff members have the ability to update, delete, and respond to petitions.</p>
+            {% for staff_member in staff %}
+            <article>
+                <h3>{{ staff_member.first_name }} {{ staff_member.first_name }} ({{ staff_member.user_name }})</h3>
+            </article>
+            {% endfor %}
+        </section>
+    </main>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        window.plugins = {
+            "switchery":[]
+        };
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        elems.forEach(function(html) {
+            window.plugins.switchery.push(new Switchery(html,{size:"small"}));
+        });
+        $("#settings").find("input").change(function(){
+
+            var form = $(this).closest("form");
+
+            $.post(form.attr("action"), form.serialize(),function(r){
+                if(!r){
+                    console.log("Error saving user preferences. User sent does not matched logged in user.");
+                }
+            });
+
+        });
+
+    });
+</script>
+
+</body>
+</html>

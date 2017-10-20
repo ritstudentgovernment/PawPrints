@@ -334,6 +334,9 @@
                         <i class="material-icons">keyboard_arrow_down</i>
                         <ul id="account-dropdown" class="list hidden transition">
                             <li><a href="/profile" class="modern-link">Profile</a></li>
+                            {% if user.is_superuser %}
+                                <li><a href="/profile/manage/staff">Staff User Management</a></li>
+                            {% endif %}
                             <li><a href="/logout/?next=/" class="modern-link">Log Out</a></li>
                         </ul>
                     {% else %}
@@ -361,6 +364,11 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     {% if user.first_name %}
+                        {% if user.is_superuser %}
+                            <li>
+                                <a href="/profile/manage/staff">Staff User Management</a>
+                            </li>
+                        {% endif %}
                         <li>
                             <a>Account</a>
                             <ul>

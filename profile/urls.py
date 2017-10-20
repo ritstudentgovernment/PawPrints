@@ -6,4 +6,5 @@ app_name='profile'
 urlpatterns = [
     url(r'^$', views.profile),
     url(r'^settings/notifications/(?P<user_id>\d+)$', views.update_notifications, name='notification_update'),
+    url(r'^manage/staff',views.manage_staff)
 ]
