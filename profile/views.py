@@ -44,7 +44,7 @@ def manage_staff(request):
     profile = Profile.objects.get(user=request.user)
     superusers = User.objects.filter(is_superuser=True),
     data_object = {
-        'superusers': superusers
+        'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers)
     }
     return render(request, 'staff_manage.html', data_object)
