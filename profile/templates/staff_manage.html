@@ -101,12 +101,7 @@
             window.plugins.switchery.push(new Switchery(html,{size:"small"}));
         });
 
-        var users = [{% for user in all_users %}user.username{% endfor %}];
-        $.post("add_staff_member/", {}, function(r){
-            if(!r){
-                console.log("Error updating user preferences. User sent does not match logged in user.");
-            }
-        });
+        var users = [{% for user in all_users %}{"username":user.username,"user_id":user.id}{% endfor %}];
 
     });
 </script>

@@ -81,6 +81,7 @@ def add_superuser(request, user_id):
     if user_id is not None:
         user = User.objects.get(id=int(user_id))
         user.is_superuser = True
+        user.is_staff = True
         user.save()
         return HttpResponse(True)
     return HttpResponse(False)

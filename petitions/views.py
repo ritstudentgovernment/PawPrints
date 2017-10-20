@@ -354,6 +354,7 @@ def petition_publish(user, petition):
     """
     response = False
     if petition.status == 0 and user.id == petition.author.id:
+
         # Set status to 1 to publish it to the world.
         petition.status = 1
         # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.

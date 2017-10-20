@@ -1211,7 +1211,7 @@
 
 </main>
 
-{% if user.first_name %}
+{% if user.first_name and user.profile.affiliation == 1 %}
     <button id="new-petition" class="cursor circle background-highlight bright-text light material-hover transition"><span class="material-icon-container"><i class="material-icons">add</i></span></button>
     <script>
         $(document).ready(function(){
@@ -1722,7 +1722,7 @@
                 if(data["command"]){
 
                     var command = data["command"];
-                    var response, petition, petition_id, map_pos, modal_petition, modal_timeline_update_block;
+                    var petition, petition_id, map_pos, modal_petition, modal_timeline_update_block;
 
                     // Command parsing.
                     if(command === "update-sigs"){
@@ -1730,10 +1730,8 @@
 
                         // Format of update-sigs response is as follows: sigs:{sigs:#,petition_id:#}.
 
-                        response = data["sigs"];
-
-                        petition_id = response["petition_id"];
-                        var sigs = response["sigs"];
+                        petition_id = data["petition_id"];
+                        var sigs = data["sigs"];
 
                         // Find the petition from its location in the map, and update it's signatures value.
                         petitions.list[petitions.map[petition_id]].signatures = sigs;
@@ -1744,7 +1742,7 @@
 
                         }
 
-                        animateUpdate(response["petition_id"]);
+                        animateUpdate(data["petition_id"]);
 
                     }
                     else if(command === "new-update"){
@@ -1753,14 +1751,12 @@
                         // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
                         // Add this to the petitions and update the modal if necessary.
 
-                        response = data["update"];
-
-                        petition_id = response["petition_id"];
+                        petition_id = data["petition_id"];
                         map_pos = petitions.map[petition_id];
 
                         var new_update = {
-                            description:response["description"],
-                            timestamp:response["timestamp"]
+                            description:data["description"],
+                            timestamp:data["timestamp"]
                         };
 
                         modal_petition = modalData.petition.id;
@@ -1783,7 +1779,7 @@
 
                         }
 
-                        animateUpdate(response["petition_id"]);
+                        animateUpdate(data["petition_id"]);
 
                     }
                     else if(command === "new-response"){
@@ -1792,14 +1788,12 @@
                         // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
                         // Add this to the petitions and update the modal if necessary.
 
-                        response = data["response"];
-
-                        petition_id = response["petition_id"];
+                        petition_id = data["petition_id"];
                         map_pos = petitions.map[petition_id];
 
                         var new_response = {
-                            description:response["description"],
-                            timestamp:response["timestamp"]
+                            description:data["description"],
+                            timestamp:data["timestamp"]
                         };
 
                         modal_petition = modalData.petition.id;
@@ -1822,7 +1816,7 @@
 
                         }
 
-                        animateUpdate(response["petition_id"]);
+                        animateUpdate(data["petition_id"]);
 
                     }
                     else if(command === "get"){
