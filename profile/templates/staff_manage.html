@@ -69,7 +69,7 @@
             <p>Super users have the ability to add new staff members.</p>
             {% for superuser in superusers %}
                 <article>
-                    <h3>{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.profile.user_name }})</h3>
+                    <h3>{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})</h3>
                 </article>
             {% endfor %}
         </section>
@@ -78,7 +78,7 @@
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
             <article>
-                <h3>{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.profile.user_name }})</h3>
+                <h3>{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</h3>
             </article>
             {% endfor %}
         </section>
