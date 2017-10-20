@@ -1048,8 +1048,9 @@
                 <div id="petition-actions" class="overflow-hidden">
                     <div v-if="petition.status == 1">
                         <div id="signature-card" class="petition-action-card left margin-left">
-                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == ''">
+                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' || {{ user.profile.affiliation != 1 }}">
                                 <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/'" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
+                                <!-- You cannot sign a petition if ur a student --> <span v-else-if="!{{ user.profile.affiliation != 1 }}">Only students may sign petitions</span>
                                 <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
                                 <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
@@ -1091,9 +1092,9 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Status</h3>
-                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">In Progress</span>
+                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">Active</span>
                                 <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
-                                <span class="alternate-font" v-else-if="!petition.response">Waiting for response</span>
+                                <span class="alternate-font" v-else-if="!petition.response">In Progress</span>
                                 <span class="alternate-font" v-else>Responded</span>
                             </div>
                             <div class="petition-action-card margin-right padding-right right">

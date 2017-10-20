@@ -101,7 +101,7 @@
             window.plugins.switchery.push(new Switchery(html,{size:"small"}));
         });
 
-        var users = [{% for user in all_users %}{"username":user.username,"user_id":user.id}{% endfor %}];
+        var users = [{% for user in all_users %}{"username":{{user.username}},"user_id":{{user.id}} }{% endfor %}];
 
     });
 </script>
