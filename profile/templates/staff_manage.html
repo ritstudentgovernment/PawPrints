@@ -91,6 +91,8 @@
 </div>
 
 <script>
+    var users = { {% for user in all_users %}"{{user.username}}":{{user.id}}, {% endfor %} };
+
     $(document).ready(function(){
 
         window.plugins = {
@@ -101,7 +103,8 @@
             window.plugins.switchery.push(new Switchery(html,{size:"small"}));
         });
 
-        var users = [{% for user in all_users %}{"username":{{user.username}},"user_id":{{user.id}} },{% endfor %}];
+        var user_list = Objects.keys(users);
+        console.log(user_list);
 
     });
 </script>
