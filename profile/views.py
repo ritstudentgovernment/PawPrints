@@ -42,9 +42,10 @@ def manage_staff(request):
     User must be logged in and a superuser.
     """
     profile = Profile.objects.get(user=request.user)
+    superusers = User.objects.filter(is_superuser=True),
     data_object = {
-        'superusers': User.objects.filter(is_superuser=True),
-        'staff': User.objects.filter(is_staff=True)
+        'superusers': superusers
+        'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers)
     }
     return render(request, 'staff_manage.html', data_object)
 

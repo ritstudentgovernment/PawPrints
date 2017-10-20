@@ -84,7 +84,7 @@
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
-            <h4 class="user material-icon-container block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
+            <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
             {% endfor %}
         </section>
     </main>
