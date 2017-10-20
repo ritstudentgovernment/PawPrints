@@ -213,7 +213,7 @@ def petition_edit(request, petition_id):
                     "command":"new-update",
                     "update":{
                         "description":value,
-                        "timestamp":timezone.now()
+                        "timestamp":timezone.now().strftime("%B %d, %Y")
                     }
                 }
 
@@ -236,7 +236,7 @@ def petition_edit(request, petition_id):
                     "command":"new-response",
                     "response":{
                         "description":value,
-                        "timestamp":timezone.now(),
+                        "timestamp":timezone.now().strftime("%B %d, %Y"),
                         "author":request.user.profile.full_name
                     }
                 }
