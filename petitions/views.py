@@ -310,7 +310,7 @@ def petition_sign(request, petition_id):
             data = {
                 "command":"update-sigs",
                 "sigs":petition.signatures,
-                "id":petition.id
+                "petition_id":petition.id
             }
 
             send_update(data)
@@ -364,10 +364,12 @@ def petition_publish(user, petition):
         petition.save()
         response = True
 
+        data = {
+            "new-petition":petition.id
+        }
 
-        Group("petitions").send({
-            "text": json.dumps(data)
-        })
+        send_update(data)
+
     return HttpResponse(response)
 
 @login_required
