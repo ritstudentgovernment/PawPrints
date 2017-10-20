@@ -1689,6 +1689,13 @@
         return petition;
     }
 
+    function animateUpdate(petitionID){
+
+        var petition = $("#petitions-container").find("[data-petition-id="+petitionID+"]");
+        petition.cssanimate(pulse);
+
+    }
+
     $(document).ready(function(){
 
         // Setup Web Socket.
@@ -1707,61 +1714,143 @@
                 if(data["command"]){
 
                     var command = data["command"];
-                    var petition;
+                    var response, petition, petition_id, map_pos, modal_petition, modal_timeline_update_block;
 
                     // Command parsing.
                     if(command === "update-sigs"){
                         // Handle the live updating of signatures for petitions.
 
-                        var pid = data["id"];
-                        var sigs = data["sigs"];
+                        // Format of update-sigs response is as follows: sigs:{sigs:#,petition_id:#}.
+
+                        response = data["sigs"];
+
+                        petition_id = response["petition_id"];
+                        var sigs = response["sigs"];
+
                         // Find the petition from its location in the map, and update it's signatures value.
-                        petitions.list[petitions.map[pid]].signatures = sigs;
-                        if(modalData.petition.id && modalData.petition.id === pid){
+                        petitions.list[petitions.map[petition_id]].signatures = sigs;
+                        if(modalData.petition.id && modalData.petition.id === petition_id){
                             // If the petition is the one that is open at the moment
 
                             modalData.petition.signatures = sigs;
 
                         }
 
+                        animateUpdate(response["petition_id"]);
+
                     }
                     else if(command === "new-update"){
                         // Handle petitions getting an update.
 
-                        petition = parseOnePetition(data);
-                        var pos = petitions.map[petition.id];
-                        var oldPetition = petitions.list[pos];
+                        // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
 
-                        if(petition.updates !== oldPetition.updates){
-                            // If the sent data contains updates that the stored petition doesn't have
+                        response = data["update"];
 
-                            petitions.list[pos].updates = petition.updates;
-                            if(modalData.petition.id && modalData.petition.id === petition.id) {
-                                // If the petition is the one open at the moment
+                        petition_id = response["petition_id"];
+                        map_pos = petitions.map[petition_id];
 
-                                for (var i = 0; i < petition.updates.length; i++) {
-                                    // Loop over all of the updates.
+                        var new_update = {
+                            description:response["description"],
+                            timestamp:response["timestamp"]
+                        };
 
-                                    var update = petition.updates[i];
-                                    var updateBlock = {
-                                        type:"update",
-                                        author: "",
-                                        content:unescape(update.description),
-                                        date: update.timestamp
-                                    };
+                        modal_petition = modalData.petition.id;
 
-                                    if (modalData.timeline.indexOf(updateBlock) === -1) {
-                                        // If the current update doesn't exist in the petition's visible data.
+                        // Add the update to the petition in the window object.
+                        petitions.list[map_pos].updates.push(new_update);
 
-                                        modalData.timeline.unshift(updateBlock);
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if(modal_petition && modal_petition.id === petition_id){
 
-                                    }
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "SG Update",
+                                author: "",
+                                content: unescape(new_update.description),
+                                date: new_update.timestamp
+                            };
 
-                                }
-
-                            }
+                            modalData.timeline.unshift(modal_timeline_update_block);
 
                         }
+
+                        animateUpdate(response["petition_id"]);
+
+
+//                        petition = parseOnePetition(data);
+//                        var pos = petitions.map[petition.id];
+//                        var oldPetition = petitions.list[pos];
+//
+//                        if(petition.updates !== oldPetition.updates){
+//                            // If the sent data contains updates that the stored petition doesn't have
+//
+//                            petitions.list[pos].updates = petition.updates;
+//                            if(modalData.petition.id && modalData.petition.id === petition.id) {
+//                                // If the petition is the one open at the moment
+//
+//                                for (var i = 0; i < petition.updates.length; i++) {
+//                                    // Loop over all of the updates.
+//
+//                                    var update = petition.updates[i];
+//                                    var updateBlock = {
+//                                        type:"update",
+//                                        author: "",
+//                                        content:unescape(update.description),
+//                                        date: update.timestamp
+//                                    };
+//
+//                                    if (modalData.timeline.indexOf(updateBlock) === -1) {
+//                                        // If the current update doesn't exist in the petition's visible data.
+//
+//                                        modalData.timeline.unshift(updateBlock);
+//
+//                                    }
+//
+//                                }
+//
+//                            }
+//
+//                        }
+
+                    }
+                    else if(command === "new-response"){
+                        // Handle petitions getting a response.
+
+                        // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
+
+                        response = data["response"];
+
+                        petition_id = response["petition_id"];
+                        map_pos = petitions.map[petition_id];
+
+                        var new_response = {
+                            description:response["description"],
+                            timestamp:response["timestamp"]
+                        };
+
+                        modal_petition = modalData.petition.id;
+
+                        // Add the response to the petition in the window object.
+                        petitions.list[map_pos].response = new_response;
+
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if(modal_petition && modal_petition.id === petition_id){
+
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "Official Response",
+                                author: new_response.author,
+                                content: unescape(new_response.description),
+                                date: new_response.timestamp
+                            };
+
+                            modalData.timeline.unshift(modal_timeline_update_block);
+
+                        }
+
+                        animateUpdate(response["petition_id"]);
 
                     }
                     else if(command === "get"){
