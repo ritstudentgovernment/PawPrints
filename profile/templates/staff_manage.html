@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     {% load static %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
     {% include 'head.html' %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>Staff Manager | PawPrints</title>
     <style>
         .background-highlight{
@@ -74,11 +73,19 @@
             <h1>Staff Management</h1>
         </section>
         <section id="sub-landing" class="ninety-width">
-            <h1>Super Users</h1>
-            <p>Super users have the ability to access this page to add new staff members or remove current ones.</p>
+            <h1>Administrators</h1>
+            <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
             {% for superuser in superusers %}
-                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from superusers role.">delete</i></h4>
+                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from administrative role.">delete</i></h4>
             {% endfor %}
+            <div>
+                <label for="newSuperUserSearch">
+                    <h3>Add a new admin</h3>
+                    <input id="newSuperUserSearch" name="superUserSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="superuser">Add</button>
+            </div>
+
         </section>
         <section class="ninety-width">
             <h1>Staff Members</h1>
@@ -86,6 +93,13 @@
             {% for staff_member in staff %}
                 <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
             {% endfor %}
+            <div>
+                <label for="newStaffMemberSearch">
+                    <h3>Add a new admin</h3>
+                    <input id="newStaffMemberSearch" name="newStaffMemberSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="staff_member">Add</button>
+            </div>
         </section>
     </main>
 </div>
@@ -95,16 +109,22 @@
 
     $(document).ready(function(){
 
-        window.plugins = {
-            "switchery":[]
-        };
-        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-        elems.forEach(function(html) {
-            window.plugins.switchery.push(new Switchery(html,{size:"small"}));
+        var user_list = Object.keys(users);
+        $(".user-search").autocomplete({
+            source: user_list
         });
 
-        var user_list = Object.keys(users);
-        console.log(user_list);
+        $(".add-team-member").click(function(){
+
+            var role = $(this).data("role");
+            var username = (role === "superuser") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
+            var user_id = users[username];
+            console.log(user_id);
+            $.post("add_"+role+"/"+user_id,{},function(r){
+                console.log(r);
+            });
+
+        });
 
     });
 </script>
