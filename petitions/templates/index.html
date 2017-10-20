@@ -1609,18 +1609,6 @@
                 id:toPetition.id
             };
 
-            var response = JSON.parse(toPetition.response);
-            if(typeof response === "object"){
-                var responseJSDate = new Date(response.timestamp).getTime();
-                var responseBlock = {
-                    type:"Official Response",
-                    author: response.author,
-                    content:unescape(response.description),
-                    date: getDayDifference(responseJSDate, currentJSDate)
-                };
-                modalData.timeline.push(responseBlock);
-            }
-
             var updates = toPetition.updates;
             var numUpdates = updates.length;
             if(numUpdates > 0){
@@ -1635,6 +1623,18 @@
                     };
                     modalData.timeline.unshift(updateBlock);
                 }
+            }
+
+            var response = JSON.parse(toPetition.response);
+            if(typeof response === "object"){
+                var responseJSDate = new Date(response.timestamp).getTime();
+                var responseBlock = {
+                    type:"Official Response",
+                    author: response.author,
+                    content:unescape(response.description),
+                    date: getDayDifference(responseJSDate, currentJSDate)
+                };
+                modalData.timeline.push(responseBlock);
             }
 
             var description = {
