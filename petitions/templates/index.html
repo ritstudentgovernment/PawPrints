@@ -1634,7 +1634,7 @@
                     content:unescape(response.description),
                     date: getDayDifference(responseJSDate, currentJSDate)
                 };
-                modalData.timeline.push(responseBlock);
+                modalData.timeline.unshift(responseBlock);
             }
 
             var description = {
