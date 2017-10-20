@@ -62,23 +62,23 @@
     {% include 'header.html' %}
     <main class="full-width">
         <section id="landing" class="text-center overflow-hidden">
-
+            <h1>Staff Management</h1>
         </section>
         <section id="sub-landing" class="ninety-width">
             <h1>Super Users</h1>
             <p>Super users have the ability to add new staff members.</p>
             {% for superuser in superusers %}
-                <article>
-                    <h3>{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})</h3>
+                <article class="user">
+                    <h4>{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})</h4>
                 </article>
             {% endfor %}
         </section>
-        <section>
+        <section class="ninety-width">
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
-            <article>
-                <h3>{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</h3>
+            <article class="user">
+                <h4>{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</h4>
             </article>
             {% endfor %}
         </section>
