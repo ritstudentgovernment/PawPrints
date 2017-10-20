@@ -208,18 +208,41 @@ def petition_edit(request, petition_id):
                 )
                 update.save()
                 petition.updates.add(update)
+
+                data = {
+                    "command":"new-update",
+                    "update":{
+                        "description":value,
+                        "timestamp":timezone.now()
+                    }
+                }
+
+                send_update(data)
+
             else:
                 return JsonResponse({"Error":"Operation Not Permitted."})
 
         if attribute == "response":
             if request.user.is_staff:
                 response = Response(
-                    description="",
+                    description=value,
                     created_at=timezone.now(),
                     author = request.user
                 )
                 response.save()
-                petition.response.add(response)
+                petition.response = response
+
+                data = {
+                    "command":"new-response",
+                    "response":{
+                        "description":value,
+                        "timestamp":timezone.now(),
+                        "author":request.user.full_name
+                    }
+                }
+
+                send_update(data)
+
             else:
                 return JsonResponse({"Error":"Operation Not Permitted."})
 
@@ -288,9 +311,7 @@ def petition_sign(request, petition_id):
                 "id":petition.id
             }
 
-            Group("petitions").send({
-                "text": json.dumps(data)
-            })
+            send_update(data)
 
         logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
 
@@ -340,6 +361,11 @@ def petition_publish(user, petition):
         # Save the petition.
         petition.save()
         response = True
+
+
+        Group("petitions").send({
+            "text": json.dumps(data)
+        })
     return HttpResponse(response)
 
 @login_required
@@ -359,6 +385,17 @@ def petition_unpublish(request, petition_id):
     return HttpResponse(True)
 
 # HELPER FUNCTIONS #
+def send_update(update):
+    """
+    Sends an update to the channels group petitions via websocket
+    :param update: object
+    :return: None
+    """
+    Group("petitions").send({
+        "text": json.dumps(update)
+    })
+    return None
+
 def colors():
 
     color_object = {

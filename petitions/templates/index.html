@@ -1501,11 +1501,11 @@
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
         if(!petitionID && petitionID !== 0){
-            console.log("CLEARING PETITION ID FROM URL");
+//            console.log("CLEARING PETITION ID FROM URL");
             window.history.pushState("object or string", "Title", prevURL);
         }
         else{
-            console.log("THIS SHOULD UPDATE THE URL TO INCLUDE A /?p="+petitionID);
+//            console.log("THIS SHOULD UPDATE THE URL TO INCLUDE A /?p="+petitionID);
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
@@ -1581,10 +1581,10 @@
                 updatePetitionHistory(petitionID);
             }
             else{
-                console.log("Auto Open on petition. Do not update URL.");
+//                console.log("Auto Open on petition. Do not update URL.");
             }
 
-            console.log("Petition with ID '"+petitionID+"' has been opened.");
+//            console.log("Petition with ID '"+petitionID+"' has been opened.");
 
             // Update the title of the tab
             window.document.title = ucfirst("PawPrints - "+toPetition.title);
@@ -1593,8 +1593,8 @@
             var createdJSDate = new Date(toPetition.timestamp).getTime();
             var expiresJSDate = new Date(toPetition.expires).getTime();
             var currentJSDate = new Date().getTime();
-            console.log(expiresJSDate+"E : C"+currentJSDate);
-            console.log(toPetition);
+//            console.log(expiresJSDate+"E : C"+currentJSDate);
+//            console.log(toPetition);
             modalData.petition = {
                 title:toPetition.title,
                 author:toPetition.author,
@@ -1684,7 +1684,7 @@
     function parseOnePetition(data){
         var petition = false;
         if(data.petition !== false){
-             petition = JSON.parse(data.petition).petitions[0];
+             petition = JSON.parse(data.petition);
         }
         return petition;
     }
