@@ -1777,41 +1777,6 @@
 
                         animateUpdate(response["petition_id"]);
 
-//                        petition = parseOnePetition(data);
-//                        var pos = petitions.map[petition.id];
-//                        var oldPetition = petitions.list[pos];
-//
-//                        if(petition.updates !== oldPetition.updates){
-//                            // If the sent data contains updates that the stored petition doesn't have
-//
-//                            petitions.list[pos].updates = petition.updates;
-//                            if(modalData.petition.id && modalData.petition.id === petition.id) {
-//                                // If the petition is the one open at the moment
-//
-//                                for (var i = 0; i < petition.updates.length; i++) {
-//                                    // Loop over all of the updates.
-//
-//                                    var update = petition.updates[i];
-//                                    var updateBlock = {
-//                                        type:"update",
-//                                        author: "",
-//                                        content:unescape(update.description),
-//                                        date: update.timestamp
-//                                    };
-//
-//                                    if (modalData.timeline.indexOf(updateBlock) === -1) {
-//                                        // If the current update doesn't exist in the petition's visible data.
-//
-//                                        modalData.timeline.unshift(updateBlock);
-//
-//                                    }
-//
-//                                }
-//
-//                            }
-//
-//                        }
-
                     }
                     else if(command === "new-response"){
                         // Handle petitions getting a response.
