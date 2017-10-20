@@ -75,7 +75,7 @@
         </section>
         <section id="sub-landing" class="ninety-width">
             <h1>Super Users</h1>
-            <p>Super users have the ability to add new staff members.</p>
+            <p>Super users have the ability to access this page to add new staff members or remove current ones.</p>
             {% for superuser in superusers %}
                 <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from superusers role.">delete</i></h4>
             {% endfor %}
