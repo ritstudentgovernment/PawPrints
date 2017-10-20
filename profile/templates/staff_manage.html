@@ -121,7 +121,7 @@
             var username = (role === "superuser") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
             var user_id = users[username];
             console.log(user_id);
-            $.post("staff/add_"+role+"/"+user_id,{},function(r){
+            $.post("staff/add_"+role+"/"+user_id,{"csrf":get_csrf()},function(r){
                 console.log(r);
             });
 
