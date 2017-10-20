@@ -1292,7 +1292,7 @@
                             bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){console.log(r);window.deleteModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){console.log(r);window.deleteModal.close();window.location.reload();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
