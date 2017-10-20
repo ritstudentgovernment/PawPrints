@@ -54,6 +54,11 @@
             overflow: hidden;
             width: calc(100% - 65px);
         }
+        .user{
+            background-color: #fff;
+            margin-top: 1em;
+            padding: 1em;
+        }
     </style>
 </head>
 <body>
@@ -68,18 +73,14 @@
             <h1>Super Users</h1>
             <p>Super users have the ability to add new staff members.</p>
             {% for superuser in superusers %}
-                <article class="user">
-                    <h4>{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})</h4>
-                </article>
+                <h4 class="user">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})</h4>
             {% endfor %}
         </section>
         <section class="ninety-width">
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
-            <article class="user">
-                <h4>{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</h4>
-            </article>
+                <h4 class="user">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})</h4>
             {% endfor %}
         </section>
     </main>
