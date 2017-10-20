@@ -84,7 +84,7 @@
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
-            <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
+                <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
             {% endfor %}
         </section>
     </main>
@@ -100,16 +100,12 @@
         elems.forEach(function(html) {
             window.plugins.switchery.push(new Switchery(html,{size:"small"}));
         });
-        $("#settings").find("input").change(function(){
 
-            var form = $(this).closest("form");
-
-            $.post(form.attr("action"), form.serialize(),function(r){
-                if(!r){
-                    console.log("Error saving user preferences. User sent does not matched logged in user.");
-                }
-            });
-
+        var users = [{% for user in all_users %}user.username{% endfor %}];
+        $.post("add_staff_member/", {}, function(r){
+            if(!r){
+                console.log("Error updating user preferences. User sent does not match logged in user.");
+            }
         });
 
     });

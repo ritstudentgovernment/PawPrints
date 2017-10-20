@@ -46,7 +46,8 @@ def manage_staff(request):
     superusers_id = superusers.values("id")
     data_object = {
         'superusers': superusers,
-        'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id)
+        'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
+        'all_users': User.objects.all()
     }
     return render(request, 'staff_manage.html', data_object)
 
@@ -73,6 +74,48 @@ def user_login(request):
     return render(request, 'login.html', data_object)
 
 # ENDPOINTS #
+@require_POST
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_superuser(request, user_id):
+    if user_id is not None:
+        user = User.objects.get(id=int(user_id))
+        user.is_superuser = True
+        user.save()
+        return HttpResponse(True)
+    return HttpResponse(False)
+
+@require_POST
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_staff_member(request, user_id):
+    if user_id is not None:
+        user = User.objects.get(id=int(user_id))
+        user.is_staff = True
+        user.save()
+        return HttpResponse(True)
+    return HttpResponse(False)
+
+@require_POST
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def remove_superuser(request, user_id):
+    if user_id is not None:
+        user = User.objects.get(id=int(user_id))
+        user.is_superuser = False
+        user.save()
+        return HttpResponse(True)
+    return HttpResponse(False)
+@require_POST
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def remove_staff_member(request, user_id):
+    if user_id is not None:
+        user = User.objects.get(id=int(user_id))
+        user.is_staff = False
+        user.save()
+        return HttpResponse(True)
+    return HttpResponse(False)
 @login_required
 @require_POST
 def update_notifications(request, user_id):
