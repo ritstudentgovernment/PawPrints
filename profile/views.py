@@ -75,7 +75,6 @@ def user_login(request):
 
 # ENDPOINTS #
 @require_POST
-@login_required
 def add_superuser(request, user_id):
     if request.user.is_superuser:
         if user_id is not None:
