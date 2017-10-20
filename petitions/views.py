@@ -237,7 +237,7 @@ def petition_edit(request, petition_id):
                     "response":{
                         "description":value,
                         "timestamp":timezone.now(),
-                        "author":request.user.full_name
+                        "author":request.user.profile.full_name
                     }
                 }
 
