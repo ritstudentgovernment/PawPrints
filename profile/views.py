@@ -84,7 +84,7 @@ def add_superuser(request, user_id):
             user.is_staff = True
             user.save()
             return JsonResponse(True)
-    return HttpResponse(False)
+    return JsonResponse(False)
 
 @require_POST
 @login_required
@@ -94,8 +94,8 @@ def add_staff_member(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_staff = True
             user.save()
-            return HttpResponse(True)
-    return HttpResponse(False)
+            return JsonResponse(True)
+    return JsonResponse(False)
 
 @require_POST
 @login_required
@@ -105,8 +105,8 @@ def remove_superuser(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_superuser = False
             user.save()
-            return HttpResponse(True)
-    return HttpResponse(False)
+            return JsonResponse(True)
+    return JsonResponse(False)
 
 @require_POST
 @login_required
@@ -116,8 +116,8 @@ def remove_staff_member(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_staff = False
             user.save()
-            return HttpResponse(True)
-    return HttpResponse(False)
+            return JsonResponse(True)
+    return JsonResponse(False)
 
 @login_required
 @require_POST
