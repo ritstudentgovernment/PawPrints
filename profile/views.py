@@ -29,7 +29,7 @@ def profile(request):
         'email': profile.user.email,
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
-        'petitions_created': profile.petitions_created.filter(status!=2),
+        'petitions_created': profile.petitions_created.all,
         "colors":colors()
     }
 
