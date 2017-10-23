@@ -1762,16 +1762,16 @@
 
                         console.log("Parsing new update");
 
-                        data = data["response"];
+                        var update = data["update"];
 
-                        petition_id = data["petition_id"];
+                        petition_id = update["petition_id"];
                         map_pos = petitions.map[petition_id];
 
                         console.log("Update for petition "+petition_id);
 
                         var new_update = {
-                            description:data["description"],
-                            timestamp:data["timestamp"]
+                            description:update["description"],
+                            timestamp:update["timestamp"]
                         };
 
                         console.log("New update to push:");
@@ -1811,12 +1811,14 @@
                         // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
                         // Add this to the petitions and update the modal if necessary.
 
-                        petition_id = data["petition_id"];
+                        var response = data["response"];
+
+                        petition_id = response["petition_id"];
                         map_pos = petitions.map[petition_id];
 
                         var new_response = {
-                            description:data["description"],
-                            timestamp:data["timestamp"]
+                            description:response["description"],
+                            timestamp:response["timestamp"]
                         };
 
                         modal_petition = modalData.petition.id;
@@ -1851,6 +1853,20 @@
                         }
                         else{
                             clearTimeout(openPetitionLoop);
+                        }
+
+                    }
+                    else if(command === "new-petition"){
+
+                        getPetition(data["petition"]["petition_id"]);
+
+                    }
+                    else if(command === "remove-petition"){
+
+                        petition_id = data["petition"]["petition_id"];
+                        if(petitions.map.hasOwnProperty(petition_id)){
+                            petitions.list.splice(petitions.list[petitions.map[petition_id]],1);
+                            delete petitions.map[petition_id];
                         }
 
                     }
