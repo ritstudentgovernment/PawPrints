@@ -1867,6 +1867,9 @@
                         if(petitions.map.hasOwnProperty(petition_id)){
                             petitions.list.splice(petitions.list[petitions.map[petition_id]],1);
                             delete petitions.map[petition_id];
+                            if( modal_petition.id === Number(petition_id) ){
+
+                            }
                         }
 
                     }

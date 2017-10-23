@@ -26,6 +26,10 @@ import logging
 
 logger = logging.getLogger("pawprints."+__name__)
 
+# PETITION DEFAULT CONSTANTS.
+PETITION_DEFAULT_TITLE = "Action-oriented, one-line statement"
+PETITION_DEFAULT_BODY = "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
+
 def index(request):
     """
     Handles displaying the index page of PawPrints.
@@ -126,8 +130,8 @@ def petition_create(request):
     # Create a new blank petition.
     date = timezone.now()
     new_petition = Petition(
-        title="Action-oriented, one-line statement",
-        description="Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?",
+        title=PETITION_DEFAULT_TITLE,
+        description=PETITION_DEFAULT_BODY,
         author=user,
         signatures=0,
         created_at=date,
@@ -176,6 +180,12 @@ def petition_edit(request, petition_id):
             if petitions.profanity.has_profanity(value):
                  return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
+            if petition.title == PETITION_DEFAULT_TITLE:
+                return JsonResponse({"Error":"Oops! Looks like you forgot to change the title of the petition."})
+
+            if petition.description == PETITION_DEFAULT_BODY:
+                return JsonResponse({"Error":"Oops! Looks like you forgot to change the body of the petition."})
+
             data = {
                 "command":"new-petition",
                 "petition":{
@@ -188,28 +198,33 @@ def petition_edit(request, petition_id):
             user = request.user.profile
             return petition_publish(user, petition)
 
-        if attribute == "title":
+        elif attribute == "title":
 
-            if not petitions.profanity.has_profanity(value):
-                petition.title = value
-            else:
+            if petitions.profanity.has_profanity(value):
                 return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
-        if attribute == "description":
+            petition.title = value
 
-            if not petitions.profanity.has_profanity(value):
-                petition.description = value
-            else:
+        elif attribute == "description":
+
+            if petitions.profanity.has_profanity(value):
                 return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
 
-        if attribute == "add-tag":
+            petition.description = value
+
+        elif attribute == "add-tag":
+
             petition.tags.add(value)
 
-        if attribute == "remove-tag":
+        elif attribute == "remove-tag":
+
             petition.tags.remove(value)
 
-        if attribute == "add_update":
-            if request.user.is_staff:
+        elif request.user.is_staff:
+
+            # STAFF ONLY OPERATIONS
+
+            if attribute == "add_update":
                 update = Update(
                     description=value,
                     created_at=timezone.now()
@@ -228,11 +243,7 @@ def petition_edit(request, petition_id):
 
                 send_update(data)
 
-            else:
-                return JsonResponse({"Error":"Operation Not Permitted."})
-
-        if attribute == "response":
-            if request.user.is_staff:
+            elif attribute == "response":
                 response = Response(
                     description=value,
                     created_at=timezone.now(),
@@ -253,11 +264,7 @@ def petition_edit(request, petition_id):
 
                 send_update(data)
 
-            else:
-                return JsonResponse({"Error":"Operation Not Permitted."})
-
-        if attribute == "unpublish":
-            if request.user.is_staff:
+            elif attribute == "unpublish":
                 petition.status = 2
 
                 data = {
@@ -268,8 +275,13 @@ def petition_edit(request, petition_id):
                 }
 
                 send_update(data)
+
             else:
-                return JsonResponse({"Error":"Operation Not Permitted."})
+                return JsonResponse({"Error":"Operation "+attribute+" Not Known."})
+
+        else:
+            return JsonResponse({"Error":"Operation "+attribute+" Not Known."})
+
     else:
         # User was unable to perform any edit operation on this petition.
         return JsonResponse({"Error":"Operation Not Permitted."})
@@ -450,7 +462,8 @@ def edit_check(user, petition):
     if user.is_authenticated():
         # Check if the user's account is active (it may be disabled)
         if user.is_active:
-            # Check if the user is a staff member or the author of the petition
+            # Check if the user is a staff member or the author of the petition.
+            # If it is the petition's author, the petition must not have already been published.
             if user.is_staff or (user.id == petition.author.id and petition.status == 0 ):
                 # The user is authenticated, and can edit the petition!
                 edit = True
