@@ -1720,6 +1720,9 @@
                 // Parse the response as a JSON.
                 data = JSON.parse(data);
 
+                console.log("Received Websocket Command...");
+                console.log(data);
+
                 // If there is a command sent from the server
                 if(data["command"]){
 
