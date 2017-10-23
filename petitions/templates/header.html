@@ -333,11 +333,11 @@
                         <span>Hi there, {{ user.first_name }}</span>
                         <i class="material-icons">keyboard_arrow_down</i>
                         <ul id="account-dropdown" class="list hidden transition">
-                            <li><a href="/profile" class="modern-link">Profile</a></li>
+                            <li><a href="/profile" class="block modern-link">Profile</a></li>
                             {% if user.is_superuser %}
-                                <li><a href="/profile/manage/staff">Staff User Management</a></li>
+                                <li><a href="/profile/manage/staff" class="block modern-link">Staff User Management</a></li>
                             {% endif %}
-                            <li><a href="/logout/?next=/" class="modern-link">Log Out</a></li>
+                            <li><a href="/logout/?next=/" class="block modern-link">Log Out</a></li>
                         </ul>
                     {% else %}
                         <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
