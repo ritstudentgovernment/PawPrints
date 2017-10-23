@@ -1760,22 +1760,32 @@
                         // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
                         // Add this to the petitions and update the modal if necessary.
 
+                        console.log("Parsing new update");
+
                         petition_id = data["petition_id"];
                         map_pos = petitions.map[petition_id];
+
+                        console.log("Update for petition "+petition_id);
 
                         var new_update = {
                             description:data["description"],
                             timestamp:data["timestamp"]
                         };
 
-                        modal_petition = modalData.petition.id;
+                        console.log("New update to push:");
+                        console.log(new_update);
 
                         // Add the update to the petition in the window object.
                         petitions.list[map_pos].updates.push(new_update);
 
+                        modal_petition = modalData.petition.id;
+
+                        console.log("Modal petition: "+modal_petition);
+
                         // Check if the petition modal is open, and if it is see if that is the petition being updated.
                         if(modal_petition && modal_petition.id === petition_id){
 
+                            console.log("Updating modal petition block");
                             // The petition in the modal was the one being updated, we need to update its data.
                             modal_timeline_update_block = {
                                 type: "SG Update",
@@ -1785,6 +1795,8 @@
                             };
 
                             modalData.timeline.unshift(modal_timeline_update_block);
+
+                            console.log(modalData.timeline);
 
                         }
 
