@@ -173,9 +173,17 @@ def petition_edit(request, petition_id):
         if attribute == "publish":
 
             # Be sure the person cannot publish a petition that contains profanity.
-            # This is being removed for the time being
-            # if petitions.profanity.has_profanity(value):
-            #     return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+            if petitions.profanity.has_profanity(value):
+                 return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+
+            data = {
+                "command":"new-petition",
+                "petition":{
+                    "petition_id":petition_id
+                }
+            }
+
+            send_update(data)
 
             user = request.user.profile
             return petition_publish(user, petition)
@@ -254,7 +262,7 @@ def petition_edit(request, petition_id):
 
                 data = {
                     "command":"remove-petition",
-                    "response":{
+                    "petition":{
                         "petition_id":petition_id
                     }
                 }
