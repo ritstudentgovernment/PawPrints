@@ -1731,7 +1731,8 @@
                 if(data["command"]){
 
                     var command = data["command"];
-                    var petition, petition_id, map_pos, modal_petition, modal_timeline_update_block;
+                    var modal_petition = modalData.petition;
+                    var petition, petition_id, map_pos, modal_timeline_update_block;
 
                     // Command parsing.
                     if(command === "update-sigs"){
@@ -1744,7 +1745,7 @@
 
                         // Find the petition from its location in the map, and update it's signatures value.
                         petitions.list[petitions.map[petition_id]].signatures = sigs;
-                        if(modalData.petition.id && modalData.petition.id === petition_id){
+                        if(modal_petition.id && modal_petition.id === petition_id){
                             // If the petition is the one that is open at the moment
 
                             modalData.petition.signatures = sigs;
@@ -1764,7 +1765,7 @@
 
                         var update = data["update"];
 
-                        petition_id = update["petition_id"];
+                        petition_id = Number(update["petition_id"]);
                         map_pos = petitions.map[petition_id];
 
                         console.log("Update for petition "+petition_id);
@@ -1780,12 +1781,10 @@
                         // Add the update to the petition in the window object.
                         petitions.list[map_pos].updates.push(new_update);
 
-                        modal_petition = modalData.petition.id;
-
                         console.log("Modal petition: "+modal_petition);
 
                         // Check if the petition modal is open, and if it is see if that is the petition being updated.
-                        if(modal_petition && modal_petition === petition_id){
+                        if(modal_petition.id && modal_petition.id === petition_id){
 
                             console.log("Updating modal petition block");
                             // The petition in the modal was the one being updated, we need to update its data.
@@ -1813,7 +1812,7 @@
 
                         var response = data["response"];
 
-                        petition_id = response["petition_id"];
+                        petition_id = Number(response["petition_id"]);
                         map_pos = petitions.map[petition_id];
 
                         var new_response = {
