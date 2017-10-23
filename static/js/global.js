@@ -197,41 +197,44 @@ function inViewport (el) {
 
 }
 
+function checkErrorInResponse(response,callback){
+    try{
+        if(r.hasOwnProperty("Error")){
+            window.errorModal = new Modal({
+                iconText:"error",
+                iconClass:"bright-text md-48",
+                iconContainerClass:"",
+                headerClass:"error-background bright-text",
+                headerContent: "<h2>Error</h2>",
+                bodyContent:"<p>"+r.Error+"</p>",
+                bodyButtons:[
+                    ["OK","material-button material-hover material-shadow cursor transition minimal","window.errorModal.close()"]
+                ]
+            });
+            errorModal.open();
+        }
+        else{
+            if(callback && typeof callback === "function"){
+                callback(r);
+            }
+        }
+    }
+    catch(e){
+        console.log("Error: "+ e + "\nResponse: " + r);
+    }
+}
+
 function publishPetition(petition){
     $.post("/petition/update/"+petition,{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(response){
-        //Expecting a response of either true or false.
-        if(response){
-            window.location.reload();
-        }
+        checkErrorInResponse(r,function(){
+            window.location.href="/?p="+petition;
+        });
     });
 }
 
 function update(what, value, petition_id, callback=false){
     $.post("/petition/update/"+petition_id,{"attribute":what,"value":value,"csrfmiddlewaretoken":get_csrf()},function(r){
-        try{
-            if(r.hasOwnProperty("Error")){
-                window.errorModal = new Modal({
-                    iconText:"error",
-                    iconClass:"bright-text md-48",
-                    iconContainerClass:"",
-                    headerClass:"error-background bright-text",
-                    headerContent: "<h2>Error</h2>",
-                    bodyContent:"<p>"+r.Error+"</p>",
-                    bodyButtons:[
-                        ["OK","material-button material-hover material-shadow cursor transition minimal","window.errorModal.close()"]
-                    ]
-                });
-                errorModal.open();
-            }
-            else{
-                if(callback && typeof callback === "function"){
-                    callback(r);
-                }
-            }
-        }
-        catch(e){
-            console.log("Error: "+ e + "\nResponse: " + r);
-        }
+        checkErrorInResponse(r,callback);
     });
 }
 
