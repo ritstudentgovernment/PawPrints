@@ -1785,7 +1785,7 @@
                         console.log("Modal petition: "+modal_petition);
 
                         // Check if the petition modal is open, and if it is see if that is the petition being updated.
-                        if(modal_petition && modal_petition.id === petition_id){
+                        if(modal_petition && modal_petition === petition_id){
 
                             console.log("Updating modal petition block");
                             // The petition in the modal was the one being updated, we need to update its data.
@@ -1827,7 +1827,7 @@
                         petitions.list[map_pos].response = new_response;
 
                         // Check if the petition modal is open, and if it is see if that is the petition being updated.
-                        if(modal_petition && modal_petition.id === petition_id){
+                        if(modal_petition && modal_petition === petition_id){
 
                             // The petition in the modal was the one being updated, we need to update its data.
                             modal_timeline_update_block = {
