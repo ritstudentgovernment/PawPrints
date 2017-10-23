@@ -1802,7 +1802,7 @@
 
                         }
 
-                        animateUpdate(data["petition_id"]);
+                        animateUpdate(update["petition_id"]);
 
                     }
                     else if(command === "new-response"){
@@ -1841,7 +1841,7 @@
 
                         }
 
-                        animateUpdate(data["petition_id"]);
+                        animateUpdate(response["petition_id"]);
 
                     }
                     else if(command === "get"){
@@ -1850,6 +1850,7 @@
                         if(petition){
                             petitions.list.push(petition);
                             petitions.map[petition.id] = petitions.list.indexOf(petition);
+                            animateUpdate(petition.id);
                         }
                         else{
                             clearTimeout(openPetitionLoop);
