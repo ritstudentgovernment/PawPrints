@@ -199,14 +199,14 @@ function inViewport (el) {
 
 function checkErrorInResponse(response,callback){
     try{
-        if(r.hasOwnProperty("Error")){
+        if(response.hasOwnProperty("Error")){
             window.errorModal = new Modal({
                 iconText:"error",
                 iconClass:"bright-text md-48",
                 iconContainerClass:"",
                 headerClass:"error-background bright-text",
                 headerContent: "<h2>Error</h2>",
-                bodyContent:"<p>"+r.Error+"</p>",
+                bodyContent:"<p>"+response.Error+"</p>",
                 bodyButtons:[
                     ["OK","material-button material-hover material-shadow cursor transition minimal","window.errorModal.close()"]
                 ]
@@ -215,12 +215,12 @@ function checkErrorInResponse(response,callback){
         }
         else{
             if(callback && typeof callback === "function"){
-                callback(r);
+                callback(response);
             }
         }
     }
     catch(e){
-        console.log("Error: "+ e + "\nResponse: " + r);
+        console.log("Error: "+ e + "\nResponse: " + response);
     }
 }
 
