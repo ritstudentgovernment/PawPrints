@@ -192,8 +192,8 @@
                     selector: '#petition_description',
                     inline: true,
                     menubar: false,
-                    plugins: "image",
-                    toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",
+                    plugins: "image link",
+                    toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat",
                     init_instance_callback: function (editor) {
                         editor.on('Change', function (e) {
                             var value = e.level.content.trim();
