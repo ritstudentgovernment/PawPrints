@@ -296,10 +296,10 @@ def petition_sign(request, petition_id):
     Note: This endpoint returns the ID of the petition signed.
           This will allow AJAX to interface with the view better.
     """
+    user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
     # If the petition is published and still active
-    if petition.status != 0 and petition.status != 2:
-        user = request.user
+    if user.profile.affiliation == 1 and petition.status != 0 and petition.status != 2:
         if not user.profile.petitions_signed.filter(id=petition_id).exists():
             user.profile.petitions_signed.add(petition)
             user.save()
