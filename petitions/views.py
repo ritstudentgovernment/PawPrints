@@ -251,6 +251,15 @@ def petition_edit(request, petition_id):
         if attribute == "unpublish":
             if request.user.is_staff:
                 petition.status = 2
+
+                data = {
+                    "command":"remove-petition",
+                    "response":{
+                        "petition_id":petition_id
+                    }
+                }
+
+                send_update(data)
             else:
                 return JsonResponse({"Error":"Operation Not Permitted."})
     else:
