@@ -225,7 +225,7 @@ function checkErrorInResponse(response,callback){
 }
 
 function publishPetition(petition){
-    $.post("/petition/update/"+petition,{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(response){
+    $.post("/petition/update/"+petition,{"attribute":"publish","value":"none","csrfmiddlewaretoken":get_csrf()},function(r){
         checkErrorInResponse(r,function(){
             window.location.href="/?p="+petition;
         });
