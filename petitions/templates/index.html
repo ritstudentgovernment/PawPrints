@@ -1221,11 +1221,10 @@
     <script>
         $(document).ready(function(){
             $("#new-petition").click(function(){
-                console.log("-----------\nCreating new petition\n");
                 $.post("/petition/create/",{"csrfmiddlewaretoken":get_csrf()},function(r){
-                    console.log(r);
-                    if(!isNaN(Number(r))){
-                        openPetition(r);
+                    var petition = Number(r);
+                    if(!isNaN(petition)){
+                        window.location.href = "/petition/"+petition;
                     }
                 });
             });
