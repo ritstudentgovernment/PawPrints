@@ -1075,7 +1075,7 @@
                         </div>
                         {% if user.first_name and user.is_staff %}
                             <div id="admin-actions">
-                                <div v-if="!petition.in_progress" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
+                                <div v-if="!petition.in_progress && !petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
                                     <i class="material-icons">check</i>
                                     <span class="invisible transition">In Progress</span>
                                 </div>
