@@ -526,6 +526,7 @@ header.small-header #menu-content:hover #account-dropdown{
 }
 .error-background{
     background-color: orangered;
+    color: #fff;
 }
 @media screen and (max-width: 900px) and (min-width: 376px){
 
