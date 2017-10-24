@@ -91,9 +91,11 @@
         <section class="ninety-width">
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
-            {% for staff_member in staff %}
-                <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="staff_member" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
-            {% endfor %}
+            <div id="staff-members">
+                {% for staff_member in staff %}
+                    <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="staff_member" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
+                {% endfor %}
+            </div>
             <div>
                 <label for="newStaffMemberSearch">
                     <h3>Add a new staff member</h3>
@@ -138,7 +140,10 @@
             console.log(user_id);
             $.post("/profile/manage/"+role+"/remove/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
                 if(r){
-                    me.parent().remove();
+                    var element = me.parent().remove();
+                    if(role === "superuser"){
+                        element.appendTo("#staff-members");
+                    }
                 }
             });
 
