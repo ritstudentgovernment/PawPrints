@@ -1309,7 +1309,7 @@
                             bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){console.log(r);window.deleteModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
