@@ -607,7 +607,10 @@
             opacity: 1;
             color: #f36e21;
         }
-
+        .admin-action-spacer{
+            height:50px;
+            margin-bottom: 20px;
+        }
         /* -- Responsiveness -- */
 
         @media screen and (max-width: 1170px){
@@ -1070,6 +1073,7 @@
                                     <i class="material-icons">check</i>
                                     <span class="invisible transition">In Progress</span>
                                 </div>
+                                <div v-else class="admin-action-spacer"></div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
                                     <i class="material-icons">update</i>
                                     <span class="invisible transition">Update</span>
