@@ -93,7 +93,7 @@
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             <div id="staff-members">
                 {% for staff_member in staff %}
-                    <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="staff_member" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
+                    <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="staffmember" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
                 {% endfor %}
             </div>
             <div>
@@ -101,7 +101,7 @@
                     <h3>Add a new staff member</h3>
                     <input id="newStaffMemberSearch" placeholder="Enter a RIT username" name="newStaffMemberSearch" class="material-input user-search" />
                 </label>
-                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="staff_member">Add</button>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="staffmember">Add</button>
             </div>
         </section>
     </main>

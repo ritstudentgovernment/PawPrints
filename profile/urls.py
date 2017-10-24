@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^manage/staff',views.manage_staff),
     url(r'^manage/superuser/add/(?P<user_id>\d+)$',views.add_superuser),
     url(r'^manage/superuser/remove/(?P<user_id>\d+)$',views.remove_superuser),
-    url(r'^manage/staff_member/add/(?P<user_id>\d+)$',views.add_staff_member),
-    url(r'^manage/staff_member/remove/(?P<user_id>\d+)$',views.remove_staff_member)
+    url(r'^manage/staffmember/add/(?P<user_id>\d+)$',views.add_staff_member),
+    url(r'^manage/staffmember/remove/(?P<user_id>\d+)$',views.remove_staff_member)
 ]
