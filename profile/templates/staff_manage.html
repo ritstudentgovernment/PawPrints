@@ -131,7 +131,7 @@
 
         });
 
-        $(".remove-user").click(function(){
+        $(document).on("click",".remove-user",function(){
 
             var me = $(this);
             var role = me.data("role");
