@@ -140,7 +140,7 @@
             console.log(user_id);
             $.post("/profile/manage/"+role+"/remove/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
                 console.log(r);
-                if(r === True){
+                if(r === "True"){
                     var element = me.parent().remove();
                     if(role === "superuser"){
                         element.appendTo("#staff-members");
