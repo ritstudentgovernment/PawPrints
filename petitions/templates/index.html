@@ -779,7 +779,7 @@
             }
         }
         @media screen and (max-width: 600px){
-            #petition-modal .modal-body{
+            #petition-modal #timeline-container{
                 padding-bottom: 100px;
             }
             #signature-card{
@@ -1563,7 +1563,7 @@
     function setContentAvailableSpace(modal, additional_margin = 0){
         // Compute the available space for the content of the petition based on the used space.
         var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
-        modal.find(".modal-body").css({"height":"calc(100vh - "+usedSpace+"px)"}).removeClass("hidden");
+        modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
     }
     openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false, counter = 0){
