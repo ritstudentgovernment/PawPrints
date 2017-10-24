@@ -77,7 +77,7 @@
             <h1>Administrators</h1>
             <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
             {% for superuser in superusers %}
-                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="material-icons right" title="Remove user from administrative role.">delete</i></h4>
+                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="remove-user material-icons right" data-role="superuser" data-username="{{superuser.username}}" title="Remove user from administrative role.">delete</i></h4>
             {% endfor %}
             <div>
                 <label for="newSuperUserSearch">
@@ -92,7 +92,7 @@
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             {% for staff_member in staff %}
-                <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="material-icons right" title="Remove user from staff users role.">delete</i></h4>
+                <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="staff_member" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
             {% endfor %}
             <div>
                 <label for="newStaffMemberSearch">
@@ -121,9 +121,23 @@
             var username = (role === "superuser") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
             var user_id = users[username];
             console.log(user_id);
-            $.post("staff/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
+            $.post("/profile/manage/staff/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
                 console.log(r);
             });
+
+        });
+
+        $(".remove-user").click(function(){
+
+            var me = $(this);
+            var role = me.data("role");
+            var username = me.data("username");
+            var user_id = users[username];
+            console.log(user_id);
+            $.post("/profile/manage/staff/"+role+"/remove/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
+                console.log(r);
+            });
+
 
         });
 
