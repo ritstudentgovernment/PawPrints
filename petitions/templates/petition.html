@@ -158,7 +158,7 @@
                         }
                         else if(input.data("limit-length") && value.length > 80 ){
                             allPass = false;
-                            message += "Your petition title may not be longer than 80 characters.";
+                            message += "Your petition title may not be longer than 80 characters.\n";
                             input.addClass("error");
                         }
                     }
@@ -175,6 +175,19 @@
                     }
                 });
                 return allPass ? allPass : message;
+            }
+            function errorModal(message){
+                window.errorModal = new Modal({
+                    headerContent:"<h2>There is an error in your petition content.</h2>",
+                    bodyContent:"<p class='padding-bottom'>"+message+"</p>",
+                    iconContainerClass:"text-highlight",
+                    iconClass:"md-48",
+                    iconText:"error",
+                    bodyButtons: [
+                        ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"]
+                    ]
+                });
+                errorModal.open();
             }
             function unescape(string){
                 /**
@@ -216,8 +229,13 @@
                     init_instance_callback: function (editor) {
                         editor.on('Change', function (e) {
                             var value = ucfirst(e.level.content.trim().replace(/<\/?[^>]+(>|$)/g, ""));
-                            if(value !== ""){
-                                update("title",value,petition_id);
+                            if(value.length > 80){
+                                errorModal("Your petition title may not be longer than 80 characters.");
+                            }
+                            else{
+                                if(value !== ""){
+                                    update("title",value,petition_id);
+                                }
                             }
                         });
                     }
@@ -268,17 +286,7 @@
                 }
                 else{
 
-                    window.popup = new Modal({
-                        headerContent:"<h2>There is an error in your petition content.</h2>",
-                        bodyContent:"<p class='padding-bottom'>"+verified+"</p>",
-                        iconContainerClass:"text-highlight",
-                        iconClass:"md-48",
-                        iconText:"error",
-                        bodyButtons: [
-                            ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"]
-                        ]
-                    });
-                    popup.open();
+                    errorModal(verified);
 
                 }
 
