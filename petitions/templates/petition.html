@@ -98,11 +98,11 @@
         <section class="margin-top padding-top">
             <article class="padding">
                 <h4 class="fieldTitle">Petition Title:</h4>
-                <h1 id="petition_title" class="editable margin-top verify" data-verify-fail-message="The Title of your petition must not be blank">{{petition.title}}</h1>
+                <h1 id="petition_title" class="editable margin-top verify" data-verify-fail-message="The Title of your petition should be quickly describe your petition.">{{petition.title}}</h1>
             </article>
             <article class="padding">
                 <h4 class="fieldTitle">Petition Description:</h4>
-                <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="The Description of your petition must not be blank">{{petition.description}}</div>
+                <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="The Description of your petition should be a custom message you want to get out to the student body.">{{petition.description}}</div>
             </article>
             <article class="padding-bottom padding-left padding-right margin-bottom">
                 <h4 class="padding-bottom fieldTitle">Tags</h4>
@@ -152,7 +152,7 @@
                     var value;
                     if(input.hasClass("editable")){
                         value = tinyMCE.get(input.attr("id")).getContent();
-                        if(value.trim() === ""){
+                        if(value.trim() === "" || value.trim() === {{ default_title }} || value.trim() === {{ default_body }}){
                             allPass = thisPass = false;
                             input.addClass("error");
                         }

@@ -102,7 +102,9 @@ def petition(request, petition_id):
         'users_signed': users_signed,
         'additional_tags': additional_tags,
         'edit': edit_check(user, petition),
-        'colors':colors()
+        'colors':colors(),
+        'default_title': PETITION_DEFAULT_TITLE,
+        'default_body': PETITION_DEFAULT_BODY
     }
 
     return render(request, 'petition.html', data_object)
