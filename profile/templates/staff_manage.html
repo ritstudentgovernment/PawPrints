@@ -72,17 +72,25 @@
     <main class="full-width">
         <section id="landing" class="text-center overflow-hidden">
             <h1>Staff Management</h1>
-        </section>
-        <section id="sub-landing" class="ninety-width">
-            <h1>Administrators</h1>
-            <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
-            <div>
+            <div class="half-width">
                 <label for="newSuperUserSearch">
                     <h3>Add a new admin</h3>
                     <input id="newSuperUserSearch" placeholder="Enter a RIT username" name="superUserSearch" class="material-input user-search" />
                 </label>
                 <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="admin">Add</button>
             </div>
+            <div class="half-width">
+                <label for="newStaffMemberSearch">
+                    <h3>Add a new staff member</h3>
+                    <input id="newStaffMemberSearch" placeholder="Enter a RIT username" name="newStaffMemberSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
+            </div>
+        </section>
+        <section id="sub-landing" class="ninety-width">
+            <h1>Administrators</h1>
+            <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
+
             {% for superuser in superusers %}
                 <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="remove-user material-icons right" data-role="admin" data-username="{{superuser.username}}" title="Remove user from administrative role.">delete</i></h4>
             {% endfor %}
@@ -90,13 +98,6 @@
         <section class="ninety-width">
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
-            <div>
-                <label for="newStaffMemberSearch">
-                    <h3>Add a new staff member</h3>
-                    <input id="newStaffMemberSearch" placeholder="Enter a RIT username" name="newStaffMemberSearch" class="material-input user-search" />
-                </label>
-                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
-            </div>
             <div id="staff-members">
                 {% for staff_member in staff %}
                     <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user material-icons right" data-role="manager" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
