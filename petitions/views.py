@@ -37,6 +37,8 @@ def index(request):
     # Get the current sorting key from the index page, if one is not set the default is 'most recent'
     sorting_key = request.POST.get('sort_by', 'most recent')
 
+    print(timezone.now())
+
     data_object = {
         'tags': Tag.objects.all,
         'colors':colors(),
