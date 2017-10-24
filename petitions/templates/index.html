@@ -1051,7 +1051,9 @@
                         <div id="signature-card" class="petition-action-card left margin-left">
                             <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' {% if user.profile %} || ({{ user.profile.affiliation }} !== 1){% endif %}">
                                 <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/'" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
-                                {% if user.profile %}<!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.affiliation }} !== 1)">Only students may sign petitions</span>{% endif %}
+                                {% if user.profile %}
+                                    <!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.affiliation }} !== 1)">Only students may sign petitions</span>
+                                {% endif %}
                                 <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
                                 <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
@@ -1064,6 +1066,10 @@
                         </div>
                         {% if user.first_name and user.is_staff %}
                             <div id="admin-actions">
+                                <div v-if="!petition.in_progress" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
+                                    <i class="material-icons">check</i>
+                                    <span class="invisible transition">In Progress</span>
+                                </div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
                                     <i class="material-icons">update</i>
                                     <span class="invisible transition">Update</span>
@@ -1093,10 +1099,10 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Status</h3>
-                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.response && !petition.expired">Active</span>
-                                <span class="alternate-font" v-else-if="petition.signatures < 200 && !petition.response && petition.expired">Expired</span>
-                                <span class="alternate-font" v-else-if="!petition.response">In Progress</span>
-                                <span class="alternate-font" v-else>Responded</span>
+                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-else-if="petition.response">Responded</span>
+                                <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
+                                <span class="alternate-font" v-else-if="petition.expired">Expired</span>
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Discuss</h3>
@@ -1303,6 +1309,9 @@
                         return initTinyMCE();
                     }
                     return deleteLaunch();
+                case "mark_in_progress":
+                    update("mark-in-progress",false,getUrl("p"));
+                    return true;
                 default:
                     throw "Error when dispatching an admin control action.";
             }
@@ -1607,6 +1616,7 @@
                 timestamp:toPetition.timestamp,
                 status:toPetition.status,
                 response:toPetition.response.length,
+                in_progress:toPetition.in_progress,
                 isSigned:toPetition.isSigned,
                 id:toPetition.id
             };
@@ -1865,6 +1875,17 @@
                             delete petitions.map[petition_id];
                             if( modal_petition.id === Number(petition_id) ){
                                 modalData.closePetition();
+                            }
+                        }
+
+                    }
+                    else if(command === "mark-in-progress"){
+
+                        petition_id = data["petition"]["petition_id"];
+                        if(petitions.map.hasOwnProperty(petition_id)){
+                            petitions.list[petitions.map[petition_id]].in_progress = true;
+                            if( modal_petition.id === Number(petition_id) ){
+                                modalData.in_progress = true;
                             }
                         }
 

@@ -37,8 +37,6 @@ def index(request):
     # Get the current sorting key from the index page, if one is not set the default is 'most recent'
     sorting_key = request.POST.get('sort_by', 'most recent')
 
-    print(timezone.now())
-
     data_object = {
         'tags': Tag.objects.all,
         'colors':colors(),
@@ -227,11 +225,13 @@ def petition_edit(request, petition_id):
             # STAFF ONLY OPERATIONS
 
             if attribute == "add_update":
+
                 update = Update(
                     description=value,
                     created_at=timezone.now()
                 )
                 update.save()
+
                 petition.updates.add(update)
 
                 data = {
@@ -246,13 +246,17 @@ def petition_edit(request, petition_id):
                 send_update(data)
 
             elif attribute == "response":
+
                 response = Response(
                     description=value,
                     created_at=timezone.now(),
                     author = request.user
                 )
                 response.save()
+
                 petition.response = response
+                petition.has_response = True
+                petition.in_progress = False
 
                 data = {
                     "command":"new-response",
@@ -266,7 +270,22 @@ def petition_edit(request, petition_id):
 
                 send_update(data)
 
+            elif attribute =="mark-in-progress":
+
+                petition.in_progress = True
+
+                data = {
+                    "command":"mark-in-progress",
+                    "petition":{
+                        "petition_id":petition_id
+                    }
+                }
+
+                send_update(data)
+
+
             elif attribute == "unpublish":
+
                 petition.status = 2
 
                 data = {
