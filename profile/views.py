@@ -77,14 +77,17 @@ def user_login(request):
 @require_POST
 @login_required
 def add_superuser(request, user_id):
+    print("Adding superuser")
     if request.user.is_superuser:
+        print("- Logged in user is super user!")
         if user_id is not None:
+            print("User ID: "+str(user_id))
             user = User.objects.get(id=int(user_id))
             user.is_superuser = True
             user.is_staff = True
             user.save()
-            return JsonResponse(True)
-    return JsonResponse(False)
+            return HttpResponse(True)
+    return HttpResponse(False)
 
 @require_POST
 @login_required
