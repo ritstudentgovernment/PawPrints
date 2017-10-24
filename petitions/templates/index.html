@@ -1894,7 +1894,7 @@
                         // Handle loading into the page a new petition.
 
                         if(websocket_debug)console.log("New petition was made, trying to open it.");
-                        getPetition(data["petition"]["petition_id"]);
+                        getPetition(Number(data["petition"]["petition_id"]));
 
                     }
                     else if(command === "remove-petition"){
