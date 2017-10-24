@@ -47,7 +47,8 @@ def manage_staff(request):
     data_object = {
         'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
-        'all_users': User.objects.all()
+        'all_users': User.objects.all(),
+        "colors":colors()
     }
     return render(request, 'staff_manage.html', data_object)
 
