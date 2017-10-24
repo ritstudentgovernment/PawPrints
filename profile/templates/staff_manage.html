@@ -121,17 +121,20 @@
 
             var role = $(this).data("role");
             var username = (role === "superuser") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
-            var user_id = users[username];
-            console.log(user_id);
-            console.log("/profile/manage/"+role+"/add/"+user_id);
-            $.post("/profile/manage/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
-                if(r === "True"){
-                    window.location.reload();
-                }
-                else{
-                    console.log(r);
-                }
-            });
+            if(users.hasOwnProperty(username)){
+                var user_id = users[username];
+                $.post("/profile/manage/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
+                    if(r === "True"){
+                        window.location.reload();
+                    }
+                    else{
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+            }
 
         });
 
@@ -140,20 +143,23 @@
             var me = $(this);
             var role = me.data("role");
             var username = me.data("username");
-            var user_id = users[username];
-            console.log(user_id);
-            console.log("/profile/manage/"+role+"/remove/"+user_id);
-            $.post("/profile/manage/"+role+"/remove/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
-                if(r === "True"){
-                    var element = me.parent().remove();
-                    if(role === "superuser"){
-                        element.appendTo("#staff-members");
+            if(users.hasOwnProperty(username)) {
+                var user_id = users[username];
+                $.post("/profile/manage/" + role + "/remove/" + user_id, {"csrfmiddlewaretoken": get_csrf()}, function (r) {
+                    if (r === "True") {
+                        var element = me.parent().remove();
+                        if (role === "superuser") {
+                            element.appendTo("#staff-members");
+                        }
                     }
-                }
-                else{
-                    console.log(r);
-                }
-            });
+                    else {
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+            }
 
         });
 

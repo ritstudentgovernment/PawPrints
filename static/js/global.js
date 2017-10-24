@@ -197,7 +197,7 @@ function inViewport (el) {
 
 }
 
-function checkErrorInResponse(response,callback){
+function checkErrorInResponse(response,callback=false){
     try{
         if(response.hasOwnProperty("Error")){
             window.errorModal = new Modal({
