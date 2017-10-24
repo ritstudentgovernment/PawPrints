@@ -29,10 +29,7 @@ def has_profanity(petition_body):
     for word in body:
         word = re.sub(r"[^a-zA-Z]+","",word)
         word = word.lower()
-        print("Is word " + str(index) + " (" + word + ") profane?")
         if word in profanities:
-            print("YES, that word should be cast to the depths of H3ll.")
             return True
-        print("No. That word is totally biblical.")
         index += 1
     return False
