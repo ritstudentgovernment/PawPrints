@@ -1655,7 +1655,13 @@
                 }
             }
 
-            var response = JSON.parse(toPetition.response);
+            var response;
+            if(typeof toPetition.response === "string"){
+                response = JSON.parse(toPetition.response);
+            }
+            else{
+                response = toPetition.response;
+            }
             if(typeof response === "object"){
                 var responseJSDate = new Date(response.timestamp).getTime();
                 var responseBlock = {
