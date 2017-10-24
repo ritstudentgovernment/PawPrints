@@ -120,7 +120,7 @@
         $(".add-team-member").click(function(){
 
             var role = $(this).data("role");
-            var username = (role === "admnin") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
+            var username = (role === "admin") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
             if(users.hasOwnProperty(username)){
                 var user_id = users[username];
                 $.post("/profile/manage/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
