@@ -74,6 +74,8 @@ def user_login(request):
     return render(request, 'login.html', data_object)
 
 # ENDPOINTS #
+@require_POST
+@login_required
 def add_superuser(request, user_id):
     print("Adding superuser")
     if request.user.is_superuser:
@@ -95,8 +97,8 @@ def add_staff_member(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_staff = True
             user.save()
-            return JsonResponse(True)
-    return JsonResponse(False)
+            return HttpResponse(True)
+    return HttpResponse(False)
 
 @require_POST
 @login_required
@@ -106,8 +108,8 @@ def remove_superuser(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_superuser = False
             user.save()
-            return JsonResponse(True)
-    return JsonResponse(False)
+            return HttpResponse(True)
+    return HttpResponse(False)
 
 @require_POST
 @login_required
@@ -117,8 +119,8 @@ def remove_staff_member(request, user_id):
             user = User.objects.get(id=int(user_id))
             user.is_staff = False
             user.save()
-            return JsonResponse(True)
-    return JsonResponse(False)
+            return HttpResponse(True)
+    return HttpResponse(False)
 
 @login_required
 @require_POST
