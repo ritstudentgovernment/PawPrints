@@ -74,8 +74,6 @@ def user_login(request):
     return render(request, 'login.html', data_object)
 
 # ENDPOINTS #
-@require_POST
-@login_required
 def add_superuser(request, user_id):
     print("Adding superuser")
     if request.user.is_superuser:
