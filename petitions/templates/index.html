@@ -1754,7 +1754,7 @@
             try{
 
                 // Parse the response as a JSON.
-                data = JSON.parse(data);
+                data = typeof data === "string" ? JSON.parse(data) : data;
 
                 if(websocket_debug){
                     console.log("Received Websocket Command...");
@@ -1939,14 +1939,21 @@
                 else{
 
                     // Default behaviour is to update everything on response if no command is given.
-                    petitions.list = data["petitions"];
-                    petitions.map = data["map"];
+                    if(data.hasOwnProperty("petitions")){
+                        petitions.list = data["petitions"];
+                        petitions.map = data["map"];
 
-                    var petitionID = getUrl("p");
-                    if(petitionID){
-                        openPetition(petitionID, true);
+                        var petitionID = getUrl("p");
+                        if(petitionID){
+                            openPetition(petitionID, true);
+                        }
+                        petitions.loading = false;
                     }
-                    petitions.loading = false;
+                    else{
+
+
+
+                    }
 
                 }
 
