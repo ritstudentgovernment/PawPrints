@@ -1035,7 +1035,7 @@
                                 <div class="timeline-element-dot circle"></div>
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
-                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span> {[ element.date ]} <span v-if="element.date==0">Today</span><span v-else>Day<span v-if="element.date>1">s</span> Ago</span></h4>
+                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span><span v-if="element.date==0">Today</span><span v-else>{[ element.date ]} Day<span v-if="element.date>1">s</span> Ago</span></h4>
                                 <div class="timeline-element-content" v-html="element.content"></div>
                                 <span class="timeline-element-author" v-if="element.type != 'Petition Description'">{[ element.author ]}</span>
                             </div>
