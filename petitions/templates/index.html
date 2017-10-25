@@ -1424,7 +1424,7 @@
                 updatePetitionHistory(false);
 
                 // Let the body scroll again.
-                $("body").css({"overflow":"auto","position":"relative"});
+                $("body").css({"overflow":"auto"});
             }
         }
     });
@@ -1711,7 +1711,7 @@
             modalData.timeline.push(createdBlock);
 
             // Don't let the body scroll when a petition is open.
-            $("body").css({"overflow":"hidden","position":"fixed"});
+            $("body").css({"overflow":"hidden","position":"relative"});
 
             // Begin the fade in animation
             var modal = $("#petition-modal");
