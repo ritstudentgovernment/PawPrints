@@ -60,6 +60,9 @@
         article.transition:hover{
             transform: scale(1.01,1.01);
         }
+        article.transition:hover div{
+            background-color: rgba(0, 0, 0, 0.20);
+        }
         article:last-child{
             width: 100%;
         }
@@ -121,7 +124,7 @@
         <section id="landing" class="text-left overflow-hidden">
 
             <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:mouseOver="hover(section)">
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
                 <h1>{[ section.title ]}</h1>
                 <transition name="fade">
                     <div v-if="section.active" class="transition">
@@ -184,7 +187,7 @@
             ]
         },
         methods:{
-            hover: function(me){
+            click: function(me){
                 var was_active = me.active;
                 for(var i = 0; i < sections.sections.length; i++){
                     sections.sections[i].active = false;
