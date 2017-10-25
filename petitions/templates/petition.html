@@ -44,6 +44,9 @@
             font-size: 1.3em;
             text-transform: capitalize;
         }
+        #petition_description_title{
+            padding-bottom: 10px;
+        }
         #publish{
             font-size: 0.8em;
         }
@@ -101,7 +104,7 @@
                 <h1 id="petition_title" class="editable margin-top verify" data-limit-length="true" data-verify-fail-message="The Title of your petition should quickly describe your petition.">{{petition.title}}</h1>
             </article>
             <article class="padding">
-                <h4 class="fieldTitle">Petition Description:</h4>
+                <h4 id="petition_description_title" class="fieldTitle">Petition Description:</h4>
                 <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="The Description of your petition should be a custom message you want to get out to the student body.">{{petition.description}}</div>
             </article>
             <article class="padding-bottom padding-left padding-right margin-bottom">
