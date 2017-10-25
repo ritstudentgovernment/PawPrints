@@ -29,7 +29,10 @@
         .tag:hover {
             cursor: pointer;
         }
-
+        .no-scroll{
+            position: relative;
+            overflow: hidden !important;
+        }
         /* -- Slide Show Styles -- */
         .slide {
             height: 100%;
@@ -1424,7 +1427,7 @@
                 updatePetitionHistory(false);
 
                 // Let the body scroll again.
-                $("body").css({"overflow":"auto"});
+                $("body").removeClass("no-scroll");;
             }
         }
     });
@@ -1711,7 +1714,7 @@
             modalData.timeline.push(createdBlock);
 
             // Don't let the body scroll when a petition is open.
-            $("body").css({"overflow":"hidden","position":"relative"});
+            $("body").addClass("no-scroll");
 
             // Begin the fade in animation
             var modal = $("#petition-modal");
