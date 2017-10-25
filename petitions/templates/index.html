@@ -1225,13 +1225,13 @@
                             <span v-else> Signatures</span>
                             <span v-if="petition.isSigned"> | Signed</span>
                             <span v-if="petition.response" class="right">
-                                <i class="material-icons md-18">done</i>
+                                <i class="material-icons md-18" title="This petition has received an official response.">done</i>
                             </span>
                             <span v-else-if="petition.updates.length > 0" class="right">
-                                <i class="material-icons md-18">message</i>
+                                <i class="material-icons md-18" title="This petition has been updated by a SG senator.">message</i>
                             </span>
                             <span v-else-if="petition.in_progress" class="right">
-                                <i class="material-icons md-18">chat_bubble_outline</i>
+                                <i class="material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>
                             </span>
                             <!-- Signature icon by Icons8 -->
                             <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">-->
