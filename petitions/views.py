@@ -518,21 +518,18 @@ def sorting_controller(key, query=None):
 def most_recent():
     return Petition.objects.all() \
     .filter(expires__gt=timezone.now()) \
-    .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-created_at')
 
 def most_signatures():
     return Petition.objects.all() \
     .filter(expires__gt=timezone.now()) \
-    .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-signatures')
 
 def last_signed():
     return Petition.objects.all() \
     .filter(expires__gt=timezone.now()) \
-    .exclude(has_response=True) \
     .filter(status=1) \
     .order_by('-last_signed')
 
