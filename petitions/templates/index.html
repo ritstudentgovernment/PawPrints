@@ -1214,11 +1214,14 @@
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
                             <span v-if="petition.isSigned"> | Signed</span>
-                            <span class="right">
-                                <i v-if="petition.response" class="status-icon material-icons md-18" title="This petition has received an official response.">done</i>
-                                <i v-else-if="petition.updates.length > 0" class="status-icon material-icons md-18" title="This petition has been updated by a SG senator.">message</i>
-                                <i v-else-if="petition.in_progress" class="status-icon material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>
-                            </span>
+                            <span v-if="petition.response" class="right">Responded</span>
+                            <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
+                            <span v-else-if="petition.in_progress" class="right">In Progress</span>
+                            <!--<span class="right">-->
+                                <!--<i v-if="petition.response" class="status-icon material-icons md-18" title="This petition has received an official response.">done</i>-->
+                                <!--<i v-else-if="petition.updates.length > 0" class="status-icon material-icons md-18" title="This petition has been updated by a SG senator.">message</i>-->
+                                <!--<i v-else-if="petition.in_progress" class="status-icon material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>-->
+                            <!--</span>-->
                             <!-- Signature icon by Icons8 -->
                             <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">-->
                         </h4>
