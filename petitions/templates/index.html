@@ -30,8 +30,7 @@
             cursor: pointer;
         }
         .no-scroll{
-            position: fixed;
-            top: 100px;
+            position: relative;
             overflow: hidden !important;
         }
         /* -- Slide Show Styles -- */
@@ -1428,7 +1427,7 @@
                 updatePetitionHistory(false);
 
                 // Let the body scroll again.
-                $("body").removeClass("no-scroll");;
+                $("html, body").removeClass("no-scroll");;
             }
         }
     });
@@ -1715,7 +1714,7 @@
             modalData.timeline.push(createdBlock);
 
             // Don't let the body scroll when a petition is open.
-            $("body").addClass("no-scroll");
+            $("html, body").addClass("no-scroll");
 
             // Begin the fade in animation
             var modal = $("#petition-modal");
