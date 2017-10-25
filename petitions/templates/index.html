@@ -1206,7 +1206,7 @@
                 <span class="padding-top">No petitions fit that query!</span>
             </div>
             <div v-if="list.length > 0" id="petitions-container">
-                <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
+                <article v-for="petition in list" v-bind:class="[petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" :data-petition-id="petition.id">
                     <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                     <div class="petition-body">
                         <h4 class="petition-signatures">
