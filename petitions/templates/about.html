@@ -121,7 +121,7 @@
         <section id="landing" class="text-left overflow-hidden">
 
             <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:hover="hover(section)">
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:mouseOver="hover(section)">
                 <h1>{[ section.title ]}</h1>
                 <transition name="fade">
                     <div v-if="section.active" class="transition">
