@@ -1412,6 +1412,9 @@
                 });
                 modal.find(".modal-overlay").fadeOut(400);
                 updatePetitionHistory(false);
+
+                // Let the body scroll again.
+                $("body").css({"overflow":"auto"});
             }
         }
     });
@@ -1696,6 +1699,9 @@
                 author:toPetition.author
             };
             modalData.timeline.push(createdBlock);
+
+            // Don't let the body scroll when a petition is open.
+            $("body").css({"overflow":"hidden"});
 
             // Begin the fade in animation
             var modal = $("#petition-modal");
