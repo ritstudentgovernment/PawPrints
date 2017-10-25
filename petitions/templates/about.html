@@ -121,7 +121,7 @@
         <section id="landing" class="text-left overflow-hidden">
 
             <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:hover="hover(section)">
                 <h1>{[ section.title ]}</h1>
                 <transition name="fade">
                     <div v-if="section.active" class="transition">
@@ -184,7 +184,7 @@
             ]
         },
         methods:{
-            click: function(me){
+            hover: function(me){
                 var was_active = me.active;
                 for(var i = 0; i < sections.sections.length; i++){
                     sections.sections[i].active = false;
