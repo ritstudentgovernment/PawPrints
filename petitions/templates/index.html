@@ -1648,8 +1648,7 @@
             var createdJSDate = new Date(toPetition.timestamp).getTime();
             var expiresJSDate = new Date(toPetition.expires).getTime();
             var currentJSDate = new Date().getTime();
-//            console.log(expiresJSDate+"E : C"+currentJSDate);
-//            console.log(toPetition);
+
             modalData.petition = {
                 title:toPetition.title,
                 author:toPetition.author,
@@ -1795,7 +1794,7 @@
 
                     var command = data["command"];
                     var modal_petition = modalData.petition;
-                    var petition, petition_id, map_pos, modal_timeline_update_block;
+                    var petition, petition_id, map_pos, modal_timeline_update_block, createdJSDate, currentJSDate;
 
                     // Command parsing.
                     if(command === "update-sigs"){
@@ -1836,9 +1835,12 @@
 
                         if(websocket_debug)console.log("Update for petition "+petition_id);
 
+                        createdJSDate = new Date(update["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
+
                         var new_update = {
                             description:update["description"],
-                            timestamp:update["timestamp"]
+                            timestamp:getDayDifference(createdJSDate, currentJSDate)
                         };
 
                         if(websocket_debug){
@@ -1883,9 +1885,12 @@
                         petition_id = Number(response["petition_id"]);
                         map_pos = petitions.map[petition_id];
 
+                        createdJSDate = new Date(response["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
+
                         var new_response = {
                             description:response["description"],
-                            timestamp:response["timestamp"]
+                            timestamp:getDayDifference(createdJSDate, currentJSDate)
                         };
 
                         modal_petition = modalData.petition.id;
