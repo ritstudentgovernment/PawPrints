@@ -180,14 +180,14 @@
                 return allPass ? allPass : message;
             }
             function errorModal(message){
-                window.errorModal = new Modal({
+                window.errorModalInstance = new Modal({
                     headerContent:"<h2>There is an error in your petition content.</h2>",
                     bodyContent:"<p class='padding-bottom'>"+message+"</p>",
                     iconContainerClass:"text-highlight",
                     iconClass:"md-48",
                     iconText:"error",
                     bodyButtons: [
-                        ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.errorModal.close()"]
+                        ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.errorModalInstance.close()"]
                     ]
                 });
                 errorModal.open();
