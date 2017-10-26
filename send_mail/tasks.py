@@ -116,6 +116,41 @@ def petition_update(petition_id, site_path):
         else:
             petition_update.retry(countdown=int(random.uniform(1,4) ** petition_update.request.retries), exc=e)
 
+@shared_task
+def petition_responded(petition_id, site_path):
+    petition = Petition.objects.get(pk=petition_id)
+
+    # Gets all users that are subscribed or have signed the petition and if they want to receive email updates.
+    users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(notifications__response=True).distinct("id")
+
+    # Construct array of email addresses
+    recipients = [prof.user.email for prof in users]
+
+    email = EmailMessage(
+        'PawPrints - Petition response',
+        get_template('email_inlined/petition_response_received.html').render(
+            {
+                'petition_id': petition.id,
+                'title': petition.title,
+                'author': petition.author.profile.full_name,
+                'site_path': site_path,
+                'protocol': 'https',
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+            }
+        ),
+        'sgnoreply@rit.edu',
+        [recipients]
+    )
+
+    email.content_subtype = "html"
+    try:
+        email.send()
+        logger.info("Petition Response email SENT \nPetition ID: "+str(petition.id))
+    except Exception as e:
+        if petition_update.request.retries == 3:
+            logger.critical("Petition Response email FAILED \nPetition ID: "+str(petition.id)+"\nRecipients:\n"+str(recipients), exc_info=True)
+        else:
+            petition_update.retry(countdown=int(random.uniform(1,4) ** petition_update.request.retries), exc=e)
 
 @shared_task
 def petition_reached(petition_id, site_path):

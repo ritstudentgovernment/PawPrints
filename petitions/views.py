@@ -236,6 +236,7 @@ def petition_edit(request, petition_id):
 
                 petition.updates.add(update)
 
+                # Send update command over websocket.
                 data = {
                     "command":"new-update",
                     "update":{
@@ -244,8 +245,10 @@ def petition_edit(request, petition_id):
                         "petition_id":petition_id
                     }
                 }
-
                 send_update(data)
+
+                # Send email regarding updates.
+                petition_update.delay(petition.id, request.META['HTTP_HOST'])
 
             elif attribute == "response":
 
@@ -260,6 +263,7 @@ def petition_edit(request, petition_id):
                 petition.has_response = True
                 petition.in_progress = False
 
+                # Send response command over websocket
                 data = {
                     "command":"new-response",
                     "response":{
@@ -269,8 +273,10 @@ def petition_edit(request, petition_id):
                         "petition_id":petition_id
                     }
                 }
-
                 send_update(data)
+
+                # Send email regarding the response.
+                petition_responded.delay(petition_id, request.META['HTTP_HOST'])
 
             elif attribute =="mark-in-progress":
 
@@ -290,14 +296,17 @@ def petition_edit(request, petition_id):
 
                 petition.status = 2
 
+                # Send unpublish command over websocket
                 data = {
                     "command":"remove-petition",
                     "petition":{
                         "petition_id":petition_id
                     }
                 }
-
                 send_update(data)
+
+                # Notify author that the petition was rejected over email.
+                petition_rejected.delay(petition_id, request.META['HTTP_HOST'])
 
             else:
                 return JsonResponse({"Error":"Operation "+attribute+" Not Known."})
