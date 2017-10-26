@@ -1890,7 +1890,8 @@
 
                         var new_response = {
                             description:response["description"],
-                            timestamp:getDayDifference(createdJSDate, currentJSDate)
+                            timestamp:getDayDifference(createdJSDate, currentJSDate),
+                            author:response["author"]
                         };
 
                         modal_petition = modalData.petition.id;
