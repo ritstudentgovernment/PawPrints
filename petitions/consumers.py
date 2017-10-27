@@ -51,7 +51,7 @@ def serialize_petitions(petitions_obj, user = None):
             'author': petition.author.first_name +" "+ petition.author.last_name,
             'tags': tags,
             'response': json.dumps({
-                'author':petition.response.author,
+                'author':petition.response.author.profile.full_name,
                 'description':petition.response.description,
                 'timestamp':petition.response.created_at.strftime("%B %d, %Y")
             }) if petition.response is not None else False,
