@@ -100,7 +100,7 @@
         #new-petition{
             position: fixed;
             bottom: 30px;
-            left: calc(200px - 1.2em);
+            right: 30px;
             height: 70px;
             width: 70px;
             text-align: center;
@@ -623,6 +623,14 @@
         .admin-action-spacer{
             height:50px;
             margin-bottom: 20px;
+        }
+        #back-up{
+            bottom: 105px;
+            right: 42.5px;
+            left: auto;
+            border: none !important;
+            background-color: #fff;
+            color: #0f0f0f;
         }
         /* -- Responsiveness -- */
 
@@ -1352,7 +1360,7 @@
     </script>
 {% endif %}
 
-<a id="back-up" href="#landing-marker" class="padding transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
+<a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
 </div>
 {% csrf_token %}
 </body>
