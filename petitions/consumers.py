@@ -5,6 +5,7 @@ auth: Lukas Yelle (@lxy5611)
 """
 import json, string
 import petitions.views as views
+from profile.models import User
 from collections import namedtuple
 from channels import Channel, Group
 from channels.sessions import channel_session
@@ -51,7 +52,7 @@ def serialize_petitions(petitions_obj, user = None):
             'author': petition.author.first_name +" "+ petition.author.last_name,
             'tags': tags,
             'response': json.dumps({
-                'author':petition.response.author.profile.full_name,
+                'author':User.objects.get(username=petition.response.author).profile.full_name,
                 'description':petition.response.description,
                 'timestamp':petition.response.created_at.strftime("%B %d, %Y")
             }) if petition.response is not None else False,
