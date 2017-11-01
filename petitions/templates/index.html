@@ -1233,7 +1233,7 @@
                             {[ petition.signatures ]}
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
-                            <span v-if="petition.isSigned"> | Signed</span>
+                            <span v-if="petition.isSigned"> | <span class="bold">Signed</span></span>
                             <span v-if="petition.response" class="right">Responded</span>
                             <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
                             <span v-else-if="petition.in_progress" class="right">In Progress</span>
