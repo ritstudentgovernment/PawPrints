@@ -3,7 +3,9 @@
 <head>
     {% load static %}
     {% include 'head.html' %}
-    <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
+    {% if user.is_staff %}
+        <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
+    {% endif %}
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
 
     <style>
