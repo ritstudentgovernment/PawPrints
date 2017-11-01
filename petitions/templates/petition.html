@@ -155,7 +155,7 @@
                     var value;
                     if(input.hasClass("editable")){
                         value = tinyMCE.get(input.attr("id")).getContent();
-                        if(value.trim() === "" || value.trim() === "{{ default_title }}" || value.trim() === "{{ default_body }}"){
+                        if(value.trim() === "" || ( value.trim().indexOf("{{ default_title }}") > -1 ) || ( value.trim().indexOf("{{ default_body }}") > -1 ) ){
                             allPass = thisPass = false;
                             input.addClass("error");
                         }
