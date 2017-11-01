@@ -1079,7 +1079,7 @@
                     <div v-if="petition.status == 1">
                         <div id="signature-card" class="petition-action-card left margin-left">
                             <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' {% if user.profile %} || ({{ user.profile.affiliation }} !== 1){% endif %}">
-                                <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/'" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
+                                <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/?next=/?p='+getUrl('p')" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
                                 {% if user.profile %}
                                     <!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.affiliation }} !== 1)">Only students may sign petitions</span>
                                 {% endif %}
