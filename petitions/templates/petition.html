@@ -101,15 +101,15 @@
         <section class="margin-top padding-top">
             <article class="padding">
                 <h4 class="fieldTitle">Petition Title:</h4>
-                <h1 id="petition_title" class="editable margin-top verify" data-limit-length="true" data-verify-fail-message="The Title of your petition should quickly describe your petition.">{{petition.title}}</h1>
+                <h1 id="petition_title" class="editable margin-top verify" data-limit-length="true" data-verify-fail-message="<p>The Title of your petition should quickly describe your petition.</p>">{{petition.title}}</h1>
             </article>
             <article class="padding">
                 <h4 id="petition_description_title" class="fieldTitle">Petition Description:</h4>
-                <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="The Description of your petition should be a custom message you want to get out to the student body.">{{petition.description}}</div>
+                <div id="petition_description" class="editable margin-top verify" data-verify-fail-message="<p>The Description of your petition should be a custom message you want to get out to the student body.</p>">{{petition.description}}</div>
             </article>
             <article class="padding-bottom padding-left padding-right margin-bottom">
                 <h4 class="padding-bottom fieldTitle">Tags</h4>
-                <select id="tags-select" name="tags[]" multiple="multiple" class="full-width verify" data-verify-fail-message="You must assign at least one tag to your petition">
+                <select id="tags-select" name="tags[]" multiple="multiple" class="full-width verify" data-verify-fail-message="<p>You must assign at least one tag to your petition</p>">
                     {% for tag in petition.tags.all %}
                     <option value="{{tag.id}}" selected="selected">{{tag.name}}</option>
                     {% endfor %}
