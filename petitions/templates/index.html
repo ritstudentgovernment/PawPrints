@@ -1272,6 +1272,12 @@
             });
         });
     </script>
+{% else %}
+    <script>
+        $(document).ready(function(){
+            $("#back-up").css({"bottom":"42.5px"});
+        });
+    </script>
 {% endif %}
 {% if user.is_staff %}
     <script>
@@ -1359,13 +1365,6 @@
 {% endif %}
 
 <a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
-{% if user.first_name == '' %}
-    <script>
-        $(document).ready(function(){
-            $("#back-up").css({"bottom":"42.5px"});
-        });
-    </script>
-{% endif %}
 </div>
 {% csrf_token %}
 </body>
