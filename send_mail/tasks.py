@@ -209,6 +209,7 @@ def petition_received(petition_id, site_path):
     email.content_subtype = "html"
     try:
         email.send()
+        print(email)
         logger.info("Petition Received email SENT \nPetition ID: "+str(petition.id))
     except Exception as e:
         if petition_received.request.retries == 3:
