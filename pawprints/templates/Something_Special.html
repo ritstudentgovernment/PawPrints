@@ -20,6 +20,9 @@
             width: 100%;
             left:0;
         }
+        article *{
+            opacity:0;
+        }
     </style>
 </head>
 <body>
@@ -40,8 +43,8 @@
             $("article").children().each(function(){
                 var me = $(this);
                 setTimeout(function(){
-                    me.cssanimate("fadeInUp");
-                },i*100);
+                    me.cssanimate("fadeInUp",{},true);
+                },i*250);
                 i++;
             });
         },0);
