@@ -43,7 +43,7 @@
             $("article").children().each(function(){
                 var me = $(this);
                 setTimeout(function(){
-                    me.cssanimate("fadeInUp",{},true);
+                    me.cssanimate("fadeInUp",{inline:true});
                 },i*250);
                 i++;
             });
