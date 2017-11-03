@@ -1226,7 +1226,7 @@
                 <span class="padding-top">No petitions fit that query!</span>
             </div>
             <div v-if="list.length > 0" id="petitions-container">
-                <article v-for="petition in list" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" :data-petition-id="petition.id">
+                <article v-for="petition in list" v-if="!petition.hasOwnProperty('deleted')" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" :data-petition-id="petition.id">
                     <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                     <div class="petition-body">
                         <h4 class="petition-signatures">
@@ -1951,7 +1951,7 @@
                         if(websocket_debug)console.log("Petition was deleted, removing it..");
                         petition_id = data["petition"]["petition_id"];
                         if(petitions.map.hasOwnProperty(petition_id)){
-                            petitions.list.splice(petitions.list[petitions.map[petition_id]],1);
+                            petitions.list[petitions.map[petition_id]].deleted = true;
                             delete petitions.map[petition_id];
                             if( modal_petition.id === Number(petition_id) ){
                                 modalData.closePetition();
