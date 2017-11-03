@@ -33,7 +33,8 @@ urlpatterns = [
     url(r'^login/', InitAuthView.as_view(), name='init-auth'),
     url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
-    url(r'^profile/', include('profile.urls'))
+    url(r'^profile/', include('profile.urls')),
+    url(r'^maintenance/', views.maintenance)
 ]
 
 def handler500(request): # pragma: no cover

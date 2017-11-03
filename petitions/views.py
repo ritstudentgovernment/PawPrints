@@ -55,6 +55,9 @@ def about(request):
 
     return render(request, 'about.html', data_object)
 
+def maintenence(request):
+    return render(request, 'Something_Special.html')
+
 def load_petitions(request):
     """
     Handles requests for the list of petitions by AJAX.
