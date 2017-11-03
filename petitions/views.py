@@ -55,7 +55,7 @@ def about(request):
 
     return render(request, 'about.html', data_object)
 
-def maintenence(request):
+def maintenance(request):
     return render(request, 'Something_Special.html')
 
 def load_petitions(request):
