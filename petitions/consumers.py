@@ -62,6 +62,7 @@ def serialize_petitions(petitions_obj, user = None):
             'status':petition.status,
             'in_progress':petition.in_progress,
             'isSigned':profile.petitions_signed.filter(id=petition.id).exists() if hasattr(user, "profile") else False,
+            'deleted':False,
             'id': petition.id
         })
         petition_map[petition.id] = x
