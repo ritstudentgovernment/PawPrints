@@ -77,7 +77,7 @@ def petition_rejected(petition_id, site_path):
         if petition_rejected.request.retries == 3:
             logger.critical("Petition Rejection email FAILED \nPetition ID: "+str(petition.id), exc_info=True)
         else:
-            petition_approved.retry(countdown=int(random.uniform(1, 4) ** petition_approved.request.retries), exc=e)
+            petition_rejected.retry(countdown=int(random.uniform(1, 4) ** petition_rejected.request.retries), exc=e)
             
 
 @shared_task
