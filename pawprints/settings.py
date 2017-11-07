@@ -165,6 +165,7 @@ EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/profile/'
 
 # Logging
 LOGGING = {
