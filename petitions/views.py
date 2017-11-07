@@ -21,14 +21,16 @@ from channels import Group, Channel
 from send_mail.tasks import *
 import petitions.profanity
 import json
+import redis
 
 import logging
 
-logger = logging.getLogger("pawprints."+__name__)
+logger = logging.getLogger("pawprints." + __name__)
 
 # PETITION DEFAULT CONSTANTS.
 PETITION_DEFAULT_TITLE = "Action-oriented, one-line statement"
 PETITION_DEFAULT_BODY = "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
+
 
 def index(request):
     """
@@ -39,24 +41,27 @@ def index(request):
 
     data_object = {
         'tags': Tag.objects.all,
-        'colors':colors(),
+        'colors': colors(),
         'petitions': sorting_controller(sorting_key)
     }
 
     return render(request, 'index.html', data_object)
+
 
 def about(request):
     """
     Handles displaying the about page
     """
     data_object = {
-        'colors':colors(),
+        'colors': colors(),
     }
 
     return render(request, 'about.html', data_object)
 
+
 def maintenance(request):
     return render(request, 'Something_Special.html')
+
 
 def load_petitions(request):
     """
@@ -73,6 +78,7 @@ def load_petitions(request):
 
     return render(request, 'list_petitions.html', data_object)
 
+
 def petition(request, petition_id):
     """ Handles displaying A single petition.
     DB queried to get Petition object and User objects.
@@ -86,7 +92,8 @@ def petition(request, petition_id):
     user = request.user
 
     # Check if user is authenticated before querying
-    curr_user_signed = user.profile.petitions_signed.filter(id=petition.id).exists() if user.is_authenticated() else None
+    curr_user_signed = user.profile.petitions_signed.filter(
+        id=petition.id).exists() if user.is_authenticated() else None
 
     # Get QuerySet of all users who signed this petition
     # Note: This returns an abstract list of IDs that are not directly associated, at least to my knowledge, to specific user objects.
@@ -99,13 +106,13 @@ def petition(request, petition_id):
     # Note: 'edit' is how the system determines if the current user has the permission to edit a petition or not.
     data_object = {
         'petition': petition,
-        'author':author,
+        'author': author,
         'current_user': user,
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
         'additional_tags': additional_tags,
         'edit': edit_check(user, petition),
-        'colors':colors(),
+        'colors': colors(),
         'default_title': PETITION_DEFAULT_TITLE,
         'default_body': PETITION_DEFAULT_BODY
     }
@@ -142,7 +149,7 @@ def petition_create(request):
         created_at=date,
         expires=date + timedelta(days=30),
         in_progress=False,
-        id=last_petition.id+1 if last_petition is not None else 0
+        id=last_petition.id + 1 if last_petition is not None else 0
     )
     new_petition.save()
 
@@ -154,13 +161,35 @@ def petition_create(request):
     user.profile.petitions_signed.add(new_petition)
     user.save()
     new_petition.last_signed = timezone.now()
-    new_petition.signatures = F('signatures')+1
+    new_petition.signatures = F('signatures') + 1
     new_petition.save()
 
-    logger.info("user "+user.email +" created a new petion called "+new_petition.title+" ID: "+str(new_petition.id))
+    logger.info(
+        "user " + user.email + " created a new petion called " + new_petition.title + " ID: " + str(new_petition.id))
 
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
+
+
+def petition_redirect(request, petition_id):
+    """
+    Handles the redirection of petitions from the old URL format to the new format.
+    :param petition_id: The id of the petition to redirect to.
+    :return: redirect to correct page.
+    """
+
+    # Check if the petition_id sent does not exist in the postgres db.
+    if not Petition.objects.filter(pk=petition_id).exists():
+        # Check if the petition_id sent exists in the Redis server store.
+        redis_connection = redis.StrictRedis()
+        if redis_connection.exists(petition_id):
+            # Redirect to correct petition.
+            return redirect("/?p=" + str(redis_connection.get(petition_id)))
+        # Petition did not exist in either db.
+        return redirect("/")
+    # Petition existed in the postgres.
+    return redirect("/?p=" + str(petition_id))
+
 
 @require_POST
 # @login_required
@@ -170,6 +199,7 @@ def petition_edit(request, petition_id):
     This endpoint requires the user be signed in
     and that the HTTP request method is a POST.
     """
+
     # create the petition object based on the petition id sent.
     petition = get_object_or_404(Petition, pk=petition_id)
 
@@ -183,18 +213,19 @@ def petition_edit(request, petition_id):
 
             # Be sure the person cannot publish a petition that contains profanity.
             if petitions.profanity.has_profanity(value):
-                 return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse(
+                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
             if petition.title == PETITION_DEFAULT_TITLE:
-                return JsonResponse({"Error":"Oops! Looks like you forgot to change the title of the petition."})
+                return JsonResponse({"Error": "Oops! Looks like you forgot to change the title of the petition."})
 
             if petition.description == PETITION_DEFAULT_BODY:
-                return JsonResponse({"Error":"Oops! Looks like you forgot to change the body of the petition."})
+                return JsonResponse({"Error": "Oops! Looks like you forgot to change the body of the petition."})
 
             data = {
-                "command":"new-petition",
-                "petition":{
-                    "petition_id":petition_id
+                "command": "new-petition",
+                "petition": {
+                    "petition_id": petition_id
                 }
             }
 
@@ -206,14 +237,16 @@ def petition_edit(request, petition_id):
         elif attribute == "title":
 
             if petitions.profanity.has_profanity(value):
-                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse(
+                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
             petition.title = value
 
         elif attribute == "description":
 
             if petitions.profanity.has_profanity(value):
-                return JsonResponse({"Error":"Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse(
+                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
             petition.description = value
 
@@ -241,11 +274,11 @@ def petition_edit(request, petition_id):
 
                 # Send update command over websocket.
                 data = {
-                    "command":"new-update",
-                    "update":{
-                        "description":value,
-                        "timestamp":timezone.now().strftime("%B %d, %Y"),
-                        "petition_id":petition_id
+                    "command": "new-update",
+                    "update": {
+                        "description": value,
+                        "timestamp": timezone.now().strftime("%B %d, %Y"),
+                        "petition_id": petition_id
                     }
                 }
                 send_update(data)
@@ -258,7 +291,7 @@ def petition_edit(request, petition_id):
                 response = Response(
                     description=value,
                     created_at=timezone.now(),
-                    author = request.user
+                    author=request.user
                 )
                 response.save()
 
@@ -268,12 +301,12 @@ def petition_edit(request, petition_id):
 
                 # Send response command over websocket
                 data = {
-                    "command":"new-response",
-                    "response":{
-                        "description":value,
-                        "timestamp":timezone.now().strftime("%B %d, %Y"),
-                        "author":request.user.profile.full_name,
-                        "petition_id":petition_id
+                    "command": "new-response",
+                    "response": {
+                        "description": value,
+                        "timestamp": timezone.now().strftime("%B %d, %Y"),
+                        "author": request.user.profile.full_name,
+                        "petition_id": petition_id
                     }
                 }
                 send_update(data)
@@ -281,19 +314,18 @@ def petition_edit(request, petition_id):
                 # Send email regarding the response.
                 petition_responded.delay(petition_id, request.META['HTTP_HOST'])
 
-            elif attribute =="mark-in-progress":
+            elif attribute == "mark-in-progress":
 
                 petition.in_progress = True
 
                 data = {
-                    "command":"mark-in-progress",
-                    "petition":{
-                        "petition_id":petition_id
+                    "command": "mark-in-progress",
+                    "petition": {
+                        "petition_id": petition_id
                     }
                 }
 
                 send_update(data)
-
 
             elif attribute == "unpublish":
 
@@ -301,9 +333,9 @@ def petition_edit(request, petition_id):
 
                 # Send unpublish command over websocket
                 data = {
-                    "command":"remove-petition",
-                    "petition":{
-                        "petition_id":petition_id
+                    "command": "remove-petition",
+                    "petition": {
+                        "petition_id": petition_id
                     }
                 }
                 send_update(data)
@@ -312,20 +344,21 @@ def petition_edit(request, petition_id):
                 petition_rejected.delay(petition_id, request.META['HTTP_HOST'])
 
             else:
-                return JsonResponse({"Error":"Operation "+attribute+" Not Known."})
+                return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
 
         else:
-            return JsonResponse({"Error":"Operation "+attribute+" Not Known."})
+            return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
 
     else:
         # User was unable to perform any edit operation on this petition.
-        return JsonResponse({"Error":"Operation Not Permitted."})
+        return JsonResponse({"Error": "Operation Not Permitted."})
 
     petition.save()
 
-    logger.info('user '+request.user.email+' edited petition '+petition.title+" ID: "+str(petition.id))
+    logger.info('user ' + request.user.email + ' edited petition ' + petition.title + " ID: " + str(petition.id))
 
-    return JsonResponse({"petition":petition_id})
+    return JsonResponse({"petition": petition_id})
+
 
 def get_petition(petition_id, user):
     """
@@ -343,7 +376,8 @@ def get_petition(petition_id, user):
     petition = Petition.objects.filter(pk=petition_id)
     if petition.exists():
         petition = petition.first()
-        if (petition.status != 0 and petition.status != 2) or (profile and profile.user.username == petition.author.username):
+        if (petition.status != 0 and petition.status != 2) or (
+            profile and profile.user.username == petition.author.username):
             return petition
     return False
 
@@ -372,21 +406,23 @@ def petition_sign(request, petition_id):
             petition.save()
 
             data = {
-                "command":"update-sigs",
-                "sigs":petition.signatures,
-                "petition_id":petition.id
+                "command": "update-sigs",
+                "sigs": petition.signatures,
+                "petition_id": petition.id
             }
 
             send_update(data)
 
-        logger.info('user '+request.user.email+' signed petition '+petition.title+', which now has '+str(petition.signatures)+' signatures')
+        logger.info('user ' + request.user.email + ' signed petition ' + petition.title + ', which now has ' + str(
+            petition.signatures) + ' signatures')
 
-    # Check if petition reached 200 if so, email.
+        # Check if petition reached 200 if so, email.
         if petition.signatures == 200:
             petition_reached.delay(petition.id, request.META['HTTP_HOST'])
-            logger.info('petition '+petition.title+' hit 200 signatures \n'+"ID: "+str(petition.id))
+            logger.info('petition ' + petition.title + ' hit 200 signatures \n' + "ID: " + str(petition.id))
 
     return HttpResponse(str(petition.id))
+
 
 @login_required
 @require_POST
@@ -399,6 +435,7 @@ def petition_subscribe(request, petition_id):
 
     return redirect('petition/' + str(petition_id))
 
+
 @login_required
 @require_POST
 def petition_unsubscribe(request, petition_id):
@@ -410,6 +447,7 @@ def petition_unsubscribe(request, petition_id):
 
     return redirect('petition/' + str(petition_id))
 
+
 def petition_publish(user, petition):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
@@ -418,7 +456,6 @@ def petition_publish(user, petition):
     """
     response = False
     if petition.status == 0 and user.id == petition.author.id:
-
         # Set status to 1 to publish it to the world.
         petition.status = 1
         # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
@@ -430,12 +467,13 @@ def petition_publish(user, petition):
         response = True
 
         data = {
-            "new-petition":petition.id
+            "new-petition": petition.id
         }
 
         send_update(data)
 
     return HttpResponse(response)
+
 
 @login_required
 @require_POST
@@ -450,8 +488,9 @@ def petition_unpublish(request, petition_id):
     # Set status to 2 to hide it from view.
     petition.status = 2
     petition.save()
-    logger.info('user '+request.user.email+' unpublished petition '+petition.title)
+    logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
     return HttpResponse(True)
+
 
 # HELPER FUNCTIONS #
 def send_update(update):
@@ -465,18 +504,19 @@ def send_update(update):
     })
     return None
 
-def colors():
 
+def colors():
     color_object = {
-        'highlight':"#f36e21",
-        'highlight_hover':'#e86920',
-        'dark_text':'#0f0f0f',
-        'light_text':'#f0f0f0',
-        'bright_text':'#fff',
-        'light_background':'#fafafa'
+        'highlight': "#f36e21",
+        'highlight_hover': '#e86920',
+        'dark_text': '#0f0f0f',
+        'light_text': '#f0f0f0',
+        'bright_text': '#fff',
+        'light_background': '#fafafa'
     }
 
     return color_object
+
 
 def edit_check(user, petition):
     """
@@ -499,10 +539,11 @@ def edit_check(user, petition):
         if user.is_active:
             # Check if the user is a staff member or the author of the petition.
             # If it is the petition's author, the petition must not have already been published.
-            if user.is_staff or (user.id == petition.author.id and petition.status == 0 ):
+            if user.is_staff or (user.id == petition.author.id and petition.status == 0):
                 # The user is authenticated, and can edit the petition!
                 edit = True
     return edit
+
 
 # FILTERING
 def filtering_controller(sorted_objects, tag):
@@ -512,48 +553,53 @@ def filtering_controller(sorted_objects, tag):
         queried_tag = Tag.objects.get(id=tag)
         return sorted_objects.all().filter(tags=tag)
 
+
 # SORTING
-#
 def sorting_controller(key, query=None):
     result = {
         'most recent': most_recent(),
         'most signatures': most_signatures(),
         'last signed': last_signed(),
         'search': search(query),
-	    'in progress': in_progress(),
+        'in progress': in_progress(),
         'responded': responded(),
         'archived': archived(),
         'similar': similar_petitions(query)
     }.get(key, None)
     return result
 
+
 def most_recent():
     return Petition.objects.all() \
-    .filter(expires__gt=timezone.now()) \
-    .filter(status=1) \
-    .order_by('-created_at')
+        .filter(expires__gt=timezone.now()) \
+        .filter(status=1) \
+        .order_by('-created_at')
+
 
 def most_signatures():
     return Petition.objects.all() \
-    .filter(expires__gt=timezone.now()) \
-    .filter(status=1) \
-    .order_by('-signatures')
+        .filter(expires__gt=timezone.now()) \
+        .filter(status=1) \
+        .order_by('-signatures')
+
 
 def last_signed():
     return Petition.objects.all() \
-    .filter(expires__gt=timezone.now()) \
-    .filter(status=1) \
-    .order_by('-last_signed')
+        .filter(expires__gt=timezone.now()) \
+        .filter(status=1) \
+        .order_by('-last_signed')
+
 
 def search(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
-    .select_related('author', 'response') \
-    .prefetch_related('tags', 'updates') \
-    .filter(status=1) \
-    .filter(rank__gte=0.35) \
-    .order_by('-rank')
+        .select_related('author', 'response') \
+        .prefetch_related('tags', 'updates') \
+        .filter(status=1) \
+        .filter(rank__gte=0.35) \
+        .order_by('-rank')
+
 
 def similar_petitions(query):
     vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
@@ -563,24 +609,27 @@ def similar_petitions(query):
         .filter(status=1) \
         .order_by('-rank')
 
+
 def in_progress():
     return Petition.objects.all() \
-    .filter(expires__gt=timezone.now()) \
-    .filter(status=1) \
-    .filter(expires__gt=timezone.now()) \
-    .filter( (Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None) ) \
-    .exclude(has_response=True) \
-    .order_by('-created_at')
+        .filter(expires__gt=timezone.now()) \
+        .filter(status=1) \
+        .filter(expires__gt=timezone.now()) \
+        .filter((Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None)) \
+        .exclude(has_response=True) \
+        .order_by('-created_at')
+
 
 def responded():
     return Petition.objects.all() \
-    .filter(status=1) \
-    .filter(has_response=True) \
-    .order_by('-created_at')
+        .filter(status=1) \
+        .filter(has_response=True) \
+        .order_by('-created_at')
+
 
 def archived():
-    return Petition.objects.all()\
-        .filter(expires__lt=timezone.now())\
-        .filter( Q(response=None) ) \
+    return Petition.objects.all() \
+        .filter(expires__lt=timezone.now()) \
+        .filter(Q(response=None)) \
         .filter(status=1) \
         .order_by('-created_at')

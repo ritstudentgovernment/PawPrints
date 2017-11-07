@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 # Extends User model. Defines sn and notifications for a User.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -17,18 +18,20 @@ class Profile(models.Model):
     notifications = models.ForeignKey('profile.Notifications', on_delete=models.CASCADE)
     subscriptions = models.ManyToManyField('petitions.Petition', related_name='profile_subscriptions', blank=True)
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
-    petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed',blank=True)
-    display_name = models.CharField(max_length=3,blank=True)
+    petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed', blank=True)
+    display_name = models.CharField(max_length=3, blank=True)
     # 1 - Student, 2 - Alumni, 3 - Employee
     affiliation = models.PositiveSmallIntegerField(default=1)
 
     def __unicode__(self):
         return self.user.username
 
+
 # Defines user's email notification settings.
 class Notifications(models.Model):
     update = models.BooleanField(default=True)
     response = models.BooleanField(default=True) 
+
 
 # 
 # The following functions define signals so that the Profile model 
@@ -40,6 +43,7 @@ class Notifications(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance, notifications=Notifications.objects.create())
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

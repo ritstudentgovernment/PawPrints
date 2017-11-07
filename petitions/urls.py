@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views
 
-app_name='petitions'
+app_name = 'petitions'
 
 urlpatterns = [
     url(r'^(?P<petition_id>\d+)$', views.petition),
