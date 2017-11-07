@@ -295,7 +295,7 @@ def petition_edit(request, petition_id):
                 response = Response(
                     description=value,
                     created_at=timezone.now(),
-                    author=request.user,
+                    author=request.user.profile.full_name,
                     id=last_response_id+1
                 )
                 response.save()
