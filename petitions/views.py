@@ -178,17 +178,18 @@ def petition_redirect(request, petition_id):
     :return: redirect to correct page.
     """
 
-    # Check if the petition_id sent does not exist in the postgres db.
-    if not Petition.objects.filter(pk=petition_id).exists():
+    # Check if the petition_id sent is not an integer
+    try:
+        int(petition_id)
+        return redirect("/?p=" + str(petition_id))
+    except ValueError:
         # Check if the petition_id sent exists in the Redis server store.
         redis_connection = redis.StrictRedis()
         if redis_connection.exists(petition_id):
             # Redirect to correct petition.
             return redirect("/?p=" + str(redis_connection.get(petition_id)))
-        # Petition did not exist in either db.
+        # Petition did not exist in redis database ID is not an int
         return redirect("/")
-    # Petition existed in the postgres.
-    return redirect("/?p=" + str(petition_id))
 
 
 @require_POST
