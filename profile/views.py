@@ -15,7 +15,8 @@ from petitions.views import colors
 from .models import Profile
 import logging
 
-logger = logging.getLogger("pawprints."+__name__)
+logger = logging.getLogger("pawprints." + __name__)
+
 
 @login_required
 def profile(request):
@@ -30,9 +31,10 @@ def profile(request):
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
         'petitions_created': profile.petitions_created.all,
-        "colors":colors()
+        "colors": colors()
     }
     return render(request, 'profile.html', data_object)
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -48,15 +50,16 @@ def manage_staff(request):
         'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
         'all_users': User.objects.all(),
-        "colors":colors()
+        "colors": colors()
     }
     return render(request, 'staff_manage.html', data_object)
+
 
 def user_login(request):
     """ Handles rendering login page and POST
     endpoint for logging in a user
     """
-    url_next = request.GET.get('next','/profile/')
+    url_next = request.GET.get('next', '/profile/')
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
@@ -67,12 +70,13 @@ def user_login(request):
             user_obj.backend = 'django.contrib.auth.backends.ModelBackend'
             user_obj.save()
             auth_login(request, user_obj)
-            logger.info(user.username+" logged in")
+            logger.info(user.username + " logged in")
             return redirect(url_next)
     data_object = {
-        "colors":colors()
+        "colors": colors()
     }
     return render(request, 'login.html', data_object)
+
 
 # ENDPOINTS #
 @require_POST
@@ -87,6 +91,7 @@ def add_superuser(request, user_id):
             return HttpResponse(True)
     return HttpResponse(False)
 
+
 @require_POST
 @login_required
 def add_staff_member(request, user_id):
@@ -97,6 +102,7 @@ def add_staff_member(request, user_id):
             user.save()
             return HttpResponse(True)
     return HttpResponse(False)
+
 
 @require_POST
 @login_required
@@ -109,6 +115,7 @@ def remove_superuser(request, user_id):
             return HttpResponse(True)
     return HttpResponse(False)
 
+
 @require_POST
 @login_required
 def remove_staff_member(request, user_id):
@@ -119,6 +126,7 @@ def remove_staff_member(request, user_id):
             user.save()
             return HttpResponse(True)
     return HttpResponse(False)
+
 
 @login_required
 @require_POST
@@ -137,10 +145,11 @@ def update_notifications(request, user_id):
     user.save()
     return HttpResponse(True)
 
+
 @login_required
 def user_logout(request):
     """ Handles logging a user out
     """
     logout(request)
-    url_next = request.GET.get('next','/')
+    url_next = request.GET.get('next', '/')
     return redirect(url_next)

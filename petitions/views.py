@@ -289,10 +289,14 @@ def petition_edit(request, petition_id):
 
             elif attribute == "response":
 
+                last_response = Response.objects.all().last()
+                last_response_id = last_response.id if last_response is not None else 0
+
                 response = Response(
                     description=value,
                     created_at=timezone.now(),
-                    author=request.user
+                    author=request.user,
+                    id=last_response_id+1
                 )
                 response.save()
 
