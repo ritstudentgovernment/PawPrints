@@ -628,6 +628,7 @@ def in_progress():
 def responded():
     return Petition.objects.all() \
         .filter(has_response=True) \
+        .filter(status=1) \
         .order_by('-created_at')
 
 
