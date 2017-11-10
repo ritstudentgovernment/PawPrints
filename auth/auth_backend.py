@@ -23,31 +23,38 @@ class SAMLSPBackend(object):
 
         if saml_authentication.is_authenticated():
             attributes = saml_authentication.get_attributes()
+
             username = attributes[Attributes.USERNAME][0]
+            first_name = attributes[Attributes.FIRST_NAME][0]
+            last_name = attributes[Attributes.LAST_NAME][0]
+            affiliation = attributes[Attributes.EDU_AFFILIATION]
+
             try:
                 # Grab attributes from shib and auth user
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
-                first_name = attributes[Attributes.FIRST_NAME][0]
-                last_name = attributes[Attributes.LAST_NAME][0]
-                affiliation = attributes[Attributes.EDU_AFFILIATION]
                 # If user does not exist in DB, Create a user object and save to DB
                 user = User(username=username, email=username + "@rit.edu")
                 user.set_unusable_password()
-                user.first_name = first_name
-                user.last_name = last_name
-                user.save()
-                # Set user profile attributes
-                user.profile.full_name = "{} {}".format(first_name, last_name)
-                user.profile.display_name = "{}{}".format(first_name[0], last_name[0])
-                if 'Employee' in affiliation:
-                    user.profile.affiliation = 3
-                elif 'Alumni' in affiliation:
-                    user.profile.affiliation = 2
 
-                user.profile.save()
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+            # Set user profile attributes
+            user.profile.full_name = "{} {}".format(first_name, last_name)
+            user.profile.display_name = "{}{}".format(first_name[0], last_name[0])
+
+            # Set user Affiliation
+            if 'Employee' in affiliation:
+                user.profile.affiliation = 3
+            elif 'Alumni' in affiliation:
+                user.profile.affiliation = 2
+
+            user.profile.save()
 
             return user
+
         return None
 
     def get_user(self, user_id):
