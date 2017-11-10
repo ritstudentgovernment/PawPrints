@@ -118,5 +118,12 @@ profanity.csv
 
 .idea/modules.xml
 
+*.xml
+
+PawPrints - Make your mark.webarchive
+/pawprints/secrets.py
+
 *.key
 *.crt
+
+*.iml

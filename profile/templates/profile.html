@@ -2,30 +2,135 @@
 <html lang="en">
 <head>
     {% load static %}
-    <meta charset="UTF-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="{% static '/js/global.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
+    {% include 'head.html' %}
     <title>Account | PawPrints</title>
     <style>
+        .background-highlight{
+            background-color: {{ colors.highlight }};
+        }
+        .text-highlight{
+            color: {{ colors.highlight }} !important;
+        }
+        .bright-text{
+            color: {{ colors.bright_text }} !important;
+        }
+        .modern-link{
+            color: {{ colors.dark_text }};
+            text-decoration: none;
+        }
+        .material-input:focus{
+            border-color: {{ colors.highlight }};
+        }
+        .alternate-font{
+            font-family: "Slabo 27px", sans-serif;
+        }
+        .tag:hover{
+            cursor: pointer;
+        }
+        body{
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        h1,h2,h3,h4,h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+        }
+        #landing{
+            margin-top: 109px;
+        }
+        #sub-landing{
+            padding-top: 0;
+        }
+        #settings ul li{
+            background-color: #fff;
+            border-bottom: 1px solid #ccc;
+        }
+        #settings ul li:last-child{
+            border-bottom: none;
+        }
+        #settings ul li label{
+            overflow: hidden;
+            width: calc(100% - 65px);
+        }
     </style>
 </head>
 <body>
 
+<div id="wrapper">
+    {% include 'header.html' %}
+    <main class="full-width">
+        <section id="landing" class="text-center overflow-hidden">
+            <h1>{{ first_name }} {{ last_name }}</h1>
+            <h5>{{ email }}</h5>
+        </section>
+        <section id="sub-landing" class="ninety-width">
+            <form id="settings" name="settings" method="post" action="{% url 'profile:notification_update' user_id=uid %}">
+                {% csrf_token %}
+                <ul class="list">
+                    <li class="list-item block padding overflow-hidden">
+                        <label class="block left ninety-width padding cursor" for="updates">
+                            E-mail me when new status updates are petitioned on petitions I sign
+                        </label>
+                        <div class="right padding-right padding-top">
+                            <input id="updates" class="js-switch" type="checkbox" name="updates" {% if notification_settings.update %} checked="checked" {% endif %}>
+                        </div>
+                    </li>
+                    <li class="list-item block padding overflow-hidden">
+                        <label class="block left ninety-width padding cursor" for="response">
+                            E-mail me when an official response is petitioned on a petition I sign.
+                        </label>
+                        <div class="right padding-right padding-top">
+                            <input id="response" class="js-switch " type="checkbox" name="response" {% if notification_settings.response %} checked="checked" {% endif %}>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </section>
+        <section>
+            <div class="ninety-width">
+                {% if petitions_created.count > 0 %}
+                    <h1>Petitions Created</h1>
+                    {% for petition in petitions_created %}
+                        {% if petition.status != 2 %}
+                        <article class="padding white-background cursor" onclick="window.location.href='/?p={{petition.id}}'">
+                            <h3 class="text-highlight capitalize inline-block">{{ petition.title }}</h3>
+                            {% if petition.status == 0 %}<p class="inline-block margin-left italics">Not Published</p>
+                            {% else %}<p class="inline-block margin-left">Published</p><p class="inline-block margin-left">{{petition.signatures}} / 200 Signatures</p>{% endif %}
+                        </article>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</div>
 
-    {{ first_name }}
-    {{ last_name }}
-    {% for petition in petitions_created %}
-        {{ petition.title }}
-    {% endfor %}
+<script>
+    $(document).ready(function(){
 
+        window.plugins = {
+            "switchery":[]
+        };
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        elems.forEach(function(html) {
+            window.plugins.switchery.push(new Switchery(html,{size:"small"}));
+        });
+        $("#settings").find("input").change(function(){
 
-    <button class="create_petition">Click me to add a petition.</button>
-	  <form name="settings" method="post" action="{% url 'profile:notification_update'}">
-      {% csrf_token %}
-      <input type="checkbox" name="updates" {% if profile.notifications.update %} checked="checked" {% endif %}>E-mail me when new status updates are petitioned on petitions I sign<br>
-      <input type="checkbox" name="response" {% if profile.notifications.response %} checked="checked" {% endif %}>E-mail me when an official responses is petitioned on a petition I sign.
-      <input type="submit">
-    </form>
+            var form = $(this).closest("form");
+
+            $.post(form.attr("action"), form.serialize(),function(r){
+                if(!r){
+                    console.log("Error saving user preferences. User sent does not matched logged in user.");
+                }
+            });
+
+        });
+
+    });
+</script>
 
 </body>
 </html>

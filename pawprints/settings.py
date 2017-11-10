@@ -26,9 +26,9 @@ SAML_FOLDER = os.path.join(BASE_DIR, 'saml')
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["lymbp.student.rit.edu","sgstage.rit.edu"]
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
@@ -165,6 +165,7 @@ EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/profile/'
 
 # Logging
 LOGGING = {
@@ -204,11 +205,6 @@ LOGGING = {
         },
     },
     'loggers': {
-        'pawprints': {
-            'handlers': ['rotate_file_info'],
-            'level': 'INFO',
-            'propagate': True,
-        },
         'pawprints': {
             'handlers': ['rotate_file_errors', 'sentry'],
             'level': 'ERROR',

@@ -8,9 +8,11 @@ from onelogin.saml2.settings import OneLogin_Saml2_Settings
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
 from onelogin.saml2.utils import OneLogin_Saml2_Utils
 
+
 class SettingsMixin(object):
     def get_settings(self):
         return OneLogin_Saml2_Settings(settings=None, custom_base_path=settings.SAML_FOLDER, sp_validation_only=True)
+
 
 class InitAuthView(SettingsMixin, View):
     def get(self, *args, **kwargs):
@@ -20,6 +22,7 @@ class InitAuthView(SettingsMixin, View):
         return_url = self.request.GET.get('next', settings.LOGIN_REDIRECT_URL)
 
         return redirect(auth.login(return_to=return_url))
+
 
 class CompleteAuthView(SettingsMixin, View):
     def get(self, request):
@@ -37,16 +40,18 @@ class CompleteAuthView(SettingsMixin, View):
             if auth.is_authenticated:
                 user = authenticate(saml_authentication=auth)
                 login(self.request, user)
-                if 'RelayState' in req['post_data'] and OneLogin_Saml2_Utils.get_self_url(req) != req['post_data']['RelayState']:
+                if 'RelayState' in req['post_data'] and OneLogin_Saml2_Utils.get_self_url(req) != req['post_data'][
+                    'RelayState']:
                     return redirect(auth.redirect_to(req['post_data']['RelayState']))
                 else:
                     return redirect('/')
-            else: 
+            else:
                 raise PermissionDenied()
         else:
             if settings.DEBUG:
                 print(auth.get_last_error_reason())
             return HttpResponseBadRequest("Erro processing SAML response ".join(errors))
+
 
 class MetadataView(SettingsMixin, View):
     def get(self, request, *args, **kwargs):

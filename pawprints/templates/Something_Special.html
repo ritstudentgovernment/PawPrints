@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include 'head.html' %}
+    <style>
+        html,body{
+            background-color: #f36e21;
+            color: #fff;
+            text-align: center;
+            height:100vh;
+        }
+        main{
+            margin: 0;
+            font-family: "Montserrat", sans-serif;
+            font-size: 2em;
+        }
+        section{
+            position: absolute;
+            width: 100%;
+            left:0;
+        }
+        article *{
+            opacity:0;
+        }
+        article *:not(img){
+            width: 100%;
+            margin-bottom: 0;
+        }
+        article h1{
+            font-size: 1.5em;
+        }
+        a{
+            color: #fff;
+            opacity:1;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section>
+            <article>
+                <img src="/static/images/pawprints-logo-mobile-white.png" width="150px">
+                <h1>PawPrints is taking a nap.</h1>
+                <h5>In the meantime check out <a href="https://naps.rit.edu">naps.rit.edu</a>.</h5>
+            </article>
+        </section>
+    </main>
+<script>
+    $(document).ready(function(){
+        verticalOffset($("section"));
+        setTimeout(function(){
+            var i = 1;
+            $("article").children().each(function(){
+                var me = $(this);
+                setTimeout(function(){
+                    me.cssanimate("fadeInUp",{inline:true});
+                },i*250);
+                i++;
+            });
+
+            verticalOffset($("section"));
+        },0);
+    });
+</script>
+</body>
+</html>

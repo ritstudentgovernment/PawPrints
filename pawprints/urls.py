@@ -25,19 +25,24 @@ from auth.views import MetadataView, CompleteAuthView, InitAuthView
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^petitions/', views.load_petitions),
+    url(r'^about/', views.about, name='about'),
+    url(r'^admin/login', InitAuthView.as_view(), name='init-auth'),
     url(r'^admin/', admin.site.urls),
+    url(r'^acs$', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
     url(r'^saml$', MetadataView.as_view(), name='metadata'),
     url(r'^login/', InitAuthView.as_view(), name='init-auth'),
-    url(r'^acs$', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
     url(r'^logout/', user_logout, name='user_logout'),
     url(r'^petition/', include('petitions.urls')),
-    url(r'^profile/', include('profile.urls'))
+    url(r'^profile/', include('profile.urls')),
+    url(r'^maintenance/', views.maintenance),
+    url(r'^petitions/(?P<petition_id>\w+)$', views.petition_redirect)
 ]
+
 
 def handler500(request): # pragma: no cover
     t = loader.get_template('500.html')
     return HttpResponseServerError(t.render({'request': request})) 
+
 
 def handler404(request):
     t = loader.get_template('404.html')

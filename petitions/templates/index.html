@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
     {% load static %}
-    <meta charset="UTF-8">
-    <link href="{% static '/css/global.css' %}" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway:300|Work+Sans:300" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    {% include 'head.html' %}
+    {% if user.is_staff %}
+        <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
+    {% endif %}
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="{% static '/js/global.js' %}"></script>
-    <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+
     <style>
         .background-highlight{
             background-color: {{ colors.highlight }};
@@ -27,74 +25,59 @@
         .material-input:focus{
             border-color: {{ colors.highlight }};
         }
-        /* -- Global IDs -- */
-        #logo{
-            font-size: 2em;
+        .alternate-font{
+            font-family: "Slabo 27px", sans-serif;
         }
-        /* -- Page-Specific Classes -- */
-        .tag:hover{
+        .tag:hover {
             cursor: pointer;
         }
-        .current-tag{
-            color: {{ colors.highlight }} !important;
+        .no-scroll{
+            position: relative;
+            overflow: hidden !important;
         }
+        /* -- Slide Show Styles -- */
+        .slide {
+            height: 100%;
+        }
+        /* -- END slide show styling -- */
+
         /* -- Page-Specific IDs -- */
-        #tags-container{
-            background-color: #f5f5f5;
-            display: block;
-            overflow: hidden;
-            text-align: center;
-        }
-        #tags{
-            padding: 10px 10px calc(10px + 0.75em);
-            text-align: center;
-            font-size: 0.8em;
-            text-transform: uppercase;
-            background-color: #f5f5f5;
-        }
-        #tags .list-item{
-            display: inline-block;
-            padding: 5px;
-        }
         #parallax-overlay{
             text-align: center;
             color: #fff;
+            top: calc( 20 / (6vw + 20vh)) !important;
         }
         #parallax-overlay h1{
-            font-family: "Montserrat",Arial;
-            text-transform: uppercase;
-            padding: 0.5em;
             min-width: 45%;
-            margin: 0;
-            background-color: {{ colors.highlight }};
             display: inline-block;
+            text-transform: capitalize;
+            padding: 0.5em 0.5em calc(0.5em - 1vh - 1.5vw);
+            font-family: "Montserrat",sans-serif;
+            font-size: calc(4em - (20px - 2vw));
+            text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
+            font-weight: 700;
+            margin: 0;
         }
         #parallax-overlay h3{
-            line-height: 1.5em;
+            margin-top: 0;
+            font-family: "Slabo 27px",serif;
+            font-size: calc(2em - (10px - 1vw));
+            text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.8);
+            font-weight: 400;
         }
-        #sub-landing{
-            text-align: center;
-        }
-        #tiles{
-            position: relative;
-        }
-        #tile-background-parallax{
-            background-size:cover;
-            background: no-repeat center;
-            width: 100%;
-            height: 100%;
-        }
-        #search-tile label{
+        #search-container{
             text-align: center;
             display: block;
-        }
-        #search-tile label:hover{
-            cursor: pointer;
+            text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
         }
         #search-term{
             width: 0;
             opacity:0;
             padding:1px;
+            color: #fff;
+            font-family: inherit;
         }
         #search-term:focus{
             opacity: 1;
@@ -111,10 +94,15 @@
             padding-top: 2em;
             font-weight: 300;
         }
+        #sub-landing{
+            min-height: calc(100vh - 65px);
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
         #new-petition{
             position: fixed;
-            bottom: 50px;
-            left: 50px;
+            bottom: 30px;
+            right: 30px;
             height: 70px;
             width: 70px;
             text-align: center;
@@ -134,10 +122,74 @@
             box-shadow:         0px 2px 10px 0px rgba(0,0,0,0.4);
             text-shadow:        0px 5px 10px rgba(0,0,0,0.2);
         }
+        #filter-sort{
+            width: calc(200px + 1em);
+            overflow-y: auto;
+            position: relative;
+            max-height: calc(100vh - 90px);
+        }
+        #filter-sort h3, #filter-sort h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            color: #757575;
+        }
+        #filter-sort select{
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            -o-appearance: none;
+            appearance: none;
+            width: 196px;
+            padding:10px;
+            border: none;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 0.9em;
+            color: #757575;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAhklEQVR4Ae3NsQ3CYAxE4VdmA/KvgygQLAtdJgkZhVSmQ8hFLKwr76tP9zAzMytdOFEZnGm6s7MWicHGmysNN3aCyIl8TxC9xJMgDhOD13fz4G8Ty2Fi/rlfmECQENwXCcF9kZDcF4mZNd9rE/L7nEj38kS61yfSvT6R7vWJdK9PdO7NzMw+ihJ379BDyXQAAAAASUVORK5CYII=');
+            background-position: calc(100% - 10px) 50%;
+            background-repeat: no-repeat;
+            background-size: 30px;
+            background-color: #fff;
+        }
+        #filter-sort-content-box{
+            width: 200px;
+            margin-left: 1em;
+            text-align: left;
+        }
+        #filter-sort .tag{
+            text-transform: capitalize;
+            font-size: 1em;
+            padding-top: 5px;
+            padding-bottom:5px;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top:5px;
+        }
+        #filter-sort .tag:hover:not(.current-tag){
+            background-color:#fff;
+            -webkit-box-shadow: 0px 0px 5px 0px #eee;
+            -moz-box-shadow:    0px 0px 5px 0px #eee;
+            -o-box-shadow:      0px 0px 5px 0px #eee;
+            box-shadow:         0px 0px 5px 0px #eee;
+        }
+        #filter-sort .current-tag{
+            color: {{ colors.highlight }} !important;
+            background-color: #fff;
+            -webkit-box-shadow: 0px 0px 5px 0px #eee;
+            -moz-box-shadow:    0px 0px 5px 0px #eee;
+            -o-box-shadow:      0px 0px 5px 0px #eee;
+            box-shadow:         0px 0px 5px 0px #eee;
+        }
+        #mobile-filter{
+            display: none;
+        }
         /* - Petitions - */
         #petitions{
-            background-color: #fafafa;
             padding-bottom: 1em;
+            width: calc(100% - (200px + 1em));
         }
         #petitions-container{
             overflow: hidden;
@@ -153,8 +205,8 @@
         .petition{
             background-color: #fff;
             color: #0f0f0f;
-            padding: 1.2em;
-            width: calc(100% - 10px - 2.2em);
+            padding-bottom: 1.2em;
+            width: calc(100% - 10px);
             margin-left: 5px;
             margin-right: 5px;
             overflow: hidden;
@@ -166,14 +218,42 @@
         .petition:hover{
             cursor: pointer;
         }
+        .petition.in-progress{
+            border-bottom: 4px solid #f36e21;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .petition.responded{
+            border-bottom: 4px solid #9d5f4b;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .petition progress{
+            height: 5px;
+            display: block;
+        }
+        progress{
+            border-radius: 0 !important;
+        }
+        progress[value]::-webkit-progress-bar {
+            border-radius: 0 !important;
+        }
+        progress[value]::-moz-progress-bar {
+            border-radius: 0 !important;
+        }
+        .petition-body{
+            padding: 1.2em;
+        }
         .petition-signatures{
             margin-top: 0;
             padding-top: 0;
             font-weight: 300;
         }
         .petition-title{
-            font-weight: 300;
-            font-family: "Raleway", Arial;
+            font-weight: 700;
+            font-family: "Montserrat", sans-serif;
+            text-transform: capitalize;
+            font-size: 1.5em;
         }
         .petition ul{
             overflow: visible;
@@ -185,14 +265,16 @@
         }
         .petition .tag{
             display: inline-block;
-            padding: 5px 7px;
-            margin: 5px 7px 0 0;
+            padding: 5px 10px;
+            margin: 5px 7px 0 0px;
             float: left;
-            background-color: {{ colors.highlight }};
-            color: {{ colors.bright_text }};
+            background-color: {{ colors.bright_text }};
+            color:{{ colors.highlight }};
+            border:1px solid {{ colors.highlight }};
             -webkit-border-radius:40px;
             -moz-border-radius:40px;
             border-radius:40px;
+            font-weight: 400;
         }
         .petition .tag:hover{
             -webkit-box-shadow: 0px 0px 5px 0px #aaa;
@@ -200,81 +282,10 @@
             -o-box-shadow:      0px 0px 5px 0px #aaa;
             box-shadow:         0px 0px 5px 0px #aaa;
             background-color: {{ colors.highlight_hover }};
-        }
-        .box{
-            padding: 5px 20px 15px 20px;
-        }
-        .box-title{
-            font-weight: 300;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ccc;
-            text-align: left;
-            margin-top: 0;
-            padding-top: 1em;
-            padding-bottom: 1em;
-            margin-bottom: 1.5em;
-            color: #696969;
-            font-size: 0.8em;
-        }
-        /* -- Slide Show Styles -- */
-        .slide {
-            height: 100%;
-        }
-        /* -- Tiles -- */
-        .tile-container{
-            overflow: hidden;
-            padding-top: 1em;
-            padding-bottom: 1em;
-        }
-        .tile{
-            line-height: 150px;
-            text-transform: uppercase;
-            font-size: 1.3em !important;
-            float: left;
-            margin-bottom: 5px;
-        }
-        .tile .material-icons{
-            font-size: 1.3em !important;
-        }
-        .three-tiles .tile{
-            width: calc(33.33% - 15px);
-            padding: 7px;
-        }
-        .three-tiles .tile:first-child{
-            border-right: 1px solid #ccc;
-            margin-left: 1px;
-        }
-        .three-tiles .tile:last-child{
-            border-right: none;
-            border-left: 1px solid #ccc;
-        }
-        .tile:hover{
-            background-color: {{ colors.highlight }};
             color: {{ colors.bright_text }};
-            cursor: pointer;
-            -webkit-transform: translateY(-10px);
-            -moz-transform: translateY(-10px);
-            -ms-transform: translateY(-10px);
-            -o-transform: translateY(-10px);
-            transform: translateY(-10px);
-            -webkit-box-shadow: 0px 0px 5px 0px #ddd;
-            -moz-box-shadow:    0px 0px 5px 0px #ddd;
-            -o-box-shadow:      0px 0px 5px 0px #ddd;
-            box-shadow:         0px 0px 5px 0px #ddd;
         }
-        #search-tile:hover #search-term{
+        #search-container:hover #search-term{
             border-bottom-color: {{ colors.bright_text }} !important;
-        }
-        #back-up{
-            position: fixed;
-            bottom: 50px;
-            right: 50px;
-            background-color: rgba(0,0,0,0.7);
-            color: #fff;
-            font-size: 1.2em;
-            padding: 10px;
-            text-decoration: none;
-            display: none;
         }
         #modal-template .modal-header h1{
             margin-top: -5px;
@@ -286,17 +297,18 @@
             text-align: left;
         }
         #petition-modal .modal-container{
-            border-radius: 25px 0 25px 0;
             max-height: 95vh;
+            height:95vh;
         }
         #petition-modal .modal-header{
             padding: 10px;
+            border-bottom: 1px solid #ccc;
         }
         #petition-modal .modal-header h2{
             margin-top: 10px;
             margin-bottom: 10px;
             margin-left: 10px;
-            font-family: "Montserrat", Arial;
+            font-family: "Montserrat", sans-serif;
             color: {{ colors.highlight }};
             text-transform: capitalize;
         }
@@ -310,15 +322,24 @@
             position: absolute;
             right: 10px;
             top: 10px;
+            color: #f36e21;
+        }
+        #petition-modal #petition-close:hover{
+            cursor: pointer;
         }
         #petition-modal .modal-body {
             margin-bottom: 75px;
+            height: calc(95vh - 140px);
+            overflow: auto;
+            background-color: #f0f0f0;
         }
         #petition-modal .modal-header h2, #petition-modal .modal-header span{
             max-width: calc(100% - 44px);
         }
+        #petition-modal .modal-header span.inline-block{
+            margin-right: 60px;
+        }
         #petition-modal .modal-footer{
-            padding: 8px 10px;
             position: absolute;
             bottom:0px;
             left:0;
@@ -332,56 +353,78 @@
         #timeline-container{
             background-color: #f0f0f0;
             color: #0f0f0f;
-            padding: 5%;
+            padding: 0 5%;
             position: relative;
-            max-height: 55vh;
-            overflow: auto;
             -webkit-transform: translateZ(0);
+        }
+        #timeline-container p:first-child{
+            margin-top: 0;
         }
         .modal-body{
             position: relative;
         }
-        #petition-modal .modal-body:after{
+        .timeline-element:before{
             content: '';
             position: absolute;
             top: 0;
             bottom: 0;
-            margin-left: 20px;
+            left: calc(-3.5vw + 3px);
             float: left;
             height: 100%;
             width: 4px;
-            background: #CCC;
+            background: #ccc;
+            z-index: 1;
         }
         .timeline-element{
-            display: inline-block;
+            /*display: inline-block;*/
+            padding-top: 30px;
+        }
+        .timeline-element-wrap{
             padding: 10px;
+            position: relative;
             background-color: #fff;
-            margin-bottom: 20px;
+        }
+        .timeline-element[data-type="created"] .timeline-element-wrap{
+            background-color: transparent;
         }
         .timeline-element-arrow{
             position: absolute;
-            top: 7px;
-            left: -15px;
+            top: 9px;
+            left: -23px;
             -webkit-transform: rotateZ(45deg);
             transform: rotateZ(45deg);
             background-color: #fff;
-            width: 30px;
-            height: 30px;
+            width: 3em;
+            height: 3em;
             z-index: -1;
+        }
+        .timeline-element-dot{
+            position: absolute;
+            top: 29px;
+            border: none;
+            left: calc(1px - 3.55vw);
+            height: 9px;
+            width: 9px;
+            background-color: #f36e21;
+            z-index: 3;
         }
         .timeline-element-header{
             font-weight: 300;
             font-family: "Work Sans", Arial;
-            border-bottom: 1px solid #ccc;
             margin: 0;
-            padding-top: calc(0.5em - 10px);
-            padding-bottom: 0.5em;
-            margin-bottom: 10px;
+            padding-top: 1em;
+            padding-bottom: 1em;
             text-align: right;
             overflow: hidden;
         }
-        .timeline-element-header span{
+        .timeline-element-body{
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        .timeline-element-header span.text-highlight{
             text-transform: uppercase;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
             float: left;
         }
         .timeline-element-content, .timeline-element-content *{
@@ -389,33 +432,99 @@
             font-size: 21px !important;
             font-weight: 300 !important;
         }
+        .timeline-element-content img{
+            margin: 0 auto;
+            display: block;
+        }
+        .timeline-element:last-child{
+            padding-bottom: 34px;
+        }
+        .petition-action-card{
+            font-family: "Montserrat", sans-serif;
+            height:53px;
+            max-height: 53px;
+            padding-top:7px;
+        }
+        .petition-action-card:not(#signature-card){
+            padding-right: 1vw;
+        }
+        .petition-action-card h3{
+            margin-top: 3px;
+            margin-bottom: 3px;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        #signature-card{
+            line-height: 45px;
+            font-weight: 700;
+        }
+        #sign-petition-button {
+            font-weight: 700;
+            font-size: 0.9em;
+            padding: 0 !important;
+        }
+        #sign-petition-button span{
+            display: block;
+            padding: 7px 15px 7px 15px;
+        }
+        #sign-petition-button{
+            background-color: transparent;
+            color: {{ colors.highlight_hover }};
+        }
+        #sign-petition-button:not(:disabled):hover{
+            background-color: {{ colors.highlight_hover }};
+        }
+        #sign-petition-button:not(:disabled):hover span{
+            color: {{ colors.light_text }};
+        }
+        #sign-petition-button:disabled:hover{
+            cursor: auto;
+            transform: scale(1);
+        }
+        #signature-card span{
+            color: {{ colors.highlight_hover }};
+        }
         .social-icon{
-            height: 30px;
             padding-top: 1px;
             padding-bottom: 1px;
-            margin-left: 10px;
+            margin-right: 10px;
         }
         .social-icon img{
-            height: 30px;
-            margin-top: 6px;
-            width: 30px;
+            height: 1em;
+        }
+        #petition-modal .modal-container{
+            overflow-y: hidden;
         }
 
-        .petition-progress-container{
+        #petition-modal .modal-footer{
+            overflow: visible;
+        }
+
+        #petition-modal .modal-footer .hide-box{
+            position:absolute;
+            top:-25px;
+            left: calc( 50% - (55px / 2) );
             display: block;
-            height: 15px;
-            margin-bottom: 10px;
-            width: 100%;
+            width: 45px;
+            height: 25px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            color: #0f0f0f;
+            content: "V";
+            text-align: center;
+            line-height: 25px;
+            font-size: 1em;
+        }
+        #petition-modal .modal-footer .hide-box:hover{
+            cursor:pointer;
+        }
+        #petition-modal .petition-progress{
+            margin-bottom: -1px;
+            float: left;
         }
         .petition-progress{
             width: 100%;
-        }
-        .petition-progress-label{
-            height: 30px;
-            margin-top: 8px;
-            line-height: 30px;
-            text-align: center;
-            display: block;
         }
         progress{
             -webkit-appearance: none;
@@ -423,19 +532,16 @@
             z-index:1;
         }
         progress[value]::-webkit-progress-bar {
-            background-color: #eee;
-            border-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+            background-color: #cfcfcf;
             content: "1";
             color:#fff;
             text-align: center;
         }
         progress[value]::-webkit-progress-value {
             background-color: #f36e21;
-            border-radius: 2px;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
             background-size: 35px 20px, 100% 100%, 100% 100%;
-            content: "1";
-            color:#fff;
             text-align: center;
         }
         progress[value]::-moz-progress-bar {
@@ -450,28 +556,485 @@
 
         }
 
+        #action-drawer-icon-container{
+            display: none;
+            height: 15px;
+            width: 50px;
+            padding-bottom: 5px;
+            text-align: center;
+            position: absolute;
+            top: -22px;
+            left: calc(50% - 25px);
+            border: 1px solid #ccc;
+            border-top: 3px solid #ccc;
+            border-bottom: none;
+            background-color: #fff;
+            color: #a0a0a0;
+        }
+        #action-drawer-icon-container:hover{
+            border-top-color: #aaa;
+            height: 17px;
+            line-height: 17px;
+            top: -24px;
+            cursor: pointer;
+            color: #f36e21;
+        }
 
+        #edit-button, #publish-button{
+            width: calc(50% - 14px);
+            font-size: 0.8em;
+            text-transform: capitalize;
+        }
+
+        #admin-actions{
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            top: -280px;
+            height: auto;
+            width: 55px;
+        }
+        #admin-actions div.circle{
+            height: 50px;
+            width: 50px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: none;
+        }
+        #admin-actions div.circle i{
+            line-height: 50px;
+        }
+        #admin-actions div.circle span.invisible{
+            font-family: "Montserrat", sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            margin-top: -10px;
+            padding-top: 10px;
+            display: block;
+        }
+        #admin-actions div.circle:hover{
+            background-color: #f36e21;
+            color: #fff;
+        }
+        #admin-actions div.circle:hover span.invisible{
+            opacity: 1;
+            color: #f36e21;
+        }
+        .admin-action-spacer{
+            height:50px;
+            margin-bottom: 20px;
+        }
+        #back-up{
+            bottom: 105px;
+            right: 42.5px;
+            left: auto;
+            border: none !important;
+            background-color: #fff;
+            color: #0f0f0f;
+        }
         /* -- Responsiveness -- */
-        @media screen and (max-width: 900px){
-            #tiles{
-                padding: 0;
+
+        @media screen and (max-width: 1170px){
+            #signature-card{
+                float: none;
+                margin: 0 auto;
+                display: block;
+                text-align: center ;
             }
-            .tile{
-                width: calc(100% - 15px) !important;
-                line-height: 75px;
-                border-top: 1px solid #ccc;
+        }
+        @media screen and (max-width: 1170px) and (min-width: 890px){
+            #action-cards{
+                width: 100%;
+                float: none;
+                -webkit-column-count: 5; /* Chrome, Safari, Opera */
+                -moz-column-count: 5; /* Firefox */
+                column-count: 5;
+                -moz-column-gap: 0.5em;
+                -webkit-column-gap: 0.5em;
+                column-gap: 0.5em;
+                white-space:nowrap;
+                overflow: hidden;
+            }
+        }
+        @media screen and (max-width: 1020px){
+            #filter-sort{
+                width: 200px;
+                position: relative;
+            }
+            #filter-sort-content-box{
+                width: 180px;
+            }
+            #filter-sort select{
+                width: 177px;
+            }
+            #petitions{
+                width: calc(100% - 200px);
             }
             #petitions-container{
                 -moz-column-count: 2;
                 -webkit-column-count:2;
                 column-count:2;
             }
+            #timeline-container{
+                width:85%;
+                padding-left: 10%;
+            }
+            .timeline-element:before{
+                left: calc(-6vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 6.1vw);
+            }
         }
-        @media screen and (max-width: 600px){
+        @media screen and (max-width: 890px) {
+            #petition-actions {
+                text-align: center;
+            }
+
+            #action-cards {
+                float: none;
+                display: inline-block;
+                margin: 0 auto;
+            }
+
+            #timeline-container {
+                width: 60vw;
+                padding-left: 11%;
+                overflow: auto;
+                overflow-x: visible;
+            }
+
+            .timeline-element:before {
+                left: calc(-8vw + 3px);
+            }
+
+            .timeline-element-dot {
+                left: calc(1px - 8.1vw);
+            }
+            .timeline-element-wrap{
+                width:60vw;
+            }
+            .timeline-element-wrap img{
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
+        @media screen and (max-width: 830px){
+            #action-drawer-icon-container{
+                display: block;
+            }
+            .petition-action-card:not(#signature-card){
+                width: 50%;
+                padding:0;
+                margin:0;
+                float: left !important;
+                text-align: center;
+            }
+            .social-icon{
+                float: none;
+            }
+        }
+        @media screen and (max-width: 800px){
+            #petition-modal .modal-body:after{
+                margin-left:0;
+            }
             #petitions-container{
                 -moz-column-count: 1;
                 -webkit-column-count:1;
                 column-count:1;
+            }
+            .timeline-element-content{
+                font-size: 18px !important;
+            }
+        }
+        @media screen and (max-width: 700px){
+            #sub-landing{
+                padding-top: 110px;
+            }
+            #filter-sort{
+                float: none;
+                right: 0;
+                width: 100%;
+                z-index:100;
+                position: absolute;
+                top:0px;
+                left: 0;
+                padding-top: 10px;
+                border-bottom: 1px solid #ccc;
+                box-shadow: 0px 5px 5px -5px #ccc;
+                -webkit-box-shadow: 0px 5px 5px -5px #ccc;
+                -moz-box-shadow: 0px 5px 5px -5px #ccc;
+                -o-box-shadow: 0px 5px 5px -5px #ccc;
+            }
+            #filter-sort.attached{
+                background-color: #f5f5f5;
+            }
+            .filter-sort-title{
+                display: none;
+            }
+            #filter-sort select{
+                margin-top: 10px;
+            }
+            #filter-sort-content-box{
+                width: calc(100% - 2em);
+                text-align: center;
+            }
+            #filter-sort-content-box ul{
+                display: none;
+            }
+            #mobile-filter{
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+            #sort, #mobile-filter{
+                width: calc(100% - 10px) !important;
+                min-width: 200px;
+            }
+            #petitions{
+                float: none;
+                width: 100%;
+                padding-top:10px;
+            }
+        }
+        @media screen and (max-width: 600px){
+            #petition-modal #timeline-container{
+                padding-bottom: 100px;
+            }
+            #signature-card{
+                width: calc(100% - 20px);
+                max-height: none;
+                height: auto;
+            }
+            #signature-card span{
+                width: 100%;
+                text-align: center;
+                display: block;
+                padding:0;
+            }
+            #sign-petition-button span{
+                padding-top: 7px;
+                padding-bottom: 7px;
+            }
+            #sign-petition-button{
+                width: 100%;
+            }
+            #social-share{
+                margin-top: 10px;
+                margin-right: calc(50% - 95px);
+            }
+            .timeline-element:before{
+                left: calc(-8vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 8.1vw);
+            }
+            .timeline-element-header{
+                text-align: left;
+                padding-top: 0.4em;
+            }
+            .timeline-element-header .text-highlight{
+                display: block;
+                width: 100%;
+                text-align: left
+            }
+        }
+        @media screen and (max-width: 375px) {
+
+            #timeline-container{
+                padding-left: 19%;
+            }
+            .timeline-element:before{
+                left: calc(-13vw + 3px);
+            }
+            .timeline-element-dot{
+                left: calc(1px - 13.2vw);
+            }
+
+        }
+        #loading-petitions{
+            text-align: center;
+        }
+        .load-container * {
+            box-sizing: border-box;
+            -o-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .load-container {
+            margin: 0 auto;
+            max-width: 545px;
+        }
+
+        .load-container ul li{
+            list-style: none;
+        }
+
+        .load-flex-container {
+            display: flex;
+            display: -o-flex;
+            display: -ms-flex;
+            display: -webkit-flex;
+            display: -moz-flex;
+            flex-direction: row;
+            -o-flex-direction: row;
+            -ms-flex-direction: row;
+            -webkit-flex-direction: row;
+            -moz-flex-direction: row;
+            flex-wrap: wrap;
+            -o-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            -webkit-flex-wrap: wrap;
+            -moz-flex-wrap: wrap;
+            justify-content: space-around;
+            padding-left: 0;
+            margin-top: 0;
+            padding-top: 40px;
+            margin-bottom: 0;
+        }
+        .load-flex-container li {
+            height: 97px;
+            width: 97px;
+            margin: 3px 19px;
+            margin-top: 6px;
+            position: relative;
+            text-align: center;
+        }
+
+        .load-loading, .load-loading:after, .load-loading:before {
+            display: inline-block;
+            position: relative;
+            width: 5px;
+            height: 49px;
+            background: #f36e21;
+            margin-top: 5px;
+            border-radius: 975px;
+            -o-border-radius: 975px;
+            -ms-border-radius: 975px;
+            -webkit-border-radius: 975px;
+            -moz-border-radius: 975px;
+            animation: load-upDown2 1.15s ease infinite;
+            -o-animation: load-upDown2 1.15s ease infinite;
+            -ms-animation: load-upDown2 1.15s ease infinite;
+            -webkit-animation: load-upDown2 1.15s ease infinite;
+            -moz-animation: load-upDown2 1.15s ease infinite;
+            animation-direction: alternate;
+            -o-animation-direction: alternate;
+            -ms-animation-direction: alternate;
+            -webkit-animation-direction: alternate;
+            -moz-animation-direction: alternate;
+            animation-delay: 0.29s;
+            -o-animation-delay: 0.29s;
+            -ms-animation-delay: 0.29s;
+            -webkit-animation-delay: 0.29s;
+            -moz-animation-delay: 0.29s;
+        }
+        .load-loading:after, .load-loading:before {
+            position: absolute;
+            content: '';
+            animation: load-upDown 1.15s ease infinite;
+            -o-animation: load-upDown 1.15s ease infinite;
+            -ms-animation: load-upDown 1.15s ease infinite;
+            -webkit-animation: load-upDown 1.15s ease infinite;
+            -moz-animation: load-upDown 1.15s ease infinite;
+            animation-direction: alternate;
+            -o-animation-direction: alternate;
+            -ms-animation-direction: alternate;
+            -webkit-animation-direction: alternate;
+            -moz-animation-direction: alternate;
+        }
+        .load-loading:before {
+            left: -10px;
+        }
+        .load-loading:after {
+            left: 10px;
+            animation-delay: 0.58s;
+            -o-animation-delay: 0.58s;
+            -ms-animation-delay: 0.58s;
+            -webkit-animation-delay: 0.58s;
+            -moz-animation-delay: 0.58s;
+        }
+
+        @keyframes load-upDown {
+            from {
+                transform: translateY(19px);
+            }
+            to {
+                transform: translateY(-19px);
+            }
+        }
+        @-o-keyframes load-upDown {
+            from {
+                -o-transform: translateY(19px);
+            }
+            to {
+                -o-transform: translateY(-19px);
+            }
+        }
+        @-ms-keyframes load-upDown {
+            from {
+                -ms-transform: translateY(19px);
+            }
+            to {
+                -ms-transform: translateY(-19px);
+            }
+        }
+        @-webkit-keyframes load-upDown {
+            from {
+                -webkit-transform: translateY(19px);
+            }
+            to {
+                -webkit-transform: translateY(-19px);
+            }
+        }
+        @-moz-keyframes load-upDown {
+            from {
+                -moz-transform: translateY(19px);
+            }
+            to {
+                -moz-transform: translateY(-19px);
+            }
+        }
+        @keyframes load-upDown2 {
+            from {
+                transform: translateY(29px);
+            }
+            to {
+                transform: translateY(-19px);
+            }
+        }
+        @-o-keyframes load-upDown2 {
+            from {
+                -o-transform: translateY(29px);
+            }
+            to {
+                -o-transform: translateY(-19px);
+            }
+        }
+        @-ms-keyframes load-upDown2 {
+            from {
+                -ms-transform: translateY(29px);
+            }
+            to {
+                -ms-transform: translateY(-19px);
+            }
+        }
+        @-webkit-keyframes load-upDown2 {
+            from {
+                -webkit-transform: translateY(29px);
+            }
+            to {
+                -webkit-transform: translateY(-19px);
+            }
+        }
+        @-moz-keyframes load-upDown2 {
+            from {
+                -moz-transform: translateY(29px);
+            }
+            to {
+                -moz-transform: translateY(-19px);
             }
         }
     </style>
@@ -479,40 +1042,112 @@
 </head>
 <body>
 
+<div id="wrapper">
 {% include 'header.html' %}
 <div id="petition-modal" class="hidden">
     <div class="modal">
         <div class="modal-overlay hidden" @click="closePetition()"></div>
         <div class="modal-container hidden">
             <div class="modal-header overflow-hidden material-shadow">
-                <h2 class="inline-block">{[ petition.title ]}</h2>
+                <h2 class="inline-block text-highlight">{[ petition.title ]}</h2>
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
             </div>
-            <div class="modal-body relative">
+            <div class="modal-body relative block">
                 <div id="timeline-container">
                     <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
-                        <div class="timeline-element-arrow"></div>
-                        <div class="timeline-element-body">
-                            <h4 class="timeline-element-header"><span>{[ element.type ]}</span> {[ element.date ]}</h4>
-                            <div class="timeline-element-content" v-html="element.content"></div>
-                            <span class="timeline-element-author" v-if="element.type != 'description'">{[ element.author ]}</span>
+                        <div class="timeline-element-wrap">
+                            <div class="timeline-element-arrow-container">
+                                <div class="timeline-element-arrow" v-if="element.type != 'created'"></div>
+                                <div class="timeline-element-dot circle"></div>
+                            </div>
+                            <div class="timeline-element-body" v-if="element.type != 'created'">
+                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span><span v-if="element.date==0">Today</span><span v-else>{[ element.date ]} Day<span v-if="element.date>1">s</span> Ago</span></h4>
+                                <div class="timeline-element-content" v-html="element.content"></div>
+                            </div>
+                            <div class="timeline-element-body" style="padding-top:14px;" v-else>
+                                <span> Created by {[ element.author ]} on {[ petition.timestamp ]}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer overflow-hidden relative material-shadow">
+            <div class="modal-footer overflow-hidden relative material-shadow transition" data-hidden="false">
                 <!-- This section changes based on the state the petition is in. -->
-
                 <!-- Petition is in progress, show the progress tracking and sharing features. -->
-                <div id="petition-actions overflow-hidden" v-if="petition.status == 1">
-                    <div class="petition-progress-container">
+                <div id="petition-actions" class="overflow-hidden">
+                    <div v-if="petition.status == 1">
+                        <div id="signature-card" class="petition-action-card left margin-left">
+                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' {% if user.profile %} || ({{ user.profile.affiliation }} !== 1){% endif %}">
+                                <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/?next=/?p='+getUrl('p')" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
+                                {% if user.profile %}
+                                    <!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.affiliation }} !== 1)">Only students may sign petitions</span>
+                                {% endif %}
+                                <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
+                                <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
+                                <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
+                                <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
+                            </button>
+                            <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
+                        </div>
+                        <div id="action-drawer-icon-container" class="transition">
+                            <i class="material-icons">keyboard_arrow_down</i>
+                        </div>
+                        {% if user.first_name and user.is_staff %}
+                            <div id="admin-actions">
+                                <div v-if="!petition.in_progress && !petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
+                                    <i class="material-icons">check</i>
+                                    <span class="invisible transition">Charged</span>
+                                </div>
+                                <div v-else class="admin-action-spacer"></div>
+                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
+                                    <i class="material-icons">update</i>
+                                    <span class="invisible transition">Update</span>
+                                </div>
+                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
+                                    <i class="material-icons">chat</i>
+                                    <span class="invisible transition">Respond</span>
+                                </div>
+                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="delete">
+                                    <i class="material-icons">delete</i>
+                                    <span class="invisible transition">Delete</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div id="action-cards" class="block overflow-hidden right">
+                            <div id="social-share" class="right overflow-hidden transition petition-action-card">
+                                <h3>Share</h3>
+                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Expires</h3>
+                                <span class="alternate-font">{[ petition.expires ]}</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Submitted</h3>
+                                <span class="alternate-font">{[ petition.timestamp ]}</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Status</h3>
+                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-else-if="petition.response">Responded</span>
+                                <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
+                                <span class="alternate-font" v-else-if="petition.expired">Expired</span>
+                                <span class="alternate-font" v-else>In Progress</span>
+                            </div>
+                            <div class="petition-action-card margin-right padding-right right">
+                                <h3>Discuss</h3>
+                                <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                            </div>
+                        </div>
                         <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
-                        <span class="petition-progress-label"> {[ petition.signatures ]} / 200 Signatures</span>
                     </div>
-                    <button id="sign-petition-button" class="material material-button material-shadow transition left" v-if="'{{ user.first_name }}' != ''">Sign This Petition</button>
-                    <div class="right overflow-hidden">
-                        <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                    <div v-else-if="petition.status == 0">
+                        <div class="ninety-width">
+                            <div class="padding-bottom">You are previewing this petition</div>
+                            <button id="edit-button" onclick="window.location.href='/petition/'+getUrl('p')" class="material material-button material-shadow transition left minimal">Still Need Work? Edit it.</button>
+                            <button id="publish-button" class="material material-button material-shadow transition left">Look good? Publish it!</button>
+                        </div>
                     </div>
                 </div>
                 <!-- End Petition in progress features. -->
@@ -523,107 +1158,241 @@
 </div>
 
 <main class="full-width">
+
     <a id="landing-marker"></a>
     <section id="landing" class="parallax-container">
         <div id="parallax-slideshow" class="full-width">
             <div class="slideshow-container">
-                <div id="c1" class="slide full-width" data-backgroundimage="{% static 'images/carousel_1.png' %}"></div>
-                <div id="c2" class="slide full-width" data-backgroundimage="{% static 'images/carousel_2.png' %}"></div>
-                <div id="c3" class="slide full-width" data-backgroundimage="{% static 'images/carousel_3.png' %}"></div>
+                <div v-for="(image, index) in images" v-if="index < limit || limit == 0" :id="id_pre+(index+1)" class="slide full-width" :data-backgroundimage="image.url"></div>
             </div>
         </div>
         <div id="parallax-overlay" class="full-width">
             <h1>Make Your Mark</h1>
             <h3>Create and vote on petitions.<br />Receive official responses from Student Government.</h3>
+            <label id="search-container" for="search-term" class="full-width cursor">
+                <div class="material-icon-container">
+                    <i class="material-icons">search</i>
+                    <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
+                    <span class="">Search Petitions</span>
+                </div>
+            </label>
         </div>
     </section>
-    <section id="sub-landing">
-        <h1>Explore Petitions</h1>
-        <div id="tiles" class="tile-container full-width three-tiles">
-            <div id="recognised-tile" class="tile transition">
-                <span>in progress</span>
-            </div>
-            <div id="search-tile" class="tile transition">
-                <label for="search-term" class="full-width">
-                    <div class="material-icon-container">
-                        <i class="material-icons">search</i>
-                        <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                        <span class="">Search</span>
-                    </div>
-                </label>
-            </div>
-            <div id="responded-tile" class="tile transition" onclick="window.location.href = 'petition/responded/'">
-                <span>responded</span>
-            </div>
-        </div>
-    </section>
-    <div id="tags-container">
-        <h3>Sort By:</h3>
-        <select id="sort" data-filter="all">
-            <option value="most recent" selected="selected">Most Recent</option>
-            <option value="most signatures">Most Signatures</option>
-            <option value="last signed">Last Signed</option>
-        </select>
-        <nav id="tags">
-            <h5>Tags:</h5>
-            <ul class="list full-width">
-                <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
-                {% for tag in tags %}
-                    <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
-                {% endfor %}
-            </ul>
-        </nav>
-    </div>
-    <section id="petitions">
-        <div v-if="list.length > 0" id="petitions-container">
-            <!--      Vus.js template for listing petitions      -->
-            <article v-for="petition in list" class="petition material-shadow material-hover transition" :data-petition-id="petition.id">
-                <h4 class="petition-signatures">
-                    {[ petition.signatures ]}
-                    <span v-if="petition.signatures == 1"> Signature</span>
-                    <span v-else> Signatures</span>
-                </h4>
-                <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
-                <ul>
-                    <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
+
+    <section id="sub-landing" class="relative">
+
+        <nav id="filter-sort" class="left attach" data-top="91" data-left="0">
+            <div id="filter-sort-content-box">
+                <h3 class="filter-sort-title">Sort By:</h3>
+                <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
+                    <optgroup label="Sort By">
+                        <option value="most recent" selected="selected">Most Recent</option>
+                        <option value="most signatures">Most Signatures</option>
+                        <option value="last signed">Last Signed</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="responded">Responded</option>
+                        <option value="archived">Archived</option>
+                    </optgroup>
+                </select>
+                <h3 class="filter-sort-title">Filter By Tag:</h3>
+                <ul class="list full-width">
+                    <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
+                    {% for tag in tags %}
+                        <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
+                    {% endfor %}
                 </ul>
-            </article>
-            <!--      End Vue.js template      -->
+                <select id="mobile-filter" class="material-shadow material-hover cursor transition">
+                    <optgroup label="Filter By">
+                        <option value="all">All</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.name }}</option>
+                        {% endfor %}
+                    </optgroup>
+                </select>
+            </div>
+        </nav>
+
+        <div id="petitions" class="right">
+            <div v-if="loading" id="loading-petitions">
+                <div class="load-container">
+                    <ul class="load-flex-container">
+                        <li>
+                            <span class="load-loading"></span>
+                        </li>
+                    </ul>
+                </div>
+                Loading Petitions...
+            </div>
+            <div class="block padding text-center" v-if="list.length == 0 && !loading">
+                <span class="padding-top">No petitions fit that query!</span>
+            </div>
+            <div v-if="list.length > 0" id="petitions-container">
+                <article v-for="petition in list" v-if="!petition.deleted" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" :data-petition-id="petition.id">
+                    <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                    <div class="petition-body">
+                        <h4 class="petition-signatures">
+                            {[ petition.signatures ]}
+                            <span v-if="petition.signatures == 1"> Signature</span>
+                            <span v-else> Signatures</span>
+                            <span v-if="petition.isSigned"> | <span class="bold">Signed</span></span>
+                            <span v-if="petition.response" class="right">Responded</span>
+                            <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
+                            <span v-else-if="petition.in_progress" class="right">In Progress</span>
+                            <!--<span class="right">-->
+                                <!--<i v-if="petition.response" class="status-icon material-icons md-18" title="This petition has received an official response.">done</i>-->
+                                <!--<i v-else-if="petition.updates.length > 0" class="status-icon material-icons md-18" title="This petition has been updated by a SG senator.">message</i>-->
+                                <!--<i v-else-if="petition.in_progress" class="status-icon material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>-->
+                            <!--</span>-->
+                            <!-- Signature icon by Icons8 -->
+                            <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">-->
+                        </h4>
+                        <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
+                        <ul>
+                            <li v-for="tag in petition.tags" :data-tag="tag.id" class="tag material-shadow transition">{[ tag.name ]}</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
         </div>
+
     </section>
+
 </main>
 
-{% if user.first_name %}
+{% if user.first_name and user.profile.affiliation == 1 %}
     <button id="new-petition" class="cursor circle background-highlight bright-text light material-hover transition"><span class="material-icon-container"><i class="material-icons">add</i></span></button>
     <script>
         $(document).ready(function(){
             $("#new-petition").click(function(){
-                console.log("-----------\nCreating new petition\n");
-                $.post("/create");
+                $.post("/petition/create/",{"csrfmiddlewaretoken":get_csrf()},function(r){
+                    var petition = Number(r);
+                    if(!isNaN(petition)){
+                        window.location.href = "/petition/"+petition;
+                    }
+                });
             });
+        });
+    </script>
+{% else %}
+    <script>
+        $(document).ready(function(){
+            $("#back-up").css({"bottom":"42.5px"});
+        });
+    </script>
+{% endif %}
+{% if user.is_staff %}
+    <script>
+        $(document).on("click","#admin-actions .circle",function(e){
+            var clicked = $(e.target).closest(".circle");
+            var action = clicked.data("admin-control");
+            function initTinyMCE(){
+                return tinymce.init({
+                    selector: '#admin-edit',
+                    inline: false,
+                    menubar: false,
+                    plugins: "link",
+                    toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat"
+                });
+            }
+            switch(action){
+                case "update":
+                    function updateLaunch(){
+                        // Build the update modal
+                        window.updateModal = new Modal({
+                            icon: false,
+                            headerClass:"background-highlight bright-text",
+                            headerContent: "<h2>Add Update</h2>",
+                            bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
+                            bodyButtons:[
+                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.updateModal.close();})']
+                            ],
+                            closeCallback: function(){
+                                tinymce.remove("#admin-edit");
+                            }
+                        });
+                        updateModal.open();
+                        return initTinyMCE();
+                    }
+                    return updateLaunch();
+                case "respond":
+                    function responseLaunch(){
+                        // Build the update modal
+                        window.responseModal = new Modal({
+                            icon: false,
+                            headerClass:"background-highlight bright-text",
+                            headerContent: "<h2>Respond to this petition</h2>",
+                            bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
+                            bodyButtons:[
+                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.responseModal.close();})']
+                            ],
+                            closeCallback: function(){
+                                tinymce.remove("#admin-edit");
+                            }
+                        });
+                        responseModal.open();
+                        return initTinyMCE();
+                    }
+                    return responseLaunch();
+                case "delete":
+                    function deleteLaunch(){
+                        // Build the update modal
+                        window.deleteModal = new Modal({
+                            icon: false,
+                            headerClass:"background-highlight bright-text",
+                            headerContent: "<h2>Un-publish this petition.</h2>",
+                            bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
+                            bodyButtons:[
+                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                            ],
+                            closeCallback: function(){
+                                tinymce.remove("#admin-edit");
+                            }
+                        });
+                        deleteModal.open();
+                        return initTinyMCE();
+                    }
+                    return deleteLaunch();
+                case "mark_in_progress":
+                    update("mark-in-progress",false,getUrl("p"));
+                    return true;
+                default:
+                    throw "Error when dispatching an admin control action.";
+            }
         });
     </script>
 {% endif %}
 
-<a id="back-up" href="#landing-marker" class="padding transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
-
+<a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
+</div>
 {% csrf_token %}
 </body>
 <script>
-    /* Initialize the Vue.js wrapper for the petitions.
+    /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
      *   data:
      *      - list: the list of petitions and all of their data
      *      - map: the mapping of a petitions ID to its index in the list of petitions.
      */
+    /**
+     * "petitions" holds all of the data for all petitions.
+     **/
     var petitions = new Vue({
         el: "#petitions",
         data: {
+            loading: true,
             list: [],
             map: {}
         },
         delimiters: ['{[', ']}']
     });
+    var url = window.location.hostname;
+    /**
+     * "modalData" defines the state for the modal popup.
+     * Social buttons may be added / configured here.
+     **/
     var modalData = new Vue({
         el: "#petition-modal",
         data:{
@@ -632,34 +1401,35 @@
             social:[
                 {
                     name: "FaceBook",
-                    imgURL:"data:image/png;base64,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",
-                    link: ""
+                    imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDQzMC4xMTMgNDMwLjExNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDMwLjExMyA0MzAuMTE0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggaWQ9IkZhY2Vib29rIiBkPSJNMTU4LjA4MSw4My4zYzAsMTAuODM5LDAsNTkuMjE4LDAsNTkuMjE4aC00My4zODV2NzIuNDEyaDQzLjM4NXYyMTUuMTgzaDg5LjEyMlYyMTQuOTM2aDU5LjgwNSAgIGMwLDAsNS42MDEtMzQuNzIxLDguMzE2LTcyLjY4NWMtNy43ODQsMC02Ny43ODQsMC02Ny43ODQsMHMwLTQyLjEyNywwLTQ5LjUxMWMwLTcuNCw5LjcxNy0xNy4zNTQsMTkuMzIxLTE3LjM1NCAgIGM5LjU4NiwwLDI5LjgxOCwwLDQ4LjU1NywwYzAtOS44NTksMC00My45MjQsMC03NS4zODVjLTI1LjAxNiwwLTUzLjQ3NiwwLTY2LjAyMSwwQzE1NS44NzgtMC4wMDQsMTU4LjA4MSw3Mi40OCwxNTguMDgxLDgzLjN6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==",
+                    link: "https://www.facebook.com/sharer.php?u=https://"+url+"?p="
                 },
                 {
                     name: "Twitter",
-                    imgURL:"data:image/png;base64,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",
-                    link: ""
-                },
-                {
-                    name: "Reddit",
-                    imgURL:"data:image/png;base64,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",
-                    link: ""
+                    imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDQzMC4xMTcgNDMwLjExNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDMwLjExNyA0MzAuMTE3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggaWQ9IlR3aXR0ZXJfX3gyOF9hbHRfeDI5XyIgZD0iTTM4MS4zODQsMTk4LjYzOWMyNC4xNTctMS45OTMsNDAuNTQzLTEyLjk3NSw0Ni44NDktMjcuODc2ICAgYy04LjcxNCw1LjM1My0zNS43NjQsMTEuMTg5LTUwLjcwMyw1LjYzMWMtMC43MzItMy41MS0xLjU1LTYuODQ0LTIuMzUzLTkuODU0Yy0xMS4zODMtNDEuNzk4LTUwLjM1Ny03NS40NzItOTEuMTk0LTcxLjQwNCAgIGMzLjMwNC0xLjMzNCw2LjY1NS0yLjU3Niw5Ljk5Ni0zLjY5MWM0LjQ5NS0xLjYxLDMwLjg2OC01LjkwMSwyNi43MTUtMTUuMjFjLTMuNS04LjE4OC0zNS43MjIsNi4xODgtNDEuNzg5LDguMDY3ICAgYzguMDA5LTMuMDEyLDIxLjI1NC04LjE5MywyMi42NzMtMTcuMzk2Yy0xMi4yNywxLjY4My0yNC4zMTUsNy40ODQtMzMuNjIyLDE1LjkxOWMzLjM2LTMuNjE3LDUuOTA5LTguMDI1LDYuNDUtMTIuNzY5ICAgQzI0MS42OCw5MC45NjMsMjIyLjU2MywxMzMuMTEzLDIwNy4wOTIsMTc0Yy0xMi4xNDgtMTEuNzczLTIyLjkxNS0yMS4wNDQtMzIuNTc0LTI2LjE5MiAgIGMtMjcuMDk3LTE0LjUzMS01OS40OTYtMjkuNjkyLTExMC4zNTUtNDguNTcyYy0xLjU2MSwxNi44MjcsOC4zMjIsMzkuMjAxLDM2LjgsNTQuMDhjLTYuMTctMC44MjYtMTcuNDUzLDEuMDE3LTI2LjQ3NywzLjE3OCAgIGMzLjY3NSwxOS4yNzcsMTUuNjc3LDM1LjE1OSw0OC4xNjksNDIuODM5Yy0xNC44NDksMC45OC0yMi41MjMsNC4zNTktMjkuNDc4LDExLjY0MmM2Ljc2MywxMy40MDcsMjMuMjY2LDI5LjE4Niw1Mi45NTMsMjUuOTQ3ICAgYy0zMy4wMDYsMTQuMjI2LTEzLjQ1OCw0MC41NzEsMTMuMzk5LDM2LjY0MkMxMTMuNzEzLDMyMC44ODcsNDEuNDc5LDMxNy40MDksMCwyNzcuODI4ICAgYzEwOC4yOTksMTQ3LjU3MiwzNDMuNzE2LDg3LjI3NCwzNzguNzk5LTU0Ljg2NmMyNi4yODUsMC4yMjQsNDEuNzM3LTkuMTA1LDUxLjMxOC0xOS4zOSAgIEM0MTQuOTczLDIwNi4xNDIsMzkzLjAyMywyMDMuNDg2LDM4MS4zODQsMTk4LjYzOXoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K",
+                    link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://"+url+"?p=?p="
                 },
                 {
                     name: "LinkedIn",
-                    imgURL:"data:image/png;base64,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",
-                    link: ""
+                    imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDQzMC4xMTcgNDMwLjExNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDMwLjExNyA0MzAuMTE3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggaWQ9IkxpbmtlZEluIiBkPSJNNDMwLjExNywyNjEuNTQzVjQyMC41NmgtOTIuMTg4VjI3Mi4xOTNjMC0zNy4yNzEtMTMuMzM0LTYyLjcwNy00Ni43MDMtNjIuNzA3ICAgYy0yNS40NzMsMC00MC42MzIsMTcuMTQyLTQ3LjMwMSwzMy43MjRjLTIuNDMyLDUuOTI4LTMuMDU4LDE0LjE3OS0zLjA1OCwyMi40NzdWNDIwLjU2aC05Mi4yMTljMCwwLDEuMjQyLTI1MS4yODUsMC0yNzcuMzJoOTIuMjEgICB2MzkuMzA5Yy0wLjE4NywwLjI5NC0wLjQzLDAuNjExLTAuNjA2LDAuODk2aDAuNjA2di0wLjg5NmMxMi4yNTEtMTguODY5LDM0LjEzLTQ1LjgyNCw4My4xMDItNDUuODI0ICAgQzM4NC42MzMsMTM2LjcyNCw0MzAuMTE3LDE3Ni4zNjEsNDMwLjExNywyNjEuNTQzeiBNNTIuMTgzLDkuNTU4QzIwLjYzNSw5LjU1OCwwLDMwLjI1MSwwLDU3LjQ2MyAgIGMwLDI2LjYxOSwyMC4wMzgsNDcuOTQsNTAuOTU5LDQ3Ljk0aDAuNjE2YzMyLjE1OSwwLDUyLjE1OS0yMS4zMTcsNTIuMTU5LTQ3Ljk0QzEwMy4xMjgsMzAuMjUxLDgzLjczNCw5LjU1OCw1Mi4xODMsOS41NTh6ICAgIE01LjQ3Nyw0MjAuNTZoOTIuMTg0di0yNzcuMzJINS40NzdWNDIwLjU2eiIgZmlsbD0iIzAwMDAwMCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=",
+                    link: "https://www.linkedin.com/shareArticle?title=&url=https://"+url+"?p="
+                },
+                {
+                    name: "Reddit",
+                    imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDQzMC4xMTcgNDMwLjExNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDMwLjExNyA0MzAuMTE3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggaWQ9InJlZGRpdCIgZD0iTTMwNy41MjMsMjMxLjA2MmMxLjExLDIuODM4LDEuNjE0LDUuNzY5LDEuNjE0LDguNjgxYzAsNS44NjItMi4wMjUsMTEuNTU2LTUuNDIzLDE2LjIwNCAgIGMtMy4zNiw0LjU5My04LjEyMSw4LjE1OC0xMy43MjIsOS43MjdoMC4wMWMtMC4wNDcsMC4wMTktMC4wOTQsMC4wMTktMC4xMTcsMC4wMzdjLTAuMDIzLDAtMC4wNjEsMC4wMTktMC4wNzksMC4wMTkgICBjLTIuNjIzLDAuODk2LTUuMzEyLDEuMzE2LTcuOTgsMS4zMTZjLTYuMjU0LDAtMTIuMzk2LTIuMjU0LTE3LjMwNi02LjA5NmMtNC44NzItMy44MjYtOC41Ni05LjMyNC05LjcxNy0xNS44NDVoLTAuMDEgICBjMC0wLjAxOSwwLTAuMDQyLTAuMDA5LTAuMDY5YzAtMC4wMTksMC0wLjAzOC0wLjAxOS0wLjA2NWgwLjAxOWMtMC4zNjQtMS42ODEtMC41NTEtMy4zNi0wLjU1MS01LjAyMSAgIGMwLTUuNjQ3LDEuOTIzLTExLjA3LDUuMDk3LTE1LjU1MWMzLjE2NC00LjQ1Myw3LjYyNi03Ljk5LDEyLjg0OC05LjgxMWMwLjAxOSwwLDAuMDM4LTAuMDEsMC4wMzgtMC4wMSAgIGMwLjAyNywwLDAuMDI3LTAuMDI3LDAuMDUxLTAuMDI3YzIuOTU0LTEuMDkyLDYuMDcyLTEuNjM5LDkuMTU3LTEuNjM5YzUuNjE5LDAsMTEuMTU0LDEuNzA0LDE1LjgyMSw0LjgyMSAgIGM0LjYxMSwzLjA2Niw4LjM1NCw3LjU2MSwxMC4yMywxMy4xNDNjMC4wMTksMC4wMzcsMC4wMTksMC4wNywwLjAzNywwLjEwM2MwLDAuMDM3LDAuMDE5LDAuMDU3LDAuMDM3LDAuMDg0SDMwNy41MjN6ICAgIE0yOTAuMzI5LDMwMC4zNDljLTIuMjAyLTEuNDI4LTQuNzUxLTIuMjkxLTcuNDQ4LTIuMjkxYy0yLjE3NSwwLTQuNDM0LDAuNjIxLTYuNDQ1LDEuOTU1bDAsMCAgIGMtMTkuMDA0LDExLjM0Mi00MS4zNTUsMTcuNTU4LTYzLjU0NywxNy41NThjLTE2LjY1LDAtMzMuMTk5LTMuNTE0LTQ4LjE5Mi0xMC44NzlsLTAuMDc3LTAuMDM3bC0wLjA3NS0wLjAyOCAgIGMtMi4yNjEtMC45MjQtNC44MzctMi44ODktNy42NDctNC43NmMtMS40MjgtMC45MjUtMi45MTktMS44NDQtNC41NzQtMi41MjFjLTEuNjMzLTAuNjk1LTMuNDQ3LTEuMTgxLTUuMzg2LTEuMTgxICAgYy0xLjYwNSwwLTMuMjkyLDAuMzU5LTQuOTU3LDEuMTE1Yy0wLjA4NiwwLjAzMy0wLjE2OCwwLjA2NS0wLjI1MiwwLjA5OGgwLjAwOWMtMi42MTYsMC45OTktNC42NiwyLjgyOS01Ljk3NCw0Ljk5NCAgIGMtMS4zNzIsMi4yMy0yLjA0Niw0LjgyNi0yLjA0Niw3LjQxMWMwLDIuMzM0LDAuNTUxLDQuNjY3LDEuNjkxLDYuNzg2YzEuMDg1LDIuMDA3LDIuNzU0LDMuNzYyLDQuOTM4LDQuOTM4ICAgYzIxLjQyOSwxNC40NTQsNDYuNjYyLDIxLjAwMiw3MS45OTIsMjAuOTc5YzIyLjgzOCwwLDQ1LjgxNC01LjI4Nyw2Ni4yNy0xNC45MTFsMC4xMDctMC4wNjVsMC4xMDMtMC4wNTYgICBjMi42OTctMS41OTcsNi4yODItMy4wMjksOS42NjEtNS4xMTVjMS42NzEtMS4wNjQsMy4zMDQtMi4yOTYsNC43MDQtMy44OTdjMS40LTEuNTkxLDIuNTI1LTMuNTUxLDMuMTYtNS44NzV2LTAuMDEgICBjMC4yNjYtMS4wMjYsMC4zOTItMi4wMjUsMC4zOTItMy4wMjRjMC0xLjg5OS0wLjQ2Ny0zLjcwMS0xLjI0MS01LjMyQzI5NC4zNjEsMzAzLjc3NSwyOTIuNTA0LDMwMS43NzgsMjkwLjMyOSwzMDAuMzQ5eiAgICBNMTM5Ljg3NSwyNjUuNTg5YzAuMDM3LDAsMC4wODYsMC4wMTQsMC4xMjgsMC4wMzdjMi43MzUsMC45OTksNS41NTQsMS40OTMsOC4zNDUsMS40OTNjNi45NjMsMCwxMy43My0yLjg1MiwxOC44NTMtNy41ICAgYzUuMTE1LTQuNjYyLDguNjE4LTExLjI1Nyw4LjYxOC0xOC43NzVjMC0wLjE5NiwwLTAuMzkyLTAuMDA5LTAuNjI1YzAuMDE5LTAuMzM2LDAuMDI4LTAuNzA1LDAuMDI4LTEuMDgzICAgYzAtNy40NTgtMy40NTYtMTQuMDgtOC41MjItMTguNzYyYy01LjA4NS00LjY4Ni0xMS44MzYtNy41NTEtMTguODI1LTcuNTUxYy0xLjg2NywwLTMuNzY5LDAuMjE5LTUuNjI4LDAuNjUzICAgYy0wLjAyOCwwLTAuMDQ5LDAuMDA5LTAuMDc3LDAuMDA5YzAsMC0wLjAxOSwwLTAuMDI4LDBjLTkuMjUyLDEuOTM3LTE3LjM3Myw4LjgwMy0yMC4zNywxOC4yNDhsMCwwdjAuMDEgICBjMCwwLjAxOS0wLjAwOSwwLjAzNy0wLjAwOSwwLjAzN2MtMC44NjEsMi41ODYtMS4yNjIsNS4yNTUtMS4yNjIsNy44OTZjMCw1Ljc4NywxLjkxMywxMS40MjYsNS4yMTEsMTYuMDY0ICAgYzMuMjY5LDQuNTYsNy44OTQsOC4xNDUsMTMuNDQ4LDkuODE5QzEzOS44MTYsMjY1LjU2MSwxMzkuODM1LDI2NS41NzEsMTM5Ljg3NSwyNjUuNTg5eiBNNDMwLjAzMywxOTguMDk0djAuMDM4ICAgYzAuMDY2LDAuOTQsMC4wODQsMS44NzgsMC4wODQsMi44MWMwLDEwLjQ0Ny0zLjM1MSwyMC40OTMtOC45NDEsMjkuMDE2Yy01LjIxOCw3Ljk3Ni0xMi40MTQsMTQuNjQ5LTIwLjcwMywxOS4xNzcgICBjMC41MzIsNC4xNTgsMC44NCw4LjM0OSwwLjg0LDEyLjUyNmMtMC4wMSwyMi40OTUtNy43NjYsNDQuNjA3LTIxLjI3Miw2Mi4zMjl2MC4wMDloLTAuMDI4ICAgYy0yNC45NjksMzMuMjE2LTYzLjMxMyw1Mi44MDQtMTAyLjAzMSw2Mi42ODRoLTAuMDFsLTAuMDI3LDAuMDIzYy0yMC42NDcsNS4wMTMtNDEuOTM4LDcuNTc0LTYzLjIyMyw3LjU3NCAgIGMtMzEuNzI5LDAtNjMuNDMzLTUuNzIyLTkzLjAxOC0xNy41ODVsLTAuMDA5LTAuMDI4aC0wLjAyOGMtMzAuNjcyLTEyLjY0My01OS44OTctMzIuNzM5LTc3LjgxOS02Mi4xODQgICBjLTkuNjQyLTE1LjcxLTE0LjkzNS0zNC4xNDEtMTQuOTM1LTUyLjY1OWMwLTQuMTksMC4yODMtOC4zODcsMC44NDMtMTIuNTM2Yy04LjA3Mi00LjU0NS0xNS4wNjMtMTAuOTktMjAuMjU1LTE4LjY4NyAgIGMtNS41NDItOC4yNjYtOS4wNTYtMTcuOTUtOS41LTI4LjE4N3YtMC4wNHYtMC4wMzd2LTAuMDgyYzAuMDA5LTE0LjMzNyw2LjIzNy0yNy45MTgsMTUuOTE1LTM3LjkzMiAgIGM5LjY3Ny0xMC4wMTEsMjIuODk2LTE2LjU1NCwzNy4wNzUtMTYuNTU0YzAuMTk2LDAsMC4zOTIsMCwwLjU4OCwwYzEuNDg3LTAuMTAxLDIuOTg3LTAuMTU5LDQuNDg4LTAuMTU5ICAgYzcuMTIyLDAsMTQuMjYsMS4xNTMsMjEuMDM5LDMuNzUybDAuMDM3LDAuMDI4bDAuMDM4LDAuMDEyYzUuNzg3LDIuNDM3LDExLjUzNyw1LjM3NywxNi42NjIsOS40NDkgICBjMS42NjEtMC44NzEsMy40NzItMS44NTEsNS41MDQtMi42MjVjMzEuMDY0LTE4LjM5NSw2Ny4xNzEtMjUuNDkxLDEwMi4zNTgtMjcuNTM4YzAuMzA2LTE3LjQzMSwyLjQ0OC0zNS42OCwxMC45NDktNTEuNjUgICBjNy4wOC0xMy4yNjksMTkuMzY5LTIzLjU5OSwzNC0yNy4xNzlsMC4wNjEtMC4wM2wwLjA3OS0wLjAwOWM1LjU3My0xLjA3OCwxMS4xOTItMS41NzUsMTYuNzc0LTEuNTc1ICAgYzE0Ljg2OSwwLDI5LjU2MSwzLjUyMSw0My4zMSw5LjAxN2M2LjA4Ni05LjE4NSwxNC43NzYtMTYuMzU0LDI0Ljk3LTIwLjM3NWwwLjA5OC0wLjA1NmwwLjA5OC0wLjAzNyAgIGM1Ljk4My0xLjg2NCwxMi4zMDMtMi45NTQsMTguNjQ2LTIuOTU0YzYuNjkyLDAsMTMuNDM3LDEuMjIzLDE5Ljc1Niw0LjA0NnYtMC4wMjNjMC4wMDksMC4wMjMsMC4wMTksMC4wMjMsMC4wMTksMC4wMjMgICBjMC4wNDcsMC4wMTYsMC4wODQsMC4wNDQsMC4xMTYsMC4wNDRjOS4wNTksMy40ODksMTYuNzI3LDkuOTM3LDIyLjE2NCwxNy45NWM1LjQ0Miw4LjA0OCw4LjY0NCwxNy42ODgsOC42NDQsMjcuNTk5ICAgYzAsMS44MjctMC4xMDMsMy42NTctMC4zMTcsNS40ODlsLTAuMDE5LDAuMDM3YzAsMC4wMjgsMCwwLjA2OC0wLjAxLDAuMDk2Yy0xLjA2MywxMi44MDktNy41NTEsMjQuMDQ3LTE2LjczNiwzMi4wNjMgICBjLTkuMjQsOC4wNDgtMjEuMjA3LDEyLjkwOS0zMy40OSwxMi45MDljLTEuOTcsMC0zLjk1OC0wLjExLTUuOTM3LTAuMzc0Yy0xMi4xODItMC45MzEtMjMuNTQxLTYuODI2LTMxLjg4Ni0xNS41OTUgICBjLTguMzczLTguNzU1LTEzLjc2OC0yMC40NTMtMTMuNzY4LTMzLjA4YzAtMC42MTEsMC4wNTYtMS4yMzcsMC4wNzQtMS44NDNjLTExLjQzNS01LjA5Mi0yMy41NzgtOS4zMTYtMzUuNjQ2LTkuMzA2ICAgYy0xLjc0NiwwLTMuNDkxLDAuMDk2LTUuMjM3LDAuMjczaC0wLjAxOWMtOS4wMzUsMC44NzEtMTcuNDM2LDYuNTY2LTIxLjUwNiwxNC43NTd2MC4wMDl2MC4wMjggICBjLTYuMTc5LDEyLjAzNC03LjQxMSwyNi4xMDEtNy41OTgsNDAuMDY0YzM0LjYzOSwyLjI1OSw2OS40ODMsMTAuNTcxLDEwMC4wNDMsMjguMTM4aDAuMDQ3bDAuNDM4LDAuMjU5ICAgYzAuNTc5LDAuMzQzLDEuNjUyLDAuOTMxLDIuNjIzLDEuNDQ5YzIuMTAxLTEuNzA0LDQuMzIyLTMuNDU2LDYuODU2LTQuOTY2YzkuMjY0LTYuMTcsMjAuMjQxLTkuMjM4LDMxLjIyMy05LjIzOCAgIGM0Ljg3MiwwLDkuNzQ5LDAuNjIxLDE0LjQ4MSwxLjgzNGgwLjAxOWwwLjE5NiwwLjA1OGMwLjA3LDAuMDEsMC4xMjEsMC4wMzMsMC4xNzgsMC4wMzN2MC4wMDkgICBjMTEuMTgzLDIuODQ1LDIxLjMsOS4yNjcsMjguOTE3LDE3LjkyN2M3LjYxMiw4LjY3NCwxMi43MzEsMTkuNjQ4LDEzLjczLDMxLjU2MXYwLjAyNUg0MzAuMDMzeiBNMzI4LjAwMiw4NC43MzMgICBjMCwwLjQ2OSwwLjAxLDAuOTUsMC4wNTcsMS40NHYwLjAyOHYwLjA1NmMwLjIyNCw2LjAxOCwzLjA2NSwxMS42MTksNy4zODMsMTUuNzU2YzQuMzQsNC4xNCwxMC4xLDYuNzAyLDE1Ljk0Miw2LjcyNWgwLjA4aDAuMDc5ICAgYzAuNDIsMC4wMzMsMC44NSwwLjAzMywxLjI2LDAuMDMzYzUuODk5LDAuMDA5LDExLjc1Mi0yLjUzMiwxNi4xNDgtNi42NTVjNC40MDUtNC4xNDQsNy4zMDktOS43OCw3LjU0Mi0xNS44NDlsMC4wMDktMC4wMjh2LTAuMDM3ICAgYzAuMDM4LTAuNDY0LDAuMDU3LTAuOTAzLDAuMDU3LTEuMzc3YzAtNi4yNDctMi45MjItMTIuMjAyLTcuNDk2LTE2LjYxMmMtNC41NTUtNC40MDYtMTAuNjg4LTcuMTM2LTE2LjczNS03LjEyICAgYy0xLjk1MSwwLTMuODg0LDAuMjY2LTUuNzc4LDAuODU0bC0wLjA2NSwwLjAwNWwtMC4wNTYsMC4wMjNjLTQuOTg0LDEuMjk1LTkuNjU2LDQuMzY4LTEzLjAxMiw4LjQ0OSAgIEMzMzAuMDQ2LDc0LjQ4NiwzMjguMDAyLDc5LjUwOCwzMjguMDAyLDg0LjczM3ogTTcyLjMxMiwxNzcuNTc4Yy00LjYzLTIuMTU2LTkuNDE4LTMuNjk2LTE0LjE1LTMuNjc2ICAgYy0wLjc5NCwwLTEuNTk3LDAuMDQ3LTIuMzksMC4xMzNoLTAuMTFsLTAuMTEsMC4wMTRjLTYuNzk1LDAuMTg3LTEzLjY1MywzLjE1LTE4LjgwMSw3Ljg5OSAgIGMtNS4xNTIsNC43MzItOC41NTksMTEuMTIyLTguODIxLDE4LjE2N3YwLjA2NWwtMC4wMTIsMC4wNThjLTAuMDQ2LDAuNTctMC4wNjUsMS4xMzctMC4wNjUsMS42ODMgICBjMCw0LjM0NSwxLjMzMyw4LjU0NSwzLjU5MywxMi4zNjhjMS42NzMsMi44NDcsMy44NjcsNS40NDEsNi4zNDgsNy43MDFDNDUuNzM1LDIwNC42MDIsNTguMTQyLDE4OS44NDUsNzIuMzEyLDE3Ny41Nzh6ICAgIE0zNzQuMDY2LDI2Mi42MzVjMC0xNS41LTUuNTkyLTMxLjA2OS0xNC42NDYtNDMuNjA0Yy0xOC4wNTMtMjUuMTE5LTQ2LjA1NS00MS41MDItNzUuMTg3LTUwLjYzNmwtMC4yMDUtMC4wNzIgICBjLTUuNTkyLTEuNzE1LTExLjIzOC0zLjIzNC0xNi45MzMtNC41MzRjLTE3LjAyNS0zLjg3Ni0zNC40OC01LjgwNi01MS45MTctNS44MDZjLTIzLjQxNCwwLTQ2LjgyNywzLjQ2NS02OS4yNDUsMTAuMzc5ICAgYy0yOS4xMjUsOS4yNDMtNTcuMjIxLDI1LjUxLTc1LjIzMyw1MC43MXYwLjAxOWMtOS4xMjksMTIuNTg3LTE0LjQ3NSwyOC4yMDgtMTQuNDc1LDQzLjc2M2MwLDUuNzI3LDAuNzE2LDExLjQ1MywyLjIzLDE3LjAyNSAgIGwwLjAxOSwwLjAxYzMuMjc4LDEyLjUwOCw5LjY4OSwyMy42NzEsMTcuOTg5LDMzLjM5M2M4LjI5NSw5Ljc0NSwxOC40NzIsMTguMDU4LDI5LjE3NiwyNC44MzljMi4zNzEsMS40Nyw0Ljc1MSwyLjg3LDcuMTg3LDQuMjM3ICAgYzMxLjA5NCwxNy4zNTYsNjYuODk4LDI0Ljk2NCwxMDIuNDQ1LDI0Ljk2NGM2LjAxMiwwLDEyLjA2LTAuMjE0LDE4LjAzMy0wLjY0NGMzNS43OTctMi45NTksNzEuNzQyLTEzLjUyNSwxMDAuOC0zNS4xMTUgICBsMC4wMS0wLjAyM2M5LjI1LTYuODM3LDE3LjgxOC0xNS4xMTIsMjQuNTk1LTI0LjUyNWM2LjgwNS05LjQxOCwxMS43ODktMTkuOTQ3LDE0LjAwMi0zMS4zODJWMjc1LjZsMC4wMDktMC4wMSAgIEMzNzMuNjI3LDI3MS4zMiwzNzQuMDY2LDI2Ni45ODUsMzc0LjA2NiwyNjIuNjM1eiBNNDAyLjMyLDIwMC45NWMtMC4wMDktMy43NjItMC44NjgtNy41MDctMi43NTMtMTFsLTAuMDQ3LTAuMDQ0bC0wLjAxOS0wLjA1NiAgIGMtMi41MjEtNS4xOS02LjQ3OS05LjExLTExLjI0OC0xMS43ODJjLTQuNzctMi42OS0xMC4zNTItNC4wNTYtMTUuOTUyLTQuMDU2Yy01LjA2MywwLTEwLjEsMS4xMzItMTQuNTcsMy4zNzkgICBjMTQuMjE2LDEyLjM0NCwyNi42ODcsMjcuMTc5LDM0Ljc0Niw0NC42MzZjMi41OTUtMi4yNTksNC44MDgtNS4wMTgsNi40NjQtOC4wODRDNDAxLjA5OCwyMDkuOTIsNDAyLjMyLDIwNS40MDUsNDAyLjMyLDIwMC45NXoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K",
+                    link: "https://reddit.com/submit?title=&url=https://"+url+"?p="
                 },
                 {
                     name: "Google Plus",
-                    imgURL:"data:image/png;base64,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",
-                    link: ""
+                    imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDkwIDkwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA5MCA5MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxwYXRoIGlkPSJHb29nbGUiIGQ9Ik03NC40OTksMEg1MC4xNDRjLTYuMzgyLDAtMTQuNDIxLDAuOTQyLTIxLjE1OCw2LjQ5Yy01LjA5LDQuMzc0LTcuNTY2LDEwLjM5Mi03LjU2NiwxNS44MjggICBjMCw5LjIxMSw3LjA5NCwxOC41NDYsMTkuNjI1LDE4LjU0NmMxLjE4MiwwLDIuNDc3LTAuMTIsMy43ODctMC4yMzVjLTAuNTkyLDEuNDEzLTEuMTg5LDIuNTk0LTEuMTg5LDQuNjA1ICAgYzAsMy42NjIsMS44OTMsNS45MDIsMy41NDcsOC4wMjljLTUuMzE0LDAuMzUzLTE1LjI0OSwwLjk0Mi0yMi41ODMsNS40MjhjLTYuOTc1LDQuMTQzLTkuMTA3LDEwLjE2LTkuMTA3LDE0LjQxNCAgIEMxNS40OTksODEuODQ2LDIzLjc3OCw5MCw0MC45MjMsOTBjMjAuMzM2LDAsMzEuMDk4LTExLjIyLDMxLjA5OC0yMi4zM2MwLTguMTQzLTQuNzI5LTEyLjE2NC05LjkzMi0xNi41MzRsLTQuMjU4LTMuMzA1ICAgYy0xLjI5NS0xLjA2NS0zLjA2OC0yLjQ3OS0zLjA2OC01LjA4YzAtMi41OTcsMS43NzMtNC4yNTQsMy4zMDctNS43ODljNC45NjQtMy44OTYsOS45MzMtOC4wMyw5LjkzMy0xNi43NyAgIGMwLTguOTc5LTUuNjgtMTMuNzA0LTguMzk2LTE1Ljk0N2g3LjMzNEw3NC40OTksMHogTTY0LjEwMyw3Mi4yNzljMCw3LjMyMi02LjAzMywxMi43NTMtMTcuMzg1LDEyLjc1MyAgIGMtMTIuNjQ4LDAtMjAuODA5LTYuMDI0LTIwLjgwOS0xNC40MDVjMC04LjM5Myw3LjU2OC0xMS4yMTgsMTAuMTY2LTEyLjE2NGM0Ljk2OS0xLjY1NiwxMS4zNTItMS44OTEsMTIuNDE0LTEuODkxICAgYzEuMTg0LDAsMS43NzUsMCwyLjcyNSwwLjExNUM2MC4yMDIsNjMuMDY0LDY0LjEwMyw2Ni4yNTcsNjQuMTAzLDcyLjI3OXogTTU0LjY0MiwzNC4yNDljLTEuODkzLDEuODg2LTUuMDg4LDMuMzA1LTguMDQ1LDMuMzA1ICAgYy0xMC4xNjQsMC0xNC43NzItMTMuMTEzLTE0Ljc3Mi0yMS4wMjNjMC0zLjA3MiwwLjU5Mi02LjI1OCwyLjU5OC04Ljc0YzEuODkzLTIuMzYyLDUuMjAxLTMuODk5LDguMjc3LTMuODk5ICAgYzkuODEyLDAsMTQuODk5LDEzLjIyOSwxNC44OTksMjEuNzNDNTcuNTk5LDI3Ljc1Miw1Ny4zNTgsMzEuNTI4LDU0LjY0MiwzNC4yNDl6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==",
+                    link: "https://plus.google.com/share?url=https://"+url+"?p="
                 }
             ]
         },
         delimiters: ['{[', ']}'],
         methods:{
             closePetition: function () {
+                window.document.title = "PawPrints - Make your mark";
                 var modal = $("#petition-modal");
                 modal.find(".modal-container").cssanimate("fadeOutDown",{hide:false},function(){
                     modal.addClass("hidden").removeAttr("style");
@@ -668,12 +1438,19 @@
                 });
                 modal.find(".modal-overlay").fadeOut(400);
                 updatePetitionHistory(false);
+
+                // Let the body scroll again.
+                $("html, body").removeClass("no-scroll");;
             }
         }
     });
+    /**
+     * "search" defines how searching petitions is handled.
+     * It is bound to the search-container element.
+     **/
     timeout = setTimeout(function(){},0);
     var search = new Vue({
-        el:"#sub-landing",
+        el:"#search-container",
         data:{
             searchString: ""
         },
@@ -681,79 +1458,131 @@
             search: function(){
                 clearTimeout(timeout);
                 timeout = setTimeout(function(){
-                    console.log("Search: "+search.searchString);
-                    socket.send('{"command":"search","query":"'+search.searchString+'"}');
-                },500);
+                    if(search.searchString.trim() !== ""){
+                        petitions.loading = true;
+                        petitions.map = {};
+                        petitions.list = [];
+                        console.log("Search: "+search.searchString);
+                        socket.send('{"command":"search","query":"'+search.searchString+'"}');
+                        setTimeout(function(){
+                            // Timeout waiting for the websocket response after 3 seconds.
+                            petitions.loading = false;
+                        },3000);
+                    }
+                    else{
+                        var sort = $("#sort");
+                        var filter_tag = sort.data("filter");
+                        var sort_by = sort.val();
+                        reloadPetitions(sort_by, filter_tag, socket);
+                    }
+                },300);
             }
         }
     });
+    /**
+     * "slideshow_images" is the Vue instance that builds slide show images.
+     * The data set is randomized before displaying the images in the slide show.
+     * Change the limit to change the amount of images in the slide show (set to 0 to show all images).
+     * Add more images by copying one of the objects in the images list.
+     *  - Setting the sort_rank to anything but 0 will force it to have that value.
+     **/
+    var slideshow_images = new Vue({
+        el:"#parallax-slideshow",
+        data:{
+            limit:3,
+            id_pre:"c",
+            images:[
+                {
+                    url:"/static/images/CampusStock_11.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_25.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_95.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/CampusStock_8.jpg",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_1.png",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_2.png",
+                    sort_rank:0
+                },
+                {
+                    url:"/static/images/carousel_3.png",
+                    sort_rank:0
+                }
+            ]
+        },
+        delimiters: ['{[', ']}'],
+        methods:{
+            randomize:function(){
+                for(var i = 0; i < this.images.length; i++){
+                    var img = this.images[i];
+                    if(img.sort_rank === 0) img.sort_rank = Math.random() * this.images.length;
+                }
+                this.images.sort(function(a,b){return b.sort_rank - a.sort_rank});
+            }
+        },
+        mounted: function(){
+            this.randomize();
+        }
+    });
     function reloadPetitions(sort_by, filter, socket){
+        /**
+         * This function is responsible for loading all petitions that fit in the given filter + sort set.
+         * It just calls "list" on the socket, the actual listing action is handled upon recieving data from the socket
+         * (NOT IN THIS FUNCTION).
+         **/
 
         // load the petitions into the Vue instance.
-        if($(".current-tag").attr("id") != filter){
+        if($(".current-tag").attr("id") !== filter){
 
             $(".current-tag").removeClass("current-tag");
 
         }
         $("#tag-"+filter).addClass("current-tag");
+        petitions.loading = true;
+        petitions.map = {};
+        petitions.list = [];
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
+        setTimeout(function(){
+            // Timeout waiting for the websocket response after 3 seconds.
+            petitions.loading = false;
+        },3000);
 
-    }
-    function initWaypoints(){
-        // Setup the scroll waypoints for the page.
-
-        var tagsWaypoint = $('#tags').find("ul").waypoint(function(direction){
-
-            if(direction == "down"){
-
-                $("#tags").appendTo('header');
-                $("#tags-container").css({"padding-bottom":$("#tags").height()+90+"px"});
-                $("#back-up").fadeIn(300,function(){
-                    $(this).addClass("transition");
-                });
-
-            }
-            else{
-
-                $("#tags").appendTo('#tags-container');
-                $("#tags-container").removeAttr("style");
-                $("#back-up").removeClass("transition").fadeOut(300);
-
-            }
-
-        },{
-
-            offset: '10px'
-
-        });
-    }
-    function scroll(to_elem){
-        var offset = to_elem.offset().top;
-        offset -= 60;
-        $('html, body').stop().animate({'scrollTop': offset+"px"}, 700);
     }
     function updatePetitionHistory(petitionID){
-        // Update history + URL.
+        /**
+         * This function is responsible for handling browser history. When called it updates your browser history so you
+         * can use back/forward buttons to open / close petitions.
+         **/
+        // Update history + URL
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
-        if(!petitionID){
+        if(!petitionID && petitionID !== 0){
+//            console.log("CLEARING PETITION ID FROM URL");
             window.history.pushState("object or string", "Title", prevURL);
         }
         else{
+//            console.log("THIS SHOULD UPDATE THE URL TO INCLUDE A /?p="+petitionID);
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
-    function verticalOffset(element, givenOffset = false){
-        var elementHeight = element.height();
-        var windowHeight = $(window).height();
-        var topOffset = (windowHeight / 2) - (elementHeight / 2);
-        topOffset = topOffset > 0 ? topOffset : 0;          // Prevent negative values.
-        topOffset = !givenOffset ? topOffset : givenOffset; // Provide a offset override.
-        console.log(elementHeight + " | " + windowHeight + " = "+ topOffset);
-        element.css({"top":topOffset+"px"});
-    }
     function getPetition(petitionID){
-        if(petitions.map[petitionID] != undefined){
+        /**
+         * This function is responsible for grabbing petitions. If the given petition does not exist in the data we have
+         * it calls the backend, which then grabs it.
+         **/
+        if(petitions.map[petitionID] !== undefined){
             return petitions.list[petitions.map[petitionID]];
         }
         else{
@@ -761,119 +1590,199 @@
             return false;
         }
     }
-    function openPetition(petitionID, auto_open = false){
+    function unescape(string){
+        /**
+         * This function unescapes certain characters sent in the JSON response for each petition so they show up correctly.
+         **/
+        return string.replace(/\\"/g,"'")
+                     .replace(/\"/g,'')
+                     .replace(/"/g,"")
+                     .replace(/\\n/g, "\n")
+                     .replace(/\\u2013/g,"<br/>–")
+                     .replace(/(\\u201c|\\u201d)/g,'\"')
+                     .replace(/\\u2014/g,'&mdash;')
+                     .replace(/(\\u2019|\\u2018)/g,"'");
+    }
+    function getDayDifference(date1, date2){
+        /**
+         * This function computes the difference in days between two EPOCH timestamps.
+         **/
+        var timeDiff = Math.abs(date2 - date1);
+        return Math.floor(timeDiff / (1000 * 3600 * 24));
+    }
+    function setContentAvailableSpace(modal, additional_margin = 0){
+        // Compute the available space for the content of the petition based on the used space.
+        var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
+        modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
+    }
+    openPetitionLoop = null;
+    function openPetition(petitionID, auto_open = false, counter = 0){
         // Renders the petition data into a petition model and also updates browser history.
 
-        if(!auto_open){
-            // If the petition was not in the URL already on page load.
-            updatePetitionHistory(petitionID);
-        }
+        if(counter === 0)console.log("Trying to open petition with id '"+petitionID+"'...");
 
-        var toPetition = getPetition(petitionID);
+        var toPetition = getPetition(petitionID); // getPetition returns false if it has to grab a petition not loaded yet.
         if(!toPetition){
 
-            setTimeout(function(){
-                openPetition(petitionID, auto_open);
+            // The petition that was asked for was not loaded in the initial page load, wait for the server to send it over the socket.
+            openPetitionLoop = setTimeout(function(){
+
+                if(counter < 10){ // Only loop for a max of 2 seconds.
+
+                    console.log("loop" + counter);
+                    openPetition(petitionID, auto_open, counter+1);
+
+                }
+                else{
+
+                    console.log("Error: could not load petition.")
+
+                }
+
             },200);
 
         }
         else{
+
+            if(!auto_open){
+                // If the petition was not in the URL already on page load.
+                updatePetitionHistory(petitionID);
+            }
+
+            // Update the title of the tab
+            window.document.title = ucfirst("PawPrints - "+toPetition.title);
+
             // Apply petition data to the modal.
+            var createdJSDate = new Date(toPetition.timestamp).getTime();
+            var expiresJSDate = new Date(toPetition.expires).getTime();
+            var currentJSDate = new Date().getTime();
+
             modalData.petition = {
                 title:toPetition.title,
                 author:toPetition.author,
                 signatures:toPetition.signatures,
                 threshold:200,
                 expires:toPetition.expires,
+                expired:expiresJSDate < currentJSDate,
+                timestamp:toPetition.timestamp,
                 status:toPetition.status,
+                response:toPetition.response.length,
+                in_progress:toPetition.in_progress,
+                isSigned:toPetition.isSigned,
                 id:toPetition.id
             };
 
-            var response = JSON.parse(toPetition.response);
-            if(typeof response == "object" && response.author != ""){
-                var responseBlock = {
-                    type:"response",
-                    author: response.author,
-                    content:response.description
-                            .replace(/\\"/g,"'")
-                            .replace(/\"/g,'')
-                            .replace(/"/g,"")
-                            .replace(/\\n/g, "\n")
-                            .replace(/(\\u201c|\\u201d)/g,'\"')
-                            .replace(/\\u2014/g,'&mdash;')
-                            .replace(/\\u2019/g,"'"),
-                    date: response.timestamp
-                }
-                modalData.timeline.push(responseBlock);
-            }
-
-            console.log(toPetition);
             var updates = toPetition.updates;
             var numUpdates = updates.length;
             if(numUpdates > 0){
                 for(var i = 0; i < numUpdates; i++){
                     var update = updates[i];
+                    var updateJSDate = new Date(update.timestamp).getTime();
                     var updateBlock = {
-                        type:"update",
+                        type:"SG Update",
                         author: "",
-                        content:update.description
-                                .replace(/\\"/g,"'")
-                                .replace(/\"/g,'')
-                                .replace(/"/g,"")
-                                .replace(/\\n/g, "\n")
-                                .replace(/(\\u201c|\\u201d)/g,'\"')
-                                .replace(/\\u2014/g,'&mdash;')
-                                .replace(/\\u2019/g,"'"),
-                        date: update.timestamp
-                    }
-                    modalData.timeline.push(updateBlock);
+                        content:unescape(update.description),
+                        date: getDayDifference(updateJSDate, currentJSDate)
+                    };
+                    modalData.timeline.unshift(updateBlock);
                 }
             }
 
-            var description = {
-                type:"description",
-                author: toPetition.author,
-                content:toPetition.description
-                        .replace(/\\"/g,"'")
-                        .replace(/\"/g,'')
-                        .replace(/"/g,"")
-                        .replace(/\\n/g, "\n")
-                        .replace(/(\\u201c|\\u201d)/g,'\"')
-                        .replace(/\\u2014/g,'&mdash;')
-                        .replace(/\\u2019/g,"'"),
-                date: toPetition.timestamp
-            };
+            var response;
+            if(typeof toPetition.response === "string"){
+                response = JSON.parse(toPetition.response);
+            }
+            else{
+                response = toPetition.response;
+            }
+            if(typeof response === "object"){
+                var responseJSDate = new Date(response.timestamp).getTime();
+                var responseBlock = {
+                    type:"Official Response",
+                    author: response.author,
+                    content:unescape(response.description),
+                    date: getDayDifference(responseJSDate, currentJSDate)
+                };
+                modalData.timeline.unshift(responseBlock);
+            }
 
+            var description = {
+                type:"Petition Description",
+                author: toPetition.author,
+                content:unescape(toPetition.description),
+                date: getDayDifference(createdJSDate, currentJSDate)
+            };
             modalData.timeline.push(description);
 
+            var createdBlock = {
+                type:"created",
+                author:toPetition.author
+            };
+            modalData.timeline.push(createdBlock);
+
+            // Don't let the body scroll when a petition is open.
+            $("html, body").addClass("no-scroll");
+
+            // Begin the fade in animation
             var modal = $("#petition-modal");
             modal.removeClass("hidden");
             modal.find(".modal-overlay").fadeIn(400,function(){
                 $(this).removeClass("hidden");
-
             });
 
             verticalOffset(modal.find(".modal-container"), 0);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
-                $(this).removeClass("hidden");
+
+                setContentAvailableSpace(modal);
+
+                // Center the modal on the screen
                 verticalOffset(modal.find(".modal-container"));
                 $(window).resize(function(){
+                    setContentAvailableSpace(modal);
                     verticalOffset(modal.find(".modal-container"));
                 });
             });
+
+            $(document).on("keyup",function(e){
+                if(e.keyCode === 27){ // Close the petition when you press the escape key.
+                    modalData.closePetition();
+                    $(document).unbind("keyup");
+                }
+            });
+
         }
     }
 
     function parseOnePetition(data){
-        var petition = JSON.parse(data.petition).petitions[0];
-        console.log(petition);
+        /**
+         * Utilized for the GET command of the websocket on message function, this function parses the list of petitions
+         * generated by the serializer in the backend and grabs the first petition object from the petitions list.
+         **/
+        var petition = false;
+        if(data.petition !== false){
+             petition = JSON.parse(data.petition).petitions[0];
+        }
         return petition;
+    }
+
+    function animateUpdate(petitionID){
+        /**
+         * When an update happens over websockets this function animates the given petition tile to show that an update
+         * happened.
+         **/
+
+        var petition = $("#petitions-container").find("[data-petition-id="+petitionID+"]");
+        petition.cssanimate("pulse",{inline:true});
+
     }
 
     $(document).ready(function(){
 
+        var websocket_debug = true;
+
         // Setup Web Socket.
-        socket = new WebSocket("ws://" + window.location.host + "/");
+        var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
+        socket = new WebSocket(socket_type+"://" + window.location.host + "/");
         socket.onmessage = function(e) { // Bind to the onmessage event.
 
             // Get Escape special characters so JSON.parse works.
@@ -881,84 +1790,191 @@
             try{
 
                 // Parse the response as a JSON.
-                data = JSON.parse(data);
+                data = typeof data === "string" ? JSON.parse(data) : data;
+
+                if(websocket_debug){
+                    console.log("Received Websocket Command...");
+                    console.log(data);
+                }
 
                 // If there is a command sent from the server
                 if(data["command"]){
 
                     var command = data["command"];
-                    var petition;
+                    var modal_petition = modalData.petition;
+                    var petition, petition_id, map_pos, modal_timeline_update_block, createdJSDate, currentJSDate;
 
                     // Command parsing.
-                    if(command == "update-sigs"){
+                    if(command === "update-sigs"){
                         // Handle the live updating of signatures for petitions.
 
-                        var pid = data["id"];
+                        // Format of update-sigs response is as follows: sigs:{sigs:#,petition_id:#}.
+
+                        petition_id = data["petition_id"];
                         var sigs = data["sigs"];
+
+                        if(websocket_debug)console.log("Petition "+petition_id+" now has "+sigs+" signatures!");
+
                         // Find the petition from its location in the map, and update it's signatures value.
-                        petitions.list[petitions.map[pid]].signatures = sigs;
-                        if(modalData.petition.id && modalData.petition.id == pid){
+                        petitions.list[petitions.map[petition_id]].signatures = sigs;
+                        if(modal_petition.id && modal_petition.id === petition_id){
                             // If the petition is the one that is open at the moment
 
+                            if(websocket_debug)console.log("Petition "+petition_id+" is open, Updating Modal signatures..");
                             modalData.petition.signatures = sigs;
 
                         }
 
+                        animateUpdate(data["petition_id"]);
+
                     }
-                    else if(command == "new-update"){
+                    else if(command === "new-update"){
                         // Handle petitions getting an update.
 
-                        petition = parseOnePetition(data);
-                        var pos = petitions.map[petition.id];
-                        var oldPetition = petitions.list[pos];
+                        // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
 
-                        if(petition.updates != oldPetition.updates){
-                            // If the sent data contains updates that the stored petition doesn't have
+                        if(websocket_debug)console.log("Parsing new update");
 
-                            petitions.list[pos].updates = petition.updates;
-                            if(modalData.petition.id && modalData.petition.id == petition.id) {
-                                // If the petition is the one open at the moment
+                        var update = data["update"];
 
-                                for (var i = 0; i < petition.updates.length; i++) {
-                                    // Loop over all of the updates.
+                        petition_id = Number(update["petition_id"]);
+                        map_pos = petitions.map[petition_id];
 
-                                    var update = petition.updates[i];
-                                    var updateBlock = {
-                                        type:"update",
-                                        author: "",
-                                        content:update.description
-                                                .replace(/\\"/g,"'")
-                                                .replace(/\"/g,'')
-                                                .replace(/"/g,"")
-                                                .replace(/\\n/g, "\n")
-                                                .replace(/(\\u201c|\\u201d)/g,'\"')
-                                                .replace(/\\u2014/g,'&mdash;')
-                                                .replace(/\\u2019/g,"'"),
-                                        date: update.timestamp
-                                    }
+                        if(websocket_debug)console.log("Update for petition "+petition_id);
 
-                                    if (modalData.timeline.indexOf(updateBlock) == -1) {
-                                        // If the current update doesn't exist in the petition's visible data.
+                        createdJSDate = new Date(update["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
 
-                                        modalData.timeline.unshift(updateBlock);
+                        var new_update = {
+                            description:update["description"],
+                            timestamp:getDayDifference(createdJSDate, currentJSDate)
+                        };
 
-                                    }
+                        if(websocket_debug){
+                            console.log("New update to push:");
+                            console.log(new_update);
+                        }
 
-                                }
+                        // Add the update to the petition in the window object.
+                        petitions.list[map_pos].updates.push(new_update);
 
-                            }
+                        if(websocket_debug)console.log("Modal petition: "+modal_petition);
+
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if(modal_petition.id && modal_petition.id === petition_id){
+
+                            if(websocket_debug)console.log("Updating modal petition block.");
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "SG Update",
+                                author: "",
+                                content: unescape(new_update.description),
+                                date: new_update.timestamp
+                            };
+
+                            modalData.timeline.unshift(modal_timeline_update_block);
+
+                            if(websocket_debug)console.log(modalData.timeline);
 
                         }
 
+                        animateUpdate(update["petition_id"]);
+
                     }
-                    else if(command == "get"){
+                    else if(command === "new-response"){
+                        // Handle petitions getting a response.
+
+                        // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
+
+                        var response = data["response"];
+
+                        petition_id = Number(response["petition_id"]);
+                        map_pos = petitions.map[petition_id];
+
+                        createdJSDate = new Date(response["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
+
+                        var new_response = {
+                            description:response["description"],
+                            timestamp:getDayDifference(createdJSDate, currentJSDate),
+                            author:response["author"]
+                        };
+
+                        modal_petition = modalData.petition.id;
+
+                        // Add the response to the petition in the window object.
+                        petitions.list[map_pos].response = new_response;
+
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if(modal_petition && modal_petition === petition_id){
+
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "Official Response",
+                                author: new_response.author,
+                                content: unescape(new_response.description),
+                                date: new_response.timestamp
+                            };
+
+                            modalData.timeline.unshift(modal_timeline_update_block);
+
+                        }
+
+                        animateUpdate(response["petition_id"]);
+
+                    }
+                    else if(command === "get"){
+                        // Handle opening a single petition.
 
                         petition = parseOnePetition(data);
-                        petitions.list.push(petition);
-                        petitions.map[petition.id] = petitions.list.indexOf(petition);
+                        if(petition){
+                            petitions.list.push(petition);
+                            petitions.map[petition.id] = petitions.list.indexOf(petition);
+                            animateUpdate(petition.id);
+                        }
+                        else{
+                            clearTimeout(openPetitionLoop);
+                        }
+
+                    }
+                    else if(command === "new-petition"){
+                        // Handle loading into the page a new petition.
+
+                        if(websocket_debug)console.log("New petition was made, trying to open it.");
+                        getPetition(Number(data["petition"]["petition_id"]));
+
+                    }
+                    else if(command === "remove-petition"){
+                        // Handle the removing of a petition
+
+                        if(websocket_debug)console.log("Petition was deleted, removing it..");
+                        petition_id = data["petition"]["petition_id"];
+                        if(petitions.map.hasOwnProperty(petition_id)){
+                            petitions.list[petitions.map[petition_id]].deleted = true;
+                            delete petitions.map[petition_id];
+                            if( modal_petition.id === Number(petition_id) ){
+                                modalData.closePetition();
+                            }
+                        }
+
+                    }
+                    else if(command === "mark-in-progress"){
+                        // Handle someone marking a petition in progresss
+
+                        if(websocket_debug)console.log("Petition was marked as in progress, updating it.");
+                        petition_id = data["petition"]["petition_id"];
+                        if(petitions.map.hasOwnProperty(petition_id)){
+                            petitions.list[petitions.map[petition_id]].in_progress = true;
+                            if( modal_petition.id === Number(petition_id) ){
+                                modalData.petition.in_progress = true;
+                            }
+                        }
 
                     }
                     else{
+                        console.log("Unrecognized command: "+command);
                         console.log(data);
                     }
 
@@ -966,12 +1982,20 @@
                 else{
 
                     // Default behaviour is to update everything on response if no command is given.
-                    petitions.list = data["petitions"];
-                    petitions.map = data["map"];
+                    if(data.hasOwnProperty("petitions")){
+                        petitions.list = data["petitions"];
+                        petitions.map = data["map"];
 
-                    var petitionID = getUrl("p");
-                    if(petitionID){
-                        openPetition(petitionID, true);
+                        var petitionID = getUrl("p");
+                        if(petitionID){
+                            openPetition(petitionID, true);
+                        }
+                        petitions.loading = false;
+                    }
+                    else{
+
+
+
                     }
 
                 }
@@ -986,8 +2010,14 @@
 
             }
 
-        }
+        };
 
+        // Bind parallax effects.
+        $("#parallax-slideshow").parallax({divisor:-2.5});
+        $("#parallax-overlay").parallax({divisor:-5,offset:30});
+        $(".slideshow-container").slideshow();
+
+        // Event Listeners.
         $(document).on("click", ".tag", function(){
             // Bind the click event on elements with the tag class
 
@@ -995,8 +2025,12 @@
             var filter_tag = $(this).data("tag");
 
             // Get the sort key
-            var sort_by = $("#sort").val();
-            $("#sort").data("filter",filter_tag);
+            var sort = $("#sort");
+            var sort_by = sort.val();
+            sort.data("filter",filter_tag);
+
+            // Update the select field for mobile devices
+            $("#mobile-filter").val(filter_tag);
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
@@ -1019,10 +2053,36 @@
 
         });
 
-        $("#back-up").click(function(e){
-            e.preventDefault();
-            var to_elem = $("#landing-marker");
-            scroll(to_elem);
+        $("#mobile-filter").change(function(){
+
+            // Grab the tag name
+            var filter_tag = $(this).val();
+            $("#sort").data("filter",filter_tag);
+
+            // Grab the sort key
+            var sort_by = $("#sort").val();
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+
+        });
+
+        $(document).on("click","#action-drawer-icon-container",function(){
+            var me = $(this);
+            var icon = me.find("i");
+            var actionCards = $("#action-cards");
+            if(icon.html() === "keyboard_arrow_down"){
+                icon.html("keyboard_arrow_up");
+                actionCards.data("closed",true);
+            }
+            else{
+                icon.html("keyboard_arrow_down");
+                actionCards.data("closed",false);
+            }
+            setContentAvailableSpace($("#petition-modal"),200); // Extend the petition modal box too much so the animation is smooth
+            actionCards.toggle(200,"linear",function(){
+                setContentAvailableSpace($("#petition-modal")); // Resize the box so it is the correct size.
+            });
         });
 
         $(document).on("click", ".petition", function(e){
@@ -1033,26 +2093,37 @@
 
         });
 
-        // Bind parallax effects.
-        $("#parallax-slideshow").parallax({divisor:-2.5});
-        $("#parallax-overlay").parallax({divisor:-5,offset:40});
-        $(".slideshow-container").slideshow();
-
-        initWaypoints();
-
-        $("#is-logged-in").click(function(){
-
-
-
-        });
-
         $(document).on("click","#sign-petition-button",function(){
             var petition = getUrl("p");
-            petitions.list[petition].isSigned = 1;
-            console.log("Sign Petition "+petition);
+            petitions.list[petitions.map[petition]].isSigned = 1;
             $.post('/petition/sign/'+petition,{"csrfmiddlewaretoken":get_csrf()},function(r){
-                console.log(r);
+                if(r !== petition){
+                    console.log("Sign Petition response: "+r);
+                }
+                if(modalData.petition.id === Number(petition)){
+
+                    modalData.petition.isSigned = 1;
+
+                }
             });
+        });
+
+        $(document).on("click","#publish-button",function(){
+            var petition = getUrl("p");
+
+            window.popup = new Modal({
+                headerContent:"<h2>Are you sure you want to publish this petition?</h2>",
+                bodyContent:"<p class='padding-bottom'>You cannot edit or delete it once it is published.</p>",
+                iconContainerClass:"text-highlight",
+                iconClass:"md-48",
+                iconText:"warning",
+                bodyButtons: [
+                    ["Cancel","material material-button minimal material-shadow margin-top margin-bottom transition","window.popup.close()"],
+                    ["Confirm", "material material-button material-shadow margin-bottom margin-top transition cursor","publishPetition("+petition+")"]
+                ]
+            });
+            popup.open();
+
         });
 
         window.onpopstate = function () {
@@ -1064,6 +2135,19 @@
     $(window).resize(function(){
 
         Waypoint.refreshAll();
+        var actionCards = $("#action-cards");
+        if($(window).width() > 830 && actionCards.data("closed")){
+            // Open the action cards when the width of the window is over 830px and they are currently hidden.
+            setContentAvailableSpace($("#petition-modal"),200); // Extend the petition modal box too much so the animation is smooth
+            actionCards.show(200,"linear",function(){
+                actionCards.data("closed",false);
+                setContentAvailableSpace($("#petition-modal")); // Resize the box so it is the correct size.
+            });
+            $("#action-drawer-icon-container").find("i").html("keyboard_arrow_down"); // Update the icon so it
+        }
+        else{
+            setContentAvailableSpace($("#petition-modal"));
+        }
 
     });
 </script>

@@ -8,11 +8,13 @@ Defines Django authentication backend for shibboleth.
 """
 from django.contrib.auth.models import User
 
+
 class Attributes():
     EDU_AFFILIATION = 'urn:oid:1.3.6.1.4.1.4447.1.41'
     FIRST_NAME = 'urn:oid:2.5.4.42'
     LAST_NAME = 'urn:oid:2.5.4.4'
     USERNAME = 'urn:oid:0.9.2342.19200300.100.1.1'
+
 
 class SAMLSPBackend(object):
     def authenticate(self, saml_authentication=None):
@@ -30,12 +32,14 @@ class SAMLSPBackend(object):
                 last_name = attributes[Attributes.LAST_NAME][0]
                 affiliation = attributes[Attributes.EDU_AFFILIATION]
                 # If user does not exist in DB, Create a user object and save to DB
-                user = User(username=username, email=username+"@rit.edu")
+                user = User(username=username, email=username + "@rit.edu")
                 user.set_unusable_password()
-                # Set user attributes 
+                user.first_name = first_name
+                user.last_name = last_name
                 user.save()
-                user.profile.full_name = "{} {}".format(first_name, last_name) 
-                user.profile.display_name = "{}{}".format(first_name[0],last_name[0])
+                # Set user profile attributes
+                user.profile.full_name = "{} {}".format(first_name, last_name)
+                user.profile.display_name = "{}{}".format(first_name[0], last_name[0])
                 if 'Employee' in affiliation:
                     user.profile.affiliation = 3
                 elif 'Alumni' in affiliation:

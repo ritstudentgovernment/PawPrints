@@ -2,13 +2,13 @@
     "strict": true,
     "debug": true,
     "sp": {
-        "entityId": "http://<URL>/saml",
+        "entityId": "https://sgstage.rit.edu/saml",
         "assertionConsumerService": {
-            "url": "http://<URL>/acs",
+            "url": "https://sgstage.rit.edu/acs",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
         },
         "singleLogoutService": {
-            "url": "http://<URL>/sls",
+            "url": "https://sgstage.rit.edu/sls",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
         },
         "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",

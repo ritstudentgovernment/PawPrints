@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <title>Staff Manager | PawPrints</title>
+    <style>
+        .background-highlight{
+        background-color: {{ colors.highlight }};
+        }
+        .text-highlight{
+        color: {{ colors.highlight }} !important;
+        }
+        .bright-text{
+        color: {{ colors.bright_text }} !important;
+        }
+        .modern-link{
+        color: {{ colors.dark_text }};
+        text-decoration: none;
+        }
+        .material-input:focus{
+        border-color: {{ colors.highlight }};
+        }
+        .alternate-font{
+            font-family: "Slabo 27px", sans-serif;
+        }
+        .tag:hover{
+            cursor: pointer;
+        }
+        body{
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        h1,h2,h3,h4,h5{
+            font-family: "Montserrat", sans-serif;
+            font-weight: 800;
+        }
+        #landing{
+            margin-top: 109px;
+        }
+        #sub-landing{
+            padding-bottom: 0;
+        }
+        #settings ul li{
+            background-color: #fff;
+            border-bottom: 1px solid #ccc;
+        }
+        #settings ul li:last-child{
+            border-bottom: none;
+        }
+        #settings ul li label{
+            overflow: hidden;
+            width: calc(100% - 65px);
+        }
+        .user{
+            background-color: #fff;
+            margin-top: 5px;
+            padding: 1em;
+            line-height: 2em;
+        }
+        .user .material-icons{
+            line-height: 1.4em;
+        }
+        @media screen and (max-width:400px){
+            #landing div.half-width{
+                float: none;
+                margin: 0 auto;
+                overflow: hidden;
+            }
+            #landing div.half-width .material-input{
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    {% include 'header.html' %}
+    <main class="full-width">
+        <section id="landing" class="text-center overflow-hidden">
+            <h1>Staff Management</h1>
+            <div class="half-width left padding-top">
+                <label for="newSuperUserSearch">
+                    <h3>Add a new admin</h3>
+                    <input id="newSuperUserSearch" placeholder="Enter a RIT username" name="superUserSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="admin">Add</button>
+            </div>
+            <div class="half-width left padding-top">
+                <label for="newStaffMemberSearch">
+                    <h3>Add a new staff member</h3>
+                    <input id="newStaffMemberSearch" placeholder="Enter a RIT username" name="newStaffMemberSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
+            </div>
+        </section>
+        <section id="sub-landing" class="ninety-width">
+            <h1>Administrators</h1>
+            <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
+
+            {% for superuser in superusers %}
+                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="remove-user material-icons cursor right" data-role="admin" data-username="{{superuser.username}}" title="Remove user from administrative role.">delete</i></h4>
+            {% endfor %}
+        </section>
+        <section class="ninety-width">
+            <h1>Staff Members</h1>
+            <p>Staff members have the ability to update, delete, and respond to petitions.</p>
+            <div id="staff-members">
+                {% for staff_member in staff %}
+                    <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user cursor material-icons right" data-role="manager" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    var users = { {% for user in all_users %}"{{user.username}}":{{user.id}}, {% endfor %} };
+
+    $(document).ready(function(){
+
+        var user_list = Object.keys(users);
+        $(".user-search").autocomplete({
+            source: user_list
+        });
+
+        $(".add-team-member").click(function(){
+
+            var role = $(this).data("role");
+            var username = (role === "admin") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
+            if(users.hasOwnProperty(username)){
+                var user_id = users[username];
+                $.post("/profile/manage/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
+                    if(r === "True"){
+                        window.location.reload();
+                    }
+                    else{
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+            }
+
+        });
+
+        $(document).on("click",".remove-user",function(){
+
+            var me = $(this);
+            var role = me.data("role");
+            var username = me.data("username");
+            if(users.hasOwnProperty(username)) {
+                var user_id = users[username];
+                $.post("/profile/manage/" + role + "/remove/" + user_id, {"csrfmiddlewaretoken": get_csrf()}, function (r) {
+                    if (r === "True") {
+                        var element = me.parent().remove();
+                        if (role === "superuser") {
+                            element.appendTo("#staff-members");
+                        }
+                    }
+                    else {
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+            }
+
+        });
+
+    });
+</script>
+
+</body>
+</html>
