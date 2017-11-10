@@ -1465,9 +1465,9 @@
                         console.log("Search: "+search.searchString);
                         socket.send('{"command":"search","query":"'+search.searchString+'"}');
                         setTimeout(function(){
-                            // Timeout waiting for the websocket response after 1.5 seconds.
+                            // Timeout waiting for the websocket response after 3 seconds.
                             petitions.loading = false;
-                        },1500);
+                        },3000);
                     }
                     else{
                         var sort = $("#sort");
@@ -1555,9 +1555,9 @@
         petitions.list = [];
         socket.send('{"command":"list","sort":"'+sort_by+'","filter":"'+filter+'"}');
         setTimeout(function(){
-            // Timeout waiting for the websocket response after 1.5 seconds.
+            // Timeout waiting for the websocket response after 3 seconds.
             petitions.loading = false;
-        },1500);
+        },3000);
 
     }
     function updatePetitionHistory(petitionID){

@@ -15,6 +15,7 @@ from channels import Channel
 from .views import petition_sign, edit_check
 from .consumers import serialize_petitions
 
+
 class PetitionTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -30,12 +31,12 @@ class PetitionTest(TestCase):
         self.tag = Tag(name='Test')
         self.tag.save()
         self.petition = Petition(title='Test petition',
-                description='This is a test petition',
-                author=self.user,
-                created_at=timezone.now(),
-                status=1,
-                expires=timezone.now()+timedelta(days=30)
-                )
+                                 description='This is a test petition',
+                                 author=self.user,
+                                 created_at=timezone.now(),
+                                 status=1,
+                                 expires=timezone.now() + timedelta(days=30)
+                                 )
         self.petition.save()
 
     def test_index_page(self):
@@ -49,7 +50,7 @@ class PetitionTest(TestCase):
         self.assertTemplateUsed(response, '404.html')
 
     def test_load_petitions(self):
-        response = self.client.post('/petitions/',{'sort_by': 'most signatures', 'filter': 'all'})
+        response = self.client.post('/petitions/', {'sort_by': 'most signatures', 'filter': 'all'})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'list_petitions.html')
 
@@ -60,10 +61,10 @@ class PetitionTest(TestCase):
             "attribute": "title",
             "value": "New"
         }
-        response = self.client.post('/petition/update/'+str(self.petition.id),obj)
+        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
         # Check that it doesn't 404
         self.assertNotEqual(response.status_code, 404)
-        self.assertRedirects(response, '/petition/'+str(self.petition.id))
+        self.assertRedirects(response, '/petition/' + str(self.petition.id))
 
         # Check that petition was actually changed
         pet = Petition.objects.get(pk=self.petition.id)
@@ -77,25 +78,25 @@ class PetitionTest(TestCase):
         }
         self.petition.status = 0
         self.petition.save()
-        response = self.client.post('/petition/update/'+str(self.petition.id), obj)
+        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
         # Make sure there is no 404
         self.assertNotEqual(response.status_code, 404)
         # Check that petition was published
         pet = Petition.objects.get(pk=self.petition.id)
-        self.assertEqual(pet.status, 1)  
+        self.assertEqual(pet.status, 1)
 
     def test_sign_petition(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/petition/sign/'+str(self.petition.id), {'test':'test'})
+        response = self.client.post('/petition/sign/' + str(self.petition.id), {'test': 'test'})
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.signatures, 1)
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
 
     def test_petition_subscribe(self):
         self.client.force_login(self.user)
         user = User.objects.get(pk=self.user.id)
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
-        response = self.client.post('/petition/subscribe/'+str(self.petition.id),{})
+        response = self.client.post('/petition/subscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
@@ -104,20 +105,20 @@ class PetitionTest(TestCase):
         self.client.force_login(self.user)
         user = User.objects.get(pk=self.user.id)
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
-        response = self.client.post('/petition/subscribe/'+str(self.petition.id),{})
+        response = self.client.post('/petition/subscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
 
-        response = self.client.post('/petition/unsubscribe/'+str(self.petition.id),{})
+        response = self.client.post('/petition/unsubscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
         self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
 
     def test_petition_unpublish(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/petition/unpublish/'+str(self.petition.id))
-        self.assertEqual(response.status_code,200)
+        response = self.client.post('/petition/unpublish/' + str(self.petition.id))
+        self.assertEqual(response.status_code, 200)
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.status, 2)
 
@@ -125,12 +126,12 @@ class PetitionTest(TestCase):
         self.client.force_login(self.user)
         pet.status = 1
         pet.save()
-        response = self.client.post('/petition/unpublish/'+str(self.petition.id))
+        response = self.client.post('/petition/unpublish/' + str(self.petition.id))
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.status, 1)
 
     def test_petition_page(self):
-        response = self.client.get('/petition/'+str(self.petition.id))
+        response = self.client.get('/petition/' + str(self.petition.id))
         self.assertEqual(response.status_code, 200)
 
     def test_create_petition(self):
@@ -141,13 +142,13 @@ class PetitionTest(TestCase):
         self.assertEqual(userobj.profile.petitions_signed.all()[0].title, "New Petition")
 
     def test_check_edit(self):
-        self.assertEqual(edit_check(self.user, self.petition),True)
-        self.assertEqual(edit_check(self.superUser, self.petition),True)
-        self.assertEqual(edit_check(self.superUser2, self.petition),False)
-        self.assertEqual(edit_check(self.user2, self.petition),False)
+        self.assertEqual(edit_check(self.user, self.petition), True)
+        self.assertEqual(edit_check(self.superUser, self.petition), True)
+        self.assertEqual(edit_check(self.superUser2, self.petition), False)
+        self.assertEqual(edit_check(self.user2, self.petition), False)
 
     def test_serialize_petitions(self):
         petitions = Petition.objects.all()
         json_response = serialize_petitions(petitions)
         # TODO: Improve this test to be more thorough
-        self.assertNotEquals(json_response, None) 
+        self.assertNotEquals(json_response, None)

@@ -10,6 +10,7 @@ import django
 from pawprints import secrets
 from celery import Celery
 
+
 class Celery(Celery):
     def on_configure(self):
         client = raven.Client(secrets.RAVEN_DSN)
@@ -20,6 +21,7 @@ class Celery(Celery):
         # Hook into Celery error handling
         register_signal(client)
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pawprints.settings')
 django.setup()
 
@@ -28,6 +30,7 @@ app = Celery('pawprints')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
+
 
 @app.task(bind=True)
 def debug_task(self):
