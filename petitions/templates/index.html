@@ -1936,7 +1936,7 @@
                             animateUpdate(petition.id);
                             petitions.loading = false;
                             petitionID = getUrl("p");
-                            if(petitionID){
+                            if(petitionID && modalData.petition.id !== Number(petitionID)){
                                 openPetition(petitionID, true);
                             }
                         }
