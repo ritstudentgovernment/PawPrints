@@ -1987,6 +1987,11 @@
                         petitions.list = data["petitions"];
                         petitions.map = data["map"];
                         petitions.loading = false;
+                        // See if there is a specific petition to open, if so, open it.
+                        var petitionID = getUrl("p");
+                        if(petitionID){
+                            openPetition(petitionID, true);
+                        }
                     }
                     else{
 
@@ -2007,12 +2012,6 @@
             }
 
         };
-
-        // See if there is a specific petition to open, if so, open it.
-        var petitionID = getUrl("p");
-        if(petitionID){
-            openPetition(petitionID, true);
-        }
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
