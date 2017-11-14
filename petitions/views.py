@@ -627,7 +627,7 @@ def responded():
     return Petition.objects.all() \
         .filter(has_response=True) \
         .filter(status=1) \
-        .order_by('-created_at')[0:50]
+        .order_by('-created_at')
 
 
 def archived():
