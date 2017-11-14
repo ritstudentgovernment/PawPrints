@@ -1933,6 +1933,7 @@
                             petitions.list.push(petition);
                             petitions.map[petition.id] = petitions.list.indexOf(petition);
                             animateUpdate(petition.id);
+                            petitions.loading = false;
                         }
                         else{
                             clearTimeout(openPetitionLoop);
@@ -1985,16 +1986,11 @@
                     if(data.hasOwnProperty("petitions")){
                         petitions.list = data["petitions"];
                         petitions.map = data["map"];
-
-                        var petitionID = getUrl("p");
-                        if(petitionID){
-                            openPetition(petitionID, true);
-                        }
                         petitions.loading = false;
                     }
                     else{
 
-
+                        if(websocket_debug)console.log("Default action failed; petitions object does not exist in response.");
 
                     }
 
@@ -2011,6 +2007,12 @@
             }
 
         };
+
+        // See if there is a specific petition to open, if so, open it.
+        var petitionID = getUrl("p");
+        if(petitionID){
+            openPetition(petitionID, true);
+        }
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
