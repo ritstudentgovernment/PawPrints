@@ -80,6 +80,18 @@ def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
+def send_petitions_individually(message, petitions):
+    for petition in petitions:
+        petition = [petition]
+        petition = serialize_petitions(petition, message.user)
+        message.reply_channel.send({
+            "text": json.dumps({
+                "command": "get",
+                "petition": petition
+            })
+        })
+
+
 @channel_session_user_from_http
 def petitions_connect(message):
     """
@@ -96,15 +108,7 @@ def petitions_connect(message):
     # Default order is 'most recent' query the database for all petitions in that order.
     petitions = views.sorting_controller("most recent")
 
-    for petition in petitions:
-        petition = [petition]
-        petition = serialize_petitions(petition, message.user)
-        message.reply_channel.send({
-            "text": json.dumps({
-                "command": "get",
-                "petition": petition
-            })
-        })
+    send_petitions_individually(message, petitions)
 
 
 @channel_session_user
@@ -137,15 +141,9 @@ def petitions_command(message):
                     petitions = views.sorting_controller(data.sort)
                     if data.filter:
                         petitions = views.filtering_controller(petitions, data.filter)
-                    for petition in petitions:
-                        petition = [petition]
-                        petition = serialize_petitions(petition, message.user)
-                        message.reply_channel.send({
-                            "text": json.dumps({
-                                "command": "get",
-                                "petition": petition
-                            })
-                        })
+
+                    send_petitions_individually(message, petitions)
+
                     return None
 
                 message.reply_channel.send({
@@ -176,9 +174,9 @@ def petitions_command(message):
                         petitions = views.filtering_controller(petitions, data.filter)
                     except AttributeError:
                         pass
-                    message.reply_channel.send({
-                        "text": serialize_petitions(petitions, message.user)
-                    })
+
+                    send_petitions_individually(message, petitions)
+
                     return None
                 return None
 
