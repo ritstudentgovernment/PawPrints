@@ -1539,7 +1539,7 @@
     function reloadPetitions(sort_by, filter, socket){
         /**
          * This function is responsible for loading all petitions that fit in the given filter + sort set.
-         * It just calls "list" on the socket, the actual listing action is handled upon recieving data from the socket
+         * It just calls "list" on the socket, the actual listing action is handled upon receiving data from the socket
          * (NOT IN THIS FUNCTION).
          **/
 
@@ -1987,11 +1987,6 @@
                         petitions.list = data["petitions"];
                         petitions.map = data["map"];
                         petitions.loading = false;
-                        // See if there is a specific petition to open, if so, open it.
-                        var petitionID = getUrl("p");
-                        if(petitionID){
-                            openPetition(petitionID, true);
-                        }
                     }
                     else{
 
@@ -2131,6 +2126,15 @@
             //Refresh the page on back.
             location.reload();
         };
+
+        setTimeout(function(){
+            // See if there is a specific petition to open, if so, open it.
+            reloadPetitions("most recent","all",socket);
+            var petitionID = getUrl("p");
+            if(petitionID){
+                openPetition(petitionID, true);
+            }
+        },100);
 
     });
     $(window).resize(function(){
