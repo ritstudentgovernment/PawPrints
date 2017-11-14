@@ -165,7 +165,7 @@ def petition_create(request):
     new_petition.save()
 
     logger.info(
-        "user " + user.email + " created a new petion called " + new_petition.title + " ID: " + str(new_petition.id))
+        "user " + user.email + " created a new petition called " + new_petition.title + " ID: " + str(new_petition.id))
 
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
@@ -627,7 +627,7 @@ def responded():
     return Petition.objects.all() \
         .filter(has_response=True) \
         .filter(status=1) \
-        .order_by('-created_at')
+        .order_by('-created_at')[0:50]
 
 
 def archived():
