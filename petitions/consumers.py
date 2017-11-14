@@ -132,9 +132,15 @@ def petitions_command(message):
                     petitions = views.sorting_controller(data.sort)
                     if data.filter:
                         petitions = views.filtering_controller(petitions, data.filter)
-                    message.reply_channel.send({
-                        "text": serialize_petitions(petitions, message.user)
-                    })
+                    for petition in petitions:
+                        petition = [petition]
+                        petition = serialize_petitions(petition, message.user)
+                        message.reply_channel.send({
+                            "text": json.dumps({
+                                "command": "get",
+                                "petition": petition
+                            })
+                        })
                     return None
 
                 message.reply_channel.send({
