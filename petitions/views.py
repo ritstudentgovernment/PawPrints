@@ -617,10 +617,8 @@ def similar_petitions(query):
 
 def in_progress():
     return Petition.objects.all() \
-        .filter(expires__gt=timezone.now()) \
         .filter(status=1) \
-        .filter(expires__gt=timezone.now()) \
-        .filter((Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None)) \
+        .filter(in_progress=True) \
         .exclude(has_response=True) \
         .order_by('-created_at')
 
