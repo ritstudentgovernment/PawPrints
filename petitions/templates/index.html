@@ -1137,7 +1137,7 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Discuss</h3>
-                                <span class="alternate-font">On <a class="text-highlight">Facebook</a></span>
+                                <span class="alternate-font">On <a class="text-highlight" href="https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/?p={[ petition.id ]}">Facebook</a></span>
                             </div>
                         </div>
                         <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
@@ -1388,7 +1388,7 @@
         },
         delimiters: ['{[', ']}']
     });
-    var url = window.location.hostname;
+    var url = "pawprints.rit.edu/";
     /**
      * "modalData" defines the state for the modal popup.
      * Social buttons may be added / configured here.
@@ -1407,7 +1407,7 @@
                 {
                     name: "Twitter",
                     imgURL:"data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCIgdmlld0JveD0iMCAwIDQzMC4xMTcgNDMwLjExNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDMwLjExNyA0MzAuMTE3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggaWQ9IlR3aXR0ZXJfX3gyOF9hbHRfeDI5XyIgZD0iTTM4MS4zODQsMTk4LjYzOWMyNC4xNTctMS45OTMsNDAuNTQzLTEyLjk3NSw0Ni44NDktMjcuODc2ICAgYy04LjcxNCw1LjM1My0zNS43NjQsMTEuMTg5LTUwLjcwMyw1LjYzMWMtMC43MzItMy41MS0xLjU1LTYuODQ0LTIuMzUzLTkuODU0Yy0xMS4zODMtNDEuNzk4LTUwLjM1Ny03NS40NzItOTEuMTk0LTcxLjQwNCAgIGMzLjMwNC0xLjMzNCw2LjY1NS0yLjU3Niw5Ljk5Ni0zLjY5MWM0LjQ5NS0xLjYxLDMwLjg2OC01LjkwMSwyNi43MTUtMTUuMjFjLTMuNS04LjE4OC0zNS43MjIsNi4xODgtNDEuNzg5LDguMDY3ICAgYzguMDA5LTMuMDEyLDIxLjI1NC04LjE5MywyMi42NzMtMTcuMzk2Yy0xMi4yNywxLjY4My0yNC4zMTUsNy40ODQtMzMuNjIyLDE1LjkxOWMzLjM2LTMuNjE3LDUuOTA5LTguMDI1LDYuNDUtMTIuNzY5ICAgQzI0MS42OCw5MC45NjMsMjIyLjU2MywxMzMuMTEzLDIwNy4wOTIsMTc0Yy0xMi4xNDgtMTEuNzczLTIyLjkxNS0yMS4wNDQtMzIuNTc0LTI2LjE5MiAgIGMtMjcuMDk3LTE0LjUzMS01OS40OTYtMjkuNjkyLTExMC4zNTUtNDguNTcyYy0xLjU2MSwxNi44MjcsOC4zMjIsMzkuMjAxLDM2LjgsNTQuMDhjLTYuMTctMC44MjYtMTcuNDUzLDEuMDE3LTI2LjQ3NywzLjE3OCAgIGMzLjY3NSwxOS4yNzcsMTUuNjc3LDM1LjE1OSw0OC4xNjksNDIuODM5Yy0xNC44NDksMC45OC0yMi41MjMsNC4zNTktMjkuNDc4LDExLjY0MmM2Ljc2MywxMy40MDcsMjMuMjY2LDI5LjE4Niw1Mi45NTMsMjUuOTQ3ICAgYy0zMy4wMDYsMTQuMjI2LTEzLjQ1OCw0MC41NzEsMTMuMzk5LDM2LjY0MkMxMTMuNzEzLDMyMC44ODcsNDEuNDc5LDMxNy40MDksMCwyNzcuODI4ICAgYzEwOC4yOTksMTQ3LjU3MiwzNDMuNzE2LDg3LjI3NCwzNzguNzk5LTU0Ljg2NmMyNi4yODUsMC4yMjQsNDEuNzM3LTkuMTA1LDUxLjMxOC0xOS4zOSAgIEM0MTQuOTczLDIwNi4xNDIsMzkzLjAyMywyMDMuNDg2LDM4MS4zODQsMTk4LjYzOXoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K",
-                    link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://"+url+"?p=?p="
+                    link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://"+url+"?p="
                 },
                 {
                     name: "LinkedIn",
