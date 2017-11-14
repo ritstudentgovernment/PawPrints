@@ -1779,6 +1779,7 @@
     $(document).ready(function(){
 
         var websocket_debug = true;
+        var petitionID;
 
         // Setup Web Socket.
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
@@ -1934,6 +1935,10 @@
                             petitions.map[petition.id] = petitions.list.indexOf(petition);
                             animateUpdate(petition.id);
                             petitions.loading = false;
+                            petitionID = getUrl("p");
+                            if(petitionID){
+                                openPetition(petitionID, true);
+                            }
                         }
                         else{
                             clearTimeout(openPetitionLoop);
@@ -1987,6 +1992,10 @@
                         petitions.list = data["petitions"];
                         petitions.map = data["map"];
                         petitions.loading = false;
+                        petitionID = getUrl("p");
+                        if(petitionID){
+                            openPetition(petitionID, true);
+                        }
                     }
                     else{
 
@@ -2126,15 +2135,6 @@
             //Refresh the page on back.
             location.reload();
         };
-
-        setTimeout(function(){
-            // See if there is a specific petition to open, if so, open it.
-            reloadPetitions("most recent","all",socket);
-            var petitionID = getUrl("p");
-            if(petitionID){
-                openPetition(petitionID, true);
-            }
-        },100);
 
     });
     $(window).resize(function(){
