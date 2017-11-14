@@ -96,10 +96,15 @@ def petitions_connect(message):
     # Default order is 'most recent' query the database for all petitions in that order.
     petitions = views.sorting_controller("most recent")
 
-    # Send the user back the JSON serialized petition objects.
-    message.reply_channel.send({
-        "text": serialize_petitions(petitions, message.user)
-    })
+    for petition in petitions:
+        petition = [petition]
+        petition = serialize_petitions(petition, message.user)
+        message.reply_channel.send({
+            "text": json.dumps({
+                "command": "get",
+                "petition": petition
+            })
+        })
 
 
 @channel_session_user
