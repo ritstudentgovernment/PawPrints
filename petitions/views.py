@@ -401,7 +401,7 @@ def petition_sign(request, petition_id):
     """
     user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
-    # If the petition is published and still active
+    # If the user has access to pawprints and the petition is both published and still active
     if user.profile.affiliation == 1 and petition.status != 0 and petition.status != 2:
         if not user.profile.petitions_signed.filter(id=petition_id).exists():
             user.profile.petitions_signed.add(petition)
@@ -460,22 +460,24 @@ def petition_publish(user, petition):
     petition's author.
     """
     response = False
-    if petition.status == 0 and user.id == petition.author.id:
-        # Set status to 1 to publish it to the world.
-        petition.status = 1
-        # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
-        date = timezone.now()
-        petition.created_at = date
-        petition.expires = date + timedelta(days=30)
-        # Save the petition.
-        petition.save()
-        response = True
+    # If the user has access to pawprints.
+    if user.profile.affiliation == 1:
+        if petition.status == 0 and user.id == petition.author.id:
+            # Set status to 1 to publish it to the world.
+            petition.status = 1
+            # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
+            # Save the petition.
+            petition.save()
+            response = True
 
-        data = {
-            "new-petition": petition.id
-        }
+            data = {
+                "new-petition": petition.id
+            }
 
-        send_update(data)
+            send_update(data)
 
     return HttpResponse(response)
 

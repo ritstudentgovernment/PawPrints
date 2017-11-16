@@ -170,10 +170,6 @@ def petitions_command(message):
                 # Sends the WS a sorted and optionally filtered list of petitions.
                 if data.query:
                     petitions = views.sorting_controller("search", data.query)
-                    try:
-                        petitions = views.filtering_controller(petitions, data.filter)
-                    except AttributeError:
-                        pass
 
                     send_petitions_individually(message, petitions)
 
