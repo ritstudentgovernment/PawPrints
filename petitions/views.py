@@ -557,7 +557,6 @@ def filtering_controller(sorted_objects, tag):
     if tag == "all":
         return sorted_objects
     else:
-        queried_tag = Tag.objects.get(id=tag)
         return sorted_objects.all().filter(tags=tag)
 
 

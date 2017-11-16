@@ -500,6 +500,7 @@ function ucfirst(string){
         element.addClass("animated "+effect);
 
         setTimeout(function(){
+            stripAnimationClasses();
             callback();
         },settings.duration * 2);
 
