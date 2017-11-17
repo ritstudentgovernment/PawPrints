@@ -20,10 +20,8 @@ class Profile(models.Model):
     petitions_created = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_created', blank=True)
     petitions_signed = models.ManyToManyField('petitions.Petition', related_name='profile_petitions_signed', blank=True)
     display_name = models.CharField(max_length=3, blank=True)
-    # Affiliation is obfuscated now. Instead of storing student / alumni / faculty, it stores no access or has access
     # 0 - Does not have access, 1 - Has Access
-    # TODO refactor everything to have "has_access" instead of affiliation
-    affiliation = models.PositiveSmallIntegerField(default=1)
+    has_access = models.PositiveSmallIntegerField(default=1)
 
     def __unicode__(self):
         return self.user.username

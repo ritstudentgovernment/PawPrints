@@ -1078,10 +1078,10 @@
                 <div id="petition-actions" class="overflow-hidden">
                     <div v-if="petition.status == 1">
                         <div id="signature-card" class="petition-action-card left margin-left">
-                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' {% if user.profile %} || ({{ user.profile.affiliation }} !== 1){% endif %}">
+                            <button id="sign-petition-button" class="material material-button material-shadow transition" :disabled="petition.expired || petition.response || petition.isSigned || '{{ user.first_name }}' == '' {% if user.profile %} || ({{ user.profile.has_access }} !== 1){% endif %}">
                                 <!-- You must be logged in to sign a petition -->   <span onclick="window.location.href = '/login/?next=/?p='+getUrl('p')" class="cursor" v-if="'{{ user.first_name }}' == ''">Log in to sign this petition</span>
                                 {% if user.profile %}
-                                    <!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.affiliation }} !== 1)">Only students may sign petitions</span>
+                                    <!-- You cannot sign a petition if ur not a student --> <span v-else-if="({{ user.profile.has_access }} !== 1)">You may not sign petitions</span>
                                 {% endif %}
                                 <!-- You you have already signed the petition -->   <span v-else-if="petition.isSigned">You have signed this petition</span>
                                 <!-- You cannot sign a petition with a response --> <span v-else-if="petition.response">This petition has received a response</span>
@@ -1259,7 +1259,7 @@
 
 </main>
 
-{% if user.first_name and user.profile.affiliation == 1 %}
+{% if user.first_name and user.profile.has_access == 1 %}
     <button id="new-petition" class="cursor circle background-highlight bright-text light material-hover transition"><span class="material-icon-container"><i class="material-icons">add</i></span></button>
     <script>
         $(document).ready(function(){
@@ -1440,7 +1440,7 @@
                 updatePetitionHistory(false);
 
                 // Let the body scroll again.
-                $("html, body").removeClass("no-scroll");;
+                $("html, body").removeClass("no-scroll");
             }
         }
     });

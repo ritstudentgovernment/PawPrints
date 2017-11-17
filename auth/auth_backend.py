@@ -46,9 +46,9 @@ class SAMLSPBackend(object):
             user.profile.display_name = "{}{}".format(first_name[0], last_name[0])
 
             # Set user Affiliation
-            user.profile.affiliation = 1
+            user.profile.has_access = 1
             if 'Employee' in affiliation or 'Alumni' in affiliation:
-                user.profile.affiliation = 0
+                user.profile.has_access = 0
 
             user.profile.save()
 

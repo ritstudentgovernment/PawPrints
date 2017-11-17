@@ -402,7 +402,7 @@ def petition_sign(request, petition_id):
     user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
     # If the user has access to pawprints and the petition is both published and still active
-    if user.profile.affiliation == 1 and petition.status != 0 and petition.status != 2:
+    if user.profile.has_access == 1 and petition.status != 0 and petition.status != 2:
         if not user.profile.petitions_signed.filter(id=petition_id).exists():
             user.profile.petitions_signed.add(petition)
             user.save()
@@ -461,7 +461,7 @@ def petition_publish(user, petition):
     """
     response = False
     # If the user has access to pawprints.
-    if user.profile.affiliation == 1:
+    if user.profile.has_access == 1:
         if petition.status == 0 and user.id == petition.author.id:
             # Set status to 1 to publish it to the world.
             petition.status = 1
