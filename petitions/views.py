@@ -187,7 +187,7 @@ def petition_redirect(request, petition_id):
         petition = Petition.objects.filter(old_id=petition_id)
         if petition.exists():
             # Redirect to correct petition.
-            return redirect("/?p=" + str(petition.pk))
+            return redirect("/?p=" + str(petition.first().id))
         # Petition did not exist in redis database ID is not an int
         return redirect("/")
 
