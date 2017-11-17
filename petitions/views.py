@@ -184,10 +184,10 @@ def petition_redirect(request, petition_id):
         return redirect("/?p=" + str(petition_id))
     except ValueError:
         # Check if the petition_id sent exists in the Redis server store.
-        redis_connection = redis.StrictRedis()
-        if redis_connection.exists(petition_id):
+        petition = Petition.objects.filter(old_id=petition_id)
+        if petition.exists():
             # Redirect to correct petition.
-            return redirect("/?p=" + str(redis_connection.get(petition_id)))
+            return redirect("/?p=" + str(petition.id))
         # Petition did not exist in redis database ID is not an int
         return redirect("/")
 
