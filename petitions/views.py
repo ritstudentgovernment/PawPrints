@@ -232,7 +232,7 @@ def petition_edit(request, petition_id):
 
             send_update(data)
 
-            user = request.user.profile
+            user = request.user
             return petition_publish(user, petition)
 
         elif attribute == "title":
