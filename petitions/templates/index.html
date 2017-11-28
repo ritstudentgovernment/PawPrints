@@ -1285,8 +1285,6 @@
     <script>
         (function () {
 
-
-
             var _overlay = document.querySelector('#petition-modal .modal-body');
             var _clientY = null; // remember Y position on touch start
 
@@ -1297,10 +1295,14 @@
                 var modal = $("#petition-modal");
                 var petition_body = modal.find(".modal-body");
 
-                petition_body.on("touchmove",function(event){
+                $(document).bind("touchmove",function(event){
 
-                    event.preventDefault();
-                    alert("PREVENTED SCROLL.");
+                    if(!modal.hasClass("hidden")){
+
+                        event.preventDefault();
+                        alert("PREVENTED SCROLL.");
+
+                    }
 
                 });
 
