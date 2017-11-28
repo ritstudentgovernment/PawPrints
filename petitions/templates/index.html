@@ -1303,14 +1303,17 @@
             function disableRubberBand(event) {
                 var clientY = event.targetTouches[0].clientY - _clientY;
 
-                if (_overlay.scrollTop === 0 && clientY > 0) {
+                if ((_overlay.scrollTop === 0 && clientY > 0) || (isOverlayTotallyScrolled() && clientY < 0)) {
                     // element is at the top of its scroll
                     event.preventDefault();
+                    if(getUrl("dev")){
+                        alert("Stopped Scroll.");
+                    }
                 }
-
-                if (isOverlayTotallyScrolled() && clientY < 0) {
-                    //element is at the top of its scroll
-                    event.preventDefault();
+                else{
+                    if(getUrl("dev")){
+                        alert("Did not stop Scroll.");
+                    }
                 }
             }
 
