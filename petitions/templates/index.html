@@ -1826,6 +1826,9 @@
         var petitionID;
 
         // Setup Web Socket.
+        var socketError = false;
+        var socketReopenInterval;
+
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
         socket = new WebSocket(socket_type+"://" + window.location.host + "/");
         socket.onopen = function (e){
@@ -1834,6 +1837,19 @@
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
             }
+            if(socketError){
+                clearInterval(socketReopenInterval);
+            }
+
+        };
+        socket.onerror = function () {
+
+            console.log("Socket Error, attempting to reconnect.");
+
+            socketError = true;
+            socketReopenInterval = setInterval(function(){
+                socket = new WebSocket(socket_type+"://" + window.location.host + "/");
+            },3000);
 
         };
         socket.onmessage = function(e) { // Bind to the onmessage event.
