@@ -1292,14 +1292,14 @@
             }
 
             _overlay.addEventListener('touchstart', function (event) {
-                if (event.targetTouches.length === 1) {
+                if (event.originalEvent.targetTouches.length === 1) {
                     // detect single touch
-                    _clientY = event.targetTouches[0].clientY;
+                    _clientY = event.originalEvent.targetTouches[0].clientY;
                 }
             }, false);
 
             _overlay.addEventListener('touchmove', function (event) {
-                if (event.targetTouches.length === 1) {
+                if (event.originalEvent.targetTouches.length === 1) {
                     // detect single touch
                     disableRubberBand(event);
                 }
