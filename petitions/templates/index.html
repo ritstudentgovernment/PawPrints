@@ -1287,6 +1287,10 @@
             var _overlay = document.querySelector('#petition-modal .modal-body');
             var _clientY = null; // remember Y position on touch start
 
+            if(getUrl("dev")){
+                alert("Dev Mode Activated.");
+            }
+
             _overlay.addEventListener('touchstart', function (event) {
                 if (event.targetTouches.length === 1) {
                     // detect single touch
