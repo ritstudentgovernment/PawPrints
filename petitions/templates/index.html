@@ -1839,7 +1839,7 @@
 
     }
 
-    function setupSocket(socketReopenInterval = false){
+    function setupSocket(){
 
         var websocket_debug = true;
         var petitionID;
@@ -1854,31 +1854,18 @@
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
             }
-            if(socketReopenInterval !== false){
-                clearInterval(socketReopenInterval);
-            }
 
         };
         socket.onerror = function () {
 
             console.log("Socket Error, attempting to reconnect.");
-
-            socketReopenInterval = setInterval(function(){
-
-                setupSocket(socketReopenInterval);
-
-            },3000);
+            setupSocket();
 
         };
         socket.onclose = function () {
 
             console.log("Socket closed, attempting to reconnect.");
-
-            socketReopenInterval = setInterval(function(){
-
-                setupSocket(socketReopenInterval);
-
-            },3000);
+            setupSocket();
 
         };
         socket.onmessage = function(e) { // Bind to the onmessage event.
