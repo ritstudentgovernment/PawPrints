@@ -1284,11 +1284,26 @@
 {% if user.is_staff %}
     <script>
         (function () {
+
+
+
             var _overlay = document.querySelector('#petition-modal .modal-body');
             var _clientY = null; // remember Y position on touch start
 
             if(getUrl("dev")){
-                alert("Dev Mode Activated.");
+
+                alert("Dev Scroll Mode Activated.");
+
+                var modal = $("#petition-modal");
+                var petition_body = modal.find(".modal-body");
+
+                petition_body.on("touchmove",function(event){
+
+                    event.preventDefault();
+                    alert("PREVENTED SCROLL.");
+
+                });
+
             }
 
             _overlay.addEventListener('touchstart', function (event) {
