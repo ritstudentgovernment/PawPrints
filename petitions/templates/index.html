@@ -1839,14 +1839,12 @@
 
     }
 
-    $(document).ready(function(){
+    function setupSocket(socketReopenInterval = false){
 
         var websocket_debug = true;
         var petitionID;
 
         // Setup Web Socket.
-        var socketError = false;
-        var socketReopenInterval;
 
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
         socket = new WebSocket(socket_type+"://" + window.location.host + "/");
@@ -1856,7 +1854,7 @@
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
             }
-            if(socketError){
+            if(socketReopenInterval !== false){
                 clearInterval(socketReopenInterval);
             }
 
@@ -1865,9 +1863,21 @@
 
             console.log("Socket Error, attempting to reconnect.");
 
-            socketError = true;
             socketReopenInterval = setInterval(function(){
-                socket = new WebSocket(socket_type+"://" + window.location.host + "/");
+
+                setupSocket(socketReopenInterval);
+
+            },3000);
+
+        };
+        socket.onclose = function () {
+
+            console.log("Socket closed, attempting to reconnect.");
+
+            socketReopenInterval = setInterval(function(){
+
+                setupSocket(socketReopenInterval);
+
             },3000);
 
         };
@@ -2099,6 +2109,12 @@
             }
 
         };
+
+    }
+
+    $(document).ready(function(){
+
+        setupSocket();
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
