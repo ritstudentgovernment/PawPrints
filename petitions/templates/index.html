@@ -1295,7 +1295,7 @@
                 var modal = $("#petition-modal");
                 var petition_body = modal.find(".modal-body");
 
-                $(document).bind("touchmove",function(event){
+                document.ontouchmove = function(event){
 
                     if(!modal.hasClass("hidden")){
 
@@ -1304,7 +1304,7 @@
 
                     }
 
-                });
+                };
 
             }
 
