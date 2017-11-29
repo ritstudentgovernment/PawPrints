@@ -692,7 +692,13 @@ function ucfirst(string){
 
             }
 
-            $("."+settings.slideClass).css("transform","scale("+current+")");
+            var slides = $("."+settings.slideClass);
+
+            if(inViewport(slides.first().parent()[0])){
+
+                slides.css("transform","scale("+current+")");
+
+            }
 
         }
         setup();
