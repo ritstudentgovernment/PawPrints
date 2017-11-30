@@ -1293,10 +1293,9 @@
 
                 alert("Dev Scroll Mode Activated.");
 
-                var modal = $("#petition-modal");
-                var petition_body = modal.find(".modal-body");
-
                 $(window).scroll(function(event) {
+
+                    var modal = $("#petition-modal");
 
                     if(!modal.hasClass("hidden")){
 
