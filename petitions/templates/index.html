@@ -1284,41 +1284,6 @@
 {% endif %}
 {% if user.is_staff %}
     <script>
-        (function () {
-
-            var _overlay = document.querySelector('#petition-modal .modal-body');
-            var _clientY = null; // remember Y position on touch start
-
-            if(getUrl("dev")){
-
-                alert("Dev Scroll Mode Activated.");
-
-                $(window).scroll(function(event) {
-
-                    var modal = $("#petition-modal");
-
-                    if(!modal.hasClass("hidden")){
-
-                        if(event.originalEvent){
-
-                            event.originalEvent.stopPropagation();
-                            event.originalEvent.preventDefault();
-
-                        }
-                        else{
-
-                            event.stopPropagation();
-                            event.preventDefault();
-
-                        }
-
-                    }
-
-                });
-
-            }
-
-        }());
         $(document).on("click","#admin-actions .circle",function(e){
             var clicked = $(e.target).closest(".circle");
             var action = clicked.data("admin-control");
