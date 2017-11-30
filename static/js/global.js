@@ -413,7 +413,7 @@ function ucfirst(string){
 
         return this;
 
-    }
+    };
     Modal.prototype.open = function(){
 
         var me = this;
@@ -544,7 +544,7 @@ function ucfirst(string){
             parallaxAnimationFrame = requestAnimationFrame(updateParallax);
         });
         initParallax();
-    }
+    };
     // Custom slideshow plugin.
     $.fn.slideshow = function( options ){
         var selector = $(this);
