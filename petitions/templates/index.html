@@ -1445,7 +1445,7 @@
 
                 // Let the body scroll again.
                 var scrollTo = Number($("body").css("top").replace("px",""));
-                $("html, body").removeClass("no-scroll");
+                $("html, body").removeClass("no-scroll").css({"top":"auto"});
                 $(window).scrollTop(-1*scrollTo);
 
             }
