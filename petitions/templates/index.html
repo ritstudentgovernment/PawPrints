@@ -1299,8 +1299,18 @@
 
                     if(!modal.hasClass("hidden")){
 
-                        event.stopPropagation();
-                        event.preventDefault();
+                        if(event.originalEvent){
+
+                            event.originalEvent.stopPropagation();
+                            event.originalEvent.preventDefault();
+
+                        }
+                        else{
+
+                            event.stopPropagation();
+                            event.preventDefault();
+
+                        }
 
                     }
 
