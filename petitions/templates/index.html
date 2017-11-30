@@ -1298,7 +1298,12 @@
 
                 $(window).scroll(function(event) {
 
-                    alert("Scrolled");
+                    if(!modal.hasClass("hidden")){
+
+                        alert("PREVENTING SCROLLING");
+                        event.preventDefault();
+
+                    }
 
                 });
 
