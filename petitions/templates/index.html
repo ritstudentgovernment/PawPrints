@@ -1299,7 +1299,7 @@
 
                     if(!modal.hasClass("hidden")){
 
-                        alert("PREVENTING SCROLLING");
+                        event.stopPropagation();
                         event.preventDefault();
 
                     }
