@@ -10,7 +10,8 @@ from collections import namedtuple
 from channels import Channel, Group
 from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
-import time, math
+import time
+import math
 
 
 def serialize_petitions(petitions_obj, user=None):
@@ -93,7 +94,7 @@ def send_petitions_individually(message, petitions):
             })
         })
         index += 1
-        time.sleep((0.5+(1/(1-math.log((len(petitions) - index) + 1000)))))
+        # time.sleep((0.5+(1/(1-math.log((len(petitions) - index) + 1000)))))
 
 
 @channel_session_user_from_http
