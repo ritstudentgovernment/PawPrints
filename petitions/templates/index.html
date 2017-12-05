@@ -1284,6 +1284,10 @@
 {% endif %}
 {% if user.is_staff %}
     <script>
+        if(getUrl("dev")){
+            $("#timeline-container").css({"border":"3px solid black"});
+        }
+
         $(document).on("click","#admin-actions .circle",function(e){
             var clicked = $(e.target).closest(".circle");
             var action = clicked.data("admin-control");
