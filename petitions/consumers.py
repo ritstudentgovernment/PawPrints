@@ -83,7 +83,6 @@ def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
 def send_petitions_individually(message, petitions):
-    index = 0
     for petition in petitions:
         petition = [petition]
         petition = serialize_petitions(petition, message.user)
@@ -93,8 +92,6 @@ def send_petitions_individually(message, petitions):
                 "petition": petition
             })
         })
-        index += 1
-        # time.sleep((0.5+(1/(1-math.log((len(petitions) - index) + 1000)))))
 
 
 @channel_session_user_from_http
