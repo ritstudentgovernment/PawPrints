@@ -241,7 +241,13 @@ def petition_edit(request, petition_id):
                 return JsonResponse(
                     {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
+            # Update the petition title
             petition.title = value
+
+            # Update petition created and expires dates.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
 
         elif attribute == "description":
 
@@ -249,7 +255,13 @@ def petition_edit(request, petition_id):
                 return JsonResponse(
                     {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
+            # Update the petition description
             petition.description = value
+
+            # Update petition created and expires dates.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
 
         elif attribute == "add-tag":
 

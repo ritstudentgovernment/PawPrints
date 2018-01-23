@@ -1288,6 +1288,12 @@
             $("#timeline-container").css({"border":"3px solid black"});
         }
 
+        $(tinymce.activeEditor.getWin()).bind('resize',function() {
+
+            // TODO: Implement auto-resizing of modal windows.
+
+        });
+
         $(document).on("click","#admin-actions .circle",function(e){
             var clicked = $(e.target).closest(".circle");
             var action = clicked.data("admin-control");
@@ -1297,6 +1303,7 @@
                     inline: false,
                     menubar: false,
                     plugins: "link",
+                    height: 300,
                     toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat"
                 });
             }
