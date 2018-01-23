@@ -67,8 +67,8 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
             "channel_capacity": {
-                "http.request": 5000,
-                "websocket.send*": 5000,
+                "http.request": 10000,
+                "websocket.send*": 10000,
             },
         },
         "ROUTING": "pawprints.routing.channel_routing",

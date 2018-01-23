@@ -6,7 +6,7 @@
     {% if user.is_staff %}
         <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
     {% endif %}
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
 
     <style>
         .background-highlight{
@@ -1311,7 +1311,7 @@
                             bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.updateModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.updateModal.close();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
@@ -1331,7 +1331,7 @@
                             bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){console.log(r);window.responseModal.close();})']
+                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.responseModal.close();})']
                             ],
                             closeCallback: function(){
                                 tinymce.remove("#admin-edit");
@@ -1468,7 +1468,6 @@
                         petitions.loading = true;
                         petitions.map = {};
                         petitions.list = [];
-                        console.log("Search: "+search.searchString);
                         socket.send('{"command":"search","query":"'+search.searchString+'"}');
                         setTimeout(function(){
                             // Timeout waiting for the websocket response after 3 seconds.
@@ -1575,11 +1574,9 @@
         var prevURL = window.location.href.split('?')[0];
         prevURL = prevURL.slice(0, -1);
         if(!petitionID && petitionID !== 0){
-//            console.log("CLEARING PETITION ID FROM URL");
             window.history.pushState("object or string", "Title", prevURL);
         }
         else{
-//            console.log("THIS SHOULD UPDATE THE URL TO INCLUDE A /?p="+petitionID);
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
@@ -1625,8 +1622,6 @@
     function openPetition(petitionID, auto_open = false, counter = 0){
         // Renders the petition data into a petition model and also updates browser history.
 
-        if(counter === 0)console.log("Trying to open petition with id '"+petitionID+"'...");
-
         var toPetition = getPetition(petitionID); // getPetition returns false if it has to grab a petition not loaded yet.
         if(!toPetition){
 
@@ -1635,13 +1630,12 @@
 
                 if(counter < 10){ // Only loop for a max of 2 seconds.
 
-                    console.log("loop" + counter);
                     openPetition(petitionID, auto_open, counter+1);
 
                 }
                 else{
 
-                    console.log("Error: could not load petition.")
+                    throw "Error: could not load petition.";
 
                 }
 
@@ -1784,7 +1778,7 @@
 
     function setupSocket(){
 
-        var websocket_debug = true;
+        var websocket_debug = false;
         var petitionID;
 
         // Setup Web Socket.
