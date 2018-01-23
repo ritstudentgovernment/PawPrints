@@ -1,27 +1,23 @@
 """
-Defines email sending tasks that will run on celery workers
+Defines email sending tasks that will run in the background with Huey
 
 Author: Peter Zujko & Omar De La Hoz
 
-All tasks will retry at most 3 times. 
-Exponential backoff with random jitter is used when retrying tasks.
+All db_tasks will retry at most 3 times.
 """
-from __future__ import absolute_import, unicode_literals
-from celery import shared_task
 from petitions.models import *
 from profile.models import Profile
 from django.db.models import Q
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
+from huey.contrib.djhuey import db_task
 import time
 import logging
-import random
 
 logger = logging.getLogger("pawprints." + __name__)
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_approved(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -46,13 +42,10 @@ def petition_approved(petition_id, site_path):
         email.send()
         logger.info("Petition Approval email SEND \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_approved.request.retries == 3:
-            logger.critical("Petition Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        else:
-            petition_approved.retry(countdown=int(random.uniform(1, 4) ** petition_approved.request.retries), exc=e)
+        logger.critical("Petition Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_rejected(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -76,13 +69,10 @@ def petition_rejected(petition_id, site_path):
         email.send()
         logger.info("Petition Rejection email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_rejected.request.retries == 3:
-            logger.critical("Petition Rejection email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        else:
-            petition_rejected.retry(countdown=int(random.uniform(1, 4) ** petition_rejected.request.retries), exc=e)
+        logger.critical("Petition Rejection email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_update(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -114,15 +104,11 @@ def petition_update(petition_id, site_path):
         email.send()
         logger.info("Petition Update email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_update.request.retries == 3:
-            logger.critical(
-                "Petition Update email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(recipients),
+        logger.critical("Petition Update email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(recipients),
                 exc_info=True)
-        else:
-            petition_update.retry(countdown=int(random.uniform(1, 4) ** petition_update.request.retries), exc=e)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_responded(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -154,15 +140,11 @@ def petition_responded(petition_id, site_path):
         email.send()
         logger.info("Petition Response email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_update.request.retries == 3:
-            logger.critical(
-                "Petition Response email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(
-                    recipients), exc_info=True)
-        else:
-            petition_update.retry(countdown=int(random.uniform(1, 4) ** petition_update.request.retries), exc=e)
+        logger.critical(
+            "Petition Response email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(recipients), exc_info=True)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_reached(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -193,15 +175,10 @@ def petition_reached(petition_id, site_path):
         email.send()
         logger.info("Petition Reached email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_reached.request.retries == 3:
-            logger.critical(
-                "Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + recipients,
-                exc_info=True)
-        else:
-            petition_reached.retry(countdown=int(random.uniform(1, 4) ** petition_reached.request.retries), exc=e)
+        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + recipients,exc_info=True)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_received(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -223,16 +200,12 @@ def petition_received(petition_id, site_path):
     email.content_subtype = "html"
     try:
         email.send()
-
         logger.info("Petition Received email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_received.request.retries == 3:
-            logger.critical("Petition Received email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        else:
-            petition_received.retry(countdown=int(random.uniform(1, 4) ** petition_received.request.retries), exc=e)
+        logger.critical("Petition Received email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+        raise e
 
-
-@shared_task
+@db_task(retries=3, retry_delay=3)
 def petition_needs_approval(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
@@ -256,9 +229,5 @@ def petition_needs_approval(petition_id, site_path):
         email.send()
         logger.info("Petition Needs Approval email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        if petition_needs_approval.request.retries == 3:
-            logger.critical("Petition Needs Approval email FAILED \nPetition ID: " + str(petition.id))
-        else:
-            logger.error("Petition Needs Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-            petition_needs_approval.retry(countdown=int(random.uniform(1, 4) ** petition_approved.request.retries),
-                                          exc=e)
+        logger.critical("Petition Needs Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+        raise e

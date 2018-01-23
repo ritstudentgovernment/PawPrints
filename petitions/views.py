@@ -31,7 +31,6 @@ logger = logging.getLogger("pawprints." + __name__)
 PETITION_DEFAULT_TITLE = "Action-oriented, one-line statement"
 PETITION_DEFAULT_BODY = "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
 
-
 def index(request):
     """
     Handles displaying the index page of PawPrints.
@@ -285,7 +284,7 @@ def petition_edit(request, petition_id):
                 send_update(data)
 
                 # Send email regarding updates.
-                petition_update.delay(petition.id, request.META['HTTP_HOST'])
+                petition_update(petition.id, request.META['HTTP_HOST'])
 
             elif attribute == "response":
 
@@ -317,7 +316,7 @@ def petition_edit(request, petition_id):
                 send_update(data)
 
                 # Send email regarding the response.
-                petition_responded.delay(petition_id, request.META['HTTP_HOST'])
+                petition_responded(petition_id, request.META['HTTP_HOST'])
 
             elif attribute == "mark-in-progress":
 
@@ -346,7 +345,7 @@ def petition_edit(request, petition_id):
                 send_update(data)
 
                 # Notify author that the petition was rejected over email.
-                petition_rejected.delay(petition_id, request.META['HTTP_HOST'])
+                petition_rejected(petition_id, request.META['HTTP_HOST'])
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
@@ -423,7 +422,7 @@ def petition_sign(request, petition_id):
 
         # Check if petition reached 200 if so, email.
         if petition.signatures == 200:
-            petition_reached.delay(petition.id, request.META['HTTP_HOST'])
+            petition_reached(petition.id, request.META['HTTP_HOST'])
             logger.info('petition ' + petition.title + ' hit 200 signatures \n' + "ID: " + str(petition.id))
 
     return HttpResponse(str(petition.id))
