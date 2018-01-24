@@ -127,4 +127,5 @@ PawPrints - Make your mark.webarchive
 *.crt
 
 *.iml
+*.rdb
 !/static/images/browserconfig.xml

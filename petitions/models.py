@@ -1,4 +1,4 @@
-""" 
+"""
 Author: Peter Zujko (@zujko)
 Description: Contains models for Petition, Tag, and Response.
 Date Created: Sept 15 2016
@@ -15,7 +15,7 @@ class Petition(models.Model):
     title = models.CharField(max_length=80)
     description = models.TextField()
     tags = models.ManyToManyField('petitions.Tag')
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
     signatures = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField()
     # These states include: 0 - new (unpublished), 1 - published, 2 - removed (unpublished), 3 - Needs Review
@@ -23,7 +23,7 @@ class Petition(models.Model):
     expires = models.DateTimeField()
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
-    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
+    response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True, on_delete=models.SET_NULL)
     in_progress = models.NullBooleanField()
     updates = models.ManyToManyField('petitions.Update', default=None)
     old_id = models.CharField(max_length=20, default=None, blank=True, null=True)

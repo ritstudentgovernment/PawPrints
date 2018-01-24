@@ -92,7 +92,7 @@ def petition(request, petition_id):
 
     # Check if user is authenticated before querying
     curr_user_signed = user.profile.petitions_signed.filter(
-        id=petition.id).exists() if user.is_authenticated() else None
+        id=petition.id).exists() if user.is_authenticated else None
 
     # Get QuerySet of all users who signed this petition
     # Note: This returns an abstract list of IDs that are not directly associated, at least to my knowledge, to specific user objects.
@@ -555,7 +555,7 @@ def edit_check(user, petition):
     # Initially set the edit variable to false.
     edit = False
     # Check if the user is logged in
-    if user.is_authenticated():
+    if user.is_authenticated:
         # Check if the user's account is active (it may be disabled)
         if user.is_active:
             # Check if the user is a staff member or the author of the petition.
