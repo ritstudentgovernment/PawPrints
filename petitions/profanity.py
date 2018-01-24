@@ -1,5 +1,5 @@
 """
-Provides functionality to see if a petition contains profanities. 
+Provides functionality to see if a petition contains profanities.
 Author: Peter Zujko
 
 """
@@ -17,6 +17,7 @@ def load_words(filename):
     csvfile = open(os.path.join(dirname, filename), 'r')
     for line in csvfile:
         words.append(line.strip())
+    csvfile.close()
     return words
 
 
