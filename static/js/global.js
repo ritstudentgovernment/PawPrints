@@ -427,7 +427,12 @@ function ucfirst(string){
 
         buildModal.call(me);
         bindModalEvents.call(me);
-        positionModal(me);
+
+        setTimeout(function(){
+
+            positionModal(me);
+
+        },0);
 
         if(me.overlay){
             $(me.overlay).fadeIn(me.settings.animationDuration);
