@@ -333,12 +333,6 @@ function ucfirst(string){
 
         },0);
 
-        setTimeout(function(){
-
-            positionModal(me);
-
-        },10);
-
         $(window).resize(function(){
             var elementHeight = $(me.element).find(".modal-container").height();
             var windowHeight = $(window).height();
@@ -433,6 +427,7 @@ function ucfirst(string){
 
         buildModal.call(me);
         bindModalEvents.call(me);
+        positionModal(me);
 
         if(me.overlay){
             $(me.overlay).fadeIn(me.settings.animationDuration);
