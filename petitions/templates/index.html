@@ -1291,13 +1291,8 @@
             $("#timeline-container").css({"border":"3px solid black"});
         }
 
-        $(tinymce.activeEditor.getWin()).bind('resize',function() {
-
-            // TODO: Implement auto-resizing of modal windows.
-
-        });
-
         $(document).on("click","#admin-actions .circle",function(e){
+            if(window.debug)console.log("CLICK ADMIN BUTTON");
             var clicked = $(e.target).closest(".circle");
             var action = clicked.data("admin-control");
             function initTinyMCE(){
@@ -1386,6 +1381,9 @@
 {% csrf_token %}
 </body>
 <script>
+
+    window.debug = false;
+
     /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
      *   data:
@@ -1792,7 +1790,7 @@
 
     function setupSocket(){
 
-        var websocket_debug = false;
+        var websocket_debug = window.debug;
         var petitionID;
 
         // Setup Web Socket.
