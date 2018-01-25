@@ -245,6 +245,15 @@ function ucfirst(string){
 (function( $ ){
     // Custom Modal Plugin
     // Relies on jQuery, animate.css and my custom cssanimate jQuery plugin.
+    function positionModal(me){
+
+        var elementHeight = $(me.element).find(".modal-container").height();
+        var windowHeight = $(window).height();
+        var topOffset = (windowHeight / 2) - (elementHeight / 2);
+        topOffset = topOffset > 0 ? topOffset : 0;
+        me.element.find(".modal-container").css({"top":topOffset+"px"});
+
+    }
     function buildModal(){
         // Constructs a new modal from the modal template and configures it based on user settings.
 
@@ -319,13 +328,17 @@ function ucfirst(string){
         me.element.removeClass("hidden");
 
         setTimeout(function(){
-            var elementHeight = $(me.element).find(".modal-container").height();
-            var windowHeight = $(window).height();
-            var topOffset = (windowHeight / 2) - (elementHeight / 2);
-            topOffset = topOffset > 0 ? topOffset : 0;
-            me.element.find(".modal-container").css({"top":topOffset+"px"});
+
+            positionModal(me);
 
         },0);
+
+        setTimeout(function(){
+
+            positionModal(me);
+
+        },10);
+
         $(window).resize(function(){
             var elementHeight = $(me.element).find(".modal-container").height();
             var windowHeight = $(window).height();
