@@ -1324,7 +1324,9 @@
                         });
                         updateModal.open();
                         initTinyMCE();
-                        updateModal.positionModal();
+                        setTimeout(function(){
+                            updateModal.positionModal();
+                        },0);
                         return true;
                     }
                     return updateLaunch();
