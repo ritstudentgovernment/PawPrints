@@ -487,7 +487,7 @@ function ucfirst(string){
             for(i=0;i<=classesToStrip.length;i++){
                 if(element.hasClass(classesToStrip[i])){
                     element.removeClass(classesToStrip[i]);
-                    console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
+                    if(window.debug)console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
                 }
                 else{
                     //console.log("Element '"+element+"' Does not have class "+classesToStrip[i]);
@@ -517,7 +517,7 @@ function ucfirst(string){
         element.addClass("animated "+effect);
 
         setTimeout(function(){
-            // stripAnimationClasses();
+            stripAnimationClasses();
             callback();
         },settings.duration * 2);
 
