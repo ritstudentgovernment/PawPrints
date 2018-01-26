@@ -73,7 +73,7 @@ def serialize_petitions(petitions_obj, user=None):
     return json.dumps({
         "petitions": petitions,
         "map": petition_map
-    })
+    }, indent=1, ensure_ascii=False).encode('utf-8')
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
