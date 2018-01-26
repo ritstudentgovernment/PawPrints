@@ -1287,10 +1287,6 @@
 {% endif %}
 {% if user.is_staff %}
     <script>
-        if(getUrl("dev")){
-            $("#timeline-container").css({"border":"3px solid black"});
-        }
-
         $(document).on("click","#admin-actions .circle",function(e){
             if(window.debug)console.log("CLICK ADMIN BUTTON");
             var clicked = $(e.target).closest(".circle");
@@ -1762,7 +1758,6 @@
                     setContentAvailableSpace(modal);
                     verticalOffset(modal.find(".modal-container"));
                 });
-
             });
 
             $(document).on("keyup",function(e){
