@@ -1323,7 +1323,9 @@
                             }
                         });
                         updateModal.open();
-                        return initTinyMCE();
+                        initTinyMCE();
+                        updateModal.positionModal();
+                        return true;
                     }
                     return updateLaunch();
                 case "respond":
