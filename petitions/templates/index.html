@@ -1347,12 +1347,16 @@
                             }
                         });
                         responseModal.open();
-                        return initTinyMCE();
+                        initTinyMCE();
+                        setTimeout(function(){
+                            responseModal.positionModal();
+                        },0);
+                        return true;
                     }
                     return responseLaunch();
                 case "delete":
                     function deleteLaunch(){
-                        // Build the update modal
+                        // Build the Deletion modal
                         window.deleteModal = new Modal({
                             icon: false,
                             headerClass:"background-highlight bright-text",
@@ -1361,13 +1365,10 @@
                             bodyButtons:[
                                 ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
                                 ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
-                            ],
-                            closeCallback: function(){
-                                tinymce.remove("#admin-edit");
-                            }
+                            ]
                         });
                         deleteModal.open();
-                        return initTinyMCE();
+                        return true;
                     }
                     return deleteLaunch();
                 case "mark_in_progress":
