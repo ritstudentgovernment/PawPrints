@@ -26,6 +26,7 @@ class Petition(models.Model):
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True)
     in_progress = models.NullBooleanField()
     updates = models.ManyToManyField('petitions.Update', default=None)
+    old_id = models.CharField(max_length=20, default=None, blank=True, null=True)
 
     def __str__(self):
         return self.title

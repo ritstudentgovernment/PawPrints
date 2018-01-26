@@ -28,7 +28,7 @@ SECRET_KEY = secrets.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["sgstage.rit.edu", "pawprints.rit.edu"]
 
 # Sentry Settings
 RAVEN_CONFIG = {
@@ -89,6 +89,10 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "channel_capacity": {
+                "http.request": 1000,
+                "websocket.send*": 1000,
+            },
         },
         "ROUTING": "pawprints.routing.channel_routing",
     },
