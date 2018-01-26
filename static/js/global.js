@@ -476,7 +476,9 @@ function ucfirst(string){
         }, options);
 
         if(typeof callback != "function"){
-            callback = function(){};
+            callback = function(){
+                if(window.debug)console.log("CSSAnimate Callback");
+            };
         }
 
         function stripAnimationClasses(){
