@@ -1747,6 +1747,14 @@
                 $(this).removeClass("hidden");
             });
 
+            $(".timeline-element-content").each(function(i){
+                var content = $(this).html();
+                console.log(content);
+                content = unescape(content);
+                console.log(content);
+                modalData.timeline[i].content = content;
+            });
+
             verticalOffset(modal.find(".modal-container"), 0);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
