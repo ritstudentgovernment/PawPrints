@@ -165,7 +165,7 @@ def petition_create(request):
     new_petition.save()
 
     logger.info(
-        "user " + user.email + " created a new petion called " + new_petition.title + " ID: " + str(new_petition.id))
+        "user " + user.email + " created a new petition called " + new_petition.title + " ID: " + str(new_petition.id))
 
     # Return the petition's ID to be used to redirect the user to the new petition.
     return HttpResponse(str(petition_id))
@@ -184,10 +184,10 @@ def petition_redirect(request, petition_id):
         return redirect("/?p=" + str(petition_id))
     except ValueError:
         # Check if the petition_id sent exists in the Redis server store.
-        redis_connection = redis.StrictRedis()
-        if redis_connection.exists(petition_id):
+        petition = Petition.objects.filter(old_id=petition_id)
+        if petition.exists():
             # Redirect to correct petition.
-            return redirect("/?p=" + str(redis_connection.get(petition_id)))
+            return redirect("/?p=" + str(petition.first().id))
         # Petition did not exist in redis database ID is not an int
         return redirect("/")
 
@@ -232,7 +232,7 @@ def petition_edit(request, petition_id):
 
             send_update(data)
 
-            user = request.user.profile
+            user = request.user
             return petition_publish(user, petition)
 
         elif attribute == "title":
@@ -241,7 +241,13 @@ def petition_edit(request, petition_id):
                 return JsonResponse(
                     {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
+            # Update the petition title
             petition.title = value
+
+            # Update petition created and expires dates.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
 
         elif attribute == "description":
 
@@ -249,7 +255,13 @@ def petition_edit(request, petition_id):
                 return JsonResponse(
                     {"Error": "Petitions may not contain profanity. Please correct this and try again."})
 
+            # Update the petition description
             petition.description = value
+
+            # Update petition created and expires dates.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
 
         elif attribute == "add-tag":
 
@@ -401,8 +413,8 @@ def petition_sign(request, petition_id):
     """
     user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
-    # If the petition is published and still active
-    if user.profile.affiliation == 1 and petition.status != 0 and petition.status != 2:
+    # If the user has access to pawprints and the petition is both published and still active
+    if user.profile.has_access == 1 and petition.status != 0 and petition.status != 2:
         if not user.profile.petitions_signed.filter(id=petition_id).exists():
             user.profile.petitions_signed.add(petition)
             user.save()
@@ -460,22 +472,24 @@ def petition_publish(user, petition):
     petition's author.
     """
     response = False
-    if petition.status == 0 and user.id == petition.author.id:
-        # Set status to 1 to publish it to the world.
-        petition.status = 1
-        # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
-        date = timezone.now()
-        petition.created_at = date
-        petition.expires = date + timedelta(days=30)
-        # Save the petition.
-        petition.save()
-        response = True
+    # If the user has access to pawprints.
+    if user.profile.has_access == 1:
+        if petition.status == 0 and user.id == petition.author.id:
+            # Set status to 1 to publish it to the world.
+            petition.status = 1
+            # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
+            date = timezone.now()
+            petition.created_at = date
+            petition.expires = date + timedelta(days=30)
+            # Save the petition.
+            petition.save()
+            response = True
 
-        data = {
-            "new-petition": petition.id
-        }
+            data = {
+                "new-petition": petition.id
+            }
 
-        send_update(data)
+            send_update(data)
 
     return HttpResponse(response)
 
@@ -555,7 +569,6 @@ def filtering_controller(sorted_objects, tag):
     if tag == "all":
         return sorted_objects
     else:
-        queried_tag = Tag.objects.get(id=tag)
         return sorted_objects.all().filter(tags=tag)
 
 
@@ -617,10 +630,8 @@ def similar_petitions(query):
 
 def in_progress():
     return Petition.objects.all() \
-        .filter(expires__gt=timezone.now()) \
         .filter(status=1) \
-        .filter(expires__gt=timezone.now()) \
-        .filter((Q(signatures__gt=200) | ~Q(updates=None)) & Q(response=None)) \
+        .filter(in_progress=True) \
         .exclude(has_response=True) \
         .order_by('-created_at')
 

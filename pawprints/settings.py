@@ -28,7 +28,7 @@ SECRET_KEY = secrets.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["lymbp.student.rit.edu","sgstage.rit.edu"]
+ALLOWED_HOSTS = ["lymbp.student.rit.edu", "sgstage.rit.edu", "pawprints.rit.edu"]
 
 # Celery Settings
 CELERY_BROKER_URL = secrets.RABBITMQ_URL
@@ -66,6 +66,10 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "channel_capacity": {
+                "http.request": 10000,
+                "websocket.send*": 10000,
+            },
         },
         "ROUTING": "pawprints.routing.channel_routing",
     },

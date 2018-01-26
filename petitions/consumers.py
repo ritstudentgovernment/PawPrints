@@ -10,6 +10,8 @@ from collections import namedtuple
 from channels import Channel, Group
 from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
+import time
+import math
 
 
 def serialize_petitions(petitions_obj, user=None):
@@ -53,7 +55,7 @@ def serialize_petitions(petitions_obj, user=None):
             'author': petition.author.first_name + " " + petition.author.last_name,
             'tags': tags,
             'response': json.dumps({
-                'author': User.objects.get(username=petition.response.author).profile.full_name,
+                'author': petition.response.author,
                 'description': petition.response.description,
                 'timestamp': petition.response.created_at.strftime("%B %d, %Y")
             }) if petition.response is not None else False,
@@ -80,6 +82,18 @@ def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
+def send_petitions_individually(message, petitions):
+    for petition in petitions:
+        petition = [petition]
+        petition = serialize_petitions(petition, message.user)
+        message.reply_channel.send({
+            "text": json.dumps({
+                "command": "get",
+                "petition": petition
+            })
+        })
+
+
 @channel_session_user_from_http
 def petitions_connect(message):
     """
@@ -96,10 +110,7 @@ def petitions_connect(message):
     # Default order is 'most recent' query the database for all petitions in that order.
     petitions = views.sorting_controller("most recent")
 
-    # Send the user back the JSON serialized petition objects.
-    message.reply_channel.send({
-        "text": serialize_petitions(petitions, message.user)
-    })
+    send_petitions_individually(message, petitions)
 
 
 @channel_session_user
@@ -132,9 +143,9 @@ def petitions_command(message):
                     petitions = views.sorting_controller(data.sort)
                     if data.filter:
                         petitions = views.filtering_controller(petitions, data.filter)
-                    message.reply_channel.send({
-                        "text": serialize_petitions(petitions, message.user)
-                    })
+
+                    send_petitions_individually(message, petitions)
+
                     return None
 
                 message.reply_channel.send({
@@ -161,13 +172,9 @@ def petitions_command(message):
                 # Sends the WS a sorted and optionally filtered list of petitions.
                 if data.query:
                     petitions = views.sorting_controller("search", data.query)
-                    try:
-                        petitions = views.filtering_controller(petitions, data.filter)
-                    except AttributeError:
-                        pass
-                    message.reply_channel.send({
-                        "text": serialize_petitions(petitions, message.user)
-                    })
+
+                    send_petitions_individually(message, petitions)
+
                     return None
                 return None
 
