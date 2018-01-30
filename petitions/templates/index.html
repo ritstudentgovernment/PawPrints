@@ -1621,6 +1621,8 @@
                          .replace(/"/g,"")
                          .replace(/\\n/g, "\n")
                          .replace(/\\u2013/g,"<br/>–")
+                         .replace(/\\u00ed/g,"í")
+                         .replace(/\\u00e7/,"ç")
         );
     }
     function getDayDifference(date1, date2){
