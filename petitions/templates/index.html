@@ -1616,7 +1616,10 @@
          * This function unescapes certain characters sent in the JSON response for each petition so they show up correctly.
          **/
         return decodeHtmlEntity(
-                   string.replace(/\\n/g, "\n")
+                   string.replace(/\\"/g,"'")
+                       .replace(/"/g,"")
+                       .replace(/\"/g,'')
+                       .replace(/\\n/g, "\n")
                        .replace(/\\u00ed/g,"í")
                        .replace(/\\u00e7/g, "ç")
                        .replace(/(\\u2014|\\u2013)/g, "—")
