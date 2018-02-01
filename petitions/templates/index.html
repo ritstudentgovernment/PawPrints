@@ -1763,15 +1763,6 @@
                     verticalOffset(modal.find(".modal-container"));
                 });
 
-                $(".timeline-element-content").each(function(i){
-                    var content = $(this).html();
-                    console.log(content);
-                    content = unescape(content.trim());
-                    console.log(content);
-                    toPetition.description = content;
-                    modalData.timeline[i].content = content;
-                });
-
             });
 
             $(document).on("keyup",function(e){

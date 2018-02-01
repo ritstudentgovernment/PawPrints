@@ -223,6 +223,9 @@ def petition_edit(request, petition_id):
             if petition.description == PETITION_DEFAULT_BODY:
                 return JsonResponse({"Error": "Oops! Looks like you forgot to change the body of the petition."})
 
+            if len(petition.tags) == 0:
+                return JsonResponse({"Error": "Oops! Looks like you forgot to add a tag to your petition."})
+
             data = {
                 "command": "new-petition",
                 "petition": {
