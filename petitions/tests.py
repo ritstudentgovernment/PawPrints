@@ -80,11 +80,14 @@ class PetitionTest(TestCase):
 
     def test_petition_publish(self):
         self.client.force_login(self.user)
+        tag = Tag(name='test tag')
+        tag.save()
         obj = {
             "attribute": "publish",
             "value": "foo"
         }
         self.petition.status = 0
+        self.petition.tags.add(tag)
         self.petition.save()
         response = self.client.post('/petition/update/' + str(self.petition.id), obj)
         # Make sure there is no 404
