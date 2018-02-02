@@ -23,6 +23,7 @@ idna==2.6
 incremental==17.5.0
 isodate==0.6.0
 lxml==4.1.1
+mimesis==1.0.5
 msgpack-python==0.5.1
 packaging==16.8
 pkgconfig==1.2.2
