@@ -16,3 +16,4 @@ omit =
   */pawprints/celery.py
   */pawprints/asgi.py
   */log/*
+  petitions/management/*
