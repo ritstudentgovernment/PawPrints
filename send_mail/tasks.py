@@ -175,7 +175,7 @@ def petition_reached(petition_id, site_path):
         email.send()
         logger.info("Petition Reached email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + recipients,exc_info=True)
+        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + str(recipients),exc_info=True)
         raise e
 
 @db_task(retries=3, retry_delay=3)
