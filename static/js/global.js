@@ -73,7 +73,7 @@ function verticalOffset(element, givenOffset = false){
     var windowHeight = $(window).height();
     var topOffset = (windowHeight / 2) - (elementHeight / 2);
     topOffset = topOffset > 0 ? topOffset : 0;          // Prevent negative values.
-    topOffset = !givenOffset ? topOffset : givenOffset; // Provide a offset override.
+    topOffset = givenOffset === false ? topOffset : givenOffset; // Provide a offset override.
     console.log(elementHeight + " | " + windowHeight + " = "+ topOffset);
     element.css({"top":topOffset+"px"});
 }
@@ -123,7 +123,7 @@ $(document).ready(function(){
         $icon.removeClass( "is-active" );
     });
     var scrolledWaypoint = $("#sub-landing").waypoint(function(direction){
-        if(direction == "down"){
+        if(direction === "down"){
             $("header").addClass("small-header header-scrolled");
             $("#back-up").stop().fadeIn(100);
             $(".attach").each(function(){
@@ -475,7 +475,7 @@ function ucfirst(string){
             inline: false
         }, options);
 
-        if(typeof callback != "function"){
+        if(typeof callback !== "function"){
             callback = function(){
                 if(window.debug)console.log("CSSAnimate Callback");
             };
@@ -484,13 +484,10 @@ function ucfirst(string){
         function stripAnimationClasses(){
             //This function strips all CSS Animation Classes from the given element.
             var classesToStrip = ["Animated","bounce","flash","pulse","rubberBand","shake","headShake","swing","tada","wobble","jello","bounceIn","bounceInDown","bounceInLeft","bounceInRight","bounceInUp","bounceOut","bounceOutDown","bounceOutLeft","bounceOutRight","bounceOutUp","fadeIn","fadeInDown","fadeInDownBig","fadeInLeft","fadeInLeftBig","fadeInRight","fadeInRightBig","fadeInUp","fadeInUpBig","fadeOut","fadeOutDown","fadeOutDownBig","fadeOutLeft","fadeOutLeftBig","fadeOutRight","fadeOutRightBig","fadeOutUp","fadeOutUpBig","flipInX","flipInY","flipOutX","flipOutY","lightSpeedIn","lightSpeedOut","rotateIn","rotateInDownLeft","rotateInDownRight","rotateInUpLeft","rotateInUpRight","rotateOut","rotateOutDownLeft","rotateOutDownRight","rotateOutUpLeft","rotateOutUpRight","hinge","rollIn","rollOut","zoomIn","zoomInDown","zoomInLeft","zoomInRight","zoomInUp","zoomOut","zoomOutDown","zoomOutLeft","zoomOutRight","zoomOutUp","slideInDown","slideInLeft","slideInRight","slideInUp","slideOutDown","slideOutLeft","slideOutRight","slideOutUp"];
-            for(i=0;i<=classesToStrip.length;i++){
+            for(var i = 0; i <= classesToStrip.length; i++){
                 if(element.hasClass(classesToStrip[i])){
                     element.removeClass(classesToStrip[i]);
                     if(window.debug)console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
-                }
-                else{
-                    //console.log("Element '"+element+"' Does not have class "+classesToStrip[i]);
                 }
             }
         }
@@ -519,7 +516,7 @@ function ucfirst(string){
         setTimeout(function(){
             stripAnimationClasses();
             callback();
-        },settings.duration * 2);
+        }, settings.duration * 3);
 
         return element;
 
@@ -540,6 +537,8 @@ function ucfirst(string){
                     "-moz-transition":"all 0.05s linear",
                     "-ms-transition":"all 0.05s linear",
                     "-o-transition":"all 0.05s linear",
+                    "-webkit-backface-visibility":"hidden",
+                    "-webkit-perspective": "1000",
                     "position":"absolute",
                     "top":settings.offset+"%",
                     "left":"0"

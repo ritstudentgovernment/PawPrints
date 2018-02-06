@@ -1145,7 +1145,7 @@
                                 <span class="alternate-font">On <a class="text-highlight" :href="'https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/?p='+petition.id">Facebook</a></span>
                             </div>
                         </div>
-                        <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                        <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
                     </div>
                     <div v-else-if="petition.status == 0">
                         <div class="ninety-width">
@@ -1303,73 +1303,76 @@
             }
             switch(action){
                 case "update":
-                    function updateLaunch(){
-                        // Build the update modal
-                        window.updateModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Add Update</h2>",
-                            bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.updateModal.close();})']
-                            ],
-                            closeCallback: function(){
-                                tinymce.remove("#admin-edit");
-                            }
-                        });
-                        updateModal.open();
-                        initTinyMCE();
-                        setTimeout(function(){
-                            updateModal.positionModal();
-                        },0);
-                        return true;
-                    }
-                    return updateLaunch();
-                case "respond":
-                    function responseLaunch(){
-                        // Build the update modal
-                        window.responseModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Respond to this petition</h2>",
-                            bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.responseModal.close();})']
-                            ],
-                            closeCallback: function(){
-                                tinymce.remove("#admin-edit");
-                            }
-                        });
-                        responseModal.open();
-                        initTinyMCE();
-                        setTimeout(function(){
-                            responseModal.positionModal();
-                        },0);
-                        return true;
-                    }
-                    return responseLaunch();
-                case "delete":
-                    function deleteLaunch(){
-                        // Build the Deletion modal
-                        window.deleteModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Un-publish this petition.</h2>",
-                            bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
-                            ]
-                        });
-                        deleteModal.open();
-                        return true;
-                    }
-                    return deleteLaunch();
-                case "mark_in_progress":
-                    update("mark-in-progress",false,getUrl("p"));
+                    // Build the update modal
+
+                    window.updateModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Add Update</h2>",
+                        bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.updateModal.close();})']
+                        ],
+                        closeCallback: function(){
+                            tinymce.remove("#admin-edit");
+                        }
+                    });
+                    updateModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        updateModal.positionModal();
+                    },0);
                     return true;
+
+                case "respond":
+                    // Build the response modal
+
+                    var response = window.modalData.petition.response;
+                    response = response === undefined ? "Write your response here." : response;
+
+                    window.responseModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Respond to this petition</h2>",
+                        bodyContent:"<div id='admin-edit'>"+response+"</div>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.responseModal.close();})']
+                        ],
+                        closeCallback: function(){
+                            tinymce.remove("#admin-edit");
+                        }
+                    });
+                    responseModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        responseModal.positionModal();
+                    },0);
+                    return true;
+
+                case "delete":
+                    // Build the Deletion modal
+
+                    window.deleteModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Un-publish this petition.</h2>",
+                        bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                        ]
+                    });
+                    deleteModal.open();
+                    return true;
+
+                case "mark_in_progress":
+                    update("mark-in-progress", false, getUrl("p"));
+                    return true;
+
                 default:
                     throw "Error when dispatching an admin control action.";
             }
@@ -1750,14 +1753,16 @@
             verticalOffset(modal.find(".modal-container"), 0);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
+                // Update the space that the petition's body takes up
                 setContentAvailableSpace(modal);
-
                 // Center the modal on the screen
                 verticalOffset(modal.find(".modal-container"));
+
                 $(window).resize(function(){
                     setContentAvailableSpace(modal);
                     verticalOffset(modal.find(".modal-container"));
                 });
+
             });
 
             $(document).on("keyup",function(e){

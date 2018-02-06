@@ -57,13 +57,6 @@ class PetitionTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, '404.html')
 
-    """ Looks like this is incorrect?
-    def test_load_petitions(self):
-        response = self.client.post('/petition/', {'sort_by': 'most signatures', 'filter': 'all'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'list_petitions.html')
-    """
-
     def test_petition_edit(self):
         self.client.force_login(self.superUser)
         # Change petition title to 'New'
