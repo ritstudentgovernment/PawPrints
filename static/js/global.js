@@ -49,7 +49,7 @@ function getUrl(variable){
         return(false);
     }
     catch(err){
-        console.log("Error: " +err);
+        throw err;
     }
 }
 
@@ -74,7 +74,7 @@ function verticalOffset(element, givenOffset = false){
     var topOffset = (windowHeight / 2) - (elementHeight / 2);
     topOffset = topOffset > 0 ? topOffset : 0;          // Prevent negative values.
     topOffset = givenOffset === false ? topOffset : givenOffset; // Provide a offset override.
-    console.log(elementHeight + " | " + windowHeight + " = "+ topOffset);
+    if(window.debug)console.log("verticalOffset: "+elementHeight + " | " + windowHeight + " = "+ topOffset);
     element.css({"top":topOffset+"px"});
 }
 

@@ -1093,7 +1093,7 @@
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
                                 <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
                             </button>
-                            <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
+                            <span class="padding-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
                         </div>
                         <div id="action-drawer-icon-container" class="transition">
                             <i class="material-icons">keyboard_arrow_down</i>
@@ -1134,7 +1134,7 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Status</h3>
-                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-if="petition.signatures < petition.threshold && !petition.in_progress && !petition.response && !petition.expired">Active</span>
                                 <span class="alternate-font" v-else-if="petition.response">Responded</span>
                                 <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
@@ -1750,7 +1750,6 @@
                 $(this).removeClass("hidden");
             });
 
-            verticalOffset(modal.find(".modal-container"), 0);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
                 // Update the space that the petition's body takes up
@@ -1962,6 +1961,7 @@
 
                         petition = parseOnePetition(data);
                         if(petition){
+
                             petitions.list.push(petition);
                             petitions.map[petition.id] = petitions.list.indexOf(petition);
                             animateUpdate(petition.id);
