@@ -37,6 +37,7 @@ class PetitionTest(TestCase):
                                  status=0,
                                  expires=timezone.now() + timedelta(days=30)
                                  )
+        self.petition.save()
         self.petition.tags.add(self.tag)
         self.petition.save()
         self.petitionPublished = Petition(title='Test petition Published',
