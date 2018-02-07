@@ -300,7 +300,7 @@
         #petition-modal .modal-container{
             max-height: 95vh;
             height:95vh;
-            overflow: scroll;
+            overflow: hidden;
         }
         #petition-modal .modal-header{
             padding: 10px;
@@ -1750,6 +1750,7 @@
                 $(this).removeClass("hidden");
             });
 
+            setContentAvailableSpace(modal, 200);
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
                 // Update the space that the petition's body takes up

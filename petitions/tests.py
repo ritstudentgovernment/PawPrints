@@ -39,7 +39,6 @@ class PetitionTest(TestCase):
                                  )
         self.petition.save()
         self.petition.tags.add(self.tag)
-        self.petition.save()
         self.petitionPublished = Petition(title='Test petition Published',
                                  description='This is a test petition Published',
                                  author=self.user2,
