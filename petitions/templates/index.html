@@ -1135,6 +1135,7 @@
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Status</h3>
                                 <span class="alternate-font" v-if="petition.signatures < petition.threshold && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-else-if="petition.signatures > petition.threshold && !petition.in_progress">Threshold Met</span>
                                 <span class="alternate-font" v-else-if="petition.response">Responded</span>
                                 <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
@@ -1243,13 +1244,6 @@
                             <span v-if="petition.response" class="right">Responded</span>
                             <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
                             <span v-else-if="petition.in_progress" class="right">In Progress</span>
-                            <!--<span class="right">-->
-                                <!--<i v-if="petition.response" class="status-icon material-icons md-18" title="This petition has received an official response.">done</i>-->
-                                <!--<i v-else-if="petition.updates.length > 0" class="status-icon material-icons md-18" title="This petition has been updated by a SG senator.">message</i>-->
-                                <!--<i v-else-if="petition.in_progress" class="status-icon material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>-->
-                            <!--</span>-->
-                            <!-- Signature icon by Icons8 -->
-                            <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">-->
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>
@@ -1553,6 +1547,7 @@
             this.randomize();
         }
     });
+
     function reloadPetitions(sort_by, filter, socket){
         /**
          * This function is responsible for loading all petitions that fit in the given filter + sort set.
@@ -1636,7 +1631,8 @@
     function setContentAvailableSpace(modal, additional_margin = 0){
         // Compute the available space for the content of the petition based on the used space.
         var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
-        modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
+        modal.find("#timeline-container").css({"height":"calc(95vh - "+usedSpace+"px)"});
+        modal.find(".modal-body").removeClass("hidden");
     }
     openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false, counter = 0){
@@ -1751,6 +1747,7 @@
             });
 
             setContentAvailableSpace(modal, 200);
+            verticalOffset(modal.find(".modal-container"));
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
                 // Update the space that the petition's body takes up
