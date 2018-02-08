@@ -1381,6 +1381,7 @@
 <script>
 
     window.debug = false;
+    var django_petitions = {{ petitions }};
 
     /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
@@ -1960,10 +1961,15 @@
                         petition = parseOnePetition(data);
                         if(petition){
 
-                            petitions.list.push(petition);
-                            petitions.map[petition.id] = petitions.list.indexOf(petition);
-                            animateUpdate(petition.id);
+                            if(petitions.map[petition.id] === undefined){
+
+                                petitions.list.push(petition);
+                                petitions.map[petition.id] = petitions.list.indexOf(petition);
+                                animateUpdate(petition.id);
+
+                            }
                             petitions.loading = false;
+
                         }
                         else{
                             clearTimeout(openPetitionLoop);
