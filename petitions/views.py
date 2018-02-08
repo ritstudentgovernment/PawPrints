@@ -22,7 +22,6 @@ from send_mail.tasks import *
 import petitions.profanity
 import json
 import redis
-from petitions.consumers import serialize_petitions
 
 import logging
 
@@ -43,7 +42,7 @@ def index(request):
     data_object = {
         'tags': Tag.objects.all,
         'colors': colors(),
-        'petitions': serialize_petitions(sorting_controller(sorting_key))
+        'petitions': sorting_controller(sorting_key)
     }
 
     return render(request, 'index.html', data_object)
