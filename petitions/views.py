@@ -22,7 +22,7 @@ from send_mail.tasks import *
 import petitions.profanity
 import json
 import redis
-from consumers import serialize_petitions
+from petitions.consumers import serialize_petitions
 
 import logging
 
