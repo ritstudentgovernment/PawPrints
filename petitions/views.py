@@ -42,7 +42,7 @@ def index(request):
     data_object = {
         'tags': Tag.objects.all,
         'colors': colors(),
-        'petitions': sorting_controller(sorting_key)
+        'petitions': list(sorting_controller(sorting_key))
     }
 
     return render(request, 'index.html', data_object)
