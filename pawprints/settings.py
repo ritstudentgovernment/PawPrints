@@ -26,7 +26,9 @@ SAML_FOLDER = os.path.join(BASE_DIR, 'saml')
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+if 'TRAVIS' in os.environ:
+    DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
