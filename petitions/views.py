@@ -21,7 +21,6 @@ from channels import Group, Channel
 from send_mail.tasks import *
 import petitions.profanity
 import json
-import redis
 
 import logging
 
