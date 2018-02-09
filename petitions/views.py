@@ -22,7 +22,6 @@ from send_mail.tasks import *
 import petitions.profanity
 import json
 import redis
-from django.core import serializers
 
 import logging
 
@@ -42,8 +41,7 @@ def index(request):
 
     data_object = {
         'tags': Tag.objects.all,
-        'colors': colors(),
-        'petitions': serializers.serialize("json", sorting_controller(sorting_key))
+        'colors': colors()
     }
 
     return render(request, 'index.html', data_object)
