@@ -1393,6 +1393,11 @@
                         ]
                     });
                     editUpdateModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        editUpdateModal.positionModal();
+                    },0);
                     return true;
 
                 case "edit-response":
@@ -1409,6 +1414,11 @@
                         ]
                     });
                     editResponseModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        editResponseModal.positionModal();
+                    },0);
                     return true;
 
                 default:
