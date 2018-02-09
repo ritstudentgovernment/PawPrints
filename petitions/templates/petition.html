@@ -212,6 +212,7 @@
                 tinymce.init({
                     selector: '#petition_description',
                     inline: false,
+                    height: 230,
                     menubar: false,
                     plugins: "image link",
                     toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat",
@@ -243,14 +244,13 @@
                         });
                     }
                 });
-                $(document).ready(function() {
-                    $('#tags-select').select2({
-                        placeholder: "Petition Tags",
-                        width: "resolve",
-                        maximumSelectionLength: 3,
-                        noResults: function(){return "No tags found."},
-                        formatSelectionTooBig: "You can only select up to 3 tags."
-                    });
+
+                $('#tags-select').select2({
+                    placeholder: "Petition Tags",
+                    width: "resolve",
+                    maximumSelectionLength: 3,
+                    noResults: function(){return "No tags found."},
+                    formatSelectionTooBig: "You can only select up to 3 tags."
                 });
                 var desc = $("#petition_description");
                 var html = desc.html();

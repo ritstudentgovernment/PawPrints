@@ -319,13 +319,11 @@ function ucfirst(string){
         me.element.removeClass("hidden");
 
         setTimeout(function(){
-            var elementHeight = $(me.element).find(".modal-container").height();
-            var windowHeight = $(window).height();
-            var topOffset = (windowHeight / 2) - (elementHeight / 2);
-            topOffset = topOffset > 0 ? topOffset : 0;
-            me.element.find(".modal-container").css({"top":topOffset+"px"});
+
+            me.positionModal();
 
         },0);
+
         $(window).resize(function(){
             var elementHeight = $(me.element).find(".modal-container").height();
             var windowHeight = $(window).height();
@@ -413,13 +411,30 @@ function ucfirst(string){
 
         return this;
 
-    }
+    };
+    Modal.prototype.positionModal = function (){
+
+        var me = this;
+
+        var elementHeight = $(me.element).find(".modal-container").height();
+        var windowHeight = $(window).height();
+        var topOffset = (windowHeight / 2) - (elementHeight / 2);
+        topOffset = topOffset > 0 ? topOffset : 0;
+        me.element.find(".modal-container").css({"top":topOffset+"px"});
+
+    };
     Modal.prototype.open = function(){
 
         var me = this;
 
         buildModal.call(me);
         bindModalEvents.call(me);
+
+        setTimeout(function(){
+
+            positionModal(me);
+
+        },0);
 
         if(me.overlay){
             $(me.overlay).fadeIn(me.settings.animationDuration);
@@ -461,7 +476,9 @@ function ucfirst(string){
         }, options);
 
         if(typeof callback != "function"){
-            callback = function(){};
+            callback = function(){
+                if(window.debug)console.log("CSSAnimate Callback");
+            };
         }
 
         function stripAnimationClasses(){
@@ -470,7 +487,7 @@ function ucfirst(string){
             for(i=0;i<=classesToStrip.length;i++){
                 if(element.hasClass(classesToStrip[i])){
                     element.removeClass(classesToStrip[i]);
-                    console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
+                    if(window.debug)console.log("Element '"+element+"' Had the class "+classesToStrip[i]+". It has been removed.");
                 }
                 else{
                     //console.log("Element '"+element+"' Does not have class "+classesToStrip[i]);
@@ -500,6 +517,7 @@ function ucfirst(string){
         element.addClass("animated "+effect);
 
         setTimeout(function(){
+            stripAnimationClasses();
             callback();
         },settings.duration * 2);
 
@@ -543,7 +561,7 @@ function ucfirst(string){
             parallaxAnimationFrame = requestAnimationFrame(updateParallax);
         });
         initParallax();
-    }
+    };
     // Custom slideshow plugin.
     $.fn.slideshow = function( options ){
         var selector = $(this);
@@ -691,7 +709,13 @@ function ucfirst(string){
 
             }
 
-            $("."+settings.slideClass).css("transform","scale("+current+")");
+            var slides = $("."+settings.slideClass);
+
+            if(inViewport(slides.first().parent()[0])){
+
+                slides.css("transform","scale("+current+")");
+
+            }
 
         }
         setup();

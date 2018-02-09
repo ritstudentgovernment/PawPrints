@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-from pawprints import secrets 
+from pawprints import secrets
 import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,15 +26,9 @@ SAML_FOLDER = os.path.join(BASE_DIR, 'saml')
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["lymbp.student.rit.edu","sgstage.rit.edu"]
-
-# Celery Settings
-CELERY_BROKER_URL = secrets.RABBITMQ_URL
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_IMPORTS = ['send_mail.tasks','petitions.tasks']
+ALLOWED_HOSTS = ["*"]
 
 # Sentry Settings
 RAVEN_CONFIG = {
@@ -57,7 +51,36 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'channels',
+    'huey.contrib.djhuey',
 ]
+
+# Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
+HUEY = {
+    'name': 'RedisHueyInstance',  # Use db name for huey.
+    'result_store': False,  # Do not store return values of tasks.
+    'events': True,  # Consumer emits events allowing real-time monitoring.
+    'store_none': False,  # If a task returns None, do not save to results.
+    'always_eager': DEBUG,  # If DEBUG=True, run synchronously.
+    'store_errors': True,  # Store error info if task throws exception.
+    'blocking': False,  # Poll the queue rather than do blocking pop.
+    'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
+    'connection': {
+        'connection_pool': None,  # Definitely you should use pooling!
+        # ... tons of other options, see redis-py for details.
+
+        'url': os.environ.get('REDIS_URL', 'redis://localhost:6379'),  # Allow Redis config via a DSN.
+    },
+    'consumer': {
+        'workers': 2,
+        'worker_type': 'thread',
+        'initial_delay': 0.1,  # Smallest polling interval, same as -d.
+        'utc': True,  # Treat ETAs and schedules as UTC datetimes.
+        'periodic': False,
+        'scheduler_interval': 1,  # Check schedule every second, -s.
+        'check_worker_health': True,  # Enable worker health checks.
+        'health_check_interval': 1,  # Check worker health every second.
+    },
+}
 
 AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
 
@@ -66,6 +89,10 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "channel_capacity": {
+                "http.request": 10000,
+                "websocket.send*": 10000,
+            },
         },
         "ROUTING": "pawprints.routing.channel_routing",
     },
@@ -222,3 +249,9 @@ LOGGING = {
         },
     },
 }
+
+
+# Secure configs
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True

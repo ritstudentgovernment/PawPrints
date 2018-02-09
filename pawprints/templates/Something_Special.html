@@ -54,7 +54,9 @@
             $("article").children().each(function(){
                 var me = $(this);
                 setTimeout(function(){
-                    me.cssanimate("fadeInUp",{inline:true});
+                    me.cssanimate("fadeInUp",{inline:true},function(){
+                        me.css("display","inline-block");
+                    });
                 },i*250);
                 i++;
             });

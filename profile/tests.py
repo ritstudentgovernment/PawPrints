@@ -22,7 +22,7 @@ class ProfileTest(TestCase):
 
         # Make sure other people can't update users notifications
         response = self.client.post('/profile/settings/notifications/99999', {'response': '0'})
-        self.assertRedirects(response, '/')
+        self.assertEqual(response.getvalue().decode("utf-8"), str(False))
 
     def test_profile_page(self):
         self.client.force_login(self.testUser)
