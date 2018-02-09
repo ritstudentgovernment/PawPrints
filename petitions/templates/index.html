@@ -1375,15 +1375,40 @@
                     return true;
 
                 case "mark_in_progress":
+
                     update("mark-in-progress", false, getUrl("p"));
                     return true;
 
                 case "edit-update":
-                    console.log("EDIT UPDATE "+id);
+
+                    if(window.debug)console.log("EDIT UPDATE "+id);
+                    window.editUpdateModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Edit this update</h2>",
+                        bodyContent:modalData.timeline[id].content,
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editUpdate",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                        ]
+                    });
+                    editUpdateModal.open();
                     return true;
 
                 case "edit-response":
-                    console.log("EDIT RESPONSE "+id);
+
+                    if(window.debug)console.log("EDIT RESPONSE "+id);
+                    window.editResponseModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Edit this response</h2>",
+                        bodyContent:modalData.timeline[id].content,
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editResponse",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                        ]
+                    });
+                    editResponseModal.open();
                     return true;
 
                 default:
