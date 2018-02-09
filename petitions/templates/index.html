@@ -1386,7 +1386,7 @@
                         icon: false,
                         headerClass:"background-highlight bright-text",
                         headerContent: "<h2>Edit this update</h2>",
-                        bodyContent:modalData.timeline[id].content,
+                        bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
                             ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
                             ["Submit","material-button material-hover material-shadow cursor transition",'update("editUpdate",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
@@ -1407,7 +1407,7 @@
                         icon: false,
                         headerClass:"background-highlight bright-text",
                         headerContent: "<h2>Edit this response</h2>",
-                        bodyContent:modalData.timeline[id].content,
+                        bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
                             ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
                             ["Submit","material-button material-hover material-shadow cursor transition",'update("editResponse",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
