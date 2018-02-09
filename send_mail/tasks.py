@@ -96,7 +96,8 @@ def petition_update(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -132,7 +133,8 @@ def petition_responded(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -168,7 +170,8 @@ def petition_reached(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
     email.content_subtype = "html"
     try:
