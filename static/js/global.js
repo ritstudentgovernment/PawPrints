@@ -260,6 +260,7 @@ function ucfirst(string){
     Button.prototype.addClass = function(className){
 
         this.cssClasses.push(className);
+        return this;
 
     };
     Button.prototype.render = function(){
