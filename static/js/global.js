@@ -258,7 +258,7 @@ function ucfirst(string){
     };
     Button.prototype.addClass = function(className){
 
-        this.button.cssClasses.append(className);
+        this.cssClasses.append(className);
 
     };
     Button.prototype.render = function(){
