@@ -243,6 +243,30 @@ function ucfirst(string){
 }
 
 (function( $ ){
+
+    this.Button = function(text, classes=false, onClick = false){
+
+        this.text = text;
+        this.cssClasses = classes ? classes : ["material-button", "material-hover", "material-shadow", "cursor", "transition"];
+        this.onClick = onClick;
+
+    };
+    Button.prototype.getClasses = function(){
+
+        return this.cssClasses.join(" ");
+
+    };
+    Button.prototype.addClass = function(className){
+
+        this.button.cssClasses.append(className);
+
+    };
+    Button.prototype.render = function(){
+
+        return "<button class='"+this.getClasses()+"' onclick='"+this.onClick+"'>"+this.text+"</button>";
+
+    };
+
     // Custom Modal Plugin
     // Relies on jQuery, animate.css and my custom cssanimate jQuery plugin.
     function buildModal(){
@@ -302,9 +326,14 @@ function ucfirst(string){
 
             var buttonsContainer = this.element.find(".modal-buttons").removeClass("hidden");
 
-            for(bid in this.settings.bodyButtons){
+            for(var bid in this.settings.bodyButtons){
                 var button = this.settings.bodyButtons[bid];
-                buttonsContainer.append("<button class='"+button[1]+"' onclick='"+button[2]+"'>"+button[0]+"</button>");
+                if(button instanceof Button){
+                    buttonsContainer.append(button.render());
+                }
+                else{
+                    buttonsContainer.append("<button class='"+button[1]+"' onclick='"+button[2]+"'>"+button[0]+"</button>");
+                }
             }
 
         }

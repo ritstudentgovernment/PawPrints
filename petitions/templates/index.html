@@ -639,6 +639,7 @@
             background-color: #fff;
             color: #0f0f0f;
         }
+
         /* -- Responsiveness -- */
 
         @media screen and (max-width: 1170px){
@@ -845,18 +846,35 @@
                 text-align: left
             }
         }
-        @media screen and (max-width: 375px) {
+        @media screen and (max-width: 479px) {
+            #admin-actions{
+                display:none;
+            }
+            #petition-modal .modal-container{
 
+                width: 100%;
+                max-height: 100vh !important;
+                height: 100vh !important;
+                top:0 !important;
+                left:0;
+                right:0;
+                bottom:0;
+                margin: 0 !important;
+
+            }
             #timeline-container{
-                padding-left: 19%;
+                padding-left: 5%;
+                width: 90%;
             }
             .timeline-element:before{
-                left: calc(-13vw + 3px);
+                content:none;
             }
-            .timeline-element-dot{
-                left: calc(1px - 13.2vw);
+            .timeline-element-arrow-container{
+                display: none;
             }
-
+            .timeline-element-wrap{
+                width: auto;
+            }
         }
         #loading-petitions{
             text-align: center;
