@@ -326,7 +326,7 @@ function ucfirst(string){
         if(this.settings.bodyButtons){
 
             var buttonsContainer = this.element.find(".modal-buttons").removeClass("hidden");
-
+            if(window.debug)console.log(this.settings.bodyButtons);
             for(var bid in this.settings.bodyButtons){
                 var button = this.settings.bodyButtons[bid];
                 if(window.debug)console.log(button);
