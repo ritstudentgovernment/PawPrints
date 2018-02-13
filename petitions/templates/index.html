@@ -1314,6 +1314,7 @@
         function adminEdit(action, id = false){
 
             function initTinyMCE(){
+                tinymce.remove();
                 return tinymce.init({
                     selector: '#admin-edit',
                     inline: false,
