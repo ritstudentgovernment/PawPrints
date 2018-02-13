@@ -328,6 +328,7 @@ function ucfirst(string){
 
             for(var bid in this.settings.bodyButtons){
                 var button = this.settings.bodyButtons[bid];
+                if(window.debug)console.log(button);
                 if(button instanceof Button){
                     buttonsContainer.append(button.render());
                 }
