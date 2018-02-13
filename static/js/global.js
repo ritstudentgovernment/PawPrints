@@ -249,6 +249,7 @@ function ucfirst(string){
         this.text = text;
         this.cssClasses = defaultClasses ? defaultClasses : ["material-button", "material-hover", "material-shadow", "cursor", "transition"];
         this.onClick = onClick;
+        return this;
 
     };
     Button.prototype.getClasses = function(){
