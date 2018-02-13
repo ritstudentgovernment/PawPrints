@@ -1092,7 +1092,7 @@
                                     </span>
                                     {% if user.first_name and user.is_staff %}
                                         <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
-                                            <i class="admin-edit-icon material-icons">edit</i>
+                                            <i class="admin-edit-icon cursor material-icons">edit</i>
                                         </span>
                                     {% endif %}
                                 </h4>
@@ -1406,8 +1406,22 @@
                         headerContent: "<h2>Edit this update</h2>",
                         bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
-                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
-                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editUpdate",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                            new Button("Cancel", "window.editUpdateModal.close()").addClass("minimal"),
+                            new Button("Submit", function(){
+                                update(
+                                    "editUpdate",
+                                    tinymce.get("admin-edit").getContent(),
+                                    getUrl("p"),
+                                    function(r){
+                                        if(window.debug)console.log(r);
+                                        window.editUpdateModal.close();
+                                        $("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();
+                                        window.modalData.closePetition();
+                                    }
+                                );
+                            })
+//                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
+//                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editUpdate",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
                     });
                     editUpdateModal.open();
@@ -1427,8 +1441,22 @@
                         headerContent: "<h2>Edit this response</h2>",
                         bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
-                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
-                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editResponse",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                            new Button("Cancel", "window.editResponseModal.close()").addClass("minimal"),
+                            new Button("Submit", function(){
+                                update(
+                                    "editResponse",
+                                    tinymce.get("admin-edit").getContent(),
+                                    getUrl("p"),
+                                    function(r){
+                                        if(window.debug)console.log(r);
+                                        window.editResponseModal.close();
+                                        $("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();
+                                        window.modalData.closePetition();
+                                    }
+                                );
+                            })
+//                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
+//                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editResponse",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
                     });
                     editResponseModal.open();

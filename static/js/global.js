@@ -244,10 +244,10 @@ function ucfirst(string){
 
 (function( $ ){
 
-    this.Button = function(text, classes=false, onClick = false){
+    this.Button = function(text, onClick = false, defaultClasses = false){
 
         this.text = text;
-        this.cssClasses = classes ? classes : ["material-button", "material-hover", "material-shadow", "cursor", "transition"];
+        this.cssClasses = defaultClasses ? defaultClasses : ["material-button", "material-hover", "material-shadow", "cursor", "transition"];
         this.onClick = onClick;
 
     };
@@ -263,7 +263,7 @@ function ucfirst(string){
     };
     Button.prototype.render = function(){
 
-        return "<button class='"+this.getClasses()+"' onclick='"+this.onClick+"'>"+this.text+"</button>";
+        return "<button class='"+this.getClasses()+"' onclick='("+this.onClick+")'>"+this.text+"</button>";
 
     };
 

@@ -358,6 +358,14 @@ def petition_edit(request, petition_id):
                 # Notify author that the petition was rejected over email.
                 petition_rejected(petition_id, request.META['HTTP_HOST'])
 
+            elif attribute == "editUpdate":
+
+                pass
+
+            elif attribute == "editResponse":
+
+                pass
+
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
 
