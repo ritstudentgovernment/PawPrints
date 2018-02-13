@@ -432,7 +432,7 @@ function ucfirst(string){
 
         setTimeout(function(){
 
-            positionModal(me);
+            me.positionModal(me);
 
         },0);
 
