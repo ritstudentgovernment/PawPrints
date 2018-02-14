@@ -14,6 +14,8 @@ from django.http import HttpResponse, JsonResponse
 from petitions.views import colors
 from .models import Profile
 import logging
+from django.http import HttpResponseForbidden
+
 
 logger = logging.getLogger("pawprints." + __name__)
 
@@ -89,7 +91,7 @@ def add_superuser(request, user_id):
             user.is_staff = True
             user.save()
             return HttpResponse(True)
-    return HttpResponse(False)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
@@ -101,7 +103,7 @@ def add_staff_member(request, user_id):
             user.is_staff = True
             user.save()
             return HttpResponse(True)
-    return HttpResponse(False)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
@@ -113,7 +115,7 @@ def remove_superuser(request, user_id):
             user.is_superuser = False
             user.save()
             return HttpResponse(True)
-    return HttpResponse(False)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
@@ -125,7 +127,7 @@ def remove_staff_member(request, user_id):
             user.is_staff = False
             user.save()
             return HttpResponse(True)
-    return HttpResponse(False)
+    return HttpResponseForbidden(False)
 
 
 @login_required
