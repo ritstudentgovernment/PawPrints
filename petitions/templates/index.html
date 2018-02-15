@@ -1411,7 +1411,7 @@
                                 '"editUpdate",' +
                                 'JSON.stringify({"update":tinymce.get("admin-edit").getContent(),"position":window.edit_update_position}),' +
                                 'getUrl("p"),' +
-                                'function(r){if(window.debug)console.log(r);window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                                'function(r){if(window.debug)console.log(r);window.editUpdateModal.close();window.modalData.closePetition();})']
                         ]
                     });
                     editUpdateModal.open();
@@ -1436,7 +1436,7 @@
                                 '"response",' +
                                 'tinymce.get("admin-edit").getContent(),' +
                                 'getUrl("p"),' +
-                                'function(r){if(window.debug)console.log(r);window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                                'function(r){if(window.debug)console.log(r);window.editResponseModal.close();window.modalData.closePetition();})']
                         ]
                     });
                     editResponseModal.open();
