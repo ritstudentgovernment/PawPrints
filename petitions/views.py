@@ -360,12 +360,12 @@ def petition_edit(request, petition_id):
 
             elif attribute == "editUpdate":
 
-                # value = json2obj(value)
-                position = int(value.position)
+                new_value = json2obj(value)
+                position = int(new_value.position)
                 updates = petition.updates.all()
                 for index, update in enumerate(updates):
                     if index == position:
-                        update.description = value.update
+                        update.description = new_value.update
                         update.save()
 
                 return JsonResponse({"EditUpdate": "Done."})
