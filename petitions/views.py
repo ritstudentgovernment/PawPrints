@@ -372,7 +372,7 @@ def petition_edit(request, petition_id):
                         update.save()
                         updated = True
 
-                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update"})
+                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update"+position})
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
