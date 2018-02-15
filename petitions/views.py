@@ -364,12 +364,15 @@ def petition_edit(request, petition_id):
                 new_value = json2obj(value)
                 position = int(new_value.position)
                 updates = petition.updates.all()
+
+                updated = False
                 for index, update in enumerate(updates):
                     if index == position:
                         update.description = new_value.update
                         update.save()
+                        updated = True
 
-                return JsonResponse({"EditUpdate": "Done."})
+                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update"})
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
