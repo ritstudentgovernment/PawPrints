@@ -1398,6 +1398,7 @@
                 case "edit-update":
 
                     if(window.debug)console.log("EDIT UPDATE "+id);
+                    window.edit_update_position = id;
                     window.editUpdateModal = new Modal({
                         icon: false,
                         headerClass:"background-highlight bright-text",
@@ -1405,7 +1406,12 @@
                         bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
                             ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
-                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editUpdate",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){if(window.debug)console.log(r);window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                            ["Submit","material-button material-hover material-shadow cursor transition",
+                                'update(' +
+                                '"editUpdate",' +
+                                '{"update":tinymce.get("admin-edit").getContent(),"position":window.edit_update_position},' +
+                                'getUrl("p"),' +
+                                'function(r){if(window.debug)console.log(r);window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
                     });
                     editUpdateModal.open();
@@ -1418,7 +1424,6 @@
 
                 case "edit-response":
 
-                    if(window.debug)console.log("EDIT RESPONSE "+id);
                     window.editResponseModal = new Modal({
                         icon: false,
                         headerClass:"background-highlight bright-text",
@@ -1426,7 +1431,12 @@
                         bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
                         bodyButtons:[
                             ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
-                            ["Submit","material-button material-hover material-shadow cursor transition",'update("editResponse",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){if(window.debug)console.log(r);window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                            ["Submit","material-button material-hover material-shadow cursor transition",
+                                'update(' +
+                                '"response",' +
+                                'tinymce.get("admin-edit").getContent()' +
+                                'getUrl("p"),' +
+                                'function(r){if(window.debug)console.log(r);window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
                     });
                     editResponseModal.open();

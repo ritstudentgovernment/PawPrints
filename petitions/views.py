@@ -360,11 +360,15 @@ def petition_edit(request, petition_id):
 
             elif attribute == "editUpdate":
 
-                pass
+                value = json2obj(value)
+                position = int(value.position)
+                updates = petition.updates.all()
+                for index, update in enumerate(updates):
+                    if index == position:
+                        update.description = value.update
+                        update.save()
 
-            elif attribute == "editResponse":
-
-                pass
+                return JsonResponse({"EditUpdate": "Done."})
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
@@ -527,6 +531,7 @@ def send_update(update):
     })
     return None
 
+
 def colors():
     color_object = {
         'highlight': "#f36e21",
@@ -538,6 +543,12 @@ def colors():
     }
 
     return color_object
+
+
+def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
+
+
+def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
 def edit_check(user, petition):
