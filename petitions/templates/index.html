@@ -1409,7 +1409,7 @@
                             ["Submit","material-button material-hover material-shadow cursor transition",
                                 'update(' +
                                 '"editUpdate",' +
-                                '{"update":tinymce.get("admin-edit").getContent(),"position":window.edit_update_position},' +
+                                'JSON.stringify({"update":tinymce.get("admin-edit").getContent(),"position":window.edit_update_position}),' +
                                 'getUrl("p"),' +
                                 'function(r){if(window.debug)console.log(r);window.editUpdateModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
