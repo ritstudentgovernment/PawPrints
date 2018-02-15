@@ -1434,7 +1434,7 @@
                             ["Submit","material-button material-hover material-shadow cursor transition",
                                 'update(' +
                                 '"response",' +
-                                'tinymce.get("admin-edit").getContent()' +
+                                'tinymce.get("admin-edit").getContent(),' +
                                 'getUrl("p"),' +
                                 'function(r){if(window.debug)console.log(r);window.editResponseModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
                         ]
