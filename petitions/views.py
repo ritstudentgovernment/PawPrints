@@ -543,11 +543,8 @@ def petition_unpublish(request, petition_id):
         petition.status = 2
         petition.save()
         logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
-        return HttpResponse(True)
 
-    else:
-        # User did not pass edit check
-        return JsonResponse({"Error": "Operation Not Permitted."})
+    return redirect('/profile') if not user.is_staff else HttpResponse(True)
 
 
 # HELPER FUNCTIONS #
