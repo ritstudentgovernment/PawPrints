@@ -627,6 +627,7 @@
         }
         .admin-action-spacer{
             height:50px;
+            width: 50px;
             margin-bottom: 20px;
         }
         #back-up{
@@ -1130,16 +1131,16 @@
                                     <i class="material-icons">check</i>
                                     <span class="invisible transition">Charged</span>
                                 </div>
-                                <div v-else class="admin-action-spacer"></div>
-                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
-                                    <i class="material-icons">update</i>
-                                    <span class="invisible transition">Update</span>
-                                </div>
+                                <div v-else class="admin-action-spacer left"></div>
                                 <div v-if="!petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
                                     <i class="material-icons">chat</i>
                                     <span class="invisible transition">Respond</span>
                                 </div>
-                                <div v-else class="admin-action-spacer"></div>
+                                <div v-else class="admin-action-spacer left"></div>
+                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
+                                    <i class="material-icons">update</i>
+                                    <span class="invisible transition">Update</span>
+                                </div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="delete">
                                     <i class="material-icons">delete</i>
                                     <span class="invisible transition">Delete</span>
