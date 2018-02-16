@@ -528,7 +528,6 @@ def petition_publish(user, petition):
 
 
 @login_required
-@require_POST
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
