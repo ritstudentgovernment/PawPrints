@@ -232,7 +232,7 @@ def petition_edit(request, petition_id):
             send_update(data)
 
             user = request.user
-            return petition_publish(user, petition)
+            return petition_publish(user, petition, request)
 
         elif attribute == "title":
 
@@ -498,7 +498,7 @@ def petition_unsubscribe(request, petition_id):
     return redirect('petition/' + str(petition_id))
 
 
-def petition_publish(user, petition):
+def petition_publish(user, petition, request):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
     the petition is new, and that the user is the
@@ -524,6 +524,7 @@ def petition_publish(user, petition):
             }
 
             send_update(data)
+            petition_approved(petition.id, request.META['HTTP_HOST'])
 
     return HttpResponse(response)
 

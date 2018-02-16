@@ -20,6 +20,7 @@ from django.test.client import RequestFactory
 class PetitionTest(TestCase):
     def setUp(self):
         self.client = Client()
+        self.factory = RequestFactory()
         self.superUser = User.objects.create_user(username='txu1267', email='txu1267', is_staff=True)
         self.superUser.set_password('test')
         self.superUser.save()
@@ -31,7 +32,6 @@ class PetitionTest(TestCase):
         self.user3 = User.objects.create_user(username='abc4321', email='abc4321')
         self.tag = Tag(name='Test')
         self.tag.save()
-        self.factory = RequestFactory()
         self.petition = Petition(title='Test petition',
                                  description='This is a test petition',
                                  author=self.user,
@@ -85,7 +85,10 @@ class PetitionTest(TestCase):
         self.petition.status = 0
         self.petition.tags.add(tag)
         self.petition.save()
-        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request.META['HTTP_HOST'] = 'localhost'
+        request.user = self.user
+        response = petition_edit(request, self.petition.id)
         # Make sure there is no 404
         self.assertNotEqual(response.status_code, 404)
         # Check that petition was published
