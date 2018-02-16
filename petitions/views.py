@@ -529,19 +529,25 @@ def petition_publish(user, petition):
 
 @login_required
 @require_POST
-@user_passes_test(lambda u: u.is_staff)
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
     the HTTP request method is a POST, and that the
     user is an admin.
     """
+    user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
-    # Set status to 2 to hide it from view.
-    petition.status = 2
-    petition.save()
-    logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
-    return HttpResponse(True)
+
+    if edit_check(user, petition):
+        # Set status to 2 to hide it from view.
+        petition.status = 2
+        petition.save()
+        logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
+        return HttpResponse(True)
+
+    else:
+        # User did not pass edit check
+        return JsonResponse({"Error": "Operation Not Permitted."})
 
 
 # HELPER FUNCTIONS #
