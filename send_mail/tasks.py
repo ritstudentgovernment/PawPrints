@@ -96,7 +96,8 @@ def petition_update(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -132,7 +133,8 @@ def petition_responded(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -168,14 +170,15 @@ def petition_reached(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
     email.content_subtype = "html"
     try:
         email.send()
         logger.info("Petition Reached email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + recipients,exc_info=True)
+        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + str(recipients),exc_info=True)
         raise e
 
 @db_task(retries=3, retry_delay=3)

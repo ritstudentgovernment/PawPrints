@@ -161,6 +161,7 @@ def petition_redirect(request, petition_id):
     :return: redirect to correct page.
     """
 
+    # Check if the petition_id sent is not an integer
     try:
 
         # Check if the petition_id sent is not an integer

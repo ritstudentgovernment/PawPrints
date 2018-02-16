@@ -7,13 +7,14 @@ Updated: Feb 17 2017
 """
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from petitions.models import Petition, Tag
+from petitions.models import Petition, Tag, Update, Response
 from datetime import timedelta
 from django.utils import timezone
 from channels.test import ChannelTestCase
 from channels import Channel
-from .views import petition_sign, edit_check, PETITION_DEFAULT_TITLE, PETITION_DEFAULT_BODY
+from .views import petition_sign, edit_check, PETITION_DEFAULT_TITLE, PETITION_DEFAULT_BODY, get_petition, petition_edit
 from .consumers import serialize_petitions
+from django.test.client import RequestFactory
 
 
 class PetitionTest(TestCase):
@@ -30,6 +31,7 @@ class PetitionTest(TestCase):
         self.user3 = User.objects.create_user(username='abc4321', email='abc4321')
         self.tag = Tag(name='Test')
         self.tag.save()
+        self.factory = RequestFactory()
         self.petition = Petition(title='Test petition',
                                  description='This is a test petition',
                                  author=self.user,
@@ -74,11 +76,14 @@ class PetitionTest(TestCase):
 
     def test_petition_publish(self):
         self.client.force_login(self.user)
+        tag = Tag(name='test tag')
+        tag.save()
         obj = {
             "attribute": "publish",
             "value": "foo"
         }
         self.petition.status = 0
+        self.petition.tags.add(tag)
         self.petition.save()
         response = self.client.post('/petition/update/' + str(self.petition.id), obj)
         # Make sure there is no 404
@@ -136,6 +141,11 @@ class PetitionTest(TestCase):
         response = self.client.get('/petition/' + str(self.petition.id))
         self.assertEqual(response.status_code, 200)
 
+    def test_url_redirect_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/petition/' + str(666))
+        self.assertEqual(response.status_code, 404)
+
     def test_create_petition(self):
         self.client.force_login(self.user)
         response = self.client.post('/petition/create/')
@@ -155,3 +165,134 @@ class PetitionTest(TestCase):
         json_response = serialize_petitions(petitions)
         # TODO: Improve this test to be more thorough
         self.assertNotEqual(json_response, None)
+
+    def test_url_redirect(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/petitions/'+ str(self.petition.id))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/?p='+str(self.petition.id), status_code=302, target_status_code=200)
+
+    def test_edit_petition_description(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "description",
+            "value": "test test test"
+        }
+        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petition.id)
+        self.assertEqual(pet.description, "test test test")
+
+    def test_petition_add_tag(self):
+        self.client.force_login(self.superUser)
+        tag = Tag(name='test tag2')
+        tag.save()
+        obj = {
+            "attribute": "add-tag",
+            "value": tag.id
+        }
+
+        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petition.id)
+        if tag not in pet.tags.all():
+            self.fail("tag not added")
+
+    def test_petition_remove_tag(self):
+        self.client.force_login(self.superUser)
+        tag = Tag(name='test tag2')
+        tag.save()
+        self.petition.tags.add(tag)
+        self.petition.save()
+        obj = {
+            "attribute": "remove-tag",
+            "value": tag.id
+        }
+
+        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petition.id)
+        if tag in pet.tags.all():
+            self.fail("tag not removed")
+
+    def test_petition_add_update(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "add_update",
+            "value": "test update"
+        }
+
+        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petition.id)
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petition.id)
+        fail = True
+        for update in pet.updates.all():
+            value = update.description
+            if value == "test update":
+                fail = False
+        if fail:
+            self.fail("did not add update")
+
+    def test_petition_add_response(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "response",
+            "value": "test response"
+        }
+
+        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petition.id)
+
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petition.id)
+        if pet.response.description != "test response":
+            self.fail()
+
+    def test_petition_mark_work_in_progress(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "mark-in-progress"
+        }
+        self.assertEqual(self.petitionPublished.in_progress, None)
+
+        response = self.client.post('/petition/update/' + str(self.petitionPublished.id), obj)
+
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petitionPublished.id)
+        self.assertEqual(pet.in_progress, True)
+
+    def test_petition_unpublish_progress(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "unpublish"
+        }
+        self.assertEqual(self.petitionPublished.status, 1)
+        request = self.factory.post('/petition/update/' + str(self.petitionPublished.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petitionPublished.id)
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petitionPublished.id)
+        self.assertEqual(pet.status, 2)
+
+    def test_get_petition(self):
+        self.client.force_login(self.superUser)
+        petition = get_petition(self.petition.id, self.user)
+        self.assertEqual(petition, self.petition)
+
+    def test_get_petition_fail(self):
+        self.client.force_login(self.superUser)
+        petition = get_petition(self.petition.id, self.user2)
+        self.assertEqual(petition, False)
