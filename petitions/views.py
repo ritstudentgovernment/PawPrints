@@ -655,7 +655,7 @@ def search(query):
         .prefetch_related('tags', 'updates') \
         .filter(status=1) \
         .filter(rank__gte=0.35) \
-        .order_by('-rank')
+        .order_by('-rank')[:45]
 
 
 def similar_petitions(query):
