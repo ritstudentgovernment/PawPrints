@@ -40,6 +40,7 @@ class PetitionTest(TestCase):
                                  expires=timezone.now() + timedelta(days=30)
                                  )
         self.petition.save()
+        self.petition.tags.add(self.tag)
         self.petitionPublished = Petition(title='Test petition Published',
                                  description='This is a test petition Published',
                                  author=self.user2,
@@ -58,13 +59,6 @@ class PetitionTest(TestCase):
         response = self.client.get('/doesnotexist')
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, '404.html')
-
-    """ Looks like this is incorrect?
-    def test_load_petitions(self):
-        response = self.client.post('/petition/', {'sort_by': 'most signatures', 'filter': 'all'})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'list_petitions.html')
-    """
 
     def test_petition_edit(self):
         self.client.force_login(self.superUser)

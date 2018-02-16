@@ -2,7 +2,7 @@
 Author: Peter Zujko (@zujko)
 Description: Handles views and endpoints for all profile related operations.
 Date Created: Nov 7 2016
-Updated: Dec 5 2016
+Updated: Feb 16 2018
 """
 from django.shortcuts import render, redirect, render
 from django.views.decorators.http import require_POST
@@ -10,12 +10,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from petitions.views import colors
 from .models import Profile
 import logging
-from django.http import HttpResponseForbidden
-
+from django.db.models import Q
 
 logger = logging.getLogger("pawprints." + __name__)
 
@@ -32,7 +31,7 @@ def profile(request):
         'email': profile.user.email,
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
-        'petitions_created': profile.petitions_created.all,
+        'petitions_created': profile.petitions_created.filter(~Q(status=2)),
         "colors": colors()
     }
     return render(request, 'profile.html', data_object)
