@@ -1135,7 +1135,7 @@
                                     <i class="material-icons">update</i>
                                     <span class="invisible transition">Update</span>
                                 </div>
-                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
+                                <div v-if="!petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
                                     <i class="material-icons">chat</i>
                                     <span class="invisible transition">Respond</span>
                                 </div>
@@ -1433,7 +1433,7 @@
                             ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
                             ["Submit","material-button material-hover material-shadow cursor transition",
                                 'update(' +
-                                '"response",' +
+                                '"editResponse",' +
                                 'tinymce.get("admin-edit").getContent(),' +
                                 'getUrl("p"),' +
                                 'function(r){if(window.debug)console.log(r);window.editResponseModal.close();window.modalData.closePetition();})']
@@ -2074,6 +2074,13 @@
                                 animateUpdate(petition.id);
 
                             }
+                            else{
+
+                                petitions.list[petitions.map[petition.id]] = petition;
+                                animateUpdate(petition.id);
+
+                            }
+
                             petitions.loading = false;
 
                         }
