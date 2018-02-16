@@ -544,7 +544,7 @@ def petition_unpublish(request, petition_id):
         petition.save()
         logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
 
-    return redirect('/profile') if not user.is_staff else HttpResponse(True)
+    return redirect('/profile') if user.id == petition.author.id else HttpResponse(True)
 
 
 # HELPER FUNCTIONS #
