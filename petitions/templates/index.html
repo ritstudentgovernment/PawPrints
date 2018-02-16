@@ -1927,256 +1927,257 @@
 
         };
 
-        // Get Escape special characters so JSON.parse works.
-        var data = e.data.replace(/%/gi,'\%').replace(/"/gi,'\"').replace(/&/gi,'\&');
-        try{
+        socket.onmessage = function(e) {
+            // Get Escape special characters so JSON.parse works.
+            var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
+            try {
 
-            // Parse the response as a JSON.
-            data = typeof data === "string" ? JSON.parse(data) : data;
+                // Parse the response as a JSON.
+                data = typeof data === "string" ? JSON.parse(data) : data;
 
-            if(websocket_debug){
-                console.log("Received Websocket Command...");
-                console.log(data);
-            }
-
-            // If there is a command sent from the server
-            if(data["command"]){
-
-                var command = data["command"];
-                var modal_petition = modalData.petition;
-                var petition, petition_id, map_pos, modal_timeline_update_block, createdJSDate, currentJSDate;
-
-                // Command parsing.
-                if(command === "update-sigs"){
-                    // Handle the live updating of signatures for petitions.
-
-                    // Format of update-sigs response is as follows: sigs:{sigs:#,petition_id:#}.
-
-                    petition_id = data["petition_id"];
-                    var sigs = data["sigs"];
-
-                    if(websocket_debug)console.log("Petition "+petition_id+" now has "+sigs+" signatures!");
-
-                    // Find the petition from its location in the map, and update it's signatures value.
-                    petitions.list[petitions.map[petition_id]].signatures = sigs;
-                    if(modal_petition.id && modal_petition.id === petition_id){
-                        // If the petition is the one that is open at the moment
-
-                        if(websocket_debug)console.log("Petition "+petition_id+" is open, Updating Modal signatures..");
-                        modalData.petition.signatures = sigs;
-
-                    }
-
-                    animateUpdate(data["petition_id"]);
-
-                }
-                else if(command === "new-update"){
-                    // Handle petitions getting an update.
-
-                    // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
-                    // Add this to the petitions and update the modal if necessary.
-
-                    if(websocket_debug)console.log("Parsing new update");
-
-                    var update = data["update"];
-
-                    petition_id = Number(update["petition_id"]);
-                    map_pos = petitions.map[petition_id];
-
-                    if(websocket_debug)console.log("Update for petition "+petition_id);
-
-                    createdJSDate = new Date(update["timestamp"]).getTime();
-                    currentJSDate = new Date().getTime();
-
-                    var new_update = {
-                        description:update["description"],
-                        timestamp:getDayDifference(createdJSDate, currentJSDate)
-                    };
-
-                    if(websocket_debug){
-                        console.log("New update to push:");
-                        console.log(new_update);
-                    }
-
-                    // Add the update to the petition in the window object.
-                    petitions.list[map_pos].updates.push(new_update);
-
-                    if(websocket_debug)console.log("Modal petition: "+modal_petition);
-
-                    // Check if the petition modal is open, and if it is see if that is the petition being updated.
-                    if(modal_petition.id && modal_petition.id === petition_id){
-
-                        if(websocket_debug)console.log("Updating modal petition block.");
-                        // The petition in the modal was the one being updated, we need to update its data.
-                        modal_timeline_update_block = {
-                            type: "SG Update",
-                            author: "",
-                            content: unescape(new_update.description),
-                            date: new_update.timestamp
-                        };
-
-                        modalData.timeline.unshift(modal_timeline_update_block);
-
-                        if(websocket_debug)console.log(modalData.timeline);
-
-                    }
-
-                    animateUpdate(update["petition_id"]);
-
-                }
-                else if(command === "new-response"){
-                    // Handle petitions getting a response.
-
-                    // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
-                    // Add this to the petitions and update the modal if necessary.
-
-                    var response = data["response"];
-
-                    petition_id = Number(response["petition_id"]);
-                    map_pos = petitions.map[petition_id];
-
-                    createdJSDate = new Date(response["timestamp"]).getTime();
-                    currentJSDate = new Date().getTime();
-
-                    var new_response = {
-                        description:response["description"],
-                        timestamp:getDayDifference(createdJSDate, currentJSDate),
-                        author:response["author"]
-                    };
-
-                    modal_petition = modalData.petition.id;
-
-                    // Add the response to the petition in the window object.
-                    petitions.list[map_pos].response = new_response;
-
-                    // Check if the petition modal is open, and if it is see if that is the petition being updated.
-                    if(modal_petition && modal_petition === petition_id){
-
-                        // The petition in the modal was the one being updated, we need to update its data.
-                        modal_timeline_update_block = {
-                            type: "Official Response",
-                            author: new_response.author,
-                            content: unescape(new_response.description),
-                            date: new_response.timestamp
-                        };
-
-                        modalData.timeline.unshift(modal_timeline_update_block);
-
-                    }
-
-                    animateUpdate(response["petition_id"]);
-
-                }
-                else if(command === "get"){
-                    // Handle opening a single petition.
-
-                    petition = parseOnePetition(data);
-                    if(petition){
-
-                        if(petitions.map[petition.id] === undefined){
-
-                            petitions.list.push(petition);
-                            petitions.map[petition.id] = petitions.list.indexOf(petition);
-                            animateUpdate(petition.id);
-
-                        }
-                        else{
-
-                            petitions.list[petitions.map[petition.id]] = petition;
-                            animateUpdate(petition.id);
-
-                        }
-
-                        petitions.loading = false;
-
-                    }
-                    else{
-                        clearTimeout(openPetitionLoop);
-                    }
-
-                }
-                else if(command === "new-petition"){
-                    // Handle loading into the page a new petition.
-
-                    if(websocket_debug)console.log("New petition was made, trying to open it.");
-                    getPetition(Number(data["petition"]["petition_id"]));
-
-                }
-                else if(command === "remove-petition"){
-                    // Handle the removing of a petition
-
-                    if(websocket_debug)console.log("Petition was deleted, removing it..");
-                    petition_id = data["petition"]["petition_id"];
-                    if(petitions.map.hasOwnProperty(petition_id)){
-                        petitions.list[petitions.map[petition_id]].deleted = true;
-                        delete petitions.map[petition_id];
-                        if( modal_petition.id === Number(petition_id) ){
-                            modalData.closePetition();
-                        }
-                    }
-
-                }
-                else if(command === "mark-in-progress"){
-                    // Handle someone marking a petition in progresss
-
-                    if(websocket_debug)console.log("Petition was marked as in progress, updating it.");
-                    petition_id = data["petition"]["petition_id"];
-                    if(petitions.map.hasOwnProperty(petition_id)){
-                        petitions.list[petitions.map[petition_id]].in_progress = true;
-                        if( modal_petition.id === Number(petition_id) ){
-                            modalData.petition.in_progress = true;
-                        }
-                    }
-
-                }
-                else if(command === "refresh-petition"){
-
-                    if(websocket_debug)console.log("Trying to reload a petition.");
-                    petition_id = data["petition_id"];
-                    getPetition(petition_id, true); // Force a refresh
-                    if(modal_petition && modal_petition === petition_id){
-
-                        modalData.closePetition();
-
-                    }
-
-                }
-                else{
-                    console.log("Unrecognized command: "+command);
+                if (websocket_debug) {
+                    console.log("Received Websocket Command...");
                     console.log(data);
                 }
 
-            }
-            else{
+                // If there is a command sent from the server
+                if (data["command"]) {
 
-                // Default behaviour is to update everything on response if no command is given.
-                if(data.hasOwnProperty("petitions")){
-                    petitions.list = data["petitions"];
-                    petitions.map = data["map"];
-                    petitions.loading = false;
-                    petitionID = getUrl("p");
-                    if(petitionID){
-                        openPetition(petitionID, true);
+                    var command = data["command"];
+                    var modal_petition = modalData.petition;
+                    var petition, petition_id, map_pos, modal_timeline_update_block, createdJSDate, currentJSDate;
+
+                    // Command parsing.
+                    if (command === "update-sigs") {
+                        // Handle the live updating of signatures for petitions.
+
+                        // Format of update-sigs response is as follows: sigs:{sigs:#,petition_id:#}.
+
+                        petition_id = data["petition_id"];
+                        var sigs = data["sigs"];
+
+                        if (websocket_debug) console.log("Petition " + petition_id + " now has " + sigs + " signatures!");
+
+                        // Find the petition from its location in the map, and update it's signatures value.
+                        petitions.list[petitions.map[petition_id]].signatures = sigs;
+                        if (modal_petition.id && modal_petition.id === petition_id) {
+                            // If the petition is the one that is open at the moment
+
+                            if (websocket_debug) console.log("Petition " + petition_id + " is open, Updating Modal signatures..");
+                            modalData.petition.signatures = sigs;
+
+                        }
+
+                        animateUpdate(data["petition_id"]);
+
                     }
-                }
-                else{
+                    else if (command === "new-update") {
+                        // Handle petitions getting an update.
 
-                    if(websocket_debug)console.log("Default action failed; petitions object does not exist in response.");
+                        // Format of new-update response is as follows: update:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
+
+                        if (websocket_debug) console.log("Parsing new update");
+
+                        var update = data["update"];
+
+                        petition_id = Number(update["petition_id"]);
+                        map_pos = petitions.map[petition_id];
+
+                        if (websocket_debug) console.log("Update for petition " + petition_id);
+
+                        createdJSDate = new Date(update["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
+
+                        var new_update = {
+                            description: update["description"],
+                            timestamp: getDayDifference(createdJSDate, currentJSDate)
+                        };
+
+                        if (websocket_debug) {
+                            console.log("New update to push:");
+                            console.log(new_update);
+                        }
+
+                        // Add the update to the petition in the window object.
+                        petitions.list[map_pos].updates.push(new_update);
+
+                        if (websocket_debug) console.log("Modal petition: " + modal_petition);
+
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if (modal_petition.id && modal_petition.id === petition_id) {
+
+                            if (websocket_debug) console.log("Updating modal petition block.");
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "SG Update",
+                                author: "",
+                                content: unescape(new_update.description),
+                                date: new_update.timestamp
+                            };
+
+                            modalData.timeline.unshift(modal_timeline_update_block);
+
+                            if (websocket_debug) console.log(modalData.timeline);
+
+                        }
+
+                        animateUpdate(update["petition_id"]);
+
+                    }
+                    else if (command === "new-response") {
+                        // Handle petitions getting a response.
+
+                        // Format of new-response response is as follows: response:{description:"",timestamp:"",petition_id:#}.
+                        // Add this to the petitions and update the modal if necessary.
+
+                        var response = data["response"];
+
+                        petition_id = Number(response["petition_id"]);
+                        map_pos = petitions.map[petition_id];
+
+                        createdJSDate = new Date(response["timestamp"]).getTime();
+                        currentJSDate = new Date().getTime();
+
+                        var new_response = {
+                            description: response["description"],
+                            timestamp: getDayDifference(createdJSDate, currentJSDate),
+                            author: response["author"]
+                        };
+
+                        modal_petition = modalData.petition.id;
+
+                        // Add the response to the petition in the window object.
+                        petitions.list[map_pos].response = new_response;
+
+                        // Check if the petition modal is open, and if it is see if that is the petition being updated.
+                        if (modal_petition && modal_petition === petition_id) {
+
+                            // The petition in the modal was the one being updated, we need to update its data.
+                            modal_timeline_update_block = {
+                                type: "Official Response",
+                                author: new_response.author,
+                                content: unescape(new_response.description),
+                                date: new_response.timestamp
+                            };
+
+                            modalData.timeline.unshift(modal_timeline_update_block);
+
+                        }
+
+                        animateUpdate(response["petition_id"]);
+
+                    }
+                    else if (command === "get") {
+                        // Handle opening a single petition.
+
+                        petition = parseOnePetition(data);
+                        if (petition) {
+
+                            if (petitions.map[petition.id] === undefined) {
+
+                                petitions.list.push(petition);
+                                petitions.map[petition.id] = petitions.list.indexOf(petition);
+                                animateUpdate(petition.id);
+
+                            }
+                            else {
+
+                                petitions.list[petitions.map[petition.id]] = petition;
+                                animateUpdate(petition.id);
+
+                            }
+
+                            petitions.loading = false;
+
+                        }
+                        else {
+                            clearTimeout(openPetitionLoop);
+                        }
+
+                    }
+                    else if (command === "new-petition") {
+                        // Handle loading into the page a new petition.
+
+                        if (websocket_debug) console.log("New petition was made, trying to open it.");
+                        getPetition(Number(data["petition"]["petition_id"]));
+
+                    }
+                    else if (command === "remove-petition") {
+                        // Handle the removing of a petition
+
+                        if (websocket_debug) console.log("Petition was deleted, removing it..");
+                        petition_id = data["petition"]["petition_id"];
+                        if (petitions.map.hasOwnProperty(petition_id)) {
+                            petitions.list[petitions.map[petition_id]].deleted = true;
+                            delete petitions.map[petition_id];
+                            if (modal_petition.id === Number(petition_id)) {
+                                modalData.closePetition();
+                            }
+                        }
+
+                    }
+                    else if (command === "mark-in-progress") {
+                        // Handle someone marking a petition in progresss
+
+                        if (websocket_debug) console.log("Petition was marked as in progress, updating it.");
+                        petition_id = data["petition"]["petition_id"];
+                        if (petitions.map.hasOwnProperty(petition_id)) {
+                            petitions.list[petitions.map[petition_id]].in_progress = true;
+                            if (modal_petition.id === Number(petition_id)) {
+                                modalData.petition.in_progress = true;
+                            }
+                        }
+
+                    }
+                    else if (command === "refresh-petition") {
+
+                        if (websocket_debug) console.log("Trying to reload a petition.");
+                        petition_id = data["petition_id"];
+                        getPetition(petition_id, true); // Force a refresh
+                        if (modal_petition && modal_petition === petition_id) {
+
+                            modalData.closePetition();
+
+                        }
+
+                    }
+                    else {
+                        console.log("Unrecognized command: " + command);
+                        console.log(data);
+                    }
+
+                }
+                else {
+
+                    // Default behaviour is to update everything on response if no command is given.
+                    if (data.hasOwnProperty("petitions")) {
+                        petitions.list = data["petitions"];
+                        petitions.map = data["map"];
+                        petitions.loading = false;
+                        petitionID = getUrl("p");
+                        if (petitionID) {
+                            openPetition(petitionID, true);
+                        }
+                    }
+                    else {
+
+                        if (websocket_debug) console.log("Default action failed; petitions object does not exist in response.");
+
+                    }
 
                 }
 
             }
+            catch (error) {
 
-        }
-        catch(error){
+                // Catch any errors and reset the petition data.
+                console.log("Error: " + error + ". Data: ");
+                console.log(data);
+                updatePetitionHistory(false);
 
-            // Catch any errors and reset the petition data.
-            console.log("Error: "+error+". Data: ");
-            console.log(data);
-            updatePetitionHistory(false);
-
-        }
-
+            }
+        };
     }
 
     $(document).ready(function(){
