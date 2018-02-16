@@ -14,6 +14,7 @@ from django.http import HttpResponse, JsonResponse
 from petitions.views import colors
 from .models import Profile
 import logging
+from django.db.models import Q
 
 logger = logging.getLogger("pawprints." + __name__)
 
@@ -30,7 +31,7 @@ def profile(request):
         'email': profile.user.email,
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
-        'petitions_created': profile.petitions_created.all,
+        'petitions_created': profile.petitions_created.filter(~Q(status=2)),
         "colors": colors()
     }
     return render(request, 'profile.html', data_object)
