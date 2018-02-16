@@ -94,6 +94,9 @@ def send_petitions_individually(message, petitions):
         })
 
 
+def paginate(petitions, page): return petitions[(page-1)*45:page*45]
+
+
 @channel_session_user_from_http
 def petitions_connect(message):
     """
@@ -108,7 +111,7 @@ def petitions_connect(message):
     Group("petitions").add(message.reply_channel)
 
     # Default order is 'most recent' query the database for all petitions in that order.
-    petitions = views.sorting_controller("most recent")
+    petitions = paginate(views.sorting_controller("most recent"), 1)
 
     send_petitions_individually(message, petitions)
 
@@ -172,10 +175,23 @@ def petitions_command(message):
                 # Sends the WS a sorted and optionally filtered list of petitions.
                 if data.query:
                     petitions = views.sorting_controller("search", data.query)
-
                     send_petitions_individually(message, petitions)
-
                     return None
+                return None
+            elif data.command == 'pageinate':
+                # Parse the pageinate command. Required: page, sort. Optional filter.
+                # Sends the WS a sorted and optionally filtered list of petitions between a range.
+                if data.sort and data.page:
+                    petitions = views.sorting_controller(data.sort)
+                    if data.filter:
+                        petitions = views.filtering_controller(petitions, data.filter)
+                    petitions = paginate(petitions, data.page)
+                    send_petitions_individually(message, petitions)
+                    return None
+
+                message.reply_channel.send({
+                    "text": "Error. Must send 'sort' parameter"
+                })
                 return None
 
         message.reply_channel.send({
