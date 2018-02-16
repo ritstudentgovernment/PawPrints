@@ -379,7 +379,7 @@ def petition_edit(request, petition_id):
                     }
                     send_update(data)
 
-                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update"+position})
+                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update"+str(position)})
 
             elif attribute == "editResponse":
 
