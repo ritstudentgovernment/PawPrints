@@ -21,7 +21,7 @@ from channels import Group, Channel
 from send_mail.tasks import *
 import petitions.profanity
 import json
-import redis
+from collections import namedtuple
 
 import logging
 
@@ -30,6 +30,7 @@ logger = logging.getLogger("pawprints." + __name__)
 # PETITION DEFAULT CONSTANTS.
 PETITION_DEFAULT_TITLE = "Action-oriented, one-line statement"
 PETITION_DEFAULT_BODY = "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
+
 
 def index(request):
     """
@@ -40,8 +41,7 @@ def index(request):
 
     data_object = {
         'tags': Tag.objects.all,
-        'colors': colors(),
-        'petitions': sorting_controller(sorting_key)
+        'colors': colors()
     }
 
     return render(request, 'index.html', data_object)
@@ -62,22 +62,6 @@ def maintenance(request):
     return render(request, 'Something_Special.html')
 
 
-def load_petitions(request):
-    """
-    Handles requests for the list of petitions by AJAX.
-    """
-
-    sorting_key = request.POST.get('sort_by', 'most recent')
-    filter_key = request.POST.get('filter', 'all')
-
-    # This line gets a filtered and sorted list of petitions.
-    data_object = {
-        "petitions": filtering_controller(sorting_controller(sorting_key), filter_key)
-    }
-
-    return render(request, 'list_petitions.html', data_object)
-
-
 def petition(request, petition_id):
     """ Handles displaying A single petition.
     DB queried to get Petition object and User objects.
@@ -95,7 +79,6 @@ def petition(request, petition_id):
         id=petition.id).exists() if user.is_authenticated else None
 
     # Get QuerySet of all users who signed this petition
-    # Note: This returns an abstract list of IDs that are not directly associated, at least to my knowledge, to specific user objects.
     users_signed = Profile.objects.filter(petitions_signed=petition)
 
     # Get all of the current tags in pawprints.
@@ -173,21 +156,28 @@ def petition_create(request):
 def petition_redirect(request, petition_id):
     """
     Handles the redirection of petitions from the old URL format to the new format.
+    :param request: The user request.
     :param petition_id: The id of the petition to redirect to.
     :return: redirect to correct page.
     """
 
     # Check if the petition_id sent is not an integer
     try:
+
+        # Check if the petition_id sent is not an integer
         int(petition_id)
         return redirect("/?p=" + str(petition_id))
+
     except ValueError:
-        # Check if the petition_id sent exists in the Redis server store.
+
+        # Check if any petition in the database has the old_id that was sent.
         petition = Petition.objects.filter(old_id=petition_id)
         if petition.exists():
-            # Redirect to correct petition.
+
+            # We found the petition with that old_id, redirect to it.
             return redirect("/?p=" + str(petition.first().id))
-        # Petition did not exist in redis database ID is not an int
+
+        # The petition id sent was neither an integer or in the database as an old_id, redirect home.
         return redirect("/")
 
 
@@ -213,17 +203,24 @@ def petition_edit(request, petition_id):
 
             # Be sure the person cannot publish a petition that contains profanity.
             if petitions.profanity.has_profanity(value):
-                return JsonResponse(
-                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse({
+                    "Error": "Petitions may not contain profanity. Please correct this and try again."
+                })
 
             if petition.title == PETITION_DEFAULT_TITLE:
-                return JsonResponse({"Error": "Oops! Looks like you forgot to change the title of the petition."})
+                return JsonResponse({
+                    "Error": "Oops! Looks like you forgot to change the title of the petition."
+                })
 
             if petition.description == PETITION_DEFAULT_BODY:
-                return JsonResponse({"Error": "Oops! Looks like you forgot to change the body of the petition."})
+                return JsonResponse({
+                    "Error": "Oops! Looks like you forgot to change the body of the petition."
+                })
 
             if petition.tags.count() == 0:
-                return JsonResponse({"Error": "Oops! Looks like you forgot to add a tag to your petition."})
+                return JsonResponse({
+                    "Error": "Oops! Looks like you forgot to add a tag to your petition."
+                })
 
             data = {
                 "command": "new-petition",
@@ -235,13 +232,14 @@ def petition_edit(request, petition_id):
             send_update(data)
 
             user = request.user
-            return petition_publish(user, petition)
+            return petition_publish(user, petition, request)
 
         elif attribute == "title":
 
             if petitions.profanity.has_profanity(value):
-                return JsonResponse(
-                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse({
+                    "Error": "Petitions may not contain profanity. Please correct this and try again."
+                })
 
             # Update the petition title
             petition.title = value
@@ -254,8 +252,9 @@ def petition_edit(request, petition_id):
         elif attribute == "description":
 
             if petitions.profanity.has_profanity(value):
-                return JsonResponse(
-                    {"Error": "Petitions may not contain profanity. Please correct this and try again."})
+                return JsonResponse({
+                    "Error": "Petitions may not contain profanity. Please correct this and try again."
+                })
 
             # Update the petition description
             petition.description = value
@@ -343,7 +342,6 @@ def petition_edit(request, petition_id):
                         "petition_id": petition_id
                     }
                 }
-
                 send_update(data)
 
             elif attribute == "unpublish":
@@ -361,6 +359,42 @@ def petition_edit(request, petition_id):
 
                 # Notify author that the petition was rejected over email.
                 petition_rejected(petition_id, request.META['HTTP_HOST'])
+
+            elif attribute == "editUpdate":
+
+                new_value = json2obj(value)
+                position = int(new_value.position)
+                updates = petition.updates.all()
+
+                updated = False
+                indexes = ""
+                for index, update in enumerate(updates):
+                    indexes += str(index)+", "
+                    if index == position - 1:
+                        update.description = new_value.update
+                        update.save()
+                        updated = True
+
+                if updated:
+                    data = {
+                        "command": "refresh-petition",
+                        "petition_id": petition.id,
+                    }
+                    send_update(data)
+
+                return JsonResponse({"editUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update: "+str(position)+", searched: "+indexes})
+
+            elif attribute == "editResponse":
+
+                if petition.has_response:
+                    petition.response.description = value
+                    petition.response.save()
+
+                    data = {
+                        "command": "refresh-petition",
+                        "petition_id": petition.id,
+                    }
+                    send_update(data)
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
@@ -387,16 +421,13 @@ def get_petition(petition_id, user):
     :return: A petition object or False
     """
 
-    if hasattr(user, "profile"):
-        profile = user.profile
-    else:
-        profile = False
+    profile = user.profile if hasattr(user, "profile") else False
 
     petition = Petition.objects.filter(pk=petition_id)
     if petition.exists():
         petition = petition.first()
         if (petition.status != 0 and petition.status != 2) or (
-            profile and profile.user.username == petition.author.username):
+                profile and profile.user.username == petition.author.username):
             return petition
     return False
 
@@ -467,7 +498,7 @@ def petition_unsubscribe(request, petition_id):
     return redirect('petition/' + str(petition_id))
 
 
-def petition_publish(user, petition):
+def petition_publish(user, petition, request):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
     the petition is new, and that the user is the
@@ -476,6 +507,7 @@ def petition_publish(user, petition):
     response = False
     # If the user has access to pawprints.
     if user.profile.has_access == 1:
+        # If the petition has not previously been published, and the user is the petition's author.
         if petition.status == 0 and user.id == petition.author.id:
             # Set status to 1 to publish it to the world.
             petition.status = 1
@@ -492,25 +524,28 @@ def petition_publish(user, petition):
             }
 
             send_update(data)
+            petition_approved(petition.id, request.META['HTTP_HOST'])
 
     return HttpResponse(response)
 
 
 @login_required
-@require_POST
-@user_passes_test(lambda u: u.is_staff)
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
     the HTTP request method is a POST, and that the
     user is an admin.
     """
+    user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
-    # Set status to 2 to hide it from view.
-    petition.status = 2
-    petition.save()
-    logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
-    return HttpResponse(True)
+
+    if edit_check(user, petition):
+        # Set status to 2 to hide it from view.
+        petition.status = 2
+        petition.save()
+        logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
+
+    return redirect('/profile') if user.id == petition.author.id else HttpResponse(True)
 
 
 # HELPER FUNCTIONS #
@@ -537,6 +572,12 @@ def colors():
     }
 
     return color_object
+
+
+def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
+
+
+def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
 def edit_check(user, petition):
@@ -618,7 +659,7 @@ def search(query):
         .prefetch_related('tags', 'updates') \
         .filter(status=1) \
         .filter(rank__gte=0.35) \
-        .order_by('-rank')
+        .order_by('-rank')[:45]
 
 
 def similar_petitions(query):

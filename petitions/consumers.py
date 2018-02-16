@@ -21,7 +21,8 @@ def serialize_petitions(petitions_obj, user=None):
     :param petitions_obj: Database object of petitions.
     :return: JSON formatted dump of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
     """
-    # Initialize varriables
+
+    # Initialize variables
     petition_map = {}
     petitions = []
 
@@ -45,8 +46,7 @@ def serialize_petitions(petitions_obj, user=None):
                 "timestamp": u.created_at.strftime("%B %d, %Y")
             })
 
-        if hasattr(user, "profile"):
-            profile = user.profile
+        profile = user.profile if hasattr(user, "profile") else False
 
         petitions.append({
             'title': petition.title,
@@ -64,7 +64,7 @@ def serialize_petitions(petitions_obj, user=None):
             'expires': petition.expires.strftime("%B %d, %Y"),
             'status': petition.status,
             'in_progress': petition.in_progress,
-            'isSigned': profile.petitions_signed.filter(id=petition.id).exists() if hasattr(user, "profile") else False,
+            'isSigned': profile.petitions_signed.filter(id=petition.id).exists() if profile is not False else False,
             'deleted': False,
             'id': petition.id
         })
