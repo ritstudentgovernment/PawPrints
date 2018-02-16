@@ -1662,11 +1662,19 @@
         }
     });
 
+    function loadPetitions(sort_by, filter, socket){
+
+        socket.send('{"command":"paginate","sort":"'+sort_by+'","filter":"'+filter+'","page":'+window.page+'}');
+        setTimeout(function(){
+            // Timeout waiting for the websocket response after 3 seconds.
+            petitions.loading = false;
+        },3000);
+
+    }
+
     function reloadPetitions(sort_by, filter, socket){
         /**
-         * This function is responsible for loading all petitions that fit in the given filter + sort set.
-         * It just calls "list" on the socket, the actual listing action is handled upon receiving data from the socket
-         * (NOT IN THIS FUNCTION).
+         * This function is responsible for reloading all petitions that fit in the given filter + sort set.
          **/
 
         // load the petitions into the Vue instance.
@@ -1679,13 +1687,10 @@
         petitions.loading = true;
         petitions.map = {};
         petitions.list = [];
-        socket.send('{"command":"paginate","sort":"'+sort_by+'","filter":"'+filter+'","page":'+window.page+'}');
-        setTimeout(function(){
-            // Timeout waiting for the websocket response after 3 seconds.
-            petitions.loading = false;
-        },3000);
+        loadPetitions(sort_by, filter, socket);
 
     }
+
     function updatePetitionHistory(petitionID){
         /**
          * This function is responsible for handling browser history. When called it updates your browser history so you
@@ -2306,7 +2311,7 @@
                     window.petitions.loading++;
                     var filter_tag = $("#sort").data("filter");
                     var sort_by = $("#sort").val();
-                    reloadPetitions(sort_by, filter_tag, window.socket);
+                    loadPetitions(sort_by, filter_tag, window.socket);
                     window.page++;
                 }
             }
