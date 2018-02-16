@@ -1139,6 +1139,7 @@
                                     <i class="material-icons">chat</i>
                                     <span class="invisible transition">Respond</span>
                                 </div>
+                                <div v-else class="admin-action-spacer"></div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="delete">
                                     <i class="material-icons">delete</i>
                                     <span class="invisible transition">Delete</span>
@@ -1694,12 +1695,12 @@
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
-    function getPetition(petitionID){
+    function getPetition(petitionID, forceRefresh = false){
         /**
          * This function is responsible for grabbing petitions. If the given petition does not exist in the data we have
          * it calls the backend, which then grabs it.
          **/
-        if(petitions.map[petitionID] !== undefined){
+        if(petitions.map[petitionID] !== undefined && !forceRefresh){
             return petitions.list[petitions.map[petitionID]];
         }
         else{
@@ -2120,6 +2121,18 @@
                             if( modal_petition.id === Number(petition_id) ){
                                 modalData.petition.in_progress = true;
                             }
+                        }
+
+                    }
+                    else if(command === "refresh-petition"){
+
+                        if(websocket_debug)console.log("Trying to reload a petition.");
+                        petition_id = data["petition_id"];
+                        getPetition(petition_id, true); // Force a refresh
+                        if(modal_petition && modal_petition === petition_id){
+
+                            modalData.closePetition();
+
                         }
 
                     }

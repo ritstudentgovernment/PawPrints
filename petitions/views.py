@@ -374,8 +374,8 @@ def petition_edit(request, petition_id):
 
                 if updated:
                     data = {
-                        "command": "get",
-                        "petition": petition
+                        "command": "refresh-petition",
+                        "petition_id": petition.id,
                     }
                     send_update(data)
 
@@ -388,8 +388,8 @@ def petition_edit(request, petition_id):
                     petition.response.save()
 
                     data = {
-                        "command": "get",
-                        "petition": petition
+                        "command": "refresh-petition",
+                        "petition_id": petition.id,
                     }
                     send_update(data)
 
