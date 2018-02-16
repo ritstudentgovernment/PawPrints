@@ -368,8 +368,8 @@ def petition_edit(request, petition_id):
                 updated = False
                 indexes = ""
                 for index, update in enumerate(updates):
-                    indexes += str(index)
-                    if index == position:
+                    indexes += str(index)+", "
+                    if index == position - 1:
                         update.description = new_value.update
                         update.save()
                         updated = True
@@ -381,7 +381,7 @@ def petition_edit(request, petition_id):
                     }
                     send_update(data)
 
-                return JsonResponse({"EditUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update "+str(position)+"searched: "+indexes})
+                return True if updated else JsonResponse({"Error": "Did not find update: "+str(position)+", searched: "+indexes})
 
             elif attribute == "editResponse":
 
