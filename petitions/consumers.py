@@ -178,7 +178,7 @@ def petitions_command(message):
                     send_petitions_individually(message, petitions)
                     return None
                 return None
-            elif data.command == 'pageinate':
+            elif data.command == 'paginate':
                 # Parse the pageinate command. Required: page, sort. Optional filter.
                 # Sends the WS a sorted and optionally filtered list of petitions between a range.
                 if data.sort and data.page:
