@@ -1666,6 +1666,7 @@
 
     function loadPetitions(sort_by, filter, socket){
 
+        window.last_paginate = [];
         socket.send('{"command":"paginate","sort":"'+sort_by+'","filter":"'+filter+'","page":'+window.page+'}');
         setTimeout(function(){
             // Timeout waiting for the websocket response after 3 seconds.
@@ -2082,6 +2083,11 @@
                         petition = parseOnePetition(data);
                         if (petition) {
 
+                            if(window.last_paginate){
+
+                                window.last_paginate.push(petition.id);
+
+                            }
                             if (petitions.map[petition.id] === undefined) {
 
                                 petitions.list.push(petition);
@@ -2313,7 +2319,8 @@
             if(win.scrollTop() + win.height() > $(document).height() - 100){
                 // Do not call paginate if the user has searched something.
                 // Do not call paginate if Petitions are currently being loaded.
-                if(!window.searched && !window.petitions.loading){
+                // Only call paginate if the last paginate returned some petitions.
+                if(!window.searched && !window.petitions.loading && (!window.last_paginate || (window.last_paginate && window.last_paginate.length !== 0))){
 
                     // Timeout will prevent duplicate calls to paginate
                     clearTimeout(paginationTimeout);
