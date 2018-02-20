@@ -181,8 +181,233 @@ def petition_redirect(request, petition_id):
         return redirect("/")
 
 
+def get_petition(petition_id, user):
+    """
+    Handles grabbing one petition
+    :param: petition_id: The id of the petition to grab
+            user: The logged in user object from request.user
+    :return: A petition object or False
+    """
+
+    profile = user.profile if hasattr(user, "profile") else False
+
+    petition = Petition.objects.filter(pk=petition_id)
+    if petition.exists():
+        petition = petition.first()
+        if (petition.status != 0 and petition.status != 2) or (
+                    profile and profile.user.username == petition.author.username):
+            return petition
+    return False
+
+
+# Petition Edit Functions #
+
+def edit_title(petition, new_title):
+    """
+    Updates a petition's title to a new one if it passes a profanity check.
+    Also updates the created date to reflect the new modifications to the petition.
+    :param petition: The petition to modify
+    :param new_title: The new title to try and set
+    :return: JsonResponse: Error / petition as keys.
+    """
+
+    if petitions.profanity.has_profanity(new_title):
+        return JsonResponse({
+            "Error": "Petitions may not contain profanity. Please correct this and try again."
+        })
+
+        # Update the petition title
+    petition.title = new_title
+
+    # Update petition created and expires dates.
+    date = timezone.now()
+    petition.created_at = date
+    petition.expires = date + timedelta(days=30)
+
+    petition.save()
+
+    return JsonResponse({"petition": petition.id})
+
+
+def edit_description(petition, new_description):
+    """
+    Updates a petition's description to a new one if it passes a profanity check.
+    Also updates the created date to reflect the new modifications to the petition.
+    :param petition: The petition to modify
+    :param new_description: The new description to try and set
+    :return: JsonResponse: Error / petition as keys.
+    """
+
+    if petitions.profanity.has_profanity(new_description):
+        return JsonResponse({
+            "Error": "Petitions may not contain profanity. Please correct this and try again."
+        })
+
+        # Update the petition description
+    petition.description = new_description
+
+    # Update petition created and expires dates.
+    date = timezone.now()
+    petition.created_at = date
+    petition.expires = date + timedelta(days=30)
+
+    petition.save()
+
+    return JsonResponse({"petition": petition.id})
+
+
+def add_update(request, petition, description):
+    """
+    Adds an update to a petition.
+    Sends an email that the update has happened.
+    :param request: The staff user's request.
+    :param petition: The petition to add an update to
+    :param description: The description of the update
+    :return: JsonResponse: petition id as key.
+    """
+
+    update = Update(
+        description=description,
+        created_at=timezone.now()
+    )
+    update.save()
+
+    petition.updates.add(update)
+
+    # Send update command over websocket.
+    data = {
+        "command": "new-update",
+        "update": {
+            "description": description,
+            "timestamp": timezone.now().strftime("%B %d, %Y"),
+            "petition_id": petition.id
+        }
+    }
+    send_update(data)
+
+    # Send email regarding updates.
+    petition_update(petition.id, request.META['HTTP_HOST'])
+
+    petition.save()
+
+    return JsonResponse({"petition": petition.id})
+
+
+def add_response(request, petition, description):
+    """
+    Adds a response to a petition.
+    Sends an email that the response has happened.
+    :param request: The staff user's request.
+    :param petition: The petition to add a response to
+    :param description: The description of the response
+    :return: JsonResponse: petition id as key.
+    """
+
+    last_response = Response.objects.all().last()
+    last_response_id = last_response.id if last_response is not None else 0
+
+    response = Response(
+        description=description,
+        created_at=timezone.now(),
+        author=request.user.profile.full_name,
+        id=last_response_id+1
+    )
+    response.save()
+
+    petition.response = response
+    petition.has_response = True
+    petition.in_progress = False
+
+    # Send response command over websocket
+    data = {
+        "command": "new-response",
+        "response": {
+            "description": description,
+            "timestamp": timezone.now().strftime("%B %d, %Y"),
+            "author": request.user.profile.full_name,
+            "petition_id": petition.id
+        }
+    }
+    send_update(data)
+
+    # Send email regarding the response.
+    petition_responded(petition.id, request.META['HTTP_HOST'])
+
+    petition.save()
+
+    return JsonResponse({"petition": petition.id})
+
+
+def edit_update(request, petition, update_position, description):
+    """
+    Edits a particular update a petition has.
+    Sends an email that the update has happened.
+    :param request: The staff user's request.
+    :param petition: The petition to edit an update on
+    :param update_position: The update position in the petition, when there are multiple updates.
+    :param description: The description of the update
+    :return: JsonResponse: editUpdate / Error as keys.
+    """
+
+    updates = petition.updates.all()
+
+    updated = False
+    indexes = ""
+    for index, update in enumerate(updates):
+        indexes += str(index)+", "
+        if index == update_position - 1:
+            update.description = description
+            update.save()
+            updated = True
+
+    if updated:
+        data = {
+            "command": "refresh-petition",
+            "petition_id": petition.id,
+        }
+        send_update(data)
+
+        # Send email regarding updates.
+        petition_update(petition.id, request.META['HTTP_HOST'])
+
+        petition.save()
+
+        return JsonResponse({"editUpdate": "Done."})
+
+    return JsonResponse({"Error": "Did not find update: "+str(update_position)+", searched: "+indexes})
+
+
+def edit_response(request, petition, description):
+    """
+    Edits the response a petition has.
+    Sends an email that the update to the response has happened.
+    :param request: The staff user's request.
+    :param petition: The petition to edit an update on
+    :param description: The description of the update
+    :return: JsonResponse: editUpdate / Error as keys.
+    """
+
+    if petition.has_response:
+        petition.response.description = description
+        petition.response.save()
+
+        data = {
+            "command": "refresh-petition",
+            "petition_id": petition.id,
+        }
+        send_update(data)
+
+        # Send email regarding the response.
+        petition_responded(petition.id, request.META['HTTP_HOST'])
+
+        petition.save()
+
+        return JsonResponse({"editUpdate": "Done."})
+
+    return JsonResponse({"Error": "Petition did not have a response to edit."})
+
+
 @require_POST
-# @login_required
 def petition_edit(request, petition_id):
     """
     Handles the updating of a particular petition.
@@ -195,6 +420,8 @@ def petition_edit(request, petition_id):
 
     # Check if the user is able to edit
     if edit_check(request.user, petition):
+
+        logger.info('user ' + request.user.email + ' edited petition ' + petition.title + " ID: " + str(petition.id))
 
         attribute = request.POST.get("attribute")
         value = request.POST.get("value")
@@ -236,33 +463,11 @@ def petition_edit(request, petition_id):
 
         elif attribute == "title":
 
-            if petitions.profanity.has_profanity(value):
-                return JsonResponse({
-                    "Error": "Petitions may not contain profanity. Please correct this and try again."
-                })
-
-            # Update the petition title
-            petition.title = value
-
-            # Update petition created and expires dates.
-            date = timezone.now()
-            petition.created_at = date
-            petition.expires = date + timedelta(days=30)
+            return edit_title(petition, value)
 
         elif attribute == "description":
 
-            if petitions.profanity.has_profanity(value):
-                return JsonResponse({
-                    "Error": "Petitions may not contain profanity. Please correct this and try again."
-                })
-
-            # Update the petition description
-            petition.description = value
-
-            # Update petition created and expires dates.
-            date = timezone.now()
-            petition.created_at = date
-            petition.expires = date + timedelta(days=30)
+            return edit_description(petition, value)
 
         elif attribute == "add-tag":
 
@@ -278,59 +483,11 @@ def petition_edit(request, petition_id):
 
             if attribute == "add_update":
 
-                update = Update(
-                    description=value,
-                    created_at=timezone.now()
-                )
-                update.save()
-
-                petition.updates.add(update)
-
-                # Send update command over websocket.
-                data = {
-                    "command": "new-update",
-                    "update": {
-                        "description": value,
-                        "timestamp": timezone.now().strftime("%B %d, %Y"),
-                        "petition_id": petition_id
-                    }
-                }
-                send_update(data)
-
-                # Send email regarding updates.
-                petition_update(petition.id, request.META['HTTP_HOST'])
+                return add_update(request, petition, value)
 
             elif attribute == "response":
 
-                last_response = Response.objects.all().last()
-                last_response_id = last_response.id if last_response is not None else 0
-
-                response = Response(
-                    description=value,
-                    created_at=timezone.now(),
-                    author=request.user.profile.full_name,
-                    id=last_response_id+1
-                )
-                response.save()
-
-                petition.response = response
-                petition.has_response = True
-                petition.in_progress = False
-
-                # Send response command over websocket
-                data = {
-                    "command": "new-response",
-                    "response": {
-                        "description": value,
-                        "timestamp": timezone.now().strftime("%B %d, %Y"),
-                        "author": request.user.profile.full_name,
-                        "petition_id": petition_id
-                    }
-                }
-                send_update(data)
-
-                # Send email regarding the response.
-                petition_responded(petition_id, request.META['HTTP_HOST'])
+                return add_response(request, petition, value)
 
             elif attribute == "mark-in-progress":
 
@@ -364,37 +521,13 @@ def petition_edit(request, petition_id):
 
                 new_value = json2obj(value)
                 position = int(new_value.position)
-                updates = petition.updates.all()
+                description = new_value.update
 
-                updated = False
-                indexes = ""
-                for index, update in enumerate(updates):
-                    indexes += str(index)+", "
-                    if index == position - 1:
-                        update.description = new_value.update
-                        update.save()
-                        updated = True
-
-                if updated:
-                    data = {
-                        "command": "refresh-petition",
-                        "petition_id": petition.id,
-                    }
-                    send_update(data)
-
-                return JsonResponse({"editUpdate": "Done."}) if updated else JsonResponse({"Error": "Did not find update: "+str(position)+", searched: "+indexes})
+                return edit_update(petition, position, description)
 
             elif attribute == "editResponse":
 
-                if petition.has_response:
-                    petition.response.description = value
-                    petition.response.save()
-
-                    data = {
-                        "command": "refresh-petition",
-                        "petition_id": petition.id,
-                    }
-                    send_update(data)
+                return edit_response(petition, value)
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
@@ -406,30 +539,7 @@ def petition_edit(request, petition_id):
         # User was unable to perform any edit operation on this petition.
         return JsonResponse({"Error": "Operation Not Permitted."})
 
-    petition.save()
-
-    logger.info('user ' + request.user.email + ' edited petition ' + petition.title + " ID: " + str(petition.id))
-
     return JsonResponse({"petition": petition_id})
-
-
-def get_petition(petition_id, user):
-    """
-    Handles grabbing one petition
-    :param: petition_id: The id of the petition to grab
-            user: The logged in user object from request.user
-    :return: A petition object or False
-    """
-
-    profile = user.profile if hasattr(user, "profile") else False
-
-    petition = Petition.objects.filter(pk=petition_id)
-    if petition.exists():
-        petition = petition.first()
-        if (petition.status != 0 and petition.status != 2) or (
-                profile and profile.user.username == petition.author.username):
-            return petition
-    return False
 
 
 # ENDPOINTS #
