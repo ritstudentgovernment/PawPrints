@@ -1589,12 +1589,14 @@
                         petitions.map = {};
                         petitions.list = [];
                         socket.send('{"command":"search","query":"'+search.searchString+'"}');
+                        window.searched = true;
                         setTimeout(function(){
                             // Timeout waiting for the websocket response after 3 seconds.
                             petitions.loading = false;
                         },3000);
                     }
                     else{
+                        window.searched = false;
                         var sort = $("#sort");
                         var filter_tag = sort.data("filter");
                         var sort_by = sort.val();
@@ -1684,6 +1686,7 @@
 
         }
         $("#tag-"+filter).addClass("current-tag");
+        window.searched = false;
         petitions.loading = true;
         petitions.map = {};
         petitions.list = [];
@@ -2307,7 +2310,9 @@
         $(window).scroll(function() {
             var win = $(window);
             if(win.scrollTop() + win.height() > $(document).height() - 100){
-                if(!window.petitions.loading){ // Petitions are not currently being loaded.
+                // Do not call paginate if the user has searched something.
+                // Do not call paginate if Petitions are currently being loaded.
+                if(!window.searched && !window.petitions.loading){
                     window.petitions.loading++;
                     var filter_tag = $("#sort").data("filter");
                     var sort_by = $("#sort").val();
