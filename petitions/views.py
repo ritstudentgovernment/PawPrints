@@ -539,6 +539,8 @@ def petition_edit(request, petition_id):
         # User was unable to perform any edit operation on this petition.
         return JsonResponse({"Error": "Operation Not Permitted."})
 
+    petition.save()
+
     return JsonResponse({"petition": petition_id})
 
 
