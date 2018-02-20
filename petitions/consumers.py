@@ -5,13 +5,9 @@ auth: Lukas Yelle (@lxy5611)
 """
 import json, string
 import petitions.views as views
-from profile.models import User
 from collections import namedtuple
 from channels import Channel, Group
-from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
-import time
-import math
 
 
 def serialize_petitions(petitions_obj, user=None):
