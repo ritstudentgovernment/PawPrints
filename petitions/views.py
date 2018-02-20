@@ -523,11 +523,11 @@ def petition_edit(request, petition_id):
                 position = int(new_value.position)
                 description = new_value.update
 
-                return edit_update(petition, position, description)
+                return edit_update(request, petition, position, description)
 
             elif attribute == "editResponse":
 
-                return edit_response(petition, value)
+                return edit_response(request, petition, value)
 
             else:
                 return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
