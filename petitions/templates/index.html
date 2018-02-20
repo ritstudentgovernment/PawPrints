@@ -2307,17 +2307,24 @@
 
         });
 
+        var paginationTimeout = setTimeout(function(){},0);
         $(window).scroll(function() {
             var win = $(window);
             if(win.scrollTop() + win.height() > $(document).height() - 100){
                 // Do not call paginate if the user has searched something.
                 // Do not call paginate if Petitions are currently being loaded.
                 if(!window.searched && !window.petitions.loading){
-                    window.petitions.loading++;
-                    var filter_tag = $("#sort").data("filter");
-                    var sort_by = $("#sort").val();
-                    loadPetitions(sort_by, filter_tag, window.socket);
-                    window.page++;
+
+                    // Timeout will prevent duplicate calls to paginate
+                    clearTimeout(paginationTimeout);
+                    paginationTimeout = setTimeout(function(){
+                        window.page++;
+                        window.petitions.loading = true;
+                        var filter_tag = $("#sort").data("filter");
+                        var sort_by = $("#sort").val();
+                        loadPetitions(sort_by, filter_tag, window.socket);
+                    },500);
+
                 }
             }
         });
