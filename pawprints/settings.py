@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-from pawprints import secrets
+import datetime
 import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -23,19 +23,30 @@ SAML_FOLDER = os.path.join(BASE_DIR, 'saml')
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secrets.SECRET_KEY
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+ALLOWED_HOSTS = ["*"]
 if 'TRAVIS' in os.environ:
     DEBUG = True
+    ALLOWED_HOSTS = ["*"]
 
-ALLOWED_HOSTS = ["*"]
+if os.environ.get('SERVER_ENV', 'none') == 'test':
+    DEBUG=True
+
+if os.environ.get('SERVER_ENV','none')  == 'prod':
+    DEBUG = False
+    ALLOWED_HOSTS = ["pawprints.rit.edu"]
+
+if os.environ.get('SERVER_ENV', 'none') == 'stage':
+    DEBUG = False
+    ALLOWED_HOSTS = ["sgstage.rit.edu"]
 
 # Sentry Settings
 RAVEN_CONFIG = {
-    'dsn': secrets.RAVEN_DSN,
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+    'dsn': os.environ.get('RAVEN_DSN',''),
+    'release': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 }
 
 # Application definition
@@ -70,7 +81,7 @@ HUEY = {
         'connection_pool': None,  # Definitely you should use pooling!
         # ... tons of other options, see redis-py for details.
 
-        'url': os.environ.get('REDIS_URL', 'redis://localhost:6379'),  # Allow Redis config via a DSN.
+        'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
     },
     'consumer': {
         'workers': 2,
@@ -90,7 +101,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379')],
             "channel_capacity": {
                 "http.request": 10000,
                 "websocket.send*": 10000,
@@ -139,11 +150,11 @@ WSGI_APPLICATION = 'pawprints.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': secrets.DB_NAME,
-        'USER': secrets.DB_USER,
-        'PASSWORD': secrets.DB_PASSWORD,
-        'HOST': secrets.DB_HOST,
-        'PORT': secrets.DB_PORT,
+        'NAME': os.environ.get('DB_NAME', ''),
+        'USER': os.environ.get('DB_USER', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', ''),
     }
 }
 
@@ -185,11 +196,11 @@ USE_TZ = True
 
 # Email settings
 
-EMAIL_HOST = secrets.EMAIL_HOST
-EMAIL_HOST_USER = secrets.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = secrets.EMAIL_HOST_PASSWORD
-EMAIL_PORT = secrets.EMAIL_PORT
-EMAIL_USE_TLS = secrets.EMAIL_USE_TLS
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '')
 
 STATIC_URL = '/static/'
 

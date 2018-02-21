@@ -4,25 +4,31 @@ language: python
 dist: trusty
 
 services:
-  - postgresql
-  - redis-server
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.19.0
 
 python:
   - "3.6"
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_b3c74f49840a_key -iv $encrypted_b3c74f49840a_iv -in secrets.py.enc -out pawprints/secrets.py -d
-  - sudo apt-get install libxml2-dev libxmlsec1-dev
+  - pip install coverage
   - cp petitions/profanity.csv.template petitions/profanity.csv
+  - cp template.env .env
+  - mkdir shared
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 
 install:
-  - pip install -r requirements.txt
-  - pip install coverage
-  - pip install codecov
+  - docker-compose run -d --name pawprints_web -v "$PWD/shared:/shared" web 
 
-before_script:
-  - psql -c 'CREATE DATABASE pawprints;' -U postgres
+script:
+  - docker exec -it pawprints_web coverage run manage.py test
+  - docker exec -it pawprints_web mv .coverage /shared
 
-script: coverage run manage.py test
-
-after_script: codecov
+after_script:
+  - mv shared/.coverage .
+  - bash <(curl -s https://codecov.io/bash)

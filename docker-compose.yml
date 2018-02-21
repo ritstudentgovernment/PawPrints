@@ -1,0 +1,95 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: postgres
+    restart: always
+    volumes:
+      - /pawprintsdata/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - /pawprintsdata/redis-data:/data
+    expose:
+      - "6379"
+
+  worker:
+    build: .
+    command: python manage.py runworker
+    volumes:
+      - .:/PawPrints
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SERVER_ENV: ${SERVER_ENV}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      RAVEN_DSN: ${RAVEN_DSN}
+      REDIS_URL: ${REDIS_URL}
+    links:
+      - redis
+      - postgres
+
+  huey_worker:
+    build: .
+    command: python manage.py run_huey
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SERVER_ENV: ${SERVER_ENV}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      RAVEN_DSN: ${RAVEN_DSN}
+      REDIS_URL: ${REDIS_URL}
+    volumes:
+      - .:/PawPrints
+    links:
+      - redis
+      - postgres
+
+  web:
+    build: .
+    command: sh -c  "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 pawprints.asgi:channel_layer"
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SERVER_ENV: ${SERVER_ENV}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS}
+      RAVEN_DSN: ${RAVEN_DSN}
+      REDIS_URL: ${REDIS_URL}
+    volumes:
+      - .:/PawPrints
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - postgres
