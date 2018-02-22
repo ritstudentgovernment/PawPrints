@@ -5,9 +5,13 @@ auth: Lukas Yelle (@lxy5611)
 """
 import json, string
 import petitions.views as views
+from profile.models import User
 from collections import namedtuple
 from channels import Channel, Group
+from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
+import time
+import math
 
 
 def serialize_petitions(petitions_obj, user=None):
@@ -90,9 +94,6 @@ def send_petitions_individually(message, petitions):
         })
 
 
-def paginate(petitions, page): return petitions[(page-1)*45:page*45]
-
-
 @channel_session_user_from_http
 def petitions_connect(message):
     """
@@ -107,7 +108,7 @@ def petitions_connect(message):
     Group("petitions").add(message.reply_channel)
 
     # Default order is 'most recent' query the database for all petitions in that order.
-    petitions = paginate(views.sorting_controller("most recent"), 1)
+    petitions = views.sorting_controller("most recent")
 
     send_petitions_individually(message, petitions)
 
@@ -171,23 +172,10 @@ def petitions_command(message):
                 # Sends the WS a sorted and optionally filtered list of petitions.
                 if data.query:
                     petitions = views.sorting_controller("search", data.query)
-                    send_petitions_individually(message, petitions)
-                    return None
-                return None
-            elif data.command == 'paginate':
-                # Parse the pageinate command. Required: page, sort. Optional filter.
-                # Sends the WS a sorted and optionally filtered list of petitions between a range.
-                if data.sort and data.page:
-                    petitions = views.sorting_controller(data.sort)
-                    if data.filter:
-                        petitions = views.filtering_controller(petitions, data.filter)
-                    petitions = paginate(petitions, data.page)
-                    send_petitions_individually(message, petitions)
-                    return None
 
-                message.reply_channel.send({
-                    "text": "Error. Must send 'sort' parameter"
-                })
+                    send_petitions_individually(message, petitions)
+
+                    return None
                 return None
 
         message.reply_channel.send({
