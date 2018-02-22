@@ -16,3 +16,7 @@ omit =
   */pawprints/celery.py
   */pawprints/asgi.py
   */log/*
+  petitions/management/*
+  auth/admin.py
+  auth/apps.py
+  auth/models.py  

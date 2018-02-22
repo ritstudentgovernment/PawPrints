@@ -300,7 +300,7 @@
         #petition-modal .modal-container{
             max-height: 95vh;
             height:95vh;
-            overflow: scroll;
+            overflow: hidden;
         }
         #petition-modal .modal-header{
             padding: 10px;
@@ -330,8 +330,6 @@
             cursor: pointer;
         }
         #petition-modal .modal-body {
-            margin-bottom: 75px;
-            height: calc(95vh - 140px);
             overflow: auto;
             background-color: #f0f0f0;
         }
@@ -629,7 +627,13 @@
         }
         .admin-action-spacer{
             height:50px;
+            width: 50px;
             margin-bottom: 20px;
+        }
+        .admin-edit-icon{
+            font-size: 1em !important;
+            padding-right: 10px;
+            padding-left: 8px;
         }
         #back-up{
             bottom: 105px;
@@ -639,6 +643,7 @@
             background-color: #fff;
             color: #0f0f0f;
         }
+
         /* -- Responsiveness -- */
 
         @media screen and (max-width: 1170px){
@@ -683,7 +688,7 @@
                 column-count:2;
             }
             #timeline-container{
-                width:85%;
+                width:84%;
                 padding-left: 10%;
             }
             .timeline-element:before{
@@ -705,7 +710,6 @@
             }
 
             #timeline-container {
-                width: 60vw;
                 padding-left: 11%;
                 overflow: auto;
                 overflow-x: visible;
@@ -845,18 +849,35 @@
                 text-align: left
             }
         }
-        @media screen and (max-width: 375px) {
+        @media screen and (max-width: 479px) {
+            #admin-actions,.admin-edit-icon{
+                display:none !important;
+            }
+            #petition-modal .modal-container{
 
+                width: 100%;
+                max-height: 100vh !important;
+                height: 100vh !important;
+                top:0 !important;
+                left:0;
+                right:0;
+                bottom:0;
+                margin: 0 !important;
+
+            }
             #timeline-container{
-                padding-left: 19%;
+                padding-left: 5%;
+                width: 90%;
             }
             .timeline-element:before{
-                left: calc(-13vw + 3px);
+                content:none;
             }
-            .timeline-element-dot{
-                left: calc(1px - 13.2vw);
+            .timeline-element-arrow-container{
+                display: none;
             }
-
+            .timeline-element-wrap{
+                width: auto;
+            }
         }
         #loading-petitions{
             text-align: center;
@@ -1060,14 +1081,25 @@
             </div>
             <div class="modal-body relative block">
                 <div id="timeline-container">
-                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type">
+                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type" :data-element="index">
                         <div class="timeline-element-wrap">
                             <div class="timeline-element-arrow-container">
                                 <div class="timeline-element-arrow" v-if="element.type != 'created'"></div>
                                 <div class="timeline-element-dot circle"></div>
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
-                                <h4 class="timeline-element-header"><span class="text-highlight">{[ element.type ]}</span><span v-if="element.date==0">Today</span><span v-else>{[ element.date ]} Day<span v-if="element.date>1">s</span> Ago</span></h4>
+                                <h4 class="timeline-element-header">
+                                    <span class="text-highlight">{[ element.type ]}</span>
+                                    <span v-if="element.date==0">Today</span>
+                                    <span v-else>
+                                        {[ element.date ]} Day<span v-if="element.date>1">s</span> Ago
+                                    </span>
+                                    {% if user.first_name and user.is_staff %}
+                                        <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
+                                            <i class="admin-edit-icon cursor material-icons">edit</i>
+                                        </span>
+                                    {% endif %}
+                                </h4>
                                 <div class="timeline-element-content" v-html="element.content"></div>
                             </div>
                             <div class="timeline-element-body" style="padding-top:14px;" v-else>
@@ -1093,7 +1125,7 @@
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
                                 <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
                             </button>
-                            <span class="padding-left">{[ petition.signatures ]} / 200 Signatures</span>
+                            <span class="padding-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
                         </div>
                         <div id="action-drawer-icon-container" class="transition">
                             <i class="material-icons">keyboard_arrow_down</i>
@@ -1104,14 +1136,15 @@
                                     <i class="material-icons">check</i>
                                     <span class="invisible transition">Charged</span>
                                 </div>
-                                <div v-else class="admin-action-spacer"></div>
+                                <div v-else class="admin-action-spacer left"></div>
+                                <div v-if="!petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
+                                    <i class="material-icons">chat</i>
+                                    <span class="invisible transition">Respond</span>
+                                </div>
+                                <div v-else class="admin-action-spacer left"></div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="update">
                                     <i class="material-icons">update</i>
                                     <span class="invisible transition">Update</span>
-                                </div>
-                                <div class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
-                                    <i class="material-icons">chat</i>
-                                    <span class="invisible transition">Respond</span>
                                 </div>
                                 <div class="circle material-shadow material-hover cursor transition left" data-admin-control="delete">
                                     <i class="material-icons">delete</i>
@@ -1134,7 +1167,8 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Status</h3>
-                                <span class="alternate-font" v-if="petition.signatures < 200 && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-if="petition.signatures < petition.threshold && !petition.in_progress && !petition.response && !petition.expired">Active</span>
+                                <span class="alternate-font" v-else-if="petition.signatures > petition.threshold && !petition.in_progress">Threshold Met</span>
                                 <span class="alternate-font" v-else-if="petition.response">Responded</span>
                                 <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
@@ -1145,7 +1179,7 @@
                                 <span class="alternate-font">On <a class="text-highlight" :href="'https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/?p='+petition.id">Facebook</a></span>
                             </div>
                         </div>
-                        <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                        <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
                     </div>
                     <div v-else-if="petition.status == 0">
                         <div class="ninety-width">
@@ -1243,13 +1277,6 @@
                             <span v-if="petition.response" class="right">Responded</span>
                             <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
                             <span v-else-if="petition.in_progress" class="right">In Progress</span>
-                            <!--<span class="right">-->
-                                <!--<i v-if="petition.response" class="status-icon material-icons md-18" title="This petition has received an official response.">done</i>-->
-                                <!--<i v-else-if="petition.updates.length > 0" class="status-icon material-icons md-18" title="This petition has been updated by a SG senator.">message</i>-->
-                                <!--<i v-else-if="petition.in_progress" class="status-icon material-icons md-18" title="This petition has been marked as in progress by a SG senator.">chat_bubble_outline</i>-->
-                            <!--</span>-->
-                            <!-- Signature icon by Icons8 -->
-                            <!--<img v-if="petition.isSigned" src="https://png.icons8.com/signature/ios7/64" title="You signed this petition" alt="You signed this petition" width="27" height="27" class="right" style="margin-top: -6px">-->
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>
@@ -1287,11 +1314,11 @@
 {% endif %}
 {% if user.is_staff %}
     <script>
-        $(document).on("click","#admin-actions .circle",function(e){
-            if(window.debug)console.log("CLICK ADMIN BUTTON");
-            var clicked = $(e.target).closest(".circle");
-            var action = clicked.data("admin-control");
+
+        function adminEdit(action, id = false){
+
             function initTinyMCE(){
+                tinymce.remove();
                 return tinymce.init({
                     selector: '#admin-edit',
                     inline: false,
@@ -1301,79 +1328,163 @@
                     toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat"
                 });
             }
+
             switch(action){
                 case "update":
-                    function updateLaunch(){
-                        // Build the update modal
-                        window.updateModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Add Update</h2>",
-                            bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.updateModal.close();})']
-                            ],
-                            closeCallback: function(){
-                                tinymce.remove("#admin-edit");
-                            }
-                        });
-                        updateModal.open();
-                        initTinyMCE();
-                        setTimeout(function(){
-                            updateModal.positionModal();
-                        },0);
-                        return true;
-                    }
-                    return updateLaunch();
-                case "respond":
-                    function responseLaunch(){
-                        // Build the update modal
-                        window.responseModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Respond to this petition</h2>",
-                            bodyContent:"<div id='admin-edit'>Write your response here.</div><h5> Note: Once you submit this response you may not change it. </h5>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.responseModal.close();})']
-                            ],
-                            closeCallback: function(){
-                                tinymce.remove("#admin-edit");
-                            }
-                        });
-                        responseModal.open();
-                        initTinyMCE();
-                        setTimeout(function(){
-                            responseModal.positionModal();
-                        },0);
-                        return true;
-                    }
-                    return responseLaunch();
-                case "delete":
-                    function deleteLaunch(){
-                        // Build the Deletion modal
-                        window.deleteModal = new Modal({
-                            icon: false,
-                            headerClass:"background-highlight bright-text",
-                            headerContent: "<h2>Un-publish this petition.</h2>",
-                            bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
-                            bodyButtons:[
-                                ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
-                                ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
-                            ]
-                        });
-                        deleteModal.open();
-                        return true;
-                    }
-                    return deleteLaunch();
-                case "mark_in_progress":
-                    update("mark-in-progress",false,getUrl("p"));
+                    // Build the update modal
+
+                    window.updateModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Add Update</h2>",
+                        bodyContent:"<div id='admin-edit'>Write your update here.</div> <h5> Note: Once you submit this update you may not change it. </h5>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.updateModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("add_update",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.updateModal.close();})']
+                        ],
+                        closeCallback: function(){
+                            tinymce.remove("#admin-edit");
+                        }
+                    });
+                    updateModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        updateModal.positionModal();
+                    },0);
                     return true;
+
+                case "respond":
+                    // Build the response modal
+
+                    var response = window.modalData.petition.response;
+                    response = response === undefined ? "Write your response here." : response;
+
+                    window.responseModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Respond to this petition</h2>",
+                        bodyContent:"<div id='admin-edit'>"+response+"</div>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.responseModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("response",tinymce.get("admin-edit").getContent(),getUrl("p"),function(r){window.responseModal.close();})']
+                        ],
+                        closeCallback: function(){
+                            tinymce.remove("#admin-edit");
+                        }
+                    });
+                    responseModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        responseModal.positionModal();
+                    },0);
+                    return true;
+
+                case "delete":
+                    // Build the Deletion modal
+
+                    window.deleteModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Un-publish this petition.</h2>",
+                        bodyContent:"<p>WARNING! There is no going back once you remove this petition.</p>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.deleteModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",'update("unpublish",false,getUrl("p"),function(r){window.deleteModal.close();$("#petitions-container").find("[data-petition-id="+getUrl("p")+"]").remove();window.modalData.closePetition();})']
+                        ]
+                    });
+                    deleteModal.open();
+                    return true;
+
+                case "mark_in_progress":
+
+                    update("mark-in-progress", false, getUrl("p"));
+                    return true;
+
+                case "edit-update":
+
+                    if(window.debug)console.log("EDIT UPDATE "+id);
+                    window.edit_update_position = id;
+                    window.editUpdateModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Edit this update</h2>",
+                        bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editUpdateModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",
+                                'update(' +
+                                '"editUpdate",' +
+                                'JSON.stringify({"update":tinymce.get("admin-edit").getContent(),"position":window.edit_update_position}),' +
+                                'getUrl("p"),' +
+                                'function(r){if(window.debug)console.log(r);window.editUpdateModal.close();window.modalData.closePetition();})']
+                        ]
+                    });
+                    editUpdateModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        editUpdateModal.positionModal();
+                    },0);
+                    return true;
+
+                case "edit-response":
+
+                    window.editResponseModal = new Modal({
+                        icon: false,
+                        headerClass:"background-highlight bright-text",
+                        headerContent: "<h2>Edit this response</h2>",
+                        bodyContent:"<div id='admin-edit'>"+modalData.timeline[id].content+"</div>",
+                        bodyButtons:[
+                            ["Cancel","material-button material-hover material-shadow cursor transition minimal","window.editResponseModal.close()"],
+                            ["Submit","material-button material-hover material-shadow cursor transition",
+                                'update(' +
+                                '"editResponse",' +
+                                'tinymce.get("admin-edit").getContent(),' +
+                                'getUrl("p"),' +
+                                'function(r){if(window.debug)console.log(r);window.editResponseModal.close();window.modalData.closePetition();})']
+                        ]
+                    });
+                    editResponseModal.open();
+
+                    initTinyMCE();
+                    setTimeout(function(){
+                        editResponseModal.positionModal();
+                    },0);
+                    return true;
+
                 default:
                     throw "Error when dispatching an admin control action.";
+
             }
+
+        }
+
+        $(document).on("click","#admin-actions .circle",function(e){
+
+            if(window.debug)console.log("CLICK ADMIN BUTTON");
+
+            var clicked = $(e.target).closest(".circle");
+            var action = clicked.data("admin-control");
+
+            adminEdit(action);
+
         });
+
+        $(document).on("click",".admin-edit-icon",function(e){
+
+            if(window.debug)console.log("CLICK ADMIN BUTTON");
+
+            var clicked = $(e.target).closest(".timeline-element");
+            var clicked_type = clicked.data("type").toLowerCase().replace(/(sg|official)/g,'').trim();
+            var element_id = clicked.data("element");
+            var action = "edit-"+clicked_type;
+
+            adminEdit(action, element_id);
+
+        });
+
     </script>
 {% endif %}
 
@@ -1550,6 +1661,7 @@
             this.randomize();
         }
     });
+
     function reloadPetitions(sort_by, filter, socket){
         /**
          * This function is responsible for loading all petitions that fit in the given filter + sort set.
@@ -1589,12 +1701,12 @@
             window.history.pushState("object or string", "Title", prevURL + "/?p=" + petitionID);
         }
     }
-    function getPetition(petitionID){
+    function getPetition(petitionID, forceRefresh = false){
         /**
          * This function is responsible for grabbing petitions. If the given petition does not exist in the data we have
          * it calls the backend, which then grabs it.
          **/
-        if(petitions.map[petitionID] !== undefined){
+        if(petitions.map[petitionID] !== undefined && !forceRefresh){
             return petitions.list[petitions.map[petitionID]];
         }
         else{
@@ -1633,7 +1745,8 @@
     function setContentAvailableSpace(modal, additional_margin = 0){
         // Compute the available space for the content of the petition based on the used space.
         var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
-        modal.find(".modal-body").css({"height":"calc(95vh - "+usedSpace+"px)"}).removeClass("hidden");
+        modal.find("#timeline-container").css({"height":"calc(95vh - "+usedSpace+"px)"});
+        modal.find(".modal-body").removeClass("hidden");
     }
     openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false, counter = 0){
@@ -1747,17 +1860,20 @@
                 $(this).removeClass("hidden");
             });
 
-            verticalOffset(modal.find(".modal-container"), 0);
+            setContentAvailableSpace(modal, 200);
+            verticalOffset(modal.find(".modal-container"));
             modal.find(".modal-container").cssanimate("fadeInUp",{hide:true},function(){
 
+                // Update the space that the petition's body takes up
                 setContentAvailableSpace(modal);
-
                 // Center the modal on the screen
                 verticalOffset(modal.find(".modal-container"));
+
                 $(window).resize(function(){
                     setContentAvailableSpace(modal);
                     verticalOffset(modal.find(".modal-container"));
                 });
+
             });
 
             $(document).on("keyup",function(e){
@@ -1957,10 +2073,23 @@
 
                         petition = parseOnePetition(data);
                         if(petition){
-                            petitions.list.push(petition);
-                            petitions.map[petition.id] = petitions.list.indexOf(petition);
-                            animateUpdate(petition.id);
+
+                            if(petitions.map[petition.id] === undefined){
+
+                                petitions.list.push(petition);
+                                petitions.map[petition.id] = petitions.list.indexOf(petition);
+                                animateUpdate(petition.id);
+
+                            }
+                            else{
+
+                                petitions.list[petitions.map[petition.id]] = petition;
+                                animateUpdate(petition.id);
+
+                            }
+
                             petitions.loading = false;
+
                         }
                         else{
                             clearTimeout(openPetitionLoop);
@@ -1998,6 +2127,18 @@
                             if( modal_petition.id === Number(petition_id) ){
                                 modalData.petition.in_progress = true;
                             }
+                        }
+
+                    }
+                    else if(command === "refresh-petition"){
+
+                        if(websocket_debug)console.log("Trying to reload a petition.");
+                        petition_id = data["petition_id"];
+                        getPetition(petition_id, true); // Force a refresh
+                        if(modal_petition && modal_petition === petition_id){
+
+                            modalData.closePetition();
+
                         }
 
                     }

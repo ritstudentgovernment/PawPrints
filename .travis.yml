@@ -6,7 +6,6 @@ dist: trusty
 services:
   - postgresql
   - redis-server
-  - rabbitmq
 
 python:
   - "3.6"

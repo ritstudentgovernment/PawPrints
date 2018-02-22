@@ -6,6 +6,7 @@ Updated: Nov 8 2016
 """
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 class ProfileTest(TestCase):
     def setUp(self):
@@ -13,6 +14,15 @@ class ProfileTest(TestCase):
         self.testUser = User.objects.create_user(username='txu1267', email='txu1267@rit.edu')
         self.testUser.set_password('test')
         self.testUser.save()
+        self.superUser = User.objects.create_user(username='txu1266', email='txu1266', is_superuser=True)
+        self.superUser.set_password('test')
+        self.superUser.save()
+        self.superUser2 = User.objects.create_user(username='txu1265', email='txu1265', is_superuser=True, is_staff=True)
+        self.superUser2.set_password('test')
+        self.superUser2.save()
+        self.user = User.objects.create_user(username='axu7254', email='axu7254')
+        self.user2 = User.objects.create_user(username='cxl1234', email='cxl1234')
+        self.user3 = User.objects.create_user(username='abc4321', email='abc4321')
 
     def test_update_notification(self):
         self.client.force_login(self.testUser)
@@ -28,3 +38,73 @@ class ProfileTest(TestCase):
         self.client.force_login(self.testUser)
         response = self.client.get('/profile/')
         self.assertEqual(response.status_code, 200)
+
+    def test_add_superuser(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/profile/manage/admin/add/'+ str(self.user2.id))
+        user = User.objects.get(id=self.user2.id)
+        self.assertEqual(user.is_superuser, True)
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_superuser_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/profile/manage/admin/add/'+ str(self.user2.id))
+        user = User.objects.get(id=self.user2.id)
+        self.assertEqual(user.is_superuser, False)
+        self.assertEqual(user.is_staff, False)
+        self.assertEqual(response.status_code, 403)
+
+    def test_add_staff(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/profile/manage/manager/add/'+ str(self.user2.id))
+        user = User.objects.get(id=self.user2.id)
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_staff_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/profile/manage/manager/add/'+ str(self.user2.id))
+        user = User.objects.get(id=self.user2.id)
+        self.assertEqual(user.is_staff, False)
+        self.assertEqual(response.status_code, 403)
+
+    def test_remove_superuser(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/profile/manage/admin/remove/'+ str(self.superUser2.id))
+        user = User.objects.get(id=self.superUser2.id)
+        self.assertEqual(user.is_superuser, False)
+        #self.assertEqual(user.is_staff, False)
+        self.assertEqual(response.status_code, 200)
+
+    def test_remove_superuser_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/profile/manage/admin/remove/'+ str(self.superUser2.id))
+        user = User.objects.get(id=self.superUser2.id)
+        self.assertEqual(user.is_superuser, True)
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_remove_staff(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/profile/manage/manager/remove/'+ str(self.superUser2.id))
+        user = User.objects.get(id=self.superUser2.id)
+        self.assertEqual(user.is_staff, False)
+        self.assertEqual(response.status_code, 200)
+
+    def test_remove_staff_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/profile/manage/manager/remove/'+ str(self.superUser2.id))
+        user = User.objects.get(id=self.superUser2.id)
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_manager_staff(self):
+        self.client.force_login(self.superUser)
+        response = self.client.post('/profile/manage/staff')
+        self.assertEqual(response.status_code, 200)
+
+    def test_manager_staff_fail(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/profile/manage/staff')
+        self.assertEqual(response.status_code, 302)

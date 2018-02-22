@@ -17,16 +17,26 @@ import logging
 
 logger = logging.getLogger("pawprints." + __name__)
 
+class EmailTitles():
+    Petition_Approved = 'PawPrints - Your Petition is Published!'
+    Petition_Rejected = 'PawPrints - Petition Rejected'
+    Petition_Update = 'PawPrints - A Petition you signed has a status update!'
+    Petition_Responded = 'PawPrints - A Petition you signed has a response!'
+    Petition_Reached = 'PawPrints - Petition threshold reached'
+    Petition_Needs_Approval = 'PawPrints - Petition needs approval'
+
+
 @db_task(retries=3, retry_delay=3)
 def petition_approved(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-        'PawPrints - Petition approved.',
+        EmailTitles.Petition_Approved,
         get_template('email_inlined/petition_approved.html').render(
             {
                 'petition_id': petition.id,
                 'title': petition.title,
+                'first_name': petition.author.first_name,
                 'author': petition.author.first_name + ' ' + petition.author.last_name,
                 'site_path': site_path,
                 'protocol': 'https',
@@ -50,11 +60,12 @@ def petition_rejected(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-        'PawPrints - Petition rejected',
+        EmailTitles.Petition_Rejected,
         get_template('email_inlined/petition_rejected.html').render(
             {
                 'petition_id': petition.id,
                 'title': petition.title,
+                'first_name': petition.author.first_name,
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
@@ -84,7 +95,7 @@ def petition_update(petition_id, site_path):
     recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
-        'PawPrints - Petition status update',
+        EmailTitles.Petition_Update,
         get_template('email_inlined/petition_status_update.html').render(
             {
                 'petition_id': petition.id,
@@ -96,7 +107,8 @@ def petition_update(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -120,7 +132,7 @@ def petition_responded(petition_id, site_path):
     recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
-        'PawPrints - Petition response',
+        EmailTitles.Petition_Responded,
         get_template('email_inlined/petition_response_received.html').render(
             {
                 'petition_id': petition.id,
@@ -132,7 +144,8 @@ def petition_responded(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
 
     email.content_subtype = "html"
@@ -156,7 +169,7 @@ def petition_reached(petition_id, site_path):
     recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
-        'PawPrints - Petition threshold reached',
+        EmailTitles.Petition_Reached,
         get_template('email_inlined/petition_threshold_reached.html').render(
             {
                 'petition_id': petition.id,
@@ -168,16 +181,18 @@ def petition_reached(petition_id, site_path):
             }
         ),
         'sgnoreply@rit.edu',
-        recipients
+        ['sgnoreply@rit.edu'],
+        bcc=recipients
     )
     email.content_subtype = "html"
     try:
         email.send()
         logger.info("Petition Reached email SENT \nPetition ID: " + str(petition.id))
     except Exception as e:
-        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + recipients,exc_info=True)
+        logger.critical("Petition Reached email FAILED\nPetition ID: " + str(petition.id) + "\nRecipients: " + str(recipients),exc_info=True)
         raise e
 
+# TODO This isnt used anywhere
 @db_task(retries=3, retry_delay=3)
 def petition_received(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
@@ -210,16 +225,16 @@ def petition_needs_approval(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-        'PawPrints - Petition needs approval',
+        EmailTitles.Petition_Needs_Approval,
         get_template('email_inlined/petition_needs_approval.html').render(
-            Context({
+            {
                 'petition_id': petition.id,
                 'title': petition.title,
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
-            })
+            }
         ),
         'sgnoreply@rit.edu',
         [petition.author.email]
