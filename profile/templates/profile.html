@@ -54,6 +54,12 @@
             overflow: hidden;
             width: calc(100% - 65px);
         }
+        article:nth-child(odd){
+            border-top: 1px solid #ccc;
+        }
+        .delete-petition:hover{
+            border-bottom: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -93,13 +99,20 @@
                 {% if petitions_created.count > 0 %}
                     <h1>Petitions Created</h1>
                     {% for petition in petitions_created %}
-                        {% if petition.status != 2 %}
                         <article class="padding white-background cursor" onclick="window.location.href='/?p={{petition.id}}'">
                             <h3 class="text-highlight capitalize inline-block">{{ petition.title }}</h3>
-                            {% if petition.status == 0 %}<p class="inline-block margin-left italics">Not Published</p>
-                            {% else %}<p class="inline-block margin-left">Published</p><p class="inline-block margin-left">{{petition.signatures}} / 200 Signatures</p>{% endif %}
+                            {% if petition.status == 0 %}
+                                <p class="inline-block margin-left italics">Not Published</p>
+                                <p class="right">
+                                    <a href="/petition/unpublish/{{petition.id}}" class="delete-petition material-icon-container modern-link cursor margin-right">Delete
+                                        <i class="material-icons">delete</i>
+                                    </a>
+                                </p>
+                            {% else %}
+                                <p class="inline-block margin-left">Published</p>
+                                <p class="inline-block margin-left">{{petition.signatures}} / 200 Signatures</p>
+                            {% endif %}
                         </article>
-                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>
