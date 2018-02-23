@@ -102,11 +102,9 @@ class ProfileTest(TestCase):
     def test_manager_staff(self):
         self.client.force_login(self.superUser)
         response = self.client.post('/profile/manage/staff')
-        print(response)
         self.assertEqual(response.status_code, 200)
 
     def test_manager_staff_fail(self):
         self.client.force_login(self.user)
         response = self.client.post('/profile/manage/staff')
-        print(response)
         self.assertEqual(response.status_code, 302)
