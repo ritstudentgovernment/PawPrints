@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apk update && \
   apk add postgresql-libs gcc && \
-  apk add musl-dev postgresql-dev libxslt-dev libxml2-dev pkgconfig xmlsec-dev
+  apk add musl-dev postgresql-client postgresql-dev libxslt-dev libxml2-dev pkgconfig xmlsec-dev
 
 
 RUN mkdir /PawPrints
