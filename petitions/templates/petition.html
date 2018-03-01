@@ -35,15 +35,15 @@
 
         #landing{
             margin-top: 109px;
-            border-top: 3px solid #f36e21;
+            border-top: 3px solid {{ colors.highlight }};
         }
         /* ------------------------ */
         /* -- Page Specific -- */
         #petition_title{
             font-family: "Montserrat", sans-serif;
-            color: #f36e21;
             font-size: 1.3em;
             text-transform: capitalize;
+            color: {{ colors.highlight }};
         }
         #petition_description_title{
             padding-bottom: 10px;
@@ -60,13 +60,13 @@
             display: block;
         }
         .select2-container--default .select2-results__option--highlighted[aria-selected]{
-            background-color: #f36e21;
+            background-color: {{ colors.highlight }};
         }
         .select2-selection__choice__remove{
             color: #fff !important;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice{
-            background-color: #f36e21;
+            background-color: {{ colors.highlight }};
             border: none;
             color: #FFF;
             padding: 5px;

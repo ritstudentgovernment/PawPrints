@@ -220,14 +220,14 @@
             cursor: pointer;
         }
         .petition.in-progress{
-            border-bottom: 4px solid #f36e21;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
+            border-bottom: 4px solid {{ colors.highlight }};
         }
         .petition.responded{
-            border-bottom: 4px solid #9d5f4b;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
+            border-bottom: 4px solid #9d5f4b;
         }
         .petition progress{
             height: 5px;
@@ -324,7 +324,7 @@
             position: absolute;
             right: 10px;
             top: 10px;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
         #petition-modal #petition-close:hover{
             cursor: pointer;
@@ -405,7 +405,7 @@
             left: calc(1px - 3.55vw);
             height: 9px;
             width: 9px;
-            background-color: #f36e21;
+            background-color: {{ colors.highlight }};
             z-index: 3;
         }
         .timeline-element-header{
@@ -541,16 +541,16 @@
             text-align: center;
         }
         progress[value]::-webkit-progress-value {
-            background-color: #f36e21;
             border-top-right-radius: 2px;
             border-bottom-right-radius: 2px;
             background-size: 35px 20px, 100% 100%, 100% 100%;
             text-align: center;
+            background-color: {{ colors.highlight }};
         }
         progress[value]::-moz-progress-bar {
-            background-color: #f36e21;
             border-radius: 2px;
             background-size: 35px 20px, 100% 100%, 100% 100%;
+            background-color: {{ colors.highlight }};
         }
         progress::-webkit-progress-value{
             -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
@@ -577,7 +577,7 @@
             line-height: 17px;
             top: -24px;
             cursor: pointer;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
 
         #edit-button, #publish-button{
@@ -615,12 +615,12 @@
             display: block;
         }
         #admin-actions div.circle:hover{
-            background-color: #f36e21;
             color: #fff;
+            background-color: {{ colors.highlight }};
         }
         #admin-actions div.circle:hover span.invisible{
             opacity: 1;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
         .admin-action-spacer{
             height:50px;
@@ -931,7 +931,6 @@
             position: relative;
             width: 5px;
             height: 49px;
-            background: #f36e21;
             margin-top: 5px;
             border-radius: 975px;
             -o-border-radius: 975px;
@@ -953,6 +952,7 @@
             -ms-animation-delay: 0.29s;
             -webkit-animation-delay: 0.29s;
             -moz-animation-delay: 0.29s;
+            background: {{ colors.highlight }};
         }
         .load-loading:after, .load-loading:before {
             position: absolute;
