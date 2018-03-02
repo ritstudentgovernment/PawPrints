@@ -40,7 +40,7 @@ def index(request):
     data_object = {
         'tags': Tag.objects.all,
         'colors': colors(),
-        'customization': settings.CUSTOMIZATION
+        'customization': json.dumps(settings.CUSTOMIZATION)
     }
 
     return render(request, 'index.html', data_object)
