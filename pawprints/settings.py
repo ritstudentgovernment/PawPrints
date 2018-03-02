@@ -44,7 +44,8 @@ if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
     ALLOWED_HOSTS = ["sgstage.rit.edu"]
 
-COLORS = json.load(open(STATIC_DIR+"/js/config.json")).colors
+COLORS = json.load(open(STATIC_DIR+"/js/config.json"))
+print(COLORS)
 
 # Sentry Settings
 RAVEN_CONFIG = {
