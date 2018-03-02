@@ -1497,7 +1497,7 @@
 <script>
 
     window.debug = false;
-    window.customization = JSON.parse(unescape("{{ customization }}"));
+    window.customization = JSON.parse(unescape("{{ customization|safe }}"));
 
     /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
