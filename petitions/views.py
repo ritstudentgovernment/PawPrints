@@ -39,7 +39,8 @@ def index(request):
     """
     data_object = {
         'tags': Tag.objects.all,
-        'colors': colors()
+        'colors': colors(),
+        'customization': settings.CUSTOMIZATION
     }
 
     return render(request, 'index.html', data_object)
@@ -674,9 +675,7 @@ def send_update(update):
     return None
 
 
-def colors():
-
-    return settings.COLORS
+def colors(): return settings.CUSTOMIZATION["colors"]
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
