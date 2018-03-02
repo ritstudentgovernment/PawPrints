@@ -14,17 +14,19 @@ class Command(BaseCommand):
     tag_names = ['Technology', 'Academics', 'Parking & Transportation', 'Other', 'Dining', 'Sustainability', 'Facilities', 'Housing', 'Public Safety', 'Campus Life', 'Governance', 'Clubs & Organizations', 'Deaf Advocacy']
 
     def add_arguments(self, parser):
-        parser.add_argument('--users', dest='users', help='The number of users to generate (default: 500 users)', type=int, default=500)
-        parser.add_argument('--petitions', dest='petitions', help='The number of petitions to generate (default: 200 petitions)', type=int, default=200)
+        parser.add_argument('-wipe', dest='flag_exists', action='store_true', help='Wipes all data in the database but does not generate anything after')
+        parser.add_argument('--users', dest='users', help='The number of users to generate (default: 250 users)', type=int, default=250)
+        parser.add_argument('--petitions', dest='petitions', help='The number of petitions to generate (default: 150 petitions)', type=int, default=150)
         parser.add_argument('--expired', dest='expired', help='The number of expired petitions to generate (default: none)', type=int, default=0)
         parser.add_argument('--unpublished', dest='unpub', help='The number of unpublished petitions to generate (default: none)', type=int, default=0)
         parser.add_argument('--removed', dest='removed', help='The number of removed petitions to generate (default: none)', type=int, default=0)
         parser.add_argument('--review', dest='review', help='The number of petitions that need review to generate (default: none)', type=int, default=0)
 
-        parser.add_argument('--email', dest='email', nargs='+', help='Emails to be added to user objects')
-        parser.add_argument('--signatures', dest='sigs', nargs='+', help='Create petitions with specific amount of signatures', type=int)
+        parser.add_argument('--email', dest='email', nargs='+', help='List of email address to be added for a user profile')
+        parser.add_argument('--signatures', dest='sigs', nargs='+', help='List of integers which represent signatures', type=int)
 
     def handle(self, *args, **options):
+        wipe = options['flag_exists']
         num_petitions = options['petitions']
         num_users = options['users'] 
         emails = options['email']
@@ -33,12 +35,22 @@ class Command(BaseCommand):
         unpub = options['unpub']
         removed = options['removed']
         review = options['review']
+        
+        if wipe:
+            Petition.objects.all().delete()
+            User.objects.all().delete()
+            Tag.objects.all().delete()
+            self.stdout.write(self.style.SUCCESS('Successfully wiped data'))
+            return
+
+
         # Generate django user objects
         django_users = self.generate_users(num_users, emails)
         # Set generated profile data
         self.set_profile_data(django_users)
 
         # Generate Tag objects
+        Tag.objects.all().delete()
         tags = self.generate_tags()
 
         # Generate petition objects

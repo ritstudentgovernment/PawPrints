@@ -220,14 +220,14 @@
             cursor: pointer;
         }
         .petition.in-progress{
-            border-bottom: 4px solid #f36e21;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
+            border-bottom: 4px solid {{ colors.highlight }};
         }
         .petition.responded{
-            border-bottom: 4px solid #9d5f4b;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
+            border-bottom: 4px solid #9d5f4b;
         }
         .petition progress{
             height: 5px;
@@ -324,7 +324,7 @@
             position: absolute;
             right: 10px;
             top: 10px;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
         #petition-modal #petition-close:hover{
             cursor: pointer;
@@ -405,7 +405,7 @@
             left: calc(1px - 3.55vw);
             height: 9px;
             width: 9px;
-            background-color: #f36e21;
+            background-color: {{ colors.highlight }};
             z-index: 3;
         }
         .timeline-element-header{
@@ -541,22 +541,19 @@
             text-align: center;
         }
         progress[value]::-webkit-progress-value {
-            background-color: #f36e21;
             border-top-right-radius: 2px;
             border-bottom-right-radius: 2px;
             background-size: 35px 20px, 100% 100%, 100% 100%;
             text-align: center;
+            background-color: {{ colors.highlight }};
         }
         progress[value]::-moz-progress-bar {
-            background-color: #f36e21;
             border-radius: 2px;
             background-size: 35px 20px, 100% 100%, 100% 100%;
+            background-color: {{ colors.highlight }};
         }
         progress::-webkit-progress-value{
             -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
-        }
-        progress::-moz-progress-bar {
-
         }
 
         #action-drawer-icon-container{
@@ -580,7 +577,7 @@
             line-height: 17px;
             top: -24px;
             cursor: pointer;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
 
         #edit-button, #publish-button{
@@ -618,12 +615,12 @@
             display: block;
         }
         #admin-actions div.circle:hover{
-            background-color: #f36e21;
             color: #fff;
+            background-color: {{ colors.highlight }};
         }
         #admin-actions div.circle:hover span.invisible{
             opacity: 1;
-            color: #f36e21;
+            color: {{ colors.highlight }};
         }
         .admin-action-spacer{
             height:50px;
@@ -934,7 +931,6 @@
             position: relative;
             width: 5px;
             height: 49px;
-            background: #f36e21;
             margin-top: 5px;
             border-radius: 975px;
             -o-border-radius: 975px;
@@ -956,6 +952,7 @@
             -ms-animation-delay: 0.29s;
             -webkit-animation-delay: 0.29s;
             -moz-animation-delay: 0.29s;
+            background: {{ colors.highlight }};
         }
         .load-loading:after, .load-loading:before {
             position: absolute;
@@ -1176,7 +1173,7 @@
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Discuss</h3>
-                                <span class="alternate-font">On <a class="text-highlight" :href="'https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/?p='+petition.id">Facebook</a></span>
+                                <span class="alternate-font">On <a class="text-highlight" :href="'https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/petition/'+petition.id">Facebook</a></span>
                             </div>
                         </div>
                         <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
@@ -1316,6 +1313,11 @@
     <script>
 
         function adminEdit(action, id = false){
+            /**
+             * This function handles all things admin-edit related.
+             *
+             * Builds the editing modals and callbacks.
+             **/
 
             function initTinyMCE(){
                 tinymce.remove();
@@ -1514,7 +1516,7 @@
         },
         delimiters: ['{[', ']}']
     });
-    var url = "pawprints.rit.edu/";
+    var url = window.location.hostname;
     /**
      * "modalData" defines the state for the modal popup.
      * Social buttons may be added / configured here.
@@ -1611,7 +1613,7 @@
      * The data set is randomized before displaying the images in the slide show.
      * Change the limit to change the amount of images in the slide show (set to 0 to show all images).
      * Add more images by copying one of the objects in the images list.
-     *  - Setting the sort_rank to anything but 0 will force it to have that value.
+     *  - Setting the sort_rank to anything but 0 will force it to have that position in the slides.
      **/
     var slideshow_images = new Vue({
         el:"#parallax-slideshow",
@@ -1665,6 +1667,11 @@
     });
 
     function loadPetitions(sort_by, filter, socket){
+        /**
+         * loadPetitions is responsible for calling Paginate on the websocket to load petitions for tue current page.
+         * window.page is defined before calling this function.
+         * window.last_paginate is a list of petitions returned from the last attempt at pagination. it is reset here.
+         **/
 
         window.last_paginate = [];
         socket.send('{"command":"paginate","sort":"'+sort_by+'","filter":"'+filter+'","page":'+window.page+'}');
@@ -1678,6 +1685,9 @@
     function reloadPetitions(sort_by, filter, socket){
         /**
          * This function is responsible for reloading all petitions that fit in the given filter + sort set.
+         * window.searched is reset to false here
+         * petitions.loading is set to true here to show the loading petitions animation
+         * petitions.map and petitions.list are reset to empty here in order to allow a new set of petitions to be loaded
          **/
 
         // load the petitions into the Vue instance.
@@ -1724,6 +1734,9 @@
         }
     }
     var decodeHtmlEntity = function(str) {
+        /**
+         * This function aims to help unescape some unicode characters in the body of a string.
+         **/
         return str.replace(/&#(\d+);/g, function(match, dec) {
             return String.fromCharCode(dec);
         });
@@ -1752,14 +1765,28 @@
         return Math.floor(timeDiff / (1000 * 3600 * 24));
     }
     function setContentAvailableSpace(modal, additional_margin = 0){
-        // Compute the available space for the content of the petition based on the used space.
+        /**
+         * This function sizes the time line container to take up as much space in the modal as possible.
+         **/
         var usedSpace = modal.find(".modal-header").height() + modal.find(".modal-footer").height() + 20 - additional_margin;
         modal.find("#timeline-container").css({"height":"calc(95vh - "+usedSpace+"px)"});
         modal.find(".modal-body").removeClass("hidden");
     }
     openPetitionLoop = null;
     function openPetition(petitionID, auto_open = false, counter = 0){
-        // Renders the petition data into a petition model and also updates browser history.
+        /**
+         * This function opens a specific petition in the modal.
+         * Called on document.ready if the ?p=xx parameter is set.
+         *
+         * If the petition does not exist in the petitions.map dictionary this function will try and load it from the
+         * server a maximum of 10 times, with a delay of 200ms between attempts. It will fail if the petition is still
+         * not loaded in that time.
+         *
+         * Once the petition has been found in the petitions.map, browser history is updated and the rendering process
+         * will begin. When the pre-rendering operations are completed the petition modal will be animated in.
+         *
+         * The escape key gets bound to modalData.closePetition() after the petition is displayed.
+         **/
 
         var toPetition = getPetition(petitionID); // getPetition returns false if it has to grab a petition not loaded yet.
         if(!toPetition){
@@ -1926,6 +1953,12 @@
     }
 
     function setupSocket(){
+        /**
+         * This function sets up and handles all websocket interactions.
+         * window.socket is defined here.
+         *
+         * Whenever an event happens and is broadcast from channels the appropriate response is executed here.
+         **/
 
         var websocket_debug = window.debug;
         var petitionID;
