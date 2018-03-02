@@ -22,6 +22,7 @@ from send_mail.tasks import *
 import petitions.profanity
 import json
 from collections import namedtuple
+from django.conf import settings
 
 import logging
 
@@ -673,7 +674,9 @@ def send_update(update):
     return None
 
 
-def colors(): return json.loads(open("../static/js/config.json")).colors
+def colors():
+
+    return settings.COLORS
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())

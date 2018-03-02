@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 import datetime
 import raven
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,6 +43,8 @@ if os.environ.get('SERVER_ENV','none')  == 'prod':
 if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
     ALLOWED_HOSTS = ["sgstage.rit.edu"]
+
+COLORS = json.loads(open(STATIC_DIR+"/js/config.js")).colors
 
 # Sentry Settings
 RAVEN_CONFIG = {
