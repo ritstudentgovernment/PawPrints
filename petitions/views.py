@@ -36,9 +36,6 @@ def index(request):
     """
     Handles displaying the index page of PawPrints.
     """
-    # Get the current sorting key from the index page, if one is not set the default is 'most recent'
-    sorting_key = request.POST.get('sort_by', 'most recent')
-
     data_object = {
         'tags': Tag.objects.all,
         'colors': colors()
@@ -410,9 +407,12 @@ def edit_response(request, petition, description):
 @require_POST
 def petition_edit(request, petition_id):
     """
-    Handles the updating of a particular petition.
-    This endpoint requires the user be signed in
-    and that the HTTP request method is a POST.
+    This is a single endpoint for dispatching all editing tasks of a petition.
+    It requires that the request method was post.
+    It validates that the user trying to edit something actually has the authority to via the edit_check method.
+    :param request: The request object
+    :param petition_id: The ID of the petition to update
+    :returns: JsonResponse
     """
 
     # create the petition object based on the petition id sent.
