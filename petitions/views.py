@@ -673,7 +673,7 @@ def send_update(update):
     return None
 
 
-def colors(): return json.loads(json.open("/static/js/config.json")).colors
+def colors(): return json.loads(open("/static/js/config.json")).colors
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
