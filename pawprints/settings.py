@@ -66,64 +66,37 @@ INSTALLED_APPS = [
     'channels',
     'huey.contrib.djhuey',
 ]
-
+ALWAYS_EAGER = DEBUG
 if os.environ.get('SERVER_ENV', 'none') == 'local':
-    # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
-    HUEY = {
-        'name': 'RedisHueyInstance',  # Use db name for huey.
-        'result_store': False,  # Do not store return values of tasks.
-        'events': True,  # Consumer emits events allowing real-time monitoring.
-        'store_none': False,  # If a task returns None, do not save to results.
-        'always_eager': False,  # If DEBUG=True, run synchronously.
-        'store_errors': True,  # Store error info if task throws exception.
-        'blocking': False,  # Poll the queue rather than do blocking pop.
-        'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
-        'connection': {
-            'connection_pool': None,  # Definitely you should use pooling!
-            # ... tons of other options, see redis-py for details.
-
-            'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
-        },
-        'consumer': {
-            'workers': 2,
-            'worker_type': 'thread',
-            'initial_delay': 0.1,  # Smallest polling interval, same as -d.
-            'utc': True,  # Treat ETAs and schedules as UTC datetimes.
-            'periodic': False,
-            'scheduler_interval': 1,  # Check schedule every second, -s.
-            'check_worker_health': True,  # Enable worker health checks.
-            'health_check_interval': 1,  # Check worker health every second.
-        },
-    }
-else:
-    # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
-    HUEY = {
-        'name': 'RedisHueyInstance',  # Use db name for huey.
-        'result_store': False,  # Do not store return values of tasks.
-        'events': True,  # Consumer emits events allowing real-time monitoring.
-        'store_none': False,  # If a task returns None, do not save to results.
-        'always_eager': DEBUG,  # If DEBUG=True, run synchronously.
-        'store_errors': True,  # Store error info if task throws exception.
-        'blocking': False,  # Poll the queue rather than do blocking pop.
-        'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
-        'connection': {
-            'connection_pool': None,  # Definitely you should use pooling!
-            # ... tons of other options, see redis-py for details.
-
-            'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
-        },
-        'consumer': {
-            'workers': 2,
-            'worker_type': 'thread',
-            'initial_delay': 0.1,  # Smallest polling interval, same as -d.
-            'utc': True,  # Treat ETAs and schedules as UTC datetimes.
-            'periodic': False,
-            'scheduler_interval': 1,  # Check schedule every second, -s.
-            'check_worker_health': True,  # Enable worker health checks.
-            'health_check_interval': 1,  # Check worker health every second.
-        },
-    }
-
+    ALWAYS_EAGER = False
+    
+# Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
+HUEY = {
+    'name': 'RedisHueyInstance',  # Use db name for huey.
+    'result_store': False,  # Do not store return values of tasks.
+    'events': True,  # Consumer emits events allowing real-time monitoring.
+    'store_none': False,  # If a task returns None, do not save to results.
+    'always_eager': ALWAYS_EAGER,  # If DEBUG=True, run synchronously.
+    'store_errors': True,  # Store error info if task throws exception.
+    'blocking': False,  # Poll the queue rather than do blocking pop.
+    'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
+    'connection': {
+        'connection_pool': None,  # Definitely you should use pooling!
+        # ... tons of other options, see redis-py for details.
+        'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
+    },
+    'consumer': {
+        'workers': 2,
+        'worker_type': 'thread',
+        'initial_delay': 0.1,  # Smallest polling interval, same as -d.
+        'utc': True,  # Treat ETAs and schedules as UTC datetimes.
+        'periodic': False,
+        'scheduler_interval': 1,  # Check schedule every second, -s.
+        'check_worker_health': True,  # Enable worker health checks.
+        'health_check_interval': 1,  # Check worker health every second.
+    },
+}
+    
 AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
 
 CHANNEL_LAYERS = {
