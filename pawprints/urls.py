@@ -22,6 +22,12 @@ from django.views.decorators.csrf import csrf_exempt
 from petitions import views
 from profile.views import user_login, user_logout
 from auth.views import MetadataView, CompleteAuthView, InitAuthView
+from django.template.response import TemplateResponse
+
+def handler500(request):
+    context = {'request': request}
+    template_name = '500.html'
+    return TemplateResponse(request, template_name, context, status=500)
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
