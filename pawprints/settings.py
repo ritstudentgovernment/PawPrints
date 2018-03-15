@@ -68,6 +68,7 @@ INSTALLED_APPS = [
 ]
 ALWAYS_EAGER = DEBUG
 if os.environ.get('SERVER_ENV', 'none') == 'local':
+    DEBUG = True
     ALWAYS_EAGER = False
     
 # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
