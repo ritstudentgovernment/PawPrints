@@ -14,21 +14,17 @@ python:
 
 before_install:
   - pip install coverage
+  - pip install codecov
   - cp petitions/profanity.csv.template petitions/profanity.csv
   - cp template.env .env
-  - mkdir shared
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
 install:
-  - docker-compose run -d --name pawprints_web -v "$PWD/shared:/shared" web 
+  - docker-compose run -d --name pawprints_web web 
 
 script:
   - docker exec -it pawprints_web coverage run manage.py test
-  - docker exec -it pawprints_web mv .coverage /shared
-
-after_script:
-  - mv shared/.coverage .
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
