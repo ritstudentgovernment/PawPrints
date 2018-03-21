@@ -24,6 +24,9 @@ class ProfileTest(TestCase):
         self.user2 = User.objects.create_user(username='cxl1234', email='cxl1234')
         self.user3 = User.objects.create_user(username='abc4321', email='abc4321')
 
+    def test_profile_created(self):
+        self.assertEqual(self.user.profile.__unicode__(), self.user.username)
+
     def test_update_notification(self):
         self.client.force_login(self.testUser)
         response = self.client.post('/profile/settings/notifications/'+str(self.testUser.id), {'response': '0'})
