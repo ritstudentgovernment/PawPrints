@@ -36,7 +36,6 @@ raven==6.6.0
 redis==2.10.6
 requests==2.18.4
 six==1.11.0
-slacker==0.9.60
 tornado==4.5.3
 Twisted==17.9.0
 txaio==2.9.0
