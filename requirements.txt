@@ -16,14 +16,14 @@ contextlib2==0.5.5
 coverage==4.5.1
 daphne==1.4.2
 defusedxml==0.5.0
-Django==2.0.3
+Django==2.0.4
 html5lib==1.0.1
 huey==1.9.0
 hyperlink==17.3.1
 idna==2.6
 incremental==17.5.0
 isodate==0.6.0
-lxml==4.2.0
+lxml==4.2.1
 mimesis==1.0.5
 msgpack-python==0.5.6
 packaging==16.8
@@ -36,7 +36,6 @@ raven==6.6.0
 redis==2.10.6
 requests==2.18.4
 six==1.11.0
-slacker==0.9.60
 tornado==4.5.3
 Twisted==17.9.0
 txaio==2.9.0
