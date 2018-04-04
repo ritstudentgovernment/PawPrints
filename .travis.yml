@@ -27,4 +27,5 @@ install:
 
 script:
   - docker exec -it pawprints_web coverage run manage.py test
+  - docker exec -it pawprints_web coverage xml
   - codecov
