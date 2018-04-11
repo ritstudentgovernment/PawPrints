@@ -24,6 +24,7 @@ class Command(BaseCommand):
 
         parser.add_argument('--email', dest='email', nargs='+', help='List of email address to be added for a user profile')
         parser.add_argument('--signatures', dest='sigs', nargs='+', help='List of integers which represent signatures', type=int)
+        parser.add_argument('--responded', dest='resp', help='The number of petitions which have a response (NOTE: This currently does not generate response objects. It just sets the has_response bool to True) (default: 0)', type=int, default=0)
 
     def handle(self, *args, **options):
         wipe = options['flag_exists']
@@ -35,6 +36,7 @@ class Command(BaseCommand):
         unpub = options['unpub']
         removed = options['removed']
         review = options['review']
+        resp = options['resp']
         
         if wipe:
             Petition.objects.all().delete()
@@ -54,7 +56,7 @@ class Command(BaseCommand):
         tags = self.generate_tags()
 
         # Generate petition objects
-        petitions = self.generate_petitions(django_users, expired, unpub, removed, review, num_sigs, num_petitions)
+        petitions = self.generate_petitions(django_users, expired, unpub, removed, review, num_sigs, num_petitions, resp)
 
         # Set petitiond values
         self.set_petition_relations(tags, petitions, django_users)
@@ -90,7 +92,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('Failed to set relations %s' % e))
             print(traceback.format_exc())
         
-    def generate_petitions(self, users, expired, unpub, removed, review, sigs, num_petitions):
+    def generate_petitions(self, users, expired, unpub, removed, review, sigs, num_petitions, resp):
         petitionlst = []
         self.stdout.write('Generating Petition objects')
         text = Text('en')
@@ -134,6 +136,9 @@ class Command(BaseCommand):
                     petition.status = status
                     petition.expires = expires
                     petition.last_signed = last_signed
+                    if resp > 0:
+                        petition.has_response = True
+                        resp -= 1
 
                     petition.save()
                     petitionlst.append(petition)
