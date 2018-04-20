@@ -10,6 +10,13 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 import bleach
 
+bleach.sanitizer.ALLOWED_TAGS.extend([u'i',u'h1', u'h2',u'h3', u'h4', u'h5', u'h6',u'p',u'sub',u'br',u'sup', u'span',u'img'])
+bleach.sanitizer.ALLOWED_ATTRIBUTES[u'img'] = [u'alt', u'height', u'src', u'width']
+bleach.sanitizer.ALLOWED_STYLES.extend(u'text-align')
+for key in bleach.sanitizer.ALLOWED_ATTRIBUTES.keys():
+    bleach.sanitizer.ALLOWED_ATTRIBUTES[key].append(u'data-mce-style')
+
+
 #
 # Defines petition model.
 #
