@@ -6,7 +6,9 @@ Updated: Oct 17 2016
 """
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+import bleach
 
 #
 # Defines petition model.
@@ -60,3 +62,14 @@ class Response(models.Model):
 class Update(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField()
+
+
+#
+# The following defines a signal function which is called before a save() is actually run
+# on a petition object.
+# The following signal function sanitizes the petition description and title.
+#
+@receiver(pre_save, sender=Petition)
+def sanitize_petition(sender, instance, *args, **kwargs):
+    instance.description = bleach.clean(instance.description)
+    instance.title = bleach.clean(instance.title)
