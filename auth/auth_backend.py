@@ -27,7 +27,7 @@ class SAMLSPBackend(object):
             username = attributes[Attributes.USERNAME][0]
             first_name = attributes[Attributes.FIRST_NAME][0]
             last_name = attributes[Attributes.LAST_NAME][0]
-            affiliation = attributes[Attributes.EDU_AFFILIATION]
+            affiliation = attributes.get(Attributes.EDU_AFFILIATION, [''])
 
             try:
                 # Grab attributes from shib and auth user
@@ -47,7 +47,7 @@ class SAMLSPBackend(object):
 
             # Set user Affiliation
             user.profile.has_access = 1
-            if 'Employee' in affiliation or 'Alumni' in affiliation:
+            if 'Employee' in affiliation or 'Alumni' in affiliation or '' in affiliation:
                 user.profile.has_access = 0
 
             user.profile.save()
