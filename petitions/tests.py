@@ -10,8 +10,6 @@ from django.contrib.auth.models import User
 from petitions.models import Petition, Tag, Update, Response
 from datetime import timedelta
 from django.utils import timezone
-from channels.test import ChannelTestCase
-from channels import Channel
 from .views import petition_sign, edit_check, PETITION_DEFAULT_TITLE, PETITION_DEFAULT_BODY, get_petition, petition_edit
 from .consumers import serialize_petitions
 from django.test.client import RequestFactory
