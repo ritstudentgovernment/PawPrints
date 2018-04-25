@@ -1972,7 +1972,7 @@
         // Setup Web Socket.
 
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
-        socket = new WebSocket(socket_type+"://" + window.location.host + "/");
+        socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
         socket.onopen = function (e){
 
             petitionID = getUrl("p");
@@ -1985,6 +1985,7 @@
         socket.onmessage = function(e) {
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
+          
             try {
 
                 // Parse the response as a JSON.

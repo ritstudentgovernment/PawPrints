@@ -23,6 +23,9 @@ from petitions import views
 from profile.views import user_login, user_logout
 from auth.views import MetadataView, CompleteAuthView, InitAuthView
 from django.template.response import TemplateResponse
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 def handler500(request):
     context = {'request': request}
@@ -43,3 +46,6 @@ urlpatterns = [
     url(r'^maintenance/', views.maintenance),
     url(r'^petitions/(?P<petition_id>\w+)$', views.petition_redirect)
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

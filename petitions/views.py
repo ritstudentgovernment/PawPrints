@@ -17,11 +17,12 @@ from django.utils import timezone
 from petitions.models import Petition
 from profile.models import Profile
 from django.contrib.auth.models import User
-from channels import Group, Channel
+from asgiref.sync import async_to_sync
 from send_mail.tasks import *
+from collections import namedtuple
+import channels
 import petitions.profanity
 import json
-from collections import namedtuple
 
 import logging
 
@@ -667,11 +668,9 @@ def send_update(update):
     :param update: object
     :return: None
     """
-    Group("petitions").send({
-        "text": json.dumps(update)
-    })
+    channel = channels.layers.get_channel_layer()
+    async_to_sync(channel.group_send)("petitions", {"text": json.dumps(update)})
     return None
-
 
 def colors():
     color_object = {
