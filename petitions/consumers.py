@@ -67,10 +67,10 @@ def serialize_petitions(petitions_obj, user=None):
         })
         petition_map[petition.id] = x
 
-    return {
+    return json.dumps({
         "petitions": petitions,
         "map": petition_map
-    }
+    })
 
 
 def paginate(petitions, page): return petitions[(page-1)*45:page*45]
