@@ -1985,7 +1985,7 @@
         socket.onmessage = function(e) {
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
-          
+
             try {
 
                 // Parse the response as a JSON.

@@ -7,7 +7,7 @@ import json
 import string
 import petitions.views as views
 from collections import namedtuple
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 
 
@@ -73,27 +73,17 @@ def serialize_petitions(petitions_obj, user=None):
     })
 
 
-def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
-
-
-def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
-
-
 def paginate(petitions, page): return petitions[(page-1)*45:page*45]
 
 
-class PetitionConsumer(WebsocketConsumer):
+class PetitionConsumer(JsonWebsocketConsumer):
     def send_petitions_individually(self, petitions):
         for petition in petitions:
             petition = [petition]
             petition = serialize_petitions(petition, self.scope["user"])
 
-            self.send(json.dumps({
-                        "command": "get",
-                        "petition": petition
-                        }
-                    )
-                )
+            self.send_json({"command": "get","petition": petition})
+                
 
     def connect(self):
         """
@@ -103,7 +93,7 @@ class PetitionConsumer(WebsocketConsumer):
         """
         self.group_name = "petitions"
         # Add the WS connection to the petitions channels group
-        self.channel_layer.group_add(self.group_name, self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
 
         # Default order is 'most recent' query the database for all petitions in that order.
         petitions = paginate(views.sorting_controller("most recent"), 1)
@@ -116,17 +106,18 @@ class PetitionConsumer(WebsocketConsumer):
         """
         Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
         """
-        self.channel_layer.group_discard(self.group_name, self.channel_name)
+        async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
 
-    def receive(self, text_data):
+    def group_update(self, content):
+        self.send_json(content.get('text', ''))
+
+    def receive_json(self, data):
         """
         Endpoint for the petitions_command route. Fires when a WS sends a message.
         Handles the parsing of commands from the frontend (an API, of sorts).
-        :param text_data: Data sent to the websocket.
+        :param data: Data sent to the websocket.
         :return: None
         """
-        data = json.loads(text_data)
-        
         if data != "":
             command = data.get('command', '')
             if command != '':
@@ -144,7 +135,7 @@ class PetitionConsumer(WebsocketConsumer):
 
                         return None
 
-                    self.send({"text": "Error. Must send 'sort' parameter"})
+                    self.send_json({"text": "Error. Must send 'sort' parameter"})
                     return None
                 elif command == 'get':
                     # Parse the Get command. Required data = id.
@@ -159,8 +150,7 @@ class PetitionConsumer(WebsocketConsumer):
                             "command": "get",
                             "petition": petition
                         }
-                        print("Sending to channel name %s" % self.channel_name)
-                        self.send({"text": json.dumps(reply)})
+                        self.send_json(reply)
                     return None
                 elif command == 'search':
                     # Parse the search command. Required query. Optional = filter.
@@ -184,8 +174,8 @@ class PetitionConsumer(WebsocketConsumer):
                         self.send_petitions_individually(petitions)
                         return None
 
-                    self.send({"text": "Error. Must send 'sort' parameter"})
+                    self.send_json({"text": "Error. Must send 'sort' parameter"})
                     return None
-            self.send({"text": "Error must sent a non-empty 'command' parameter"})
+            self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
             return None
         return None 

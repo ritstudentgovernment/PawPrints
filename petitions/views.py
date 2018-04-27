@@ -669,7 +669,7 @@ def send_update(update):
     :return: None
     """
     channel = channels.layers.get_channel_layer()
-    async_to_sync(channel.group_send)("petitions", {"text": json.dumps(update)})
+    async_to_sync(channel.group_send)("petitions",{"type": "group.update","text": update})
     return None
 
 def colors():
