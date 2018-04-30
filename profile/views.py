@@ -4,17 +4,20 @@ Description: Handles views and endpoints for all profile related operations.
 Date Created: Nov 7 2016
 Updated: Feb 16 2018
 """
-from django.shortcuts import render, redirect, render
-from django.views.decorators.http import require_POST
+import logging
+
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, logout
-from django.contrib.auth import login as auth_login
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
-from petitions.views import colors
-from .models import Profile
-import logging
 from django.db.models import Q
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
+
+from petitions.views import colors
+
+from .models import Profile
 
 logger = logging.getLogger("pawprints." + __name__)
 
