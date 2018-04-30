@@ -26,6 +26,5 @@ install:
   - docker-compose run -d --name pawprints_web web 
 
 script:
-  - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report term --cov=pawprints 
-  - docker exec -it pawprints_web coverage xml
+  - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report term --cov=. 
   - codecov
