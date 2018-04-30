@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from profile.views import user_login, user_logout
+from profile.views import user_logout
 
 from django.conf import settings
 from django.conf.urls import include, url
@@ -34,6 +34,7 @@ def handler500(request):
     template_name = '500.html'
     return TemplateResponse(request, template_name, context, status=500)
 
+
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^about/', views.about, name='about'),
@@ -50,4 +51,5 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
