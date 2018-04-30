@@ -13,18 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.views.defaults import page_not_found, server_error
-from django.template import loader
-from django.http import HttpResponseServerError, HttpResponseNotFound
-from django.conf.urls import url, include
-from django.contrib import admin
-from django.views.decorators.csrf import csrf_exempt
-from petitions import views
 from profile.views import user_login, user_logout
-from auth.views import MetadataView, CompleteAuthView, InitAuthView
-from django.template.response import TemplateResponse
+
 from django.conf import settings
+from django.conf.urls import include, url
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.http import HttpResponseNotFound, HttpResponseServerError
+from django.template import loader
+from django.template.response import TemplateResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.defaults import page_not_found, server_error
+
+from auth.views import CompleteAuthView, InitAuthView, MetadataView
+from petitions import views
 
 
 def handler500(request):

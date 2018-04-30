@@ -41,7 +41,7 @@ redis==2.10.6
 requests==2.18.4
 six==1.11.0
 tornado==5.0.2
-Twisted==17.9.0
+Twisted==18.4.0
 txaio==2.10.0
 urllib3==1.22
 webencodings==0.5.1

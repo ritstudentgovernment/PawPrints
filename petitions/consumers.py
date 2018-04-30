@@ -5,10 +5,11 @@ auth: Lukas Yelle (@lxy5611)
 """
 import json
 import string
-import petitions.views as views
 from collections import namedtuple
-from channels.generic.websocket import JsonWebsocketConsumer
+
+import petitions.views as views
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import JsonWebsocketConsumer
 
 
 def serialize_petitions(petitions_obj, user=None):
@@ -82,8 +83,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
             petition = [petition]
             petition = serialize_petitions(petition, self.scope["user"])
 
-            self.send_json({"command": "get","petition": petition})
-                
+            self.send_json({"command": "get", "petition": petition})
 
     def connect(self):
         """
@@ -93,11 +93,12 @@ class PetitionConsumer(JsonWebsocketConsumer):
         """
         self.group_name = "petitions"
         # Add the WS connection to the petitions channels group
-        async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(
+            self.group_name, self.channel_name)
 
         # Default order is 'most recent' query the database for all petitions in that order.
         petitions = paginate(views.sorting_controller("most recent"), 1)
-  
+
         self.accept()
 
         self.send_petitions_individually(petitions)
@@ -106,7 +107,8 @@ class PetitionConsumer(JsonWebsocketConsumer):
         """
         Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
         """
-        async_to_sync(self.channel_layer.group_discard)(self.group_name, self.channel_name)
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name, self.channel_name)
 
     def group_update(self, content):
         self.send_json(content.get('text', ''))
@@ -125,17 +127,19 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
                     # Parse the List command. Required data = sort. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.
-                    sort = data.get('sort','')
+                    sort = data.get('sort', '')
                     if sort:
                         petitions = views.sorting_controller(sort)
                         if data.get('filter', ''):
-                            petitions = views.filtering_controller(petitions, data.get('filter'))
+                            petitions = views.filtering_controller(
+                                petitions, data.get('filter'))
 
                         self.send_petitions_individually(petitions)
 
                         return None
 
-                    self.send_json({"text": "Error. Must send 'sort' parameter"})
+                    self.send_json(
+                        {"text": "Error. Must send 'sort' parameter"})
                     return None
                 elif command == 'get':
                     # Parse the Get command. Required data = id.
@@ -169,13 +173,16 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     if sort and page:
                         petitions = views.sorting_controller(sort)
                         if data.get('filter', ''):
-                            petitions = views.filtering_controller(petitions, data.get('filter'))
+                            petitions = views.filtering_controller(
+                                petitions, data.get('filter'))
                         petitions = paginate(petitions, page)
                         self.send_petitions_individually(petitions)
                         return None
 
-                    self.send_json({"text": "Error. Must send 'sort' parameter"})
+                    self.send_json(
+                        {"text": "Error. Must send 'sort' parameter"})
                     return None
-            self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
+            self.send_json(
+                {"text": "Error must sent a non-empty 'command' parameter"})
             return None
-        return None 
+        return None

@@ -5,29 +5,38 @@ Description: Tests for petition operations.
 Date Created: Sept 15 2016
 Updated: Feb 17 2017
 """
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from petitions.models import Petition, Tag, Update, Response
 from datetime import timedelta
-from django.utils import timezone
-from .views import petition_sign, edit_check, PETITION_DEFAULT_TITLE, PETITION_DEFAULT_BODY, get_petition, petition_edit
-from .consumers import serialize_petitions
+
+from django.contrib.auth.models import User
+from django.test import Client, TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
+
+from petitions.models import Petition, Response, Tag, Update
+
+from .consumers import serialize_petitions
+from .views import (PETITION_DEFAULT_BODY, PETITION_DEFAULT_TITLE, edit_check,
+                    get_petition, petition_edit, petition_sign)
 
 
 class PetitionTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()
-        self.superUser = User.objects.create_user(username='txu1267', email='txu1267', is_staff=True)
+        self.superUser = User.objects.create_user(
+            username='txu1267', email='txu1267', is_staff=True)
         self.superUser.set_password('test')
         self.superUser.save()
-        self.superUser2 = User.objects.create_user(username='txu1266', email='txu1266', is_superuser=True)
+        self.superUser2 = User.objects.create_user(
+            username='txu1266', email='txu1266', is_superuser=True)
         self.superUser2.set_password('test')
         self.superUser2.save()
-        self.user = User.objects.create_user(username='axu7254', email='axu7254')
-        self.user2 = User.objects.create_user(username='cxl1234', email='cxl1234')
-        self.user3 = User.objects.create_user(username='abc4321', email='abc4321')
+        self.user = User.objects.create_user(
+            username='axu7254', email='axu7254')
+        self.user2 = User.objects.create_user(
+            username='cxl1234', email='cxl1234')
+        self.user3 = User.objects.create_user(
+            username='abc4321', email='abc4321')
         self.tag = Tag(name='Test')
         self.tag.save()
         self.petition = Petition(title='Test petition',
@@ -40,12 +49,12 @@ class PetitionTest(TestCase):
         self.petition.save()
         self.petition.tags.add(self.tag)
         self.petitionPublished = Petition(title='Test petition Published',
-                                 description='This is a test petition Published',
-                                 author=self.user2,
-                                 created_at=timezone.now(),
-                                 status=1,
-                                 expires=timezone.now() + timedelta(days=30)
-                                 )
+                                          description='This is a test petition Published',
+                                          author=self.user2,
+                                          created_at=timezone.now(),
+                                          status=1,
+                                          expires=timezone.now() + timedelta(days=30)
+                                          )
         self.petitionPublished.save()
 
     def test_index_page(self):
@@ -65,7 +74,8 @@ class PetitionTest(TestCase):
             "attribute": "title",
             "value": "New"
         }
-        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        response = self.client.post(
+            '/petition/update/' + str(self.petition.id), obj)
         # Check that it doesn't 404
         self.assertNotEqual(response.status_code, 404)
         # Check that petition was actually changed
@@ -83,7 +93,8 @@ class PetitionTest(TestCase):
         self.petition.status = 0
         self.petition.tags.add(tag)
         self.petition.save()
-        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request = self.factory.post(
+            '/petition/update/' + str(self.petition.id), obj)
         request.META['HTTP_HOST'] = 'localhost'
         request.user = self.user
         response = petition_edit(request, self.petition.id)
@@ -95,7 +106,8 @@ class PetitionTest(TestCase):
 
     def test_sign_petition(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/petition/sign/' + str(self.petitionPublished.id), {'test': 'test'})
+        response = self.client.post(
+            '/petition/sign/' + str(self.petitionPublished.id), {'test': 'test'})
         pet = Petition.objects.get(pk=self.petitionPublished.id)
         self.assertEqual(pet.signatures, 1)
         self.assertEqual(response.status_code, 200)
@@ -103,29 +115,38 @@ class PetitionTest(TestCase):
     def test_petition_subscribe(self):
         self.client.force_login(self.user)
         user = User.objects.get(pk=self.user.id)
-        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
-        response = self.client.post('/petition/subscribe/' + str(self.petition.id), {})
+        self.assertEqual(user.profile.subscriptions.filter(
+            pk=self.petition.id).exists(), False)
+        response = self.client.post(
+            '/petition/subscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
-        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
+        self.assertEqual(user.profile.subscriptions.filter(
+            pk=self.petition.id).exists(), True)
 
     def test_petition_unsubscribe(self):
         self.client.force_login(self.user)
         user = User.objects.get(pk=self.user.id)
-        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
-        response = self.client.post('/petition/subscribe/' + str(self.petition.id), {})
+        self.assertEqual(user.profile.subscriptions.filter(
+            pk=self.petition.id).exists(), False)
+        response = self.client.post(
+            '/petition/subscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
-        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), True)
+        self.assertEqual(user.profile.subscriptions.filter(
+            pk=self.petition.id).exists(), True)
 
-        response = self.client.post('/petition/unsubscribe/' + str(self.petition.id), {})
+        response = self.client.post(
+            '/petition/unsubscribe/' + str(self.petition.id), {})
         user = User.objects.get(pk=self.user.id)
 
-        self.assertEqual(user.profile.subscriptions.filter(pk=self.petition.id).exists(), False)
+        self.assertEqual(user.profile.subscriptions.filter(
+            pk=self.petition.id).exists(), False)
 
     def test_petition_unpublish(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/petition/unpublish/' + str(self.petition.id))
+        response = self.client.post(
+            '/petition/unpublish/' + str(self.petition.id))
         self.assertEqual(response.status_code, 200)
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.status, 2)
@@ -134,7 +155,8 @@ class PetitionTest(TestCase):
         self.client.force_login(self.user)
         pet.status = 1
         pet.save()
-        response = self.client.post('/petition/unpublish/' + str(self.petition.id))
+        response = self.client.post(
+            '/petition/unpublish/' + str(self.petition.id))
         pet = Petition.objects.get(pk=self.petition.id)
         self.assertEqual(pet.status, 1)
 
@@ -152,7 +174,8 @@ class PetitionTest(TestCase):
         response = self.client.post('/petition/create/')
         self.assertEqual(response.status_code, 200)
         userobj = User.objects.get(pk=self.user.id)
-        self.assertEqual(userobj.profile.petitions_signed.all()[0].title, PETITION_DEFAULT_TITLE)
+        self.assertEqual(userobj.profile.petitions_signed.all()[
+                         0].title, PETITION_DEFAULT_TITLE)
 
     def test_check_edit(self):
         self.client.force_login(self.user)
@@ -169,9 +192,10 @@ class PetitionTest(TestCase):
 
     def test_url_redirect(self):
         self.client.force_login(self.user)
-        response = self.client.get('/petitions/'+ str(self.petition.id))
+        response = self.client.get('/petitions/' + str(self.petition.id))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/?p='+str(self.petition.id), status_code=302, target_status_code=200)
+        self.assertRedirects(response, '/?p='+str(self.petition.id),
+                             status_code=302, target_status_code=200)
 
     def test_edit_petition_description(self):
         self.client.force_login(self.superUser)
@@ -179,7 +203,8 @@ class PetitionTest(TestCase):
             "attribute": "description",
             "value": "test test test"
         }
-        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        response = self.client.post(
+            '/petition/update/' + str(self.petition.id), obj)
         self.assertNotEqual(response.status_code, 404)
 
         pet = Petition.objects.get(pk=self.petition.id)
@@ -194,7 +219,8 @@ class PetitionTest(TestCase):
             "value": tag.id
         }
 
-        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        response = self.client.post(
+            '/petition/update/' + str(self.petition.id), obj)
         self.assertNotEqual(response.status_code, 404)
 
         pet = Petition.objects.get(pk=self.petition.id)
@@ -212,7 +238,8 @@ class PetitionTest(TestCase):
             "value": tag.id
         }
 
-        response = self.client.post('/petition/update/' + str(self.petition.id), obj)
+        response = self.client.post(
+            '/petition/update/' + str(self.petition.id), obj)
         self.assertNotEqual(response.status_code, 404)
 
         pet = Petition.objects.get(pk=self.petition.id)
@@ -226,7 +253,8 @@ class PetitionTest(TestCase):
             "value": "test update"
         }
 
-        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request = self.factory.post(
+            '/petition/update/' + str(self.petition.id), obj)
         request.user = self.superUser
         request.META['HTTP_HOST'] = "random"
         response = petition_edit(request, self.petition.id)
@@ -248,7 +276,8 @@ class PetitionTest(TestCase):
             "value": "test response"
         }
 
-        request = self.factory.post('/petition/update/' + str(self.petition.id), obj)
+        request = self.factory.post(
+            '/petition/update/' + str(self.petition.id), obj)
         request.user = self.superUser
         request.META['HTTP_HOST'] = "random"
         response = petition_edit(request, self.petition.id)
@@ -266,7 +295,8 @@ class PetitionTest(TestCase):
         }
         self.assertEqual(self.petitionPublished.in_progress, None)
 
-        response = self.client.post('/petition/update/' + str(self.petitionPublished.id), obj)
+        response = self.client.post(
+            '/petition/update/' + str(self.petitionPublished.id), obj)
 
         self.assertNotEqual(response.status_code, 404)
 
@@ -279,7 +309,8 @@ class PetitionTest(TestCase):
             "attribute": "unpublish"
         }
         self.assertEqual(self.petitionPublished.status, 1)
-        request = self.factory.post('/petition/update/' + str(self.petitionPublished.id), obj)
+        request = self.factory.post(
+            '/petition/update/' + str(self.petitionPublished.id), obj)
         request.user = self.superUser
         request.META['HTTP_HOST'] = "random"
         response = petition_edit(request, self.petitionPublished.id)

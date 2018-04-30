@@ -5,26 +5,27 @@ Description: Handles views and endpoints for all petition related operations.
 Date Created: Sept 15 2016
 Updated: Oct 03 2017
 """
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse, JsonResponse
-from django.db.models import F, Q
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from datetime import timedelta
-from petitions.models import Petition, Tag
-from django.utils import timezone
-from petitions.models import Petition
-from profile.models import Profile
-from django.contrib.auth.models import User
-from asgiref.sync import async_to_sync
-from send_mail.tasks import *
+import json
+import logging
 from collections import namedtuple
+from datetime import timedelta
+from profile.models import Profile
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.contrib.postgres.search import (SearchQuery, SearchRank,
+                                            SearchVector)
+from django.db.models import F, Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+
 import channels
 import petitions.profanity
-import json
-
-import logging
+from asgiref.sync import async_to_sync
+from petitions.models import Petition, Tag
+from send_mail.tasks import *
 
 logger = logging.getLogger("pawprints." + __name__)
 
