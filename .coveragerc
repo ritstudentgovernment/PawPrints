@@ -13,10 +13,11 @@ omit =
   manage.py
   settings.py
   */pawprints/wsgi.py
-  */pawprints/celery.py
   */pawprints/asgi.py
   */log/*
   petitions/management/*
   auth/admin.py
   auth/apps.py
-  auth/models.py  
+  auth/models.py
+  pawprints/routing.py
+  petitions/routing.py

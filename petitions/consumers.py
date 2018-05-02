@@ -2,12 +2,15 @@
 file: consumers.py
 desc: Implements WebSocket bindings for Django Channels.
 auth: Lukas Yelle (@lxy5611)
+      Peter Zujko (pxz3370)
 """
-import json, string
-import petitions.views as views
+import json
+import string
 from collections import namedtuple
-from channels import Channel, Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+
+import petitions.views as views
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import JsonWebsocketConsumer
 
 
 def serialize_petitions(petitions_obj, user=None):
@@ -72,127 +75,114 @@ def serialize_petitions(petitions_obj, user=None):
     })
 
 
-def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
-
-
-def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
-
-
-def send_petitions_individually(message, petitions):
-    for petition in petitions:
-        petition = [petition]
-        petition = serialize_petitions(petition, message.user)
-        message.reply_channel.send({
-            "text": json.dumps({
-                "command": "get",
-                "petition": petition
-            })
-        })
-
-
 def paginate(petitions, page): return petitions[(page-1)*45:page*45]
 
 
-@channel_session_user_from_http
-def petitions_connect(message):
-    """
-    Endpoint for the petitions_connect route. Fires when web socket(WS) connections are made to the server.
-    :param message: The WS message channel that connected.
-    :return: None
-    """
-    # Notify the WS that the connection was accepted.
-    message.reply_channel.send({"accept": True})
+class PetitionConsumer(JsonWebsocketConsumer):
+    def send_petitions_individually(self, petitions):
+        for petition in petitions:
+            petition = [petition]
+            petition = serialize_petitions(petition, self.scope["user"])
 
-    # Add the WS connection to the petitions channels group
-    Group("petitions").add(message.reply_channel)
+            self.send_json({"command": "get", "petition": petition})
 
-    # Default order is 'most recent' query the database for all petitions in that order.
-    petitions = paginate(views.sorting_controller("most recent"), 1)
+    def connect(self):
+        """
+        Endpoint for the petitions_connect route. Fires when web socket(WS) connections are made to the server.
+        :param message: The WS message channel that connected.
+        :return: None
+        """
+        self.group_name = "petitions"
+        # Add the WS connection to the petitions channels group
+        async_to_sync(self.channel_layer.group_add)(
+            self.group_name, self.channel_name)
 
-    send_petitions_individually(message, petitions)
+        # Default order is 'most recent' query the database for all petitions in that order.
+        petitions = paginate(views.sorting_controller("most recent"), 1)
 
+        self.accept()
 
-@channel_session_user
-def petitions_disconnect(message):
-    """
-    Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
-    :param message: The WS message channel that disconnected.
-    :return: None
-    """
-    Group("petitions").discard(message.reply_channel)
+        self.send_petitions_individually(petitions)
 
+    def disconnect(self, close_code):
+        """
+        Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
+        """
+        async_to_sync(self.channel_layer.group_discard)(
+            self.group_name, self.channel_name)
 
-@channel_session_user
-def petitions_command(message):
-    """
-    Endpoint for the petitions_command route. Fires when a WS sends a message.
-    Handles the parsing of commands from the frontend (an API, of sorts).
-    :param message: The WS message sent.
-    :return: None
-    """
+    def group_update(self, content):
+        self.send_json(content.get('text', ''))
 
-    sent = message.content['text']
-    if sent != "":
-        data = json2obj(sent)
-        if data.command and data.command != '':
-            if data.command == 'list':
-                # Parse the List command. Required data = sort. Optional = filter.
-                # Sends the WS a sorted and optionally filtered list of petitions.
-                if data.sort:
-                    petitions = views.sorting_controller(data.sort)
-                    if data.filter:
-                        petitions = views.filtering_controller(petitions, data.filter)
+    def receive_json(self, data):
+        """
+        Endpoint for the petitions_command route. Fires when a WS sends a message.
+        Handles the parsing of commands from the frontend (an API, of sorts).
+        :param data: Data sent to the websocket.
+        :return: None
+        """
+        if data != "":
+            command = data.get('command', '')
+            if command != '':
+                if command == 'list':
 
-                    send_petitions_individually(message, petitions)
+                    # Parse the List command. Required data = sort. Optional = filter.
+                    # Sends the WS a sorted and optionally filtered list of petitions.
+                    sort = data.get('sort', '')
+                    if sort:
+                        petitions = views.sorting_controller(sort)
+                        if data.get('filter', ''):
+                            petitions = views.filtering_controller(
+                                petitions, data.get('filter'))
 
+                        self.send_petitions_individually(petitions)
+
+                        return None
+
+                    self.send_json(
+                        {"text": "Error. Must send 'sort' parameter"})
                     return None
-
-                message.reply_channel.send({
-                    "text": "Error. Must send 'sort' parameter"
-                })
-                return None
-            elif data.command == 'get':
-                # Parse the Get command. Required data = id.
-                # Gets a single petition with a particular id.
-                if data.id:
-                    petition = [views.get_petition(data.id, message.user)]
-                    petition = serialize_petitions(petition, message.user) if petition[0] else False
-                    reply = {
-                        "command": "get",
-                        "petition": petition
-                    }
-
-                    message.reply_channel.send({
-                        "text": json.dumps(reply)
-                    })
-                return None
-            elif data.command == 'search':
-                # Parse the search command. Required query. Optional = filter.
-                # Sends the WS a sorted and optionally filtered list of petitions.
-                if data.query:
-                    petitions = views.sorting_controller("search", data.query)
-                    send_petitions_individually(message, petitions)
+                elif command == 'get':
+                    # Parse the Get command. Required data = id.
+                    # Gets a single petition with a particular id.
+                    data_id = data.get('id', '')
+                    if data_id:
+                        petition = [views.get_petition(
+                            data_id, self.scope["user"])]
+                        petition = serialize_petitions(
+                            petition, self.scope["user"]) if petition[0] else False
+                        reply = {
+                            "command": "get",
+                            "petition": petition
+                        }
+                        self.send_json(reply)
                     return None
-                return None
-            elif data.command == 'paginate':
-                # Parse the pageinate command. Required: page, sort. Optional filter.
-                # Sends the WS a sorted and optionally filtered list of petitions between a range.
-                if data.sort and data.page:
-                    petitions = views.sorting_controller(data.sort)
-                    if data.filter:
-                        petitions = views.filtering_controller(petitions, data.filter)
-                    petitions = paginate(petitions, data.page)
-                    send_petitions_individually(message, petitions)
+                elif command == 'search':
+                    # Parse the search command. Required query. Optional = filter.
+                    # Sends the WS a sorted and optionally filtered list of petitions.
+                    query = data.get('query', '')
+                    if query:
+                        petitions = views.sorting_controller("search", query)
+                        self.send_petitions_individually(petitions)
+                        return None
                     return None
+                elif command == 'paginate':
+                    # Parse the pageinate command. Required: page, sort. Optional filter.
+                    # Sends the WS a sorted and optionally filtered list of petitions between a range.
+                    sort = data.get('sort', '')
+                    page = data.get('page', '')
+                    if sort and page:
+                        petitions = views.sorting_controller(sort)
+                        if data.get('filter', ''):
+                            petitions = views.filtering_controller(
+                                petitions, data.get('filter'))
+                        petitions = paginate(petitions, page)
+                        self.send_petitions_individually(petitions)
+                        return None
 
-                message.reply_channel.send({
-                    "text": "Error. Must send 'sort' parameter"
-                })
-                return None
-
-        message.reply_channel.send({
-            "text": "Error must sent a non-empty 'command' parameter"
-        })
-        return None
-
-    return None
+                    self.send_json(
+                        {"text": "Error. Must send 'sort' parameter"})
+                    return None
+            self.send_json(
+                {"text": "Error must sent a non-empty 'command' parameter"})
+            return None

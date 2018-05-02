@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import datetime
+import channels.apps # Don't remove this, it prevents a warning about Twisted
 import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -37,7 +38,7 @@ if os.environ.get('SERVER_ENV', 'none') == 'test':
 
 if os.environ.get('SERVER_ENV','none')  == 'prod':
     DEBUG = False
-    ALLOWED_HOSTS = ["pawprints.rit.edu"]
+    ALLOWED_HOSTS = ["*"]
 
 if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
@@ -52,20 +53,21 @@ RAVEN_CONFIG = {
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'raven.contrib.django.raven_compat',
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
-    'django.contrib.admin',
+    'huey.contrib.djhuey',
     'django.contrib.auth',
+    'django.contrib.postgres',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.postgres',
-    'channels',
-    'huey.contrib.djhuey',
+    'django.contrib.admin',
 ]
+
 ALWAYS_EAGER = DEBUG
 if os.environ.get('SERVER_ENV', 'none') == 'local':
     DEBUG = True
@@ -100,17 +102,14 @@ HUEY = {
     
 AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
 
+ASGI_APPLICATION = 'pawprints.routing.application'
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379')],
-            "channel_capacity": {
-                "http.request": 10000,
-                "websocket.send*": 10000,
-            },
         },
-        "ROUTING": "pawprints.routing.channel_routing",
     },
 }
 
@@ -126,6 +125,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'pawprints.urls'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATES = [
     {
@@ -143,7 +144,7 @@ TEMPLATES = [
     },
 ]
 
-STATICFILES_DIRS = [STATIC_DIR, ]
+#STATICFILES_DIRS = [STATIC_DIR, ]
 WSGI_APPLICATION = 'pawprints.wsgi.application'
 
 
