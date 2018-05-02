@@ -1,11 +1,11 @@
 from datetime import timedelta
+from profile.models import Notifications, Profile
 
 from django.utils import timezone
 
 import pytest
 from channels.testing import WebsocketCommunicator
 from petitions.models import Petition, Tag
-from profile.models import Profile, Notifications
 
 from .consumers import PetitionConsumer, serialize_petitions
 
