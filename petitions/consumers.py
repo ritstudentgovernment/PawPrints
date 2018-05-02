@@ -2,6 +2,7 @@
 file: consumers.py
 desc: Implements WebSocket bindings for Django Channels.
 auth: Lukas Yelle (@lxy5611)
+      Peter Zujko (pxz3370)
 """
 import json
 import string
@@ -185,4 +186,3 @@ class PetitionConsumer(JsonWebsocketConsumer):
             self.send_json(
                 {"text": "Error must sent a non-empty 'command' parameter"})
             return None
-        return None
