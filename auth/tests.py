@@ -1,11 +1,10 @@
 from profile.models import Notifications, Profile
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-#from onelogin.saml2.auth import OneLogin_Saml2_Auth
 
-from .auth_backend import SAMLSPBackend, Attributes
-from unittest.mock import patch
+from .auth_backend import Attributes, SAMLSPBackend
 
 
 class AuthBackendTestCase(TestCase):
@@ -47,6 +46,56 @@ class AuthBackendTestCase(TestCase):
         assert auth_user.profile.full_name == 'Alumni User'
         assert auth_user.profile.has_access == 0
         assert auth_user.profile.display_name == 'AU'
+
+    @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
+    def test_authenticate_method_employee(self, auth_mock):
+        saml_backend = SAMLSPBackend()
+
+        # Test employee account
+        attrs_emp = {Attributes.USERNAME: ['emp1234'], Attributes.FIRST_NAME: [
+            'Employee'], Attributes.LAST_NAME: ['User'], Attributes.EDU_AFFILIATION: {'Alumni'}}
+        auth_mock.get_attributes.return_value = attrs_emp
+
+        assert not User.objects.filter(username='emp1234').exists()
+
+        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        assert User.objects.filter(username='emp1234').exists()
+        assert auth_user.profile.full_name == 'Employee User'
+        assert auth_user.profile.has_access == 0
+        assert auth_user.profile.display_name == 'EU'
+
+    @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
+    def test_authenticate_method_no_affiliation(self, auth_mock):
+        saml_backend = SAMLSPBackend()
+
+        # Test no edu affiliation attr
+        attrs_emp = {Attributes.USERNAME: ['emp1234'], Attributes.FIRST_NAME: [
+            'Employee'], Attributes.LAST_NAME: ['User']}
+        auth_mock.get_attributes.return_value = attrs_emp
+
+        assert not User.objects.filter(username='emp1234').exists()
+
+        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        assert User.objects.filter(username='emp1234').exists()
+        assert auth_user.profile.full_name == 'Employee User'
+        assert auth_user.profile.has_access == 0
+        assert auth_user.profile.display_name == 'EU'
+
+    @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
+    def test_authenticate_method_not_authenticated(self, auth_mock):
+        saml_backend = SAMLSPBackend()
+
+        auth_mock.is_authenticated.return_value = False
+
+        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+
+        assert auth_user == None
+
+    def test_authenticate_method_none(self):
+        saml_backend = SAMLSPBackend()
+
+        auth_user = saml_backend.authenticate()
+        assert auth_user == None
 
     def test_get_user(self):
         saml_backend = SAMLSPBackend()
