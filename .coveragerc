@@ -6,6 +6,7 @@ show_missing = False
 
 exclude_lines = 
   except Exception as e:
+  if settings.DEBUG
   pragma: no cover
 
 omit =
@@ -19,5 +20,6 @@ omit =
   auth/admin.py
   auth/apps.py
   auth/models.py
+  pawprints/settings.py
   pawprints/routing.py
   petitions/routing.py

@@ -338,3 +338,14 @@ class PetitionTest(TestCase):
         self.client.force_login(self.superUser)
         petition = get_petition(self.petition.id, self.user2)
         self.assertEqual(petition, False)
+
+    def test_petition_str(self):
+        assert str(self.petition) == self.petition.title
+
+    def test_tag_str(self):
+        assert str(self.tag) == self.tag.name
+
+    def test_response_str(self):
+        resp = Response.objects.create(
+            description='Response', created_at=timezone.now(), author='Test Author')
+        assert str(resp) == 'Test Author'
