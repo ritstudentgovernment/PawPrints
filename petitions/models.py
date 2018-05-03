@@ -4,10 +4,11 @@ Description: Contains models for Petition, Tag, and Response.
 Date Created: Sept 15 2016
 Updated: Oct 17 2016
 """
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+
 import bleach
 
 bleach.sanitizer.ALLOWED_TAGS.extend([u'i',u'h1', u'h2',u'h3', u'h4', u'h5', u'h6',u'p',u'sub',u'br',u'sup', u'span',u'img'])
