@@ -43,7 +43,8 @@ class SAMLSPBackend(object):
 
             # Set user profile attributes
             user.profile.full_name = "{} {}".format(first_name, last_name)
-            user.profile.display_name = "{}{}".format(first_name[0], last_name[0])
+            user.profile.display_name = "{}{}".format(
+                first_name[0], last_name[0])
 
             # Set user Affiliation
             user.profile.has_access = 1
