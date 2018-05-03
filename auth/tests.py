@@ -5,14 +5,52 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from .auth_backend import Attributes, SAMLSPBackend
+from .util import prepare_django_request
 
 
-class AuthBackendTestCase(TestCase):
+class AuthTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username='txu1111', email='txu1111@rit.edu')
         Profile.objects.all().delete()
         Profile.objects.create(user=user,
                                notifications=Notifications.objects.create())
+
+    @patch('django.http.request')
+    def test_prepare_util(self, request_mock):
+        HOST = 'testhost'
+        PORT = 5000
+        PATH_INFO = 'info'
+        # Attrs
+        attrs_meta = {'HTTP_HOST': HOST,
+                      'SERVER_PORT': PORT, 'PATH_INFO': PATH_INFO}
+        get_attrs = {'test': 'test'}
+        post_attrs = {'test': 'test_post'}
+
+        request_mock.META = attrs_meta
+        request_mock.GET = get_attrs
+        request_mock.POST = post_attrs
+        request_mock.is_secure.return_value = True
+
+        prepared_request = prepare_django_request(request_mock)
+        actual_req = {'https': 'on', 'http_host': HOST,
+                      'script_name': PATH_INFO, 'get_data': get_attrs, 'post_data': post_attrs, 'server_port': PORT}
+        assert prepared_request == actual_req
+
+        # Test with not secure
+        request_mock.is_secure.return_value = False
+        prepared_request = prepare_django_request(request_mock)
+        actual_req = {'https': 'off', 'http_host': HOST,
+                      'script_name': PATH_INFO, 'get_data': get_attrs, 'post_data': post_attrs, 'server_port': PORT}
+        assert prepared_request == actual_req
+
+        # Test with HTTP_X_FORWARDED_FOR
+        attrs_meta = {'HTTP_HOST': HOST,
+                      'SERVER_PORT': PORT, 'PATH_INFO': PATH_INFO, 'HTTP_X_FORWARDED_FOR': 'testforward', 'HTTP_X_FORWARDED_PROTO': 'https'}
+        request_mock.META = attrs_meta
+        actual_req = {'https': 'on', 'http_host': HOST,
+                      'script_name': PATH_INFO, 'get_data': get_attrs, 'post_data': post_attrs}
+        prepared_request = prepare_django_request(request_mock)
+        assert prepared_request == actual_req
 
     @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
     def test_authenticate_method_student(self, auth_mock):
