@@ -27,7 +27,7 @@ idna==2.6
 incremental==17.5.0
 isodate==0.6.0
 lxml==4.2.1
-mimesis==1.0.5
+mimesis==2.0.1
 more-itertools==4.1.0
 msgpack==0.5.6
 msgpack-python==0.5.6
