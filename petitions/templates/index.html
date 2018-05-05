@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+<html prefix="og: http://ogp.me/ns#">
 <head>
+    <meta property="og:title" content="PawPrints" />
+    <meta property="og:description" content="Make Your Mark. Create and sign petitions. Receive official responses from Student Government." />
+    <meta property="og:image" content="https://pawprints.rit.edu/static/images/pawprintsemail.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     {% load static %}
     {% include 'head.html' %}
     {% if user.is_staff %}
@@ -210,7 +216,6 @@
             width: calc(100% - 10px);
             margin-left: 5px;
             margin-right: 5px;
-            overflow: hidden;
             display: inline-block;
             margin-top: 1.2em;
             -webkit-backface-visibility: hidden;
@@ -1642,6 +1647,7 @@
 
         }
         $("#tag-"+filter).addClass("current-tag");
+        window.page = 1;
         window.searched = false;
         petitions.loading = true;
         petitions.map = {};
@@ -1911,7 +1917,7 @@
         // Setup Web Socket.
 
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
-        socket = new WebSocket(socket_type+"://" + window.location.host + "/");
+        socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
         socket.onopen = function (e){
 
             petitionID = getUrl("p");
@@ -1924,6 +1930,7 @@
         socket.onmessage = function(e) {
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
+
             try {
 
                 // Parse the response as a JSON.

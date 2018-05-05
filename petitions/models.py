@@ -4,8 +4,18 @@ Description: Contains models for Petition, Tag, and Response.
 Date Created: Sept 15 2016
 Updated: Oct 17 2016
 """
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+import bleach
+
+bleach.sanitizer.ALLOWED_TAGS.extend([u'i',u'h1', u'h2',u'h3', u'h4', u'h5', u'h6',u'p',u'sub',u'br',u'sup', u'span',u'img'])
+bleach.sanitizer.ALLOWED_ATTRIBUTES[u'img'] = [u'alt', u'height', u'src', u'width']
+bleach.sanitizer.ALLOWED_STYLES.extend(u'text-align')
+for key in bleach.sanitizer.ALLOWED_ATTRIBUTES.keys():
+    bleach.sanitizer.ALLOWED_ATTRIBUTES[key].append(u'data-mce-style')
 
 
 #
@@ -60,3 +70,14 @@ class Response(models.Model):
 class Update(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField()
+
+
+#
+# The following defines a signal function which is called before a save() is actually run
+# on a petition object.
+# The following signal function sanitizes the petition description and title.
+#
+@receiver(pre_save, sender=Petition)
+def sanitize_petition(sender, instance, *args, **kwargs):
+    instance.description = bleach.clean(instance.description)
+    instance.title = bleach.clean(instance.title)

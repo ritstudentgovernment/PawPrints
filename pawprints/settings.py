@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 import datetime
+import channels.apps # Don't remove this, it prevents a warning about Twisted
 import raven
 import json
 
@@ -38,7 +39,7 @@ if os.environ.get('SERVER_ENV', 'none') == 'test':
 
 if os.environ.get('SERVER_ENV','none')  == 'prod':
     DEBUG = False
-    ALLOWED_HOSTS = ["pawprints.rit.edu"]
+    ALLOWED_HOSTS = ["*"]
 
 if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
@@ -55,91 +56,63 @@ RAVEN_CONFIG = {
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'raven.contrib.django.raven_compat',
     'profile.apps.ProfileConfig',
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
-    'django.contrib.admin',
+    'huey.contrib.djhuey',
     'django.contrib.auth',
+    'django.contrib.postgres',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.postgres',
-    'channels',
-    'huey.contrib.djhuey',
+    'django.contrib.admin',
 ]
 
+ALWAYS_EAGER = DEBUG
 if os.environ.get('SERVER_ENV', 'none') == 'local':
-    # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
-    HUEY = {
-        'name': 'RedisHueyInstance',  # Use db name for huey.
-        'result_store': False,  # Do not store return values of tasks.
-        'events': True,  # Consumer emits events allowing real-time monitoring.
-        'store_none': False,  # If a task returns None, do not save to results.
-        'always_eager': False,  # If DEBUG=True, run synchronously.
-        'store_errors': True,  # Store error info if task throws exception.
-        'blocking': False,  # Poll the queue rather than do blocking pop.
-        'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
-        'connection': {
-            'connection_pool': None,  # Definitely you should use pooling!
-            # ... tons of other options, see redis-py for details.
-
-            'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
-        },
-        'consumer': {
-            'workers': 2,
-            'worker_type': 'thread',
-            'initial_delay': 0.1,  # Smallest polling interval, same as -d.
-            'utc': True,  # Treat ETAs and schedules as UTC datetimes.
-            'periodic': False,
-            'scheduler_interval': 1,  # Check schedule every second, -s.
-            'check_worker_health': True,  # Enable worker health checks.
-            'health_check_interval': 1,  # Check worker health every second.
-        },
-    }
-else:
-    # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
-    HUEY = {
-        'name': 'RedisHueyInstance',  # Use db name for huey.
-        'result_store': False,  # Do not store return values of tasks.
-        'events': True,  # Consumer emits events allowing real-time monitoring.
-        'store_none': False,  # If a task returns None, do not save to results.
-        'always_eager': DEBUG,  # If DEBUG=True, run synchronously.
-        'store_errors': True,  # Store error info if task throws exception.
-        'blocking': False,  # Poll the queue rather than do blocking pop.
-        'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
-        'connection': {
-            'connection_pool': None,  # Definitely you should use pooling!
-            # ... tons of other options, see redis-py for details.
-
-            'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
-        },
-        'consumer': {
-            'workers': 2,
-            'worker_type': 'thread',
-            'initial_delay': 0.1,  # Smallest polling interval, same as -d.
-            'utc': True,  # Treat ETAs and schedules as UTC datetimes.
-            'periodic': False,
-            'scheduler_interval': 1,  # Check schedule every second, -s.
-            'check_worker_health': True,  # Enable worker health checks.
-            'health_check_interval': 1,  # Check worker health every second.
-        },
-    }
-
+    DEBUG = True
+    ALWAYS_EAGER = False
+    
+# Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
+HUEY = {
+    'name': 'RedisHueyInstance',  # Use db name for huey.
+    'result_store': False,  # Do not store return values of tasks.
+    'events': True,  # Consumer emits events allowing real-time monitoring.
+    'store_none': False,  # If a task returns None, do not save to results.
+    'always_eager': ALWAYS_EAGER,  # If DEBUG=True, run synchronously.
+    'store_errors': True,  # Store error info if task throws exception.
+    'blocking': False,  # Poll the queue rather than do blocking pop.
+    'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
+    'connection': {
+        'connection_pool': None,  # Definitely you should use pooling!
+        # ... tons of other options, see redis-py for details.
+        'url': os.environ.get('REDIS_URL', 'redis://redis:6379'),  # Allow Redis config via a DSN.
+    },
+    'consumer': {
+        'workers': 2,
+        'worker_type': 'thread',
+        'initial_delay': 0.1,  # Smallest polling interval, same as -d.
+        'utc': True,  # Treat ETAs and schedules as UTC datetimes.
+        'periodic': False,
+        'scheduler_interval': 1,  # Check schedule every second, -s.
+        'check_worker_health': True,  # Enable worker health checks.
+        'health_check_interval': 1,  # Check worker health every second.
+    },
+}
+    
 AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
+
+ASGI_APPLICATION = 'pawprints.routing.application'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379')],
-            "channel_capacity": {
-                "http.request": 10000,
-                "websocket.send*": 10000,
-            },
         },
-        "ROUTING": "pawprints.routing.channel_routing",
     },
 }
 
@@ -155,6 +128,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'pawprints.urls'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATES = [
     {
@@ -172,7 +147,7 @@ TEMPLATES = [
     },
 ]
 
-STATICFILES_DIRS = [STATIC_DIR, ]
+#STATICFILES_DIRS = [STATIC_DIR, ]
 WSGI_APPLICATION = 'pawprints.wsgi.application'
 
 
