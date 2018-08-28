@@ -81,7 +81,8 @@ def petition(request, petition_id):
     users_signed = Profile.objects.filter(petitions_signed=petition)
 
     # Get all of the current tags in pawprints.
-    additional_tags = Tag.objects.all().exclude(name__in=[x.name for x in petition.tags.all()])
+    additional_tags = Tag.objects.all().exclude(
+        name__in=[x.name for x in petition.tags.all()])
 
     # Generate the placeholders for the petition's page.
     # Note: 'edit' is how the system determines if the current user has the permission to edit a petition or not.
@@ -194,12 +195,32 @@ def get_petition(petition_id, user):
     if petition.exists():
         petition = petition.first()
         if (petition.status != 0 and petition.status != 2) or (
-                    profile and profile.user.username == petition.author.username):
+                profile and profile.user.username == petition.author.username):
             return petition
     return False
 
 
+def petition_bots(request, petition_id):
+    """
+    This endpoint only renders opengraph tags for social network bots.
+    nginx should redirect all crawlers/bots to this page.
+    """
+    petition = get_object_or_404(Petition, pk=petition_id)
+    url = "{}/?p={}".format(request.META['HTTP_HOST'], petition.id)
+    if request.is_secure():
+        url = "https://{}".format(url)
+    else:
+        url = "http://{}".format(url)
+
+    data_object = {
+        'title': petition.title,
+        'description': petition.description,
+        'url': url
+    }
+    return render(request, 'bots.html', data_object)
+
 # Petition Edit Functions #
+
 
 def edit_title(petition, new_title):
     """
@@ -423,7 +444,8 @@ def petition_edit(request, petition_id):
     # Check if the user is able to edit
     if edit_check(request.user, petition):
 
-        logger.info('user ' + request.user.email + ' edited petition ' + petition.title + " ID: " + str(petition.id))
+        logger.info('user ' + request.user.email + ' edited petition ' +
+                    petition.title + " ID: " + str(petition.id))
 
         attribute = request.POST.get("attribute")
         value = request.POST.get("value")
@@ -583,7 +605,8 @@ def petition_sign(request, petition_id):
         # Check if petition reached 200 if so, email.
         if petition.signatures == 200:
             petition_reached(petition.id, request.META['HTTP_HOST'])
-            logger.info('petition ' + petition.title + ' hit 200 signatures \n' + "ID: " + str(petition.id))
+            logger.info('petition ' + petition.title +
+                        ' hit 200 signatures \n' + "ID: " + str(petition.id))
 
     return HttpResponse(str(petition.id))
 
@@ -657,7 +680,8 @@ def petition_unpublish(request, petition_id):
         # Set status to 2 to hide it from view.
         petition.status = 2
         petition.save()
-        logger.info('user ' + request.user.email + ' unpublished petition ' + petition.title)
+        logger.info('user ' + request.user.email +
+                    ' unpublished petition ' + petition.title)
 
     return redirect('/profile') if user.id == petition.author.id else HttpResponse(True)
 
@@ -670,8 +694,10 @@ def send_update(update):
     :return: None
     """
     channel = channels.layers.get_channel_layer()
-    async_to_sync(channel.group_send)("petitions",{"type": "group.update","text": update})
+    async_to_sync(channel.group_send)(
+        "petitions", {"type": "group.update", "text": update})
     return None
+
 
 def colors():
     color_object = {
@@ -764,7 +790,8 @@ def last_signed():
 
 
 def search(query):
-    vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
+    vector = SearchVector('title', weight='A') + \
+        SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
         .select_related('author', 'response') \
@@ -775,7 +802,8 @@ def search(query):
 
 
 def similar_petitions(query):
-    vector = SearchVector('title', weight='A') + SearchVector('description', weight='A')
+    vector = SearchVector('title', weight='A') + \
+        SearchVector('description', weight='A')
     query = SearchQuery(query)
     return Petition.objects.annotate(rank=SearchRank(vector, query)) \
         .filter(rank__gte=0.3) \
