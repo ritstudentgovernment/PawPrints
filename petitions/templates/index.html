@@ -1330,7 +1330,11 @@
                     selector: '#admin-edit',
                     inline: false,
                     menubar: false,
-                    plugins: "link",
+                    plugins: "link paste",
+                    paste_auto_cleanup_on_paste : true,
+                    paste_remove_styles: true,
+                    paste_remove_styles_if_webkit: true,
+                    paste_strip_class_attributes: "all",
                     height: 300,
                     toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat"
                 });
