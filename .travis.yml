@@ -1,30 +1,38 @@
----
 language: python
-
 dist: trusty
-
 services:
-  - docker
-
+- docker
 env:
+  matrix:
   - DOCKER_COMPOSE_VERSION=1.19.0
-
+  global:
+  - secure: JUwq9yL2ZfgXZsFAMtK80WOSJ22Q38ZCsgfwc66689cmGQ4iqGT+Vz/a6Wg7x6rlGvOkb/pvHsvy6TV3Q2I2M/SGm4nS0JfYIJ5xlwkhNhyLML+9ouvlwWISZFY8EXBEBBe7pPmpMlu+YrpwPKZ5uuEgGm/5lH3ajO0WOut6azlGetu5AEM7wTJcPgSvOOlh+EK4pMhK6FDGMDgatS7PPeH4YB1PzUKgD/hmCQ+0xWyQuizMuaM5gFQ5+aNhsL/TjQ25xAfrLqQb93+52GfObtfPOvTA0+X4opijRTkGE7WycqpwReQROlUecDT5PyHQnRydfRhRhP8zo7nnV4FmtWNa/dbCR8vzPAfEhBVrDdx37m+MR71tizQi7nW/sWwhsJHHdjl1YoS23Bc7mFp5Kb94cFhroV8yZh78d/FwaaxWnx3P1rTpTZNEUw5TeFqXASom5MSN/NoU5AxUv8M/7Ze2UQ0e7oQV8fozGJUlACcEteKnqH8IDz0ZdTb5OItVIyc9QUHDbrYtdyczC1+sBjINC9O00GBPHPp2FhNp60AnYtpd43D6F6TZUvfsbGAiZQOJfwoSrW9Tyj7MnrQBFhxTJB3sRLaD0BUN0nhh9ey2x330Sv81w7AfP42gJmrmrHBCaEbvIN4Wk9BHm3ewMGx3MvKAkDTJQ5KzZiNPtZc=
+  - secure: eCkx+zPByN+8vxIL55A4WXsc0/dl/wXWZwGgaNAsLWrO7wn9a9oi9aVi3jDLhZ6W2W91jnO8ii+LybDMrbseNaRZnQI75TURmyeHj1Q0iJFj1J1EHBtXqEdjLXvFJ+1wUQVitFAn8AuKfJsdx14hrtvPMlP1X06wVkAk9ez5c3PTajbUNosrVk6YaJd4RW/qyuSet3owN6wt/tLX9bDV3RU6JSCjURvWr6ngTvp7vyCnJSiNHQBb9pFIMLQVbXwf4A9vstJiv24usfp+7KtnmAKsUj977p6/Y+lgMhiml8iKTuvly/SP3Tuh9UfdRSc6vGbfpRyI6osxFemsSpUjoDCWuyFmwdIkhgK0o+kpklfbdxGNbLBW+tcuIN/S2fKg5H2uNXgV2YeskPqXR4niEwsC7tUJrnUG1WqmPeatcQq85YiCep0Hi5lDkG1Evrs9ZcRJRdr7bYsmz4Db3pk8rvEwcTJ06L1ycZC8msC69vFIRq0z9+Mv6ApIJxVJBoc8tMoy3sW67ip44QV73ljp3xT9Otr6au5nruajrH6hgz7nISkOlOlXSACcuKHlfy0W7p8o/cKFNNkOFOC7BgQ3GPXonAsmW9d5ximif3qum+8w/UUAvM7oCBhqDKkw8xvbt4VV+iEjKnT+8V3Ar7cFrIPRqkihd3JwreEvgJ5wHLE=
 python:
-  - "3.6"
-
+- '3.6'
 before_install:
-  - pip install coverage
-  - pip install codecov
-  - cp petitions/profanity.csv.template petitions/profanity.csv
-  - cp template.env .env
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-
+- pip install coverage
+- pip install codecov
+- cp petitions/profanity.csv.template petitions/profanity.csv
+- cp template.env .env
+- sudo rm /usr/local/bin/docker-compose
+- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname
+  -s`-`uname -m` > docker-compose
+- chmod +x docker-compose
+- sudo mv docker-compose /usr/local/bin
+- export COMMITTER_EMAIL="$(git log -1 $TRAVIS_COMMIT --pretty="%cE")"
+- export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 install:
-  - docker-compose run -d --name pawprints_web web 
-
+- docker-compose run -d --name pawprints_web web
 script:
-  - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report term --cov=. 
-  - codecov
+- docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report
+  term --cov=.
+- codecov
+
+deploy:
+  provider: script
+  script: deploy.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^develop|master$
