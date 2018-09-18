@@ -24,7 +24,13 @@ before_install:
 
 install:
   - docker-compose run -d --name pawprints_web web 
-
 script:
   - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report term --cov=. 
   - codecov
+deploy:
+  provider: script
+  script: chmod +x deploy.sh && sh deploy.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^develop|master$
