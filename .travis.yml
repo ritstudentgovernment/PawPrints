@@ -28,3 +28,11 @@ script:
 - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report
   term --cov=.
 - codecov
+
+deploy:
+  provider: script
+  script: deploy.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^develop|master$
