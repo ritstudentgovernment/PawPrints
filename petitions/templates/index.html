@@ -1092,9 +1092,12 @@
                             <div class="timeline-element-body" v-if="element.type != 'created'">
                                 <h4 class="timeline-element-header">
                                     <span class="text-highlight">{[ element.type ]}</span>
-                                    <span v-if="element.date==0">Today</span>
-                                    <span v-else>
-                                        {[ element.date ]} Day<span v-if="element.date>1">s</span> Ago
+                                    <span v-if="element.dateDiff==0">Today</span>
+                                    <span v-else-if="element.dateDiff<30">
+                                        {[ element.dateDiff ]} Day<span v-if="element.dateDiff>1">s</span> Ago
+                                    </span>
+                                    <span v-else-if="element.dateDiff<30">
+                                        {[ element.date ]}
                                     </span>
                                     {% if user.first_name and user.is_staff %}
                                         <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
@@ -1774,6 +1777,7 @@
                        .replace(/(\\u2014|\\u2013)/g, "—")
                        .replace(/(\\u2018|\\u2019)/g, "'")
                        .replace(/(\\u201c|\\u201d)/g, '"')
+                       .replace(/\\u2022/g, "•")
         );
     }
     function getDayDifference(date1, date2){
@@ -1867,7 +1871,8 @@
                         type:"SG Update",
                         author: "",
                         content:unescape(update.description),
-                        date: getDayDifference(updateJSDate, currentJSDate)
+                        dateDiff: getDayDifference(updateJSDate, currentJSDate),
+                        date: updateJSDate
                     };
                     modalData.timeline.unshift(updateBlock);
                 }
@@ -1886,7 +1891,8 @@
                     type:"Official Response",
                     author: response.author,
                     content:unescape(response.description),
-                    date: getDayDifference(responseJSDate, currentJSDate)
+                    dateDiff: getDayDifference(responseJSDate, currentJSDate),
+                    date: responseJSDate
                 };
                 modalData.timeline.unshift(responseBlock);
             }
@@ -1895,7 +1901,8 @@
                 type:"Petition Description",
                 author: toPetition.author,
                 content:unescape(toPetition.description),
-                date: getDayDifference(createdJSDate, currentJSDate)
+                dateDiff: getDayDifference(createdJSDate, currentJSDate),
+                date: createdJSDate
             };
             modalData.timeline.push(description);
 
