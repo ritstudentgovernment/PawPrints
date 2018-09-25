@@ -1872,7 +1872,7 @@
                         author: "",
                         content:unescape(update.description),
                         dateDiff: getDayDifference(updateJSDate, currentJSDate),
-                        date: updateJSDate
+                        date: new Date(updateJSDate).toDateString()
                     };
                     modalData.timeline.unshift(updateBlock);
                 }
@@ -1892,7 +1892,7 @@
                     author: response.author,
                     content:unescape(response.description),
                     dateDiff: getDayDifference(responseJSDate, currentJSDate),
-                    date: responseJSDate
+                    date: new Date(responseJSDate).toDateString()
                 };
                 modalData.timeline.unshift(responseBlock);
             }
@@ -1902,7 +1902,7 @@
                 author: toPetition.author,
                 content:unescape(toPetition.description),
                 dateDiff: getDayDifference(createdJSDate, currentJSDate),
-                date: createdJSDate
+                date: new Date(createdJSDate).toDateString()
             };
             modalData.timeline.push(description);
 
