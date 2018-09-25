@@ -1096,9 +1096,7 @@
                                     <span v-else-if="element.dateDiff<30">
                                         {[ element.dateDiff ]} Day<span v-if="element.dateDiff>1">s</span> Ago
                                     </span>
-                                    <span v-else-if="element.dateDiff<30">
-                                        {[ element.date ]}
-                                    </span>
+                                    <span v-else v-html="element.date"></span>
                                     {% if user.first_name and user.is_staff %}
                                         <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
                                             <i class="admin-edit-icon cursor material-icons">edit</i>
