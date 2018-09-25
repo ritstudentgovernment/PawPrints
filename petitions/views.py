@@ -11,6 +11,7 @@ from collections import namedtuple
 from datetime import timedelta
 from profile.models import Profile
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import (SearchQuery, SearchRank,
@@ -40,7 +41,8 @@ def index(request):
     """
     data_object = {
         'tags': Tag.objects.all,
-        'colors': colors()
+        'colors': colors(),
+        'customization': json.dumps(settings.CUSTOMIZATION)
     }
 
     return render(request, 'index.html', data_object)
@@ -699,17 +701,7 @@ def send_update(update):
     return None
 
 
-def colors():
-    color_object = {
-        'highlight': "#f36e21",
-        'highlight_hover': '#e86920',
-        'dark_text': '#0f0f0f',
-        'light_text': '#f0f0f0',
-        'bright_text': '#fff',
-        'light_background': '#fafafa'
-    }
-
-    return color_object
+def colors(): return settings.CUSTOMIZATION["colors"]
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())

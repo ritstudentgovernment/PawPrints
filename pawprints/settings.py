@@ -14,6 +14,7 @@ import os
 import datetime
 import channels.apps # Don't remove this, it prevents a warning about Twisted
 import raven
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,6 +44,8 @@ if os.environ.get('SERVER_ENV','none')  == 'prod':
 if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
     ALLOWED_HOSTS = ["sgstage.rit.edu"]
+
+CUSTOMIZATION = json.load(open(STATIC_DIR+"/js/config.json"))
 
 # Sentry Settings
 RAVEN_CONFIG = {
