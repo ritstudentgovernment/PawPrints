@@ -70,7 +70,7 @@ services:
 
   web:
     build: .
-    command: sh -c  "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 pawprints.asgi:application"
+    command: sh -c  "python manage.py renderfiles && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 pawprints.asgi:application"
     environment:
       SECRET_KEY: ${SECRET_KEY}
       SERVER_ENV: ${SERVER_ENV}

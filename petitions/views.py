@@ -40,9 +40,7 @@ def index(request):
     Handles displaying the index page of PawPrints.
     """
     data_object = {
-        'tags': Tag.objects.all,
-        'colors': colors(),
-        'customization': json.dumps(settings.CUSTOMIZATION)
+        'tags': Tag.objects.all
     }
 
     return render(request, 'index.html', data_object)
@@ -52,11 +50,7 @@ def about(request):
     """
     Handles displaying the about page
     """
-    data_object = {
-        'colors': colors(),
-    }
-
-    return render(request, 'about.html', data_object)
+    return render(request, 'about.html')
 
 
 def maintenance(request):
@@ -95,10 +89,7 @@ def petition(request, petition_id):
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
         'additional_tags': additional_tags,
-        'edit': edit_check(user, petition),
-        'colors': colors(),
-        'default_title': PETITION_DEFAULT_TITLE,
-        'default_body': PETITION_DEFAULT_BODY
+        'edit': edit_check(user, petition)
     }
 
     return render(request, 'petition.html', data_object)
@@ -699,10 +690,6 @@ def send_update(update):
     async_to_sync(channel.group_send)(
         "petitions", {"type": "group.update", "text": update})
     return None
-
-
-def colors(): return settings.CUSTOMIZATION["colors"]
-
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 

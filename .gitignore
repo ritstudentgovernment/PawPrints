@@ -121,6 +121,14 @@ profanity.csv
 
 *.xml
 
+static/css/index.css
+static/css/about.css
+static/css/petition.css
+static/css/staff.css
+static/css/profile.css
+static/js/petitionedit.js
+static/js/index.js
+
 PawPrints - Make your mark.webarchive
 /pawprints/secrets.py
 
