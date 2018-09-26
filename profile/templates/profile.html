@@ -6,61 +6,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
     {% include 'head.html' %}
     <title>Account | PawPrints</title>
-    <style>
-        .background-highlight{
-        background-color: {{ colors.highlight }};
-        }
-        .text-highlight{
-        color: {{ colors.highlight }} !important;
-        }
-        .bright-text{
-        color: {{ colors.bright_text }} !important;
-        }
-        .modern-link{
-        color: {{ colors.dark_text }};
-        text-decoration: none;
-        }
-        .material-input:focus{
-        border-color: {{ colors.highlight }};
-        }
-        .alternate-font{
-            font-family: "Slabo 27px", sans-serif;
-        }
-        .tag:hover{
-            cursor: pointer;
-        }
-        body{
-            min-height: 100vh;
-            background-color: #f5f5f5;
-        }
-        h1,h2,h3,h4,h5{
-            font-family: "Montserrat", sans-serif;
-            font-weight: 800;
-        }
-        #landing{
-            margin-top: 109px;
-        }
-        #sub-landing{
-            padding-top: 0;
-        }
-        #settings ul li{
-            background-color: #fff;
-            border-bottom: 1px solid #ccc;
-        }
-        #settings ul li:last-child{
-            border-bottom: none;
-        }
-        #settings ul li label{
-            overflow: hidden;
-            width: calc(100% - 65px);
-        }
-        article:nth-child(odd){
-            border-top: 1px solid #ccc;
-        }
-        .delete-petition:hover{
-            border-bottom: 1px solid #ccc;
-        }
-    </style>
+
+    <link rel="stylesheet" type="text/css" href="{% static '/css/profile.css' %}">
 </head>
 <body>
 

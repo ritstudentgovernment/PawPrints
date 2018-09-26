@@ -1,0 +1,160 @@
+.dropbtn {
+    position: relative;
+    background-color: #ff7700;
+    color: white;
+    font-size: 12px;
+    padding-right: 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    outline: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.dropbtn-mobile {
+    background-color: #ff7700;
+    color: white;
+    font-size: 12px;
+    padding-right: 5%;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    outline: 0;
+    height: 30px;
+}
+.dropdown-left {
+    text-align: left;
+    position: fixed;
+    display: inline-block;
+    width: 50%;
+    z-index: 99;
+    height: 30px;
+    padding-left: 5%;
+    margin-right: 50%;
+    font-family: "Montserrat";
+    padding-top: 2px;
+}
+.dropdown-right-main {
+    position: fixed;
+    display: inline-block;
+    width: 50%;
+    z-index: 99;
+    height: 30px;
+    padding-right: 75px;
+    margin-left: 50%;
+    font-family: "Montserrat";
+    text-align: right;
+}
+.dropdown-right-mobile {
+    display: none;
+    position: fixed;
+    width: 50%;
+    z-index: 99;
+    height: 30px;
+    /*padding-right: 75px;*/
+    margin-left: 50%;
+    font-family: "Montserrat";
+    text-align: right;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-size: 12px;
+    border-top: 8px;
+    border-top-style: solid;
+    border-top-color: #ff7700;
+    margin-top: 5px;
+    font-family: "Montserrat";
+    text-align: left;
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-family: "Montserrat";
+}
+.dropdown-content-mobile p {
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+    font-family: "Montserrat";
+    margin-bottom: 0px;
+    background-color: lightgrey;
+}
+.dropdown-content a:hover
+{
+    color: grey;
+}
+.dropdown-content-mobile a
+{
+    color: black;
+    padding: 0px 8px;
+    text-decoration: none;
+    display: block;
+    font-family: "Montserrat";
+}
+.dropdown-content-mobile a:hover
+{
+    color: grey;
+}
+.dropdown-content-mobile
+{
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    font-size: 12px;
+    border-top-style: solid;
+    border-top-color: #ff7700;
+    font-family: "Montserrat";
+    text-align: left;
+    right:10px;
+    padding-bottom:10px;
+}
+.dropdown-left a {
+    background-color: #ff7700;
+    font-weight: bold;
+    color: white;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat";
+    height: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+.dropdown-left a:hover {
+    text-decoration: none;
+}
+.header-top{
+    height: 30px;
+    background-color: #ff7700;
+    z-index: 1001;
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+}
+html,body{
+    position: relative;
+}
+.show {display:block;}
+@media screen and (max-width: 992px)
+{
+    .dropdown-right-main
+    {
+        display: none;
+    }
+    .dropdown-right-mobile{
+        display: inline-block;;
+    }
+}
