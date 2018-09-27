@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'compressor',
 ]
 
 ALWAYS_EAGER = DEBUG
@@ -130,6 +131,11 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'pawprints.urls'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
 
 TEMPLATES = [
     {
@@ -266,6 +272,14 @@ LOGGING = {
     },
 }
 
+# Asset compression settings
+COMPRESS_ENABLED = True
+COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_OFFLINE = True
+COMPRESS_CSS_FILTERS = [
+    #css minimizer
+    'compressor.filters.cssmin.CSSMinFilter'
+]
 
 # Secure configs
 SESSION_COOKIE_SECURE = True
