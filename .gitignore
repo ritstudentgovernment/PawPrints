@@ -129,6 +129,9 @@ static/css/profile.css
 static/js/petitionedit.js
 static/js/index.js
 
+# Compressed assets
+static/CACHE/*
+
 PawPrints - Make your mark.webarchive
 /pawprints/secrets.py
 

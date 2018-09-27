@@ -2,6 +2,7 @@
 <html lang="en">
 <html prefix="og: http://ogp.me/ns#">
 <head>
+    {% load compress %}
     <meta property="og:title" content="PawPrints" />
     <meta property="og:description" content="Make Your Mark. Create and sign petitions. Receive official responses from Student Government." />
     <meta property="og:image" content="https://pawprints.rit.edu/static/images/pawprintsemail.png" />
@@ -13,8 +14,10 @@
         <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
     {% endif %}
     <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
-
+ 
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/index.css' %}">
+    {% endcompress %}
 
     <title>PawPrints - Make your mark</title>
 </head>
@@ -265,12 +268,16 @@
     </script>
 {% endif %}
 {% if user.is_staff %}
+    {% compress js %}
     <script src="{% static '/js/adminedit.js' %}"></script>
+    {% endcompress %}
 {% endif %}
 
 <a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
 </div>
 {% csrf_token %}
 </body>
+{% compress js %}
 <script src="{% static '/js/index.js' %}"></script>
+{% endcompress %}
 </html>

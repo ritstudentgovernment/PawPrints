@@ -1,5 +1,9 @@
+{% load compress %}
 {% load static %}
+
+{% compress js %}
 <script src="{% static '/js/header.js' %}"></script>
+{% endcompress %}
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -101,8 +105,9 @@
     </div>
 </nav>
 
-
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="{% static '/css/header.css' %}">
+{% endcompress %}
 
 <header class="full-width fixed transition large-header">
     <div id="header-top" class="transition">

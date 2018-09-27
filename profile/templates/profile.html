@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load compress %}
     {% load static %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
     {% include 'head.html' %}
     <title>Account | PawPrints</title>
 
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/profile.css' %}">
+    {% endcompress %}
 </head>
 <body>
 
