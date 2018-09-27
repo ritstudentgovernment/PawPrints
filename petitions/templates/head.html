@@ -1,7 +1,11 @@
+{% load compress %}
 {% load static %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% compress css %}
 <link href="{% static '/css/global.css' %}" rel="stylesheet" />
+{% endcompress %}
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Raleway:300,400|Slabo+27px" rel="stylesheet">
@@ -9,7 +13,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-smart-web-app-banner/1.5/jquery.smartwebbanner.min.js"></script>
 <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+
+{% compress js %}
 <script src="{% static '/js/global.js' %}"></script>
+{% endcompress %}
 
 <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
