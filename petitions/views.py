@@ -11,6 +11,7 @@ from collections import namedtuple
 from datetime import timedelta
 from profile.models import Profile
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.postgres.search import (SearchQuery, SearchRank,
@@ -39,8 +40,7 @@ def index(request):
     Handles displaying the index page of PawPrints.
     """
     data_object = {
-        'tags': Tag.objects.all,
-        'colors': colors()
+        'tags': Tag.objects.all
     }
 
     return render(request, 'index.html', data_object)
@@ -50,11 +50,7 @@ def about(request):
     """
     Handles displaying the about page
     """
-    data_object = {
-        'colors': colors(),
-    }
-
-    return render(request, 'about.html', data_object)
+    return render(request, 'about.html')
 
 
 def maintenance(request):
@@ -93,10 +89,7 @@ def petition(request, petition_id):
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
         'additional_tags': additional_tags,
-        'edit': edit_check(user, petition),
-        'colors': colors(),
-        'default_title': PETITION_DEFAULT_TITLE,
-        'default_body': PETITION_DEFAULT_BODY
+        'edit': edit_check(user, petition)
     }
 
     return render(request, 'petition.html', data_object)
@@ -697,20 +690,6 @@ def send_update(update):
     async_to_sync(channel.group_send)(
         "petitions", {"type": "group.update", "text": update})
     return None
-
-
-def colors():
-    color_object = {
-        'highlight': "#f36e21",
-        'highlight_hover': '#e86920',
-        'dark_text': '#0f0f0f',
-        'light_text': '#f0f0f0',
-        'bright_text': '#fff',
-        'light_background': '#fafafa'
-    }
-
-    return color_object
-
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 

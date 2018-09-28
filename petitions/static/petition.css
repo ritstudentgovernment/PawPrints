@@ -1,0 +1,67 @@
+/* -- Colors -- */
+.background-highlight{
+    background-color: {{ colors.highlight }};
+}
+.text-highlight{
+    color: {{ colors.highlight }} !important;
+}
+.modern-link{
+    color: {{ colors.dark_text }};
+    text-decoration: none;
+}        .modern-link{
+
+.material-input:focus{
+    border-color: {{ colors.highlight }};
+}
+/* ------------ */
+/* -- Modified HTML Tags -- */
+
+main{
+    margin-top: 40px;
+}
+p iframe{
+    display: block;
+    margin: 0 auto;
+}
+
+#landing{
+    margin-top: 109px;
+    border-top: 3px solid {{ colors.highlight }};
+}
+/* ------------------------ */
+/* -- Page Specific -- */
+#petition_title{
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.3em;
+    text-transform: capitalize;
+    color: {{ colors.highlight }};
+}
+#petition_description_title{
+    padding-bottom: 10px;
+}
+#publish{
+    font-size: 0.8em;
+}
+.fieldTitle{
+    margin:0;
+    text-decoration: underline;
+}
+.editable  img{
+    margin: 0 auto;
+    display: block;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected]{
+    background-color: {{ colors.highlight }};
+}
+.select2-selection__choice__remove{
+    color: #fff !important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+    background-color: {{ colors.highlight }};
+    border: none;
+    color: #FFF;
+    padding: 5px;
+}
+.select2-search.select2-search--inline{
+    padding-top:2px;
+}
