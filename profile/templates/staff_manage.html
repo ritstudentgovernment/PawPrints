@@ -6,7 +6,7 @@
     {% include 'head.html' %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <title>Staff Manager | PawPrints</title>
+    <title>Staff Manager | {{ name }}</title>
 
     {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/staff.css' %}">
@@ -16,7 +16,7 @@
 <body>
 
 <div id="wrapper">
-    {% include 'header.html' %}
+    {% include 'header.html' main_logo=main_logo generate_top_nav=generate_top_nav %}
     <main class="full-width">
         <section id="landing" class="text-center overflow-hidden">
             <h1>Staff Management</h1>

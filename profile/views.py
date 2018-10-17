@@ -10,6 +10,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import redirect, render
@@ -18,6 +19,8 @@ from django.views.decorators.http import require_POST
 from .models import Profile
 
 logger = logging.getLogger("pawprints." + __name__)
+
+CONFIG = settings.CONFIG
 
 
 @login_required
@@ -32,7 +35,8 @@ def profile(request):
         'email': profile.user.email,
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
-        'petitions_created': profile.petitions_created.filter(~Q(status=2))
+        'petitions_created': profile.petitions_created.filter(~Q(status=2)),
+        'main_logo': CONFIG['main_logo']
     }
     return render(request, 'profile.html', data_object)
 
@@ -50,7 +54,8 @@ def manage_staff(request):
     data_object = {
         'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
-        'all_users': User.objects.all()
+        'all_users': User.objects.all(),
+        'main_logo': CONFIG['main_logo']
     }
     return render(request, 'staff_manage.html', data_object)
 

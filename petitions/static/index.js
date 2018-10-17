@@ -1,7 +1,6 @@
-
     window.debug = false;
     window.customization = {{ customization|safe }};
-
+    window.slideshow_images = {{ images|safe }};
     /* Initialize the Vue.js wrappers for the page.
      *     el: the element to initialize on.
      *   data:
@@ -34,7 +33,7 @@
         delimiters: ['{[', ']}'],
         methods:{
             closePetition: function () {
-                window.document.title = "PawPrints - Make your mark";
+                window.document.title = "{{header_title}}";
                 var modal = $("#petition-modal");
                 modal.find(".modal-container").cssanimate("fadeOutDown",{hide:false},function(){
                     modal.addClass("hidden").removeAttr("style");
@@ -97,7 +96,7 @@
         data:{
             limit:3,
             id_pre:"c",
-            images:window.customization.slideshow_images
+            images:window.slideshow_images
         },
         delimiters: ['{[', ']}'],
         methods:{
@@ -265,7 +264,7 @@
             }
 
             // Update the title of the tab
-            window.document.title = ucfirst("PawPrints - "+toPetition.title);
+            window.document.title = ucfirst("{{name}} - "+toPetition.title);
 
             // Apply petition data to the modal.
             var createdJSDate = new Date(toPetition.timestamp).getTime();

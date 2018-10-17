@@ -7,6 +7,7 @@ All db_tasks will retry at most 3 times.
 """
 from petitions.models import *
 from profile.models import Profile
+from django.conf import settings
 from django.db.models import Q
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
@@ -17,14 +18,16 @@ import logging
 
 logger = logging.getLogger("pawprints." + __name__)
 
+email_titles = settings.CONFIG['email']
+EMAIL_ADDR = settings.EMAIL_EMAIL_ADDR
 
 class EmailTitles():
-    Petition_Approved = 'PawPrints - Your Petition is Published!'
-    Petition_Rejected = 'PawPrints - Petition Rejected'
-    Petition_Update = 'PawPrints - A Petition you signed has a status update!'
-    Petition_Responded = 'PawPrints - A Petition you signed has a response!'
-    Petition_Reached = 'PawPrints - Petition threshold reached'
-    Petition_Needs_Approval = 'PawPrints - Petition needs approval'
+    Petition_Approved = email_titles['approved']
+    Petition_Rejected = email_titles['rejected']
+    Petition_Update = email_titles['updated']
+    Petition_Responded = email_titles['responded']
+    Petition_Reached = email_titles['reached']
+    Petition_Needs_Approval = email_titles['needs_approval']
 
 
 @db_task(retries=3, retry_delay=3)
@@ -44,7 +47,7 @@ def petition_approved(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email],
     )
 
@@ -76,7 +79,7 @@ def petition_rejected(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"
@@ -113,8 +116,8 @@ def petition_update(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
 
@@ -152,8 +155,8 @@ def petition_responded(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
 
@@ -191,8 +194,8 @@ def petition_reached(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
     email.content_subtype = "html"
@@ -224,7 +227,7 @@ def petition_received(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"
@@ -254,7 +257,7 @@ def petition_needs_approval(petition_id, site_path):
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"

@@ -1,0 +1,64 @@
+# Configuration for the app
+name: "PawPrints"
+description: "Make Your Mark. Create and sign petitions. Receive official responses from Student Government."
+
+main_logo: "/images/pawprints.svg" # Main logo location in static directory
+
+# Determines if you want an additional nav at the top of the app for your organizations resources
+# Default set to False
+generate_top_nav: False
+
+text:
+    header_title: "PawPrints - Make your mark" 
+    slideshow:
+        # Text that shows up in the middle of the slideshow
+        bold_text: "Make Your Mark"
+        first_line: "Create and sign petitions."
+        second_line: "Receive official response from Student Government."
+
+social:
+# Data that shows up when sharing to social networks
+    title: "PawPrints"
+    image: "/images/pawprintsemail.png" # image located in /static/images
+
+petitions:
+    # Default values that show up when user creates a petition
+    default_title: "Action-oriented, one-line statement"
+    default_body: "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
+
+email:
+  # Email titles
+  approved: 'PawPrints - Your Petition is Published!'
+  rejected: 'PawPrints - Petition Rejected'
+  updated: 'PawPrints - A Petition you signed has a status update!'
+  responded: 'PawPrints - A Petition you signed has a response!'
+  reached: 'PawPrints - Petition threshold reached'
+  needs_approval: 'PawPrints - Petition needs approval'
+  
+ui:
+    colors:
+        highlight: "#f36e21"
+        highlight_hover: "#e86920"
+        dark_text: "#0f0f0f"
+        light_text: "#f0f0f0"
+        bright_text: "#fff"
+        light_background: "#fafafa"
+    slideshow_images:
+    # Defines images that show up in the slideshow
+    # To add more or less, add another block in the form
+    # - url: "location in /static/images"
+    #   sort_rank: 0
+        - url: "/static/images/CampusStock_11.jpg"
+          sort_rank: 0
+        - url: "/static/images/CampusStock_25.jpg"
+          sort_rank: 0
+        - url: "/static/images/CampusStock_95.jpg"
+          sort_rank: 0
+        - url: "/static/images/CampusStock_8.jpg"
+          sort_rank: 0
+        - url: "/static/images/carousel_1.png"
+          sort_rank: 0
+        - url: "/static/images/carousel_2.png"
+          sort_rank: 0
+        - url: "/static/images/carousel_3.png"
+          sort_rank: 0
