@@ -204,6 +204,7 @@
                        .replace(/(\\u2014|\\u2013)/g, "—")
                        .replace(/(\\u2018|\\u2019)/g, "'")
                        .replace(/(\\u201c|\\u201d)/g, '"')
+                       .replace(/\\u2022/g, "•")
         );
     }
     function getDayDifference(date1, date2){
@@ -297,7 +298,8 @@
                         type:"SG Update",
                         author: "",
                         content:unescape(update.description),
-                        date: getDayDifference(updateJSDate, currentJSDate)
+                        dateDiff: getDayDifference(updateJSDate, currentJSDate),
+                        date: new Date(updateJSDate).toDateString()
                     };
                     modalData.timeline.unshift(updateBlock);
                 }
@@ -316,7 +318,8 @@
                     type:"Official Response",
                     author: response.author,
                     content:unescape(response.description),
-                    date: getDayDifference(responseJSDate, currentJSDate)
+                    dateDiff: getDayDifference(responseJSDate, currentJSDate),
+                    date: new Date(updateJSDate).toDateString()
                 };
                 modalData.timeline.unshift(responseBlock);
             }
@@ -325,7 +328,8 @@
                 type:"Petition Description",
                 author: toPetition.author,
                 content:unescape(toPetition.description),
-                date: getDayDifference(createdJSDate, currentJSDate)
+                dateDiff: getDayDifference(responseJSDate, currentJSDate),
+                date: new Date(updateJSDate).toDateString()
             };
             modalData.timeline.push(description);
 
