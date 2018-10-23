@@ -22,7 +22,7 @@ function adminEdit(action, id = false){
                     var value = e.level.content.trim();
                     value = value.replace(/<\/?g[^>]*>/g, "");
                     if(value !== ""){
-                        update("description",value,petition_id);
+                        update("description",value,modalData.petition.id);
                     }
                 });
             }
