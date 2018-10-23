@@ -516,7 +516,8 @@
                                 type: "SG Update",
                                 author: "",
                                 content: unescape(new_update.description),
-                                date: new_update.timestamp
+                                dateDiff: getDayDifference(createdJSDate, currentJSDate),
+                                date: new Date(createdJSDate).toDateString()
                             };
 
                             modalData.timeline.unshift(modal_timeline_update_block);
@@ -561,7 +562,8 @@
                                 type: "Official Response",
                                 author: new_response.author,
                                 content: unescape(new_response.description),
-                                date: new_response.timestamp
+                                dateDiff: getDayDifference(createdJSDate, currentJSDate),
+                                date: new Date(createdJSDate).toDateString()
                             };
 
                             modalData.timeline.unshift(modal_timeline_update_block);
