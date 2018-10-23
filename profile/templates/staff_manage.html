@@ -23,14 +23,14 @@
             <div class="half-width left padding-top">
                 <label for="newSuperUserSearch">
                     <h3>Add a new admin</h3>
-                    <input id="newSuperUserSearch" placeholder="Enter a RIT username" name="superUserSearch" class="material-input user-search" />
+                    <input id="newSuperUserSearch" placeholder="Enter a username" name="superUserSearch" class="material-input user-search" />
                 </label>
                 <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="admin">Add</button>
             </div>
             <div class="half-width left padding-top">
                 <label for="newStaffMemberSearch">
                     <h3>Add a new staff member</h3>
-                    <input id="newStaffMemberSearch" placeholder="Enter a RIT username" name="newStaffMemberSearch" class="material-input user-search" />
+                    <input id="newStaffMemberSearch" placeholder="Enter a username" name="newStaffMemberSearch" class="material-input user-search" />
                 </label>
                 <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
             </div>
@@ -81,7 +81,7 @@
                 });
             }
             else{
-                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+                checkErrorInResponse({Error:"That user is not registered. Please have them log in first."});
             }
 
         });
@@ -106,7 +106,7 @@
                 });
             }
             else{
-                checkErrorInResponse({Error:"That user is not registered with PawPrints. Please have them log in first."});
+                checkErrorInResponse({Error:"That user is not registered. Please have them log in first."});
             }
 
         });

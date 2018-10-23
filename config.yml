@@ -1,8 +1,10 @@
 # Configuration for the app
 name: "PawPrints"
 description: "Make Your Mark. Create and sign petitions. Receive official responses from Student Government."
-
 main_logo: "/images/pawprints.svg" # Main logo location in static directory
+
+organization: "RIT Student Government" # Organization responding to petitions
+
 
 # Determines if you want an additional nav at the top of the app for your organizations resources
 # Default set to False
