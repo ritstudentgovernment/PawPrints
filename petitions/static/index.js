@@ -319,7 +319,7 @@
                     author: response.author,
                     content:unescape(response.description),
                     dateDiff: getDayDifference(responseJSDate, currentJSDate),
-                    date: new Date(updateJSDate).toDateString()
+                    date: new Date(responseJSDate).toDateString()
                 };
                 modalData.timeline.unshift(responseBlock);
             }
@@ -328,8 +328,8 @@
                 type:"Petition Description",
                 author: toPetition.author,
                 content:unescape(toPetition.description),
-                dateDiff: getDayDifference(responseJSDate, currentJSDate),
-                date: new Date(updateJSDate).toDateString()
+                dateDiff: getDayDifference(createdJSDate, currentJSDate),
+                date: new Date(createdJSDate).toDateString()
             };
             modalData.timeline.push(description);
 
