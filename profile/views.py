@@ -57,6 +57,7 @@ def manage_staff(request):
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
         'all_users': User.objects.all(),
         'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
         'analytics_id': settings.ANALYTICS
     }
     return render(request, 'staff_manage.html', data_object)

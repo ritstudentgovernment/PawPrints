@@ -34,8 +34,6 @@ before_install:
 
 install:
   - docker-compose run -d --name pawprints_web web 
-  - sleep 1
-  - docker logs pawprints_web
 
 script:
   - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report term --cov=. 
