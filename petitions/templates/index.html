@@ -45,10 +45,11 @@
                             <div class="timeline-element-body" v-if="element.type != 'created'">
                                 <h4 class="timeline-element-header">
                                     <span class="text-highlight">{[ element.type ]}</span>
-                                    <span v-if="element.date==0">Today</span>
-                                    <span v-else>
-                                        {[ element.date ]} Day<span v-if="element.date>1">s</span> Ago
+                                    <span v-if="element.dateDiff==0">Today</span>
+                                    <span v-else-if="element.dateDiff<30">
+                                        {[ element.dateDiff ]} Day<span v-if="element.dateDiff>1">s</span> Ago
                                     </span>
+                                    <span v-else v-html="element.date"></span>
                                     {% if user.first_name and user.is_staff %}
                                         <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
                                             <i class="admin-edit-icon cursor material-icons">edit</i>
