@@ -50,11 +50,11 @@ def index(request):
         'generate_top_nav': CONFIG['generate_top_nav'],
         'slideshow_bold': text_data['slideshow']['bold_text'],
         'slideshow_first': text_data['slideshow']['first_line'],
-        'slideshow_second': text_data['slideshow']['second_line']
+        'slideshow_second': text_data['slideshow']['second_line'],
+        'analytics_id': settings.ANALYTICS
     }
 
     return render(request, 'index.html', data_object)
-
 
 def about(request):
     """
@@ -63,7 +63,8 @@ def about(request):
     data_object = {
         'name': CONFIG['name'],
         'main_logo': CONFIG['main_logo'],
-        'generate_top_nav': CONFIG['generate_top_nav']
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
     }
     return render(request, 'about.html', data_object)
 
@@ -106,7 +107,8 @@ def petition(request, petition_id):
         'additional_tags': additional_tags,
         'edit': edit_check(user, petition),
         'main_logo': CONFIG['main_logo'],
-        'generate_top_nav': CONFIG['generate_top_nav']
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
     }
 
     return render(request, 'petition.html', data_object)

@@ -39,7 +39,7 @@ header{
     margin-top: 100px;
 }
 .orange-background{
-    background-color: #ff7700;
+    background-color: {{ colors.main_color }};
     color: #FFF;
 }
 article{
@@ -55,7 +55,7 @@ article.transition.white-background:hover{
     background-color: #f0f0f0;
 }
 article.transition.orange-background:hover{
-    background-color: #c75d00;
+    background-color: {{ colors.main_color }};
 }
 article:last-child{
     width: 100%;
@@ -105,3 +105,4 @@ article div p{
     article{
         width: 100%;
     }
+}

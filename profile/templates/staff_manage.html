@@ -3,7 +3,7 @@
 <head>
     {% load compress %}
     {% load static %}
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>Staff Manager | {{ name }}</title>

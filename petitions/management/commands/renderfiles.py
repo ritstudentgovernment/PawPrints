@@ -6,6 +6,7 @@ from os.path import isfile, join
 
 import os
 import json
+import base64
 
 
 class Command(BaseCommand):
@@ -13,19 +14,34 @@ class Command(BaseCommand):
     profile_dir = os.path.join(settings.BASE_DIR, "profile/static")
 
     def handle(self, *args, **options):
+        CONFIG = settings.CONFIG
+        social = []
+        # Set icons to base64
+        for icon in CONFIG['social']['social_links']:
+            data = icon
+            file_loc = settings.BASE_DIR+icon['imgURL']
+            ext = file_loc.split('.')[1]
+            with open(file_loc, 'rb') as file:
+                data_str = ""
+                if ext == 'svg':
+                    data_str = "data:image/svg+xml;utf8;base64,"
+                elif ext == 'png':
+                    data_str = "data:image/png;base64,"
+                data['imgURL'] = data_str + \
+                    base64.b64encode(file.read()).decode("utf-8")
+            social.append(data)
+
         petition_file_names = [f for f in listdir(
             self.petitions_dir) if isfile(join(self.petitions_dir, f))]
         profile_file_names = [f for f in listdir(
             self.profile_dir) if isfile(join(self.profile_dir, f))]
-        CONFIG = settings.CONFIG
         colors = settings.CONFIG["ui"]["colors"]
-        json.dumps(settings.CUSTOMIZATION)
         data_object = {
             'name': CONFIG['name'],
             'colors': colors,
             'header_title': CONFIG['text']['header_title'],
             'images': CONFIG['ui']['slideshow_images'],
-            'customization': json.dumps(settings.CUSTOMIZATION),
+            'social': social,
             'default_title': CONFIG['petitions']['default_title'],
             'default_body': CONFIG['petitions']['default_body']
         }

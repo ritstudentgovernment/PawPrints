@@ -9,7 +9,7 @@ main_logo: "/images/pawprints.svg" # Main logo location in static directory
 generate_top_nav: False
 
 text:
-    header_title: "PawPrints - Make your mark" 
+    header_title: "PawPrints - Make Your Mark" 
     slideshow:
         # Text that shows up in the middle of the slideshow
         bold_text: "Make Your Mark"
@@ -20,6 +20,20 @@ social:
 # Data that shows up when sharing to social networks
     title: "PawPrints"
     image: "/images/pawprintsemail.png" # image located in /static/images
+    social_links:
+      # Links for social media sites, just point it to the root url.
+      - name: "Facebook"
+        imgURL: "/static/images/facebook_icon.svg"
+        link: "https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/"
+      - name: "Twitter"
+        imgURL: "/static/images/twitter_icon.svg"
+        link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://pawprints.rit.edu/"
+      - name: "Reddit"
+        imgURL: "/static/images/reddit_icon.png"
+        link: "https://reddit.com/submit?title=&url=https://pawprints.rit.edu/"
+      - name: "Link"
+        imgURL: "/static/images/link_icon.png"
+        link: "https://pawprints.rit.edu/"
 
 petitions:
     # Default values that show up when user creates a petition
@@ -34,6 +48,7 @@ email:
   responded: 'PawPrints - A Petition you signed has a response!'
   reached: 'PawPrints - Petition threshold reached'
   needs_approval: 'PawPrints - Petition needs approval'
+  received: 'PawPrints - Petition received'
   
 ui:
     colors:
@@ -43,10 +58,12 @@ ui:
         light_text: "#f0f0f0"
         bright_text: "#fff"
         light_background: "#fafafa"
+        main_color: "#ff7700"
+        responded_highlight: "#9d5f4b"
     slideshow_images:
     # Defines images that show up in the slideshow
     # To add more or less, add another block in the form
-    # - url: "location in /static/images"
+    # - url: "location from root of project"
     #   sort_rank: 0
         - url: "/static/images/CampusStock_11.jpg"
           sort_rank: 0

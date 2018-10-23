@@ -36,7 +36,8 @@ def profile(request):
         'uid': profile.user.id,
         'notification_settings': profile.notifications,
         'petitions_created': profile.petitions_created.filter(~Q(status=2)),
-        'main_logo': CONFIG['main_logo']
+        'main_logo': CONFIG['main_logo'],
+        'analytics_id': settings.ANALYTICS
     }
     return render(request, 'profile.html', data_object)
 
@@ -55,7 +56,8 @@ def manage_staff(request):
         'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
         'all_users': User.objects.all(),
-        'main_logo': CONFIG['main_logo']
+        'main_logo': CONFIG['main_logo'],
+        'analytics_id': settings.ANALYTICS
     }
     return render(request, 'staff_manage.html', data_object)
 

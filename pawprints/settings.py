@@ -41,7 +41,6 @@ if os.environ.get('SERVER_ENV', 'none') == 'stage':
     DEBUG = False
     ALLOWED_HOSTS = ["sgstage.rit.edu"]
 
-CUSTOMIZATION = json.load(open(os.path.join(BASE_DIR+"/config.json")))
 
 # Sentry Settings
 RAVEN_CONFIG = {
@@ -269,6 +268,8 @@ LOGGING = {
         },
     },
 }
+
+ANALYTICS = os.environ.get('GOOGLE_ID', '')
 
 # Asset compression settings
 COMPRESS_ENABLED = True

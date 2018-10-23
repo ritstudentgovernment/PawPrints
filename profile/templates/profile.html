@@ -5,7 +5,7 @@
     {% load static %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     <title>Account | {{ name }}</title>
 
     {% compress css %}

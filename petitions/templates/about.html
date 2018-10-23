@@ -3,7 +3,7 @@
 <head>
     {% load compress %}
     {% load static %}
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <title>About | {{ name }}</title>
 

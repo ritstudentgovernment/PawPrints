@@ -21,6 +21,7 @@ logger = logging.getLogger("pawprints." + __name__)
 email_titles = settings.CONFIG['email']
 EMAIL_ADDR = settings.EMAIL_EMAIL_ADDR
 
+
 class EmailTitles():
     Petition_Approved = email_titles['approved']
     Petition_Rejected = email_titles['rejected']
@@ -28,6 +29,7 @@ class EmailTitles():
     Petition_Responded = email_titles['responded']
     Petition_Reached = email_titles['reached']
     Petition_Needs_Approval = email_titles['needs_approval']
+    Petition_Received = email_titles['received']
 
 
 @db_task(retries=3, retry_delay=3)
@@ -208,15 +210,13 @@ def petition_reached(petition_id, site_path):
                         str(petition.id) + "\nRecipients: " + str(recipients), exc_info=True)
         raise e
 
-# TODO This isnt used anywhere
-
 
 @db_task(retries=3, retry_delay=3)
 def petition_received(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-        'PawPrints - Petition received',
+        EmailTitles.Petition_Received,
         get_template('email_inlined/petition_rejected.html').render(
             {
                 'petition_id': petition.id,

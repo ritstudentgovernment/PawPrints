@@ -9,7 +9,7 @@
     <meta property="og:image" content="{% static social_image %}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     {% if user.is_staff %}
         <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
     {% endif %}
@@ -110,7 +110,7 @@
                         <div id="action-cards" class="block overflow-hidden right">
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
-                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Expires</h3>

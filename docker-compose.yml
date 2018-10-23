@@ -86,6 +86,7 @@ services:
       EMAIL_USE_TLS: ${EMAIL_USE_TLS}
       RAVEN_DSN: ${RAVEN_DSN}
       REDIS_URL: ${REDIS_URL}
+      GOOGLE_ID: ${GOOGLE_ANALYTICS}
     volumes:
       - .:/PawPrints
     ports:
