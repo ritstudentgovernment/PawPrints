@@ -50,7 +50,7 @@
                                         {[ element.date ]} Day<span v-if="element.date>1">s</span> Ago
                                     </span>
                                     {% if user.first_name and user.is_staff %}
-                                        <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
+                                        <span v-if="element.type == 'Official Update' || element.type == 'Official Response'" class="right padding-left">
                                             <i class="admin-edit-icon cursor material-icons">edit</i>
                                         </span>
                                     {% endif %}

@@ -4,6 +4,7 @@ description: "Make Your Mark. Create and sign petitions. Receive official respon
 main_logo: "/images/pawprints.svg" # Main logo location in static directory
 
 organization: "RIT Student Government" # Organization responding to petitions
+org_logo: "/images/sg-logo.png" # Logo for the organization
 
 
 # Determines if you want an additional nav at the top of the app for your organizations resources
@@ -21,7 +22,7 @@ text:
 social:
 # Data that shows up when sharing to social networks
     title: "PawPrints"
-    image: "/images/pawprintsemail.png" # image located in /static/images
+    image: "/images/pawprintsemail.png" # image located in /static/
     social_links:
       # Links for social media sites, just point it to the root url.
       - name: "Facebook"
@@ -51,6 +52,11 @@ email:
   reached: 'PawPrints - Petition threshold reached'
   needs_approval: 'PawPrints - Petition needs approval'
   received: 'PawPrints - Petition received'
+
+  header_image: "/images/pawprintsemail.png" # image located in /static/
+
+  colors:
+    email_header: "#f49e42" # Color that is at the top of the email header
   
 ui:
     colors:

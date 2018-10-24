@@ -30,8 +30,8 @@ Date created:  11/17/16
             <![endif]-->
             <table class="outer" align="center" style="border-spacing: 0;font-family: sans-serif;color: #333333;height: 100vh;margin: 0 auto;width: 100%;max-width: 600px;">
                 <tr>
-                    <td class="email-header" style="padding: 0;width: 100%;max-width: 600px;height: auto;background-color: #f49e42;text-align: center;">
-                        <img src="{{protocol}}://{{site_path}}/static/images/pawprints.svg" width="600" alt="" style="border: 0;width: 60%;padding: 30px;">
+                    <td class="email-header" style="padding: 0;width: 100%;max-width: 600px;height: auto;background-color: {{email_header}};text-align: center;">
+                        <img src="{{protocol}}://{{site_path}}/static{{header_image}}" width="600" alt="" style="border: 0;width: 60%;padding: 30px;">
                     </td>
                 </tr>
                 <tr>
@@ -43,12 +43,12 @@ Date created:  11/17/16
                 <tr>
                     <td class="email-signature" style="padding: 25px;text-align: left;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;margin-bottom: 10px;">
                         <p style="margin: 0px;">Thanks,</p>
-                        <p style="margin: 0px;">RIT Student Government</p>
+                        <p style="margin: 0px;">{{organization}}</p>
                     </td>
                 </tr>
                 <tr>
                     <td class="footer" style="padding: 0;padding-top: 10px;text-align: center;">
-                        <img class="footer-img" src="{{protocol}}://{{site_path}}/static/sglogo.png" width="200" alt="" style="border: 0;width: 200px;max-width: 600px;height: auto;">
+                        <img class="footer-img" src="{{protocol}}://{{site_path}}/static{{org_logo}}" width="200" alt="{{organization}} Logo" style="border: 0;width: 200px;max-width: 600px;height: auto;">
                         <p class="footer-unsub" style="padding: 0px;font-size: 12px;">If you would like to stop receiving emails, please <a href="{{protocol}}://{{site_path}}/unsubscribe">unsubscribe</a></p>
                         <p style="visibility: hidden; opacity: 0;">{{timestamp}}</p>
                     </td>

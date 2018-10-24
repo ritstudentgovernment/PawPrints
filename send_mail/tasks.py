@@ -20,6 +20,9 @@ logger = logging.getLogger("pawprints." + __name__)
 
 email_titles = settings.CONFIG['email']
 EMAIL_ADDR = settings.EMAIL_EMAIL_ADDR
+ORGANIZATION = settings.CONFIG['organization']
+COLORS = settings.CONFIG['email']['colors']
+ORG_LOGO = settings.CONFIG['org_logo']
 
 
 class EmailTitles():
@@ -46,7 +49,10 @@ def petition_approved(petition_id, site_path):
                 'author': petition.author.first_name + ' ' + petition.author.last_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -78,7 +84,10 @@ def petition_rejected(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -115,7 +124,10 @@ def petition_update(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -154,7 +166,10 @@ def petition_responded(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -193,7 +208,10 @@ def petition_reached(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -224,7 +242,10 @@ def petition_received(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
@@ -254,7 +275,10 @@ def petition_needs_approval(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO
             }
         ),
         EMAIL_ADDR,
