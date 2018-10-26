@@ -1,3 +1,9 @@
+"""
+Renders css/js files to use config data in config.yml
+
+Peter Zujko 
+"""
+
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -43,7 +49,8 @@ class Command(BaseCommand):
             'images': CONFIG['ui']['slideshow_images'],
             'social': social,
             'default_title': CONFIG['petitions']['default_title'],
-            'default_body': CONFIG['petitions']['default_body']
+            'default_body': CONFIG['petitions']['default_body'],
+            'org': CONFIG['organization']
         }
 
         # Grab all file names in petitions/static

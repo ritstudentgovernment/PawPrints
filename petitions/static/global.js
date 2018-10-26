@@ -90,15 +90,15 @@ $(document).ready(function(){
             pageSelector: "#wrapper"
         },
         navbar: {
-            title:"PawPrints"
+            title:"{{name}}"
         },
         extensions: [
             "pagedim-black"
         ]
     });
     $().smartWebBanner({
-        title: 'PawPrints',
-        author: 'RIT Student Government',
+        title: '{{name}}',
+        author: '{{org}}',
         url: '/',
         autoApp: true
     });

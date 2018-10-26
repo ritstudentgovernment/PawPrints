@@ -18,7 +18,7 @@
 <body>
 
 <div id="wrapper">
-    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav %}
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
 
     <main class="ninety-width">
         <a id="landing-marker"></a>
@@ -31,6 +31,7 @@
                     <br />
                     Your changes are automatically saved.
                 </p>
+                {% if name == "PawPrints" %}
                 <p>
                     <span class="bold">If this petition is...</span>
                     <ul>
@@ -38,6 +39,7 @@
                         <li>A bug report or feature request for PawPrints itself, fill out this <a href="https://goo.gl/forms/tTjRLJnZnpLyWlOn1">form</a>.</li>
                     </ul>
                 </p>
+                {% endif %}
             </div>
 
         </section>

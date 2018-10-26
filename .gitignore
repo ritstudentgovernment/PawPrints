@@ -128,6 +128,7 @@ static/css/staff.css
 static/css/profile.css
 static/js/petitionedit.js
 static/js/index.js
+static/js/global.js
 
 # Compressed assets
 static/CACHE/*

@@ -51,10 +51,12 @@ def index(request):
         'slideshow_bold': text_data['slideshow']['bold_text'],
         'slideshow_first': text_data['slideshow']['first_line'],
         'slideshow_second': text_data['slideshow']['second_line'],
-        'analytics_id': settings.ANALYTICS
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name']
     }
 
     return render(request, 'index.html', data_object)
+
 
 def about(request):
     """
@@ -108,7 +110,8 @@ def petition(request, petition_id):
         'edit': edit_check(user, petition),
         'main_logo': CONFIG['main_logo'],
         'generate_top_nav': CONFIG['generate_top_nav'],
-        'analytics_id': settings.ANALYTICS
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name']
     }
 
     return render(request, 'petition.html', data_object)
