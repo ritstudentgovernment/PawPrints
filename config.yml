@@ -9,7 +9,7 @@ org_logo: "/images/sg-logo.png" # Logo for the organization
 
 # Determines if you want an additional nav at the top of the app for your organizations resources
 # Default set to False
-generate_top_nav: False
+generate_top_nav: True
 
 text:
     header_title: "PawPrints - Make Your Mark" 
@@ -22,7 +22,7 @@ text:
 social:
 # Data that shows up when sharing to social networks
     title: "PawPrints"
-    image: "/images/pawprintsemail.png" # image located in /static/
+    image: "/images/pawprintsemail.png" # image located in /static/ (This is usually just the same as the app logo)
     social_links:
       # Links for social media sites, just point it to the root url.
       - name: "Facebook"
