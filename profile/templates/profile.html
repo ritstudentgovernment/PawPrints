@@ -5,8 +5,8 @@
     {% load static %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
-    {% include 'head.html' %}
-    <title>Account | PawPrints</title>
+    {% include 'head.html' with analytics_id=analytics_id %}
+    <title>Account | {{ name }}</title>
 
     {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/profile.css' %}">
@@ -15,7 +15,7 @@
 <body>
 
 <div id="wrapper">
-    {% include 'header.html' %}
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
     <main class="full-width">
         <section id="landing" class="text-center overflow-hidden">
             <h1>{{ first_name }} {{ last_name }}</h1>

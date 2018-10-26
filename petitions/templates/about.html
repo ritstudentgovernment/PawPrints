@@ -3,9 +3,9 @@
 <head>
     {% load compress %}
     {% load static %}
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <title>About | PawPrints</title>
+    <title>About | {{ name }}</title>
 
     {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
@@ -14,7 +14,7 @@
 <body>
 
 <div id="wrapper">
-    {% include 'header.html' %}
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name%}
     <main class="full-width">
 
         <a id="landing-marker"></a>

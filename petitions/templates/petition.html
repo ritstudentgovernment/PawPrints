@@ -3,7 +3,7 @@
 <head>
     {% load compress %}
     {% load static %}
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
@@ -18,7 +18,7 @@
 <body>
 
 <div id="wrapper">
-    {% include 'header.html' %}
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
 
     <main class="ninety-width">
         <a id="landing-marker"></a>
@@ -31,6 +31,7 @@
                     <br />
                     Your changes are automatically saved.
                 </p>
+                {% if name == "PawPrints" %}
                 <p>
                     <span class="bold">If this petition is...</span>
                     <ul>
@@ -38,6 +39,7 @@
                         <li>A bug report or feature request for PawPrints itself, fill out this <a href="https://goo.gl/forms/tTjRLJnZnpLyWlOn1">form</a>.</li>
                     </ul>
                 </p>
+                {% endif %}
             </div>
 
         </section>

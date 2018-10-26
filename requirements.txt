@@ -47,6 +47,7 @@ pytest-cov==2.6.0
 pytest-django==3.4.3
 python3-saml==1.4.1
 pytz==2018.5
+PyYAML==3.13
 raven==6.9.0
 rcssmin==1.0.6
 redis==2.10.6

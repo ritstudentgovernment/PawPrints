@@ -7,6 +7,7 @@ All db_tasks will retry at most 3 times.
 """
 from petitions.models import *
 from profile.models import Profile
+from django.conf import settings
 from django.db.models import Q
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
@@ -17,14 +18,22 @@ import logging
 
 logger = logging.getLogger("pawprints." + __name__)
 
+email_titles = settings.CONFIG['email']
+EMAIL_ADDR = settings.EMAIL_EMAIL_ADDR
+ORGANIZATION = settings.CONFIG['organization']
+COLORS = settings.CONFIG['email']['colors']
+ORG_LOGO = settings.CONFIG['org_logo']
+NAME = settings.CONFIG['name']
+
 
 class EmailTitles():
-    Petition_Approved = 'PawPrints - Your Petition is Published!'
-    Petition_Rejected = 'PawPrints - Petition Rejected'
-    Petition_Update = 'PawPrints - A Petition you signed has a status update!'
-    Petition_Responded = 'PawPrints - A Petition you signed has a response!'
-    Petition_Reached = 'PawPrints - Petition threshold reached'
-    Petition_Needs_Approval = 'PawPrints - Petition needs approval'
+    Petition_Approved = email_titles['approved']
+    Petition_Rejected = email_titles['rejected']
+    Petition_Update = email_titles['updated']
+    Petition_Responded = email_titles['responded']
+    Petition_Reached = email_titles['reached']
+    Petition_Needs_Approval = email_titles['needs_approval']
+    Petition_Received = email_titles['received']
 
 
 @db_task(retries=3, retry_delay=3)
@@ -41,10 +50,14 @@ def petition_approved(petition_id, site_path):
                 'author': petition.author.first_name + ' ' + petition.author.last_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email],
     )
 
@@ -73,10 +86,14 @@ def petition_rejected(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"
@@ -110,11 +127,15 @@ def petition_update(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
 
@@ -149,11 +170,15 @@ def petition_responded(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
 
@@ -188,11 +213,15 @@ def petition_reached(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
-        ['sgnoreply@rit.edu'],
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
         bcc=recipients
     )
     email.content_subtype = "html"
@@ -205,15 +234,13 @@ def petition_reached(petition_id, site_path):
                         str(petition.id) + "\nRecipients: " + str(recipients), exc_info=True)
         raise e
 
-# TODO This isnt used anywhere
-
 
 @db_task(retries=3, retry_delay=3)
 def petition_received(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     email = EmailMessage(
-        'PawPrints - Petition received',
+        EmailTitles.Petition_Received,
         get_template('email_inlined/petition_rejected.html').render(
             {
                 'petition_id': petition.id,
@@ -221,10 +248,14 @@ def petition_received(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"
@@ -251,10 +282,14 @@ def petition_needs_approval(petition_id, site_path):
                 'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message'
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME
             }
         ),
-        'sgnoreply@rit.edu',
+        EMAIL_ADDR,
         [petition.author.email]
     )
     email.content_subtype = "html"

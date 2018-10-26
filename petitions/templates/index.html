@@ -2,14 +2,14 @@
 <html lang="en">
 <html prefix="og: http://ogp.me/ns#">
 <head>
+    {% load static %}
     {% load compress %}
-    <meta property="og:title" content="PawPrints" />
-    <meta property="og:description" content="Make Your Mark. Create and sign petitions. Receive official responses from Student Government." />
-    <meta property="og:image" content="https://pawprints.rit.edu/static/images/pawprintsemail.png" />
+    <meta property="og:title" content="{{ title|title }}" />
+    <meta property="og:description" content="{{ title }}" />
+    <meta property="og:image" content="{% static social_image %}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    {% load static %}
-    {% include 'head.html' %}
+    {% include 'head.html' with analytics_id=analytics_id %}
     {% if user.is_staff %}
         <script src="{% static '/tinymce/tinymce.min.js' %}"></script>
     {% endif %}
@@ -19,12 +19,12 @@
     <link rel="stylesheet" type="text/css" href="{% static '/css/index.css' %}">
     {% endcompress %}
 
-    <title>PawPrints - Make your mark</title>
+    <title>{{ header_title }}</title>
 </head>
 <body>
 
 <div id="wrapper">
-{% include 'header.html' %}
+{% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
 <div id="petition-modal" class="hidden">
     <div class="modal">
         <div class="modal-overlay hidden" @click="closePetition()"></div>
@@ -51,7 +51,7 @@
                                     </span>
                                     <span v-else v-html="element.date"></span>
                                     {% if user.first_name and user.is_staff %}
-                                        <span v-if="element.type == 'SG Update' || element.type == 'Official Response'" class="right padding-left">
+                                        <span v-if="element.type == 'Official Update' || element.type == 'Official Response'" class="right padding-left">
                                             <i class="admin-edit-icon cursor material-icons">edit</i>
                                         </span>
                                     {% endif %}
@@ -111,7 +111,7 @@
                         <div id="action-cards" class="block overflow-hidden right">
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
-                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                                <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Expires</h3>
@@ -129,10 +129,6 @@
                                 <span class="alternate-font" v-else-if="petition.in_progress">In Progress</span>
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
                                 <span class="alternate-font" v-else>In Progress</span>
-                            </div>
-                            <div class="petition-action-card margin-right padding-right right">
-                                <h3>Discuss</h3>
-                                <span class="alternate-font">On <a class="text-highlight" :href="'https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/petition/'+petition.id">Facebook</a></span>
                             </div>
                         </div>
                         <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
@@ -162,8 +158,8 @@
             </div>
         </div>
         <div id="parallax-overlay" class="full-width">
-            <h1>Make Your Mark</h1>
-            <h3>Create and sign petitions.<br />Receive official responses from Student Government.</h3>
+            <h1>{{ slideshow_bold|title }}</h1>
+            <h3>{{ slideshow_first }}<br />{{ slideshow_second }}</h3>
             <label id="search-container" for="search-term" class="full-width cursor">
                 <div class="material-icon-container">
                     <i class="material-icons">search</i>
