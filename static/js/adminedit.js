@@ -20,10 +20,7 @@ function adminEdit(action, id = false){
             init_instance_callback: function (editor) {
                 editor.on('Change', function (e) {
                     var value = e.level.content.trim();
-                    value = value.replace(/<\/?g[^>]*>/g, "");
-                    if(value !== ""){
-                        update("description",value,modalData.petition.id);
-                    }
+                    e.level.content = value.replace(/<\/?g[^>]*>/g, "");
                 });
             }
         });
