@@ -8,7 +8,7 @@
 .modern-link{
     color: {{ colors.dark_text }};
     text-decoration: none;
-}        .modern-link{
+}
 
 .material-input:focus{
     border-color: {{ colors.highlight }};
