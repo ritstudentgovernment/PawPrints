@@ -37,7 +37,9 @@ def profile(request):
         'notification_settings': profile.notifications,
         'petitions_created': profile.petitions_created.filter(~Q(status=2)),
         'main_logo': CONFIG['main_logo'],
-        'analytics_id': settings.ANALYTICS
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name'],
+        'generate_top_nav': CONFIG['generate_top_nav']
     }
     return render(request, 'profile.html', data_object)
 
@@ -58,7 +60,9 @@ def manage_staff(request):
         'all_users': User.objects.all(),
         'main_logo': CONFIG['main_logo'],
         'generate_top_nav': CONFIG['generate_top_nav'],
-        'analytics_id': settings.ANALYTICS
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name'],
+        'generate_top_nav': CONFIG['generate_top_nav']
     }
     return render(request, 'staff_manage.html', data_object)
 
