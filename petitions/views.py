@@ -28,19 +28,31 @@ from asgiref.sync import async_to_sync
 from petitions.models import Petition, Tag
 from send_mail.tasks import *
 
+CONFIG = settings.CONFIG
 logger = logging.getLogger("pawprints." + __name__)
 
 # PETITION DEFAULT CONSTANTS.
-PETITION_DEFAULT_TITLE = "Action-oriented, one-line statement"
-PETITION_DEFAULT_BODY = "Explanation and reasoning behind your petition. Why should someone sign? How will it improve the community?"
+PETITION_DEFAULT_TITLE = CONFIG['petitions']['default_title']
+PETITION_DEFAULT_BODY = CONFIG['petitions']['default_title']
 
 
 def index(request):
     """
     Handles displaying the index page of PawPrints.
     """
+    text_data = CONFIG['text']
     data_object = {
-        'tags': Tag.objects.all
+        'tags': Tag.objects.all,
+        'title': CONFIG['name'],
+        'header_title': text_data['header_title'],
+        'main_logo': CONFIG['main_logo'],
+        'social_image': CONFIG['social']['image'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'slideshow_bold': text_data['slideshow']['bold_text'],
+        'slideshow_first': text_data['slideshow']['first_line'],
+        'slideshow_second': text_data['slideshow']['second_line'],
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name']
     }
 
     return render(request, 'index.html', data_object)
@@ -50,7 +62,13 @@ def about(request):
     """
     Handles displaying the about page
     """
-    return render(request, 'about.html')
+    data_object = {
+        'name': CONFIG['name'],
+        'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
+    }
+    return render(request, 'about.html', data_object)
 
 
 def maintenance(request):
@@ -89,7 +107,11 @@ def petition(request, petition_id):
         'current_user_signed': curr_user_signed,
         'users_signed': users_signed,
         'additional_tags': additional_tags,
-        'edit': edit_check(user, petition)
+        'edit': edit_check(user, petition),
+        'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS,
+        'name': CONFIG['name']
     }
 
     return render(request, 'petition.html', data_object)
@@ -208,7 +230,8 @@ def petition_bots(request, petition_id):
     data_object = {
         'title': petition.title,
         'description': petition.description,
-        'url': url
+        'url': url,
+        'image': CONFIG['social']['image']
     }
     return render(request, 'bots.html', data_object)
 
@@ -691,6 +714,7 @@ def send_update(update):
         "petitions", {"type": "group.update", "text": update})
     return None
 
+
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
 
 
@@ -756,8 +780,7 @@ def most_recent():
 
 def most_signatures():
     return Petition.objects.all() \
-        .filter(expires__gt=timezone.now()) \
-        .filter(status=1) \
+        .filter(status__gte=1) \
         .order_by('-signatures')
 
 

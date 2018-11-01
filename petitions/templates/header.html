@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
+{% if generate_top_nav %}
 <nav>
     <div class = "header-top">
 
@@ -104,6 +105,7 @@
 
     </div>
 </nav>
+{% endif %}
 
 {% compress css %}
 <link rel="stylesheet" type="text/css" href="{% static '/css/header.css' %}">
@@ -148,7 +150,7 @@
         <div class="text-center">
             <span id="logo" class="transition">
                 <a class="modern-link text-highlight" href="/">
-                    <img class='transition' src="/static/images/pawprints.svg" alt="PawPrints" />
+                    <img class='transition' src="{% static main_logo %}" alt="{{name}}" />
                 </a>
             </span>
         </div>
