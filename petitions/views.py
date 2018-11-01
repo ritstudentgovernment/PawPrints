@@ -780,8 +780,7 @@ def most_recent():
 
 def most_signatures():
     return Petition.objects.all() \
-        .filter(expires__gt=timezone.now()) \
-        .filter(status=1) \
+        .filter(status__gte=1) \
         .order_by('-signatures')
 
 
