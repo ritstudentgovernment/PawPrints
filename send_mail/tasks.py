@@ -24,6 +24,7 @@ ORGANIZATION = settings.CONFIG['organization']
 COLORS = settings.CONFIG['email']['colors']
 ORG_LOGO = settings.CONFIG['org_logo']
 NAME = settings.CONFIG['name']
+HEADER_IMAGE = settings.CONFIG['email']['header_image']
 
 
 class EmailTitles():
@@ -54,7 +55,8 @@ def petition_approved(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -90,7 +92,8 @@ def petition_rejected(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -131,7 +134,8 @@ def petition_update(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -174,7 +178,8 @@ def petition_responded(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -217,7 +222,8 @@ def petition_reached(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -252,7 +258,8 @@ def petition_received(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
@@ -286,7 +293,8 @@ def petition_needs_approval(petition_id, site_path):
                 'organization': ORGANIZATION,
                 'email_header': COLORS['email_header'],
                 'org_logo': ORG_LOGO,
-                'name': NAME
+                'name': NAME,
+                'header_image': HEADER_IMAGE
             }
         ),
         EMAIL_ADDR,
