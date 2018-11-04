@@ -62,7 +62,8 @@ class AuthTestCase(TestCase):
             'Test'], Attributes.LAST_NAME: ['User'], Attributes.EDU_AFFILIATION: {'Student'}}
         auth_mock.get_attributes.return_value = attrs_student
 
-        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        auth_user = saml_backend.authenticate(
+            None, saml_authentication=auth_mock)
 
         assert auth_user.profile.full_name == 'Test User'
         assert auth_user.profile.has_access == 1
@@ -79,7 +80,8 @@ class AuthTestCase(TestCase):
 
         assert not User.objects.filter(username='alum1234').exists()
 
-        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        auth_user = saml_backend.authenticate(
+            None, saml_authentication=auth_mock)
         assert User.objects.filter(username='alum1234').exists()
         assert auth_user.profile.full_name == 'Alumni User'
         assert auth_user.profile.has_access == 0
@@ -96,7 +98,8 @@ class AuthTestCase(TestCase):
 
         assert not User.objects.filter(username='emp1234').exists()
 
-        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        auth_user = saml_backend.authenticate(
+            None, saml_authentication=auth_mock)
         assert User.objects.filter(username='emp1234').exists()
         assert auth_user.profile.full_name == 'Employee User'
         assert auth_user.profile.has_access == 0
@@ -113,7 +116,8 @@ class AuthTestCase(TestCase):
 
         assert not User.objects.filter(username='emp1234').exists()
 
-        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        auth_user = saml_backend.authenticate(
+            None, saml_authentication=auth_mock)
         assert User.objects.filter(username='emp1234').exists()
         assert auth_user.profile.full_name == 'Employee User'
         assert auth_user.profile.has_access == 0
@@ -125,14 +129,15 @@ class AuthTestCase(TestCase):
 
         auth_mock.is_authenticated.return_value = False
 
-        auth_user = saml_backend.authenticate(saml_authentication=auth_mock)
+        auth_user = saml_backend.authenticate(
+            None, saml_authentication=auth_mock)
 
         assert auth_user == None
 
     def test_authenticate_method_none(self):
         saml_backend = SAMLSPBackend()
 
-        auth_user = saml_backend.authenticate()
+        auth_user = saml_backend.authenticate(None)
         assert auth_user == None
 
     def test_get_user(self):

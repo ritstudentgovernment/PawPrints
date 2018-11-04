@@ -38,10 +38,10 @@ class CompleteAuthView(SettingsMixin, View):
 
         if not errors:
             if auth.is_authenticated:
-                user = authenticate(saml_authentication=auth)
+                user = authenticate(request, saml_authentication=auth)
                 login(self.request, user)
                 if 'RelayState' in req['post_data'] and OneLogin_Saml2_Utils.get_self_url(req) != req['post_data'][
-                    'RelayState']:
+                        'RelayState']:
                     return redirect(auth.redirect_to(req['post_data']['RelayState']))
                 else:
                     return redirect('/')

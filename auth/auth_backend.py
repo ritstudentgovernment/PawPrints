@@ -17,7 +17,7 @@ class Attributes():
 
 
 class SAMLSPBackend(object):
-    def authenticate(self, saml_authentication=None):
+    def authenticate(self, request, saml_authentication=None):
         if not saml_authentication:
             return None
 
