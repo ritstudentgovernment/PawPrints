@@ -7,6 +7,7 @@ import channels.apps  # Don't remove this, it prevents a warning about Twisted
 import raven
 import json
 import yaml
+from huey import RedisHuey
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -70,6 +71,13 @@ if os.environ.get('SERVER_ENV', 'none') == 'local':
     ALWAYS_EAGER = False
 
 # Settings for Huey task queue https://huey.readthedocs.io/en/latest/contrib.html#django
+
+
+class PawPrintsRedisHuey(RedisHuey):
+    def _get_task_metadata(self, task, error=False, include_data=False):  # Store job info
+        return super(PawPrintsRedisHuey, self)._get_task_metadata(task, error, include_data=error)
+
+
 HUEY = {
     'name': 'RedisHueyInstance',  # Use db name for huey.
     'result_store': False,  # Do not store return values of tasks.
@@ -78,7 +86,7 @@ HUEY = {
     'always_eager': ALWAYS_EAGER,  # If DEBUG=True, run synchronously.
     'store_errors': True,  # Store error info if task throws exception.
     'blocking': False,  # Poll the queue rather than do blocking pop.
-    'backend_class': 'huey.RedisHuey',  # Use path to redis huey by default,
+    'backend_class': 'pawprints.settings.PawPrintsRedisHuey',
     'connection': {
         'connection_pool': None,  # Definitely you should use pooling!
         # ... tons of other options, see redis-py for details.
