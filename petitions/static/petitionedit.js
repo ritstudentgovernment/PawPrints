@@ -66,11 +66,14 @@ $(document).ready(function(){
         inline: false,
         height: 230,
         menubar: false,
-        plugins: "image link paste",
+        plugins: "image link paste autolink",
         paste_auto_cleanup_on_paste : true,
         paste_remove_styles: true,
         paste_remove_styles_if_webkit: true,
         paste_strip_class_attributes: "all",
+        paste_preprocess: function(plugin, args) {
+            args.content += ' ';
+        },
         toolbar: "insert | undo redo | styleselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat",
         init_instance_callback: function (editor) {
             editor.on('Change', function (e) {
