@@ -79,7 +79,7 @@ class PawPrintsRedisHuey(RedisHuey):
 
 
 HUEY = {
-    'name': 'RedisHueyInstance',  # Use db name for huey.
+    'name': 'pawprints',  # Use db name for huey.
     'result_store': False,  # Do not store return values of tasks.
     'events': True,  # Consumer emits events allowing real-time monitoring.
     'store_none': False,  # If a task returns None, do not save to results.
