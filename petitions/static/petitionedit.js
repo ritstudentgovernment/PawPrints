@@ -68,6 +68,7 @@ $(document).ready(function(){
         height: 230,
         menubar: false,
         plugins: "image link paste",
+        branding: false,
         paste_auto_cleanup_on_paste : true,
         paste_remove_styles: true,
         paste_remove_styles_if_webkit: true,
