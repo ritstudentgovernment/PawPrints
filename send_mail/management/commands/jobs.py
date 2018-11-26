@@ -1,6 +1,7 @@
 from django.conf import settings
 from huey.consumer import EVENT_ERROR_TASK
 from django.core.management.base import BaseCommand
+from send_mail import tasks
 import pickle
 import huey
 import redis
@@ -30,22 +31,28 @@ class Command(BaseCommand):
     def retry_failed_tasks(self):
         r = redis.Redis(host='redis', port=6379)
 
-        failed = r.llen(self.error_key)
-
-        if int(failed) == 0:
-            print("No Failed jobs")
-
-        data = r.lrange(self.error_key, 0, int(failed))
-        for item in data:
-            job_data = pickle.loads(item)
+        failed_tasks = []
+        while(r.llen(self.error_key) != 0):
+            data = r.lpop(self.error_key)
+            job_data = pickle.loads(data)
             if job_data['retries'] == 3:
                 print("Job {} failed: {}".format(
                     job_data['task'], job_data['error']))
-        yes_no = input("Attempt to retry the above jobs? [y/n]")
+                failed_tasks.append(data)
+
+        yes_no = input("Attempt to retry the above jobs? [y/n]: ")
+
         if yes_no == 'y':
             # Retry jobs
             print("Retrying jobs")
+            for job_data in failed_tasks:
+                job = pickle.loads(job_data)
+                task_name = '_'.join(job['task'].split('_')[2:])
+                arguments = job['data'][0]
+                task = getattr(tasks, task_name)
+                task(*arguments)  # Try the job again
         else:
+            r.lpush(self.error_key, *failed_tasks)
             print("Operation Aborted")
 
     def list_failed_tasks(self):
@@ -54,14 +61,15 @@ class Command(BaseCommand):
         """
         r = redis.Redis(host='redis', port=6379)
 
-        failed = r.llen(self.error_key)
-
-        if int(failed) == 0:
-            print("No Failed jobs")
-
-        data = r.lrange(self.error_key, 0, int(failed))
-        for item in data:
-            job_data = pickle.loads(item)
+        failed_tasks = []
+        while(r.llen(self.error_key) != 0):
+            data = r.lpop(self.error_key)
+            job_data = pickle.loads(data)
             if job_data['retries'] == 3:
                 print("Job {} failed: {}".format(
                     job_data['task'], job_data['error']))
+                failed_tasks.append(data)
+
+        if len(failed_tasks) == 0:
+            print("No Failed jobs")
+            r.lpush(self.error_key, *failed_tasks)
