@@ -52,7 +52,8 @@ class Command(BaseCommand):
                 task = getattr(tasks, task_name)
                 task(*arguments)  # Try the job again
         else:
-            r.lpush(self.error_key, *failed_tasks)
+            if len(failed_tasks) != 0:
+                r.lpush(self.error_key, *failed_tasks)
             print("Operation Aborted")
 
     def list_failed_tasks(self):
@@ -72,4 +73,5 @@ class Command(BaseCommand):
 
         if len(failed_tasks) == 0:
             print("No Failed jobs")
+        else:
             r.lpush(self.error_key, *failed_tasks)
