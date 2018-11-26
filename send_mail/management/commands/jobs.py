@@ -40,7 +40,12 @@ class Command(BaseCommand):
                     job_data['task'], job_data['error']))
                 failed_tasks.append(data)
 
-        yes_no = input("Attempt to retry the above jobs? [y/n]: ")
+        yes_no = ""
+        if len(failed_tasks) != 0:
+            yes_no = input("Attempt to retry the above jobs? [y/n]: ")
+        else:
+            print("No Failed Jobs")
+            return
 
         if yes_no == 'y':
             # Retry jobs
