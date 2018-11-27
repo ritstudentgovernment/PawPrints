@@ -328,6 +328,10 @@ nav .margin-right{
 .large-header #header-top{
     line-height: 70px;
 }
+.no-top-nav{
+    top: 0 !important;
+    border-top: 7px solid {{colors.highlight}};
+}
 .small-header #sg-nav{
     height: 0;
     white-space: nowrap;

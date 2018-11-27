@@ -18,6 +18,7 @@
     <main class="full-width">
 
         <a id="landing-marker"></a>
+        {% if generate_top_nav %}
         <section id="landing" class="text-left overflow-hidden">
 
             <div id="sub-landing"></div>
@@ -31,6 +32,21 @@
             </article>
 
         </section>
+        {% else %}
+        <section id="landing" class="text-left overflow-hidden" style="margin-top: 78px">
+
+            <div id="sub-landing"></div>
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+                <h1 style="line-height: calc(50vh - 103px); height: calc(50vh - 103px);">{[ section.title ]}</h1>
+                <transition name="fade">
+                    <div v-if="section.active" class="transition">
+                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+                    </div>
+                </transition>
+            </article>
+
+        </section>
+        {% endif %}
 
     </main>
 </div>

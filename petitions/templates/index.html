@@ -172,7 +172,11 @@
 
     <section id="sub-landing" class="relative">
 
+        {% if generate_top_nav %}
         <nav id="filter-sort" class="left attach" data-top="91" data-left="0">
+        {% else %}
+        <nav id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
+        {% endif %}
             <div id="filter-sort-content-box">
                 <h3 class="filter-sort-title">Sort By:</h3>
                 <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
