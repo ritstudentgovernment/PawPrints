@@ -17,6 +17,8 @@ omit =
   */pawprints/asgi.py
   */log/*
   petitions/management/*
+  send_main/management/*
+  profile/management/*
   auth/admin.py
   auth/apps.py
   auth/models.py
