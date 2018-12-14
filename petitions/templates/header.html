@@ -111,7 +111,11 @@
 <link rel="stylesheet" type="text/css" href="{% static '/css/header.css' %}">
 {% endcompress %}
 
+{% if generate_top_nav %}
 <header class="full-width fixed transition large-header">
+{% else %}
+<header class="full-width fixed transition large-header no-top-nav">
+{% endif %}
     <div id="header-top" class="transition">
         <nav class="left">
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
