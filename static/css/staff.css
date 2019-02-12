@@ -1,0 +1,66 @@
+.background-highlight{
+    background-color: #f36e21;
+    }
+    .text-highlight{
+    color: #f36e21 !important;
+    }
+    .bright-text{
+    color: #fff !important;
+    }
+    .modern-link{
+    color: #0f0f0f;
+    text-decoration: none;
+    }
+    .material-input:focus{
+    border-color: #f36e21;
+    }
+    .alternate-font{
+        font-family: "Slabo 27px", sans-serif;
+    }
+    .tag:hover{
+        cursor: pointer;
+    }
+    body{
+        min-height: 100vh;
+        background-color: #f5f5f5;
+    }
+    h1,h2,h3,h4,h5{
+        font-family: "Montserrat", sans-serif;
+        font-weight: 800;
+    }
+    #landing{
+        margin-top: 109px;
+    }
+    #sub-landing{
+        padding-bottom: 0;
+    }
+    #settings ul li{
+        background-color: #fff;
+        border-bottom: 1px solid #ccc;
+    }
+    #settings ul li:last-child{
+        border-bottom: none;
+    }
+    #settings ul li label{
+        overflow: hidden;
+        width: calc(100% - 65px);
+    }
+    .user{
+        background-color: #fff;
+        margin-top: 5px;
+        padding: 1em;
+        line-height: 2em;
+    }
+    .user .material-icons{
+        line-height: 1.4em;
+    }
+    @media screen and (max-width:400px){
+        #landing div.half-width{
+            float: none;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        #landing div.half-width .material-input{
+            margin-bottom: 10px;
+        }
+    }

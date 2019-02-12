@@ -136,7 +136,7 @@
                         <ul id="account-dropdown" class="list hidden transition">
                             <li><a href="/profile" class="block modern-link">Profile</a></li>
                             {% if user.is_superuser %}
-                                <li><a href="/profile/manage/staff" class="block modern-link">Admin Panel</a></li>
+                                <li><a href="/profile/manage/admin" class="block modern-link">Admin Panel</a></li>
                             {% endif %}
                             <li><a href="/logout/?next=/" class="block modern-link">Log Out</a></li>
                         </ul>
@@ -167,7 +167,7 @@
                     {% if user.first_name %}
                         {% if user.is_superuser %}
                             <li>
-                                <a href="/profile/manage/staff">Admin Panel</a>
+                                <a href="/profile/manage/admin">Admin Panel</a>
                             </li>
                         {% endif %}
                         <li>

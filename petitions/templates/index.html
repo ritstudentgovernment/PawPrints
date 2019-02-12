@@ -260,6 +260,22 @@
                 });
             });
         });
+        {% if alert.active %}
+            window.popup = new Modal({
+                headerContent: "<h2>A Message From SG</h2>",
+                bodyContent: "<p class='padding-bottom'>{{ alert.content }}</p>",
+                icon: false,
+                exitOverlayOnClick: false,
+                exitButton: false,
+                bodyButtons: [
+                    ["Ok", "material material-button large material-shadow margin-top margin-bottom transition", "window.popup.close()"]
+                ]
+            });
+            if (getCookie('hasSeenPopup') === "") { // User has not seen the popup before
+                setCookie('hasSeenPopup', 'true', 1); // Set the hasSeenPopup cookie so they don't see it every time they load the page
+                popup.open();
+            }
+        {% endif %}
     </script>
 {% else %}
     <script>

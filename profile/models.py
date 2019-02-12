@@ -30,7 +30,13 @@ class Profile(models.Model):
 # Defines user's email notification settings.
 class Notifications(models.Model):
     update = models.BooleanField(default=True)
-    response = models.BooleanField(default=True) 
+    response = models.BooleanField(default=True)
+
+
+# Defines the model for an app-wide, after login, popup on user clients
+class GlobalAlert(models.Model):
+    active = models.BooleanField(default=True)
+    content = models.TextField()
 
 
 # 

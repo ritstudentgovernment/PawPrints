@@ -6,10 +6,12 @@
     {% include 'head.html' with analytics_id=analytics_id %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <title>Staff Manager | {{ name }}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
+    <title>Admin Panel | {{ name }}</title>
 
     {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{% static '/css/staff.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/admin.css' %}">
     {% endcompress %}
 
 </head>
@@ -18,7 +20,36 @@
 <div id="wrapper">
     {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
     <main class="full-width">
-        <section id="landing" class="text-center overflow-hidden">
+        <section id="landing" class="ninety-width">
+            <h1 class="text-center">Admin Panel</h1>
+            <div class="full-width">
+                <h3>Global Alert</h3>
+                <p>Configure an alert that shows up after login for all users.</p>
+                <div class="full-width padding white-background">
+                    <ul class="list">
+                        <li class="list-item block padding overflow-hidden">
+                            <form id="global-alert-settings" class="block full-width" name="global-alert-settings" method="post" action="{% url 'profile:alert_update' %}">
+                                {% csrf_token %}
+                                <div class="overflow-hidden">
+                                    <label class="block left ninety-width padding cursor" for="alert-active">
+                                        Enable Popup after login
+                                    </label>
+                                    <div class="right padding-right padding-top">
+                                        <input id="alert-active" name="alert-active" class="js-switch" type="checkbox" {% if alert.active %} checked="checked" {% endif %} />
+                                    </div>
+                                </div>
+                                <div class="padding">
+                                    <label class="block padding-bottom" for="alert-content">Message to display to users</label>
+                                    <textarea id="alert-content" name="alert-content" class="material-input full-width">{{ alert.content }}</textarea>
+                                </div>
+                                <button id="save-alert" class="material-button material material-hover material-shadow cursor add-team-member hidden">Save</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="ninety-width text-center sub-landing overflow-hidden">
             <h1>Staff Management</h1>
             <div class="half-width left padding-top">
                 <label for="newSuperUserSearch">
@@ -35,7 +66,7 @@
                 <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
             </div>
         </section>
-        <section id="sub-landing" class="ninety-width">
+        <section class="ninety-width sub-landing">
             <h1>Administrators</h1>
             <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
 
@@ -43,7 +74,7 @@
                 <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="remove-user material-icons cursor right" data-role="admin" data-username="{{superuser.username}}" title="Remove user from administrative role.">delete</i></h4>
             {% endfor %}
         </section>
-        <section class="ninety-width">
+        <section class="ninety-width sub-landing">
             <h1>Staff Members</h1>
             <p>Staff members have the ability to update, delete, and respond to petitions.</p>
             <div id="staff-members">
@@ -58,7 +89,34 @@
 <script>
     var users = { {% for user in all_users %}"{{user.username}}":{{user.id}}, {% endfor %} };
 
+    function saveGlobalAlert(form){
+        $.post(form.attr("action"), form.serialize(), function(r){
+            if(!r){
+                console.log("Error saving alert settings.");
+            } else {
+
+            }
+        });
+    }
+
+    function saveCommandDelegator(self){
+        var form = $(self).closest("form");
+        saveGlobalAlert(form);
+    }
+
     $(document).ready(function(){
+
+        window.plugins = {
+            "switchery":[]
+        };
+
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        elems.forEach(function(html) {
+            window.plugins.switchery.push(new Switchery(html,{size:"small"}));
+        });
+
+        $("#alert-active, #alert-content").change(function(){ saveCommandDelegator(this); });
+        $("#save-alert").click(function(){ saveCommandDelegator(this); });
 
         var user_list = Object.keys(users);
         $(".user-search").autocomplete({

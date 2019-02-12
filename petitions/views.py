@@ -26,6 +26,7 @@ import channels
 import petitions.profanity
 from asgiref.sync import async_to_sync
 from petitions.models import Petition, Tag
+from profile.models import GlobalAlert
 from send_mail.tasks import *
 
 CONFIG = settings.CONFIG
@@ -40,6 +41,7 @@ def index(request):
     """
     Handles displaying the index page of PawPrints.
     """
+    alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': 'False', 'content': 'Placeholder alert content.'})
     text_data = CONFIG['text']
     data_object = {
         'tags': Tag.objects.all,
@@ -52,7 +54,8 @@ def index(request):
         'slideshow_first': text_data['slideshow']['first_line'],
         'slideshow_second': text_data['slideshow']['second_line'],
         'analytics_id': settings.ANALYTICS,
-        'name': CONFIG['name']
+        'name': CONFIG['name'],
+        'alert': alert,
     }
 
     return render(request, 'index.html', data_object)

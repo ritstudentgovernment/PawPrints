@@ -26,6 +26,12 @@ function getCookie(cname) {
     return "";
 }
 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 
 function get_csrf(){
     /**
@@ -197,7 +203,7 @@ function inViewport (el) {
 
 }
 
-function checkErrorInResponse(response,callback=false){
+function checkErrorInResponse(response, callback=false){
     try{
         if(response.hasOwnProperty("Error")){
             window.errorModal = new Modal({
@@ -244,7 +250,7 @@ function ucfirst(string){
 
 (function( $ ){
 
-    this.Button = function(text, onClick = false, defaultClasses = false){
+    this.Button = function(text, onClick=false, defaultClasses=false){
 
         this.text = text;
         this.cssClasses = defaultClasses ? defaultClasses : ["material-button", "material-hover", "material-shadow", "cursor", "transition"];
@@ -437,7 +443,7 @@ function ucfirst(string){
             bodyContent: null,
             bodyButtons: [["Next Section", "modern-button margin-bottom margin-top transition cursor",function(){}]],
             closeCallback: function(){},
-            debug: true,
+            debug: false,
             clone: true
         },options);
 
@@ -713,7 +719,7 @@ function ucfirst(string){
         function roundToNumDecimalPlaces(num, decimalPlaces){
             return +(num.toFixed(decimalPlaces));
         }
-        function breathe(start, end, step, current = start, reverse = false){
+        function breathe(start, end, step, current=start, reverse=false){
 
             var delay = settings.transitionDuration;
             if( (start <= current) && (current < end) && !reverse){
