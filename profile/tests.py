@@ -130,12 +130,12 @@ class ProfileTest(TestCase):
         self.assertEqual(user.is_staff, True)
         self.assertEqual(response.status_code, 403)
 
-    def test_manager_staff(self):
+    def test_access_admin_panel(self):
         self.client.force_login(self.superUser)
-        response = self.client.post('/profile/manage/staff')
+        response = self.client.post('/profile/manage/admin')
         self.assertEqual(response.status_code, 200)
 
-    def test_manager_staff_fail(self):
+    def test_access_admin_panel_fail(self):
         self.client.force_login(self.user)
-        response = self.client.post('/profile/manage/staff')
+        response = self.client.post('/profile/manage/admin')
         self.assertEqual(response.status_code, 302)
