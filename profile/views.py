@@ -75,62 +75,66 @@ def admin(request):
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 def add_superuser(request, user_id):
-    if user_id is not None:
-        user = User.objects.get(id=int(user_id))
-        user.is_superuser = True
-        user.is_staff = True
-        user.save()
-        return HttpResponse(True)
+    if request.user.is_superuser:
+        if user_id is not None:
+            user = User.objects.get(id=int(user_id))
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+            return HttpResponse(True)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 def add_staff_member(request, user_id):
-    if user_id is not None:
-        user = User.objects.get(id=int(user_id))
-        user.is_staff = True
-        user.save()
-        return HttpResponse(True)
+    if request.user.is_superuser:
+        if user_id is not None:
+            user = User.objects.get(id=int(user_id))
+            user.is_staff = True
+            user.save()
+            return HttpResponse(True)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 def remove_superuser(request, user_id):
-    if user_id is not None:
-        user = User.objects.get(id=int(user_id))
-        user.is_superuser = False
-        user.save()
-        return HttpResponse(True)
+    if request.user.is_superuser:
+        if user_id is not None:
+            user = User.objects.get(id=int(user_id))
+            user.is_superuser = False
+            user.save()
+            return HttpResponse(True)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 def remove_staff_member(request, user_id):
-    if user_id is not None:
-        user = User.objects.get(id=int(user_id))
-        user.is_staff = False
-        user.save()
-        return HttpResponse(True)
+    if request.user.is_superuser:
+        if user_id is not None:
+            user = User.objects.get(id=int(user_id))
+            user.is_staff = False
+            user.save()
+            return HttpResponse(True)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
 def update_alert(request):
-    print('Update Alert')
-    post = request.POST
-    active = True if post.get('alert-active') == 'on' else False
-    content = post.get('alert-content')
-    alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': active, 'content': content})
-    alert.active = active
-    alert.content = content
-    alert.save()
-    return HttpResponse(True)
+    if request.user.is_superuser:
+        post = request.POST
+        active = True if post.get('alert-active') == 'on' else False
+        content = post.get('alert-content')
+        alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': active, 'content': content})
+        alert.active = active
+        alert.content = content
+        alert.save()
+        return HttpResponse(True)
+    return HttpResponseForbidden(False)
 
 
 @require_POST
