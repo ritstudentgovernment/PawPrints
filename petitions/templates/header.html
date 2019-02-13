@@ -141,7 +141,7 @@
                             <li><a href="/logout/?next=/" class="block modern-link">Log Out</a></li>
                         </ul>
                     {% else %}
-                        <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
+                        <button onclick="setCookie('hasSeenPopup', false, -1); window.location.href='/login/';" class="material material-button material-shadow transition">Login</button>
                     {% endif %}
                 </div>
                 <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
