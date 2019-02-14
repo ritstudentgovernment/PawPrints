@@ -109,6 +109,9 @@
                             </div>
                         {% endif %}
                         <div id="action-cards" class="block overflow-hidden right">
+                            <div class="margin-right padding-right right padding-top margin-top">
+                                <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
+                            </div>
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
                                 <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>

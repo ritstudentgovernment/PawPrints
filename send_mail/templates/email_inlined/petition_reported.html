@@ -1,7 +1,7 @@
 w<!---
-File:          petition_approved.html
+File:          petition_reported.html
 Description:   Inlined email sent to users when a petition has been reported.
-Creator:       Omar De La Hoz (oed7416)
+Creator:       Omar De La Hoz (oed7416), Lukas Yelle (lxy5611)
 Date created:  11/17/16
 !-->
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
@@ -37,7 +37,8 @@ Date created:  11/17/16
                 <tr>
                     <td class="email-body" style="padding: 25px 25px 0 25px;text-align: justify;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
                         <p>Hello,</p>
-                        <p>You're receiving this email because the petition <b>{{title}}</b> by <b>{{author}}</b> was reported as <b>{{reason}}.</b></p>
+                        <p>You're receiving this email because the petition <b>{{title}}</b> by <b>{{author}}</b> was reported by a member of the community.</p>
+                        {% if reason != '' %}<p>Reported for: <b>{{reason}}</b> by <b>{{reporter}}</b></p>{% endif %}
                     </td>
                 </tr>
                 <tr>

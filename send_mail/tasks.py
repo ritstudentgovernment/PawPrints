@@ -35,7 +35,7 @@ class EmailTitles():
     Petition_Reached = email_titles['reached']
     Petition_Needs_Approval = email_titles['needs_approval']
     Petition_Received = email_titles['received']
-
+    Petition_Reported = email_titles['reported']
 
 @db_task(retries=3, retry_delay=3)
 def petition_approved(petition_id, site_path):
@@ -308,4 +308,51 @@ def petition_needs_approval(petition_id, site_path):
     except Exception as e:
         logger.critical(
             "Petition Needs Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+        raise e
+
+
+@db_task(retries=3, retry_delay=3)
+def petition_reported(petition_id, report_id, site_path):
+    petition = Petition.objects.get(pk=petition_id)
+    report = Report.objects.get(pk=report_id)
+    reporter = User.objects.get(pk=report.reporter_id)
+
+    # Gets all of the staff users and the petition author
+    users = User.objects.filter(Q(is_staff=True) | Q(pk=petition.author.id)).distinct("id")
+
+    # Construct array of email addresses
+    recipients = [user.email for user in users]
+
+    email = EmailMessage(
+        EmailTitles.Petition_Rejected,
+        get_template('email_inlined/petition_reported.html').render(
+            {
+                'petition_id': petition.id,
+                'title': petition.title,
+                'first_name': petition.author.first_name,
+                'author': petition.author.profile.full_name,
+                'reason': report.reported_for,
+                'reporter': reporter.profile.display_name,
+                'site_path': site_path,
+                'protocol': 'https',
+                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                'organization': ORGANIZATION,
+                'email_header': COLORS['email_header'],
+                'org_logo': ORG_LOGO,
+                'name': NAME,
+                'header_image': HEADER_IMAGE
+            }
+        ),
+        EMAIL_ADDR,
+        [EMAIL_ADDR],
+        bcc=recipients
+    )
+    email.content_subtype = "html"
+    try:
+        email.send()
+        logger.info(
+            "Petition Reported email SENT \nPetition ID: " + str(petition.id))
+    except Exception as e:
+        logger.critical(
+            "Petition Reported email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
         raise e

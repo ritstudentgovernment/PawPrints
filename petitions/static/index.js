@@ -689,6 +689,48 @@
         };
     }
 
+    function reportPetitionModal(petition_id){
+        window.popup = new Modal({
+            headerClass: "highlight",
+            headerContent: "<h2>Why are you reporting this petition?</h2>",
+            bodyContent: "<select id='report-petition-select'><option value='Spam or misleading'>Spam or misleading</option><option value='Hateful or abusive content'>Hateful or abusive content</option><option value='Irrelevant or unconstructive'>Irrelevant or unconstructive</option></select><p>An email will be sent to moderators and the petition author that will contain your initials and the reason you selected to report this petition.</p>",
+            iconContainerClass:"text-highlight",
+            iconClass:"md-48",
+            iconText:"report",
+            bodyButtons: [
+                ["Report", "material material-button material-shadow margin-top margin-bottom transition", 'reportPetition('+petition_id+', $("#report-petition-select").val())'],
+                ["Cancel", "material material-button material-shadow margin-top margin-bottom transition minimal", "window.popup.close()"]
+            ]
+        });
+        popup.open();
+    }
+
+    function reportErrorModal(){
+        window.errorModalInstance = new Modal({
+            headerContent:"<h2>Error reporting petition</h2>",
+            bodyContent:"You've already reported this petition.",
+            iconContainerClass:"text-highlight",
+            iconClass:"md-48",
+            iconText:"error",
+            bodyButtons: [
+                ["Okay","material material-button minimal material-shadow margin-top margin-bottom transition","window.errorModalInstance.close()"]
+            ]
+        });
+        errorModalInstance.open();
+    }
+
+    function reportPetition(petition_id, reason){
+        var allowedReasons = ["Spam or misleading", "Hateful or abusive content", "Irrelevant or unconstructive"];
+        if (allowedReasons.includes(reason)){
+            $.post('petition/report/'+petition_id, {'reason': reason, "csrfmiddlewaretoken": get_csrf()}, function (r) {
+                window.popup.close();
+                if (!(JSON.parse(r))) {
+                    reportErrorModal();
+                }
+            })
+        }
+    }
+
     $(document).ready(function(){
 
         window.page = 1;
@@ -788,6 +830,12 @@
 
                 }
             });
+        });
+
+        $(document).on("click","#report-petition-link", function(e){
+            e.preventDefault();
+            var petition = getUrl("p");
+            reportPetitionModal(petition);
         });
 
         $(document).on("click","#publish-button",function(){

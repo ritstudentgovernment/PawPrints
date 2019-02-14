@@ -654,6 +654,8 @@ def petition_unsubscribe(request, petition_id):
     return redirect('petition/' + str(petition_id))
 
 
+@login_required
+@require_POST
 def petition_publish(user, petition, request):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
@@ -686,6 +688,8 @@ def petition_publish(user, petition, request):
 
 
 @login_required
+@require_POST
+@user_passes_test(lambda u: u.is_staff)
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
@@ -703,6 +707,20 @@ def petition_unpublish(request, petition_id):
                     ' unpublished petition ' + petition.title)
 
     return redirect('/profile') if user.id == petition.author.id else HttpResponse(True)
+
+
+@login_required
+def petition_report(request, petition_id):
+    user = request.user
+    petition = get_object_or_404(Petition, pk=petition_id)
+    previous_report_exists = Report.objects.filter(petition_id=petition_id, reporter_id=user.id).exists()
+    if not previous_report_exists:
+        reason = request.POST.get('reason')
+        report = Report(petition_id=petition, reporter_id=user, reported_at=timezone.now(), reported_for=reason)
+        report.save()
+        petition_reported(petition_id, report.id, request.META['HTTP_HOST'])
+        return HttpResponse('true')
+    return HttpResponse('false')
 
 
 # HELPER FUNCTIONS #

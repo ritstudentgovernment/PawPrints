@@ -329,6 +329,17 @@ class PetitionTest(TestCase):
         pet = Petition.objects.get(pk=self.petitionPublished.id)
         self.assertEqual(pet.status, 2)
 
+    def test_petition_report(self):
+        self.client.force_login(self.user)
+        obj = {
+            "reason": "Test reason"
+        }
+        response = self.client.post('/petition/report' + str(self.petitionPublished.id), obj)
+        self.assertEqual(response, 'true')
+        # an attempt to make a second report on the same petition will result in a `false` response
+        response_fail = self.client.post('/petition/report' + str(self.petitionPublished.id), obj)
+        self.assertEqual(response, 'false')
+
     def test_get_petition(self):
         self.client.force_login(self.superUser)
         petition = get_petition(self.petition.id, self.user)
