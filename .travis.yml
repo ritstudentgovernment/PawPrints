@@ -33,6 +33,7 @@ install:
 script:
 - docker exec -it pawprints_web pytest --cov-config .coveragerc --cov-report xml --cov-report
   term --cov=.
+- docker inspect pawprints_web
 - codecov
 before_cache:
 - mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}}
