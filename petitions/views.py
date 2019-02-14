@@ -654,8 +654,6 @@ def petition_unsubscribe(request, petition_id):
     return redirect('petition/' + str(petition_id))
 
 
-@login_required
-@require_POST
 def petition_publish(user, petition, request):
     """ Endpoint for publishing a petition.
     This endpoint requires that the user be signed in,
@@ -688,8 +686,6 @@ def petition_publish(user, petition, request):
 
 
 @login_required
-@require_POST
-@user_passes_test(lambda u: u.is_staff)
 def petition_unpublish(request, petition_id):
     """ Endpoint for unpublishing a petition.
     This endpoint requires that the user be signed in,
