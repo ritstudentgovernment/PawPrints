@@ -338,7 +338,7 @@ class PetitionTest(TestCase):
         self.assertEqual(response, 'true')
         # an attempt to make a second report on the same petition will result in a `false` response
         response_fail = self.client.post('/petition/report' + str(self.petitionPublished.id), obj)
-        self.assertEqual(response, 'false')
+        self.assertEqual(response_fail, 'false')
 
     def test_get_petition(self):
         self.client.force_login(self.superUser)
