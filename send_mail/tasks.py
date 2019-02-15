@@ -324,7 +324,7 @@ def petition_reported(petition_id, report_id, site_path):
     recipients = [user.email for user in users]
 
     email = EmailMessage(
-        EmailTitles.Petition_Rejected,
+        EmailTitles.Petition_Reported,
         get_template('email_inlined/petition_reported.html').render(
             {
                 'petition_id': petition.id,
