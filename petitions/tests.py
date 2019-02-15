@@ -332,7 +332,7 @@ class PetitionTest(TestCase):
     def report_petition(self, obj):
         request = self.factory.post(
             '/petition/report/' + str(self.petitionPublished.id), obj)
-        request.user = self.superUser
+        request.user = self.user
         request.META['HTTP_HOST'] = "random"
         return petition_report(request, self.petitionPublished.id)
 
