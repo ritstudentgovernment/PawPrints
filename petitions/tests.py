@@ -343,7 +343,7 @@ class PetitionTest(TestCase):
         }
         response = self.report_petition(obj)
         self.assertEqual(response.status_code, 200)
-        assert response.content
+        assert (response.content == b'true')
         # an attempt to make a second report on the same petition will result in a `false` response
         response_fail = self.report_petition(obj)
         self.assertEqual(response_fail.status_code, 200)

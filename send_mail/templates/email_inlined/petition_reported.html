@@ -1,4 +1,4 @@
-w<!---
+<!---
 File:          petition_reported.html
 Description:   Inlined email sent to users when a petition has been reported.
 Creator:       Omar De La Hoz (oed7416), Lukas Yelle (lxy5611)
@@ -38,7 +38,7 @@ Date created:  11/17/16
                     <td class="email-body" style="padding: 25px 25px 0 25px;text-align: justify;background-color: white;font-family: 'Open Sans', sans-serif;font-weight: 400;">
                         <p>Hello,</p>
                         <p>You're receiving this email because the petition <b>{{title}}</b> by <b>{{author}}</b> was reported by a member of the community.</p>
-                        {% if reason != '' %}<p>Reported for: <b>{{reason}}</b> by <b>{{reporter}}</b></p>{% endif %}
+                        {% if reason != '' %}<p>Reported as <b>{{reason}}</b> by <b>{{reporter}}</b></p>{% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -50,7 +50,7 @@ Date created:  11/17/16
                 <tr>
                     <td class="footer" style="padding: 0;padding-top: 10px;text-align: center;">
                         <img class="footer-img" src="{{protocol}}://{{site_path}}/static{{org_logo}}" width="200" alt="{{organization}} Logo" style="border: 0;width: 200px;max-width: 600px;height: auto;">
-                        <p class="footer-unsub" style="padding: 0px;font-size: 12px;">If you would like to stop receiving emails, please <a href="{{protocol}}://{{site_path}}/unsubscribe">unsubscribe</a></p>
+                        <p class="footer-unsub" style="padding: 0px;font-size: 12px;">If you would like to stop receiving emails, please ask an {{organization}} admin to remove you from the email list.</p>
                         <p style="visibility: hidden; opacity: 0;">{{timestamp}}</p>
                     </td>
                 </tr><tr>

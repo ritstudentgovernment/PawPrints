@@ -5,14 +5,41 @@
     {% load static %}
     {% include 'head.html' with analytics_id=analytics_id %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
+    <!-- ELEMENT UI -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
     <title>Admin Panel | {{ name }}</title>
 
     {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/admin.css' %}">
     {% endcompress %}
+
+    <style>
+        .el-tag + .el-tag {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .button-new-user {
+            margin-left: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom:10px;
+        }
+        .input-new-user {
+            margin-top: 0;
+            width: 90px;
+            margin-left: 10px;
+            vertical-align: bottom;
+            margin-bottom:10px;
+        }
+    </style>
 
 </head>
 <body>
@@ -83,18 +110,88 @@
                 {% endfor %}
             </div>
         </section>
+        <section id="email-settings" class="ninety-width sub-landing">
+            <h1>Email Settings</h1>
+            <div class="half-width left">
+                <h4>Reported Petitions</h4>
+                <p>These are people that receive emails for petitions that are reported.</p>
+                <div class="white-background padding-left padding-top padding-right full-width">
+                    <el-tag
+                            :key="email"
+                            v-for="email in reportUsers"
+                            closable
+                            :disable-transitions="false"
+                            color="#fefefe"
+                            @close="handleRemoveReportUser(email)">
+                        {[email]}
+                    </el-tag>
+                    <el-autocomplete
+                            class="input-new-user"
+                            v-if="reportInputVisible"
+                            v-model="reportInputValue"
+                            ref="saveTagInput"
+                            size="mini"
+                            :fetch-suggestions="getUsers"
+                            @select="handleReportUserInputConfirm"
+                    >
+                    </el-autocomplete>
+                    <el-button v-else class="button-new-user" size="small" @click="showReportUserInput">+ Add User</el-button>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
 
 <script>
     var users = { {% for user in all_users %}"{{user.username}}":{{user.id}}, {% endfor %} };
 
+    var emailSettings = new Vue({
+        el: "#email-settings",
+        data: {
+            users: users,
+            reportUsers: [{% for user in reportUsers%}"{{ user.username }}", {% endfor %}],
+            reportInputVisible: false,
+            reportInputValue: ''
+        },
+        methods: {
+            getUsers(queryString, cb) {
+                var users = Object.keys(this.users);
+                users = users.map(function(user){
+                    return {'value': user}
+                });
+                var results = queryString ? users.filter(this.createFilter(queryString)) : users;
+                cb(results);
+            },
+            createFilter(queryString) {
+                return function(username) {
+                    return (username.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleRemoveReportUser(username) {
+                this.reportUsers.splice(this.reportUsers.indexOf(username), 1);
+            },
+            showReportUserInput() {
+                this.reportInputVisible = true;
+                this.$nextTick(function() {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+            handleReportUserInputConfirm() {
+                var inputValue = this.reportInputValue;
+                if (inputValue) {
+                    this.reportUsers.push(inputValue);
+                }
+                this.reportInputVisible = false;
+                this.reportInputValue = '';
+            }
+        },
+        delimiters: ['{[', ']}']
+    });
+
     function saveGlobalAlert(form){
         $.post(form.attr("action"), form.serialize(), function(r){
             if(!r){
                 console.log("Error saving alert settings.");
-            } else {
-
             }
         });
     }

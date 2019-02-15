@@ -317,11 +317,12 @@ def petition_reported(petition_id, report_id, site_path):
     report = Report.objects.get(pk=report_id)
     reporter = User.objects.get(pk=report.reporter_id)
 
-    # Gets all of the staff users and the petition author
-    users = User.objects.filter(Q(is_staff=True) | Q(pk=petition.author.id)).distinct("id")
+
+    # Gets all users that are on the email list for reported petitions.
+    users = Profile.objects.filter(notifications__reported=True | Q(pk=petition.author.id)).distinct("id")
 
     # Construct array of email addresses
-    recipients = [user.email for user in users]
+    recipients = [prof.user.email for prof in users]
 
     email = EmailMessage(
         EmailTitles.Petition_Reported,
