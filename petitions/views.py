@@ -709,10 +709,10 @@ def petition_unpublish(request, petition_id):
 def petition_report(request, petition_id):
     user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
-    previous_report_exists = Report.objects.filter(petition_id=petition_id, reporter_id=user.id).exists()
+    previous_report_exists = Report.objects.filter(pk=petition_id, reporter=user).exists()
     if not previous_report_exists:
         reason = request.POST.get('reason')
-        report = Report(petition_id=petition, reporter_id=user, reported_at=timezone.now(), reported_for=reason)
+        report = Report(petition=petition, reporter=user, reported_at=timezone.now(), reported_for=reason)
         report.save()
         petition_reported(petition_id, report.id, request.META['HTTP_HOST'])
         return HttpResponse('true')

@@ -13,10 +13,10 @@ class EmailTests(TestCase):
         self.tag.save()
         self.user = User.objects.create_user(username='testuser', email='tesetuser@something.com')
         self.user.save()
-        self.petition = Petition(title='test petition', description='This is a test petition', author=self.user,created_at=timezone.now(),status=1, expires=timezone.now()+timedelta(days=30))
+        self.petition = Petition(title='test petition', description='This is a test petition', author=self.user, created_at=timezone.now(), status=1, expires=timezone.now()+timedelta(days=30))
         self.petition.save()
         self.user.profile.petitions_signed.add(self.petition)
-        self.report = Report(petition_id=self.petition, reporter_id=self.user, reported_at=timezone.now(), reported_for='Testing purposes')
+        self.report = Report(petition=self.petition, reporter=self.user, reported_at=timezone.now(), reported_for='Testing purposes')
         self.report.save()
 
     def test_petition_approved(self):

@@ -76,8 +76,8 @@ class Update(models.Model):
 # Defines the model for reporting petitions
 #
 class Report(models.Model):
-    petition_id = models.ForeignKey(Petition, on_delete=models.PROTECT)
-    reporter_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    petition = models.ForeignKey(Petition, on_delete=models.PROTECT)
+    reporter = models.ForeignKey(User, on_delete=models.PROTECT)
     reported_at = models.DateTimeField()
     reported_for = models.TextField(default='', blank=True)
 
