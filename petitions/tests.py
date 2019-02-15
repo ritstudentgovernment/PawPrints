@@ -342,10 +342,12 @@ class PetitionTest(TestCase):
             "reason": "Test reason"
         }
         response = self.report_petition(obj)
-        self.assertEqual(response.content, 'true')
+        self.assertEqual(response.status_code, 200)
+        assert response.content
         # an attempt to make a second report on the same petition will result in a `false` response
         response_fail = self.report_petition(obj)
-        self.assertEqual(response_fail.content, 'false')
+        self.assertEqual(response_fail.status_code, 200)
+        assert not response_fail.content
 
     def test_get_petition(self):
         self.client.force_login(self.superUser)
