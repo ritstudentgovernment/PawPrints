@@ -334,10 +334,10 @@ class PetitionTest(TestCase):
         obj = {
             "reason": "Test reason"
         }
-        response = self.client.post('/petition/report' + str(self.petitionPublished.id), obj)
+        response = self.client.post('/petition/report/' + str(self.petitionPublished.id), obj)
         self.assertEqual(response, 'true')
         # an attempt to make a second report on the same petition will result in a `false` response
-        response_fail = self.client.post('/petition/report' + str(self.petitionPublished.id), obj)
+        response_fail = self.client.post('/petition/report/' + str(self.petitionPublished.id), obj)
         self.assertEqual(response_fail, 'false')
 
     def test_get_petition(self):
