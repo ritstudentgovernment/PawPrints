@@ -16,7 +16,7 @@ from petitions.models import Petition, Response, Tag, Update
 
 from .consumers import serialize_petitions
 from .views import (PETITION_DEFAULT_BODY, PETITION_DEFAULT_TITLE, edit_check,
-                    get_petition, petition_edit, petition_sign)
+                    get_petition, petition_edit, petition_sign, petition_report)
 
 
 class PetitionTest(TestCase):
@@ -329,15 +329,22 @@ class PetitionTest(TestCase):
         pet = Petition.objects.get(pk=self.petitionPublished.id)
         self.assertEqual(pet.status, 2)
 
+    def report_petition(self, obj):
+        request = self.factory.post(
+            '/petition/report/' + str(self.petitionPublished.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        return petition_report(request, self.petitionPublished.id)
+
     def test_petition_report(self):
         self.client.force_login(self.user)
         obj = {
             "reason": "Test reason"
         }
-        response = self.client.post('/petition/report/' + str(self.petitionPublished.id), obj)
+        response = self.report_petition(obj)
         self.assertEqual(response, 'true')
         # an attempt to make a second report on the same petition will result in a `false` response
-        response_fail = self.client.post('/petition/report/' + str(self.petitionPublished.id), obj)
+        response_fail = self.report_petition(obj)
         self.assertEqual(response_fail, 'false')
 
     def test_get_petition(self):
