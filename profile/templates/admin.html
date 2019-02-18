@@ -39,6 +39,12 @@
             vertical-align: bottom;
             margin-bottom:10px;
         }
+        #email-settings .half-width {
+            width: 45%;
+        }
+        #email-settings .half-width:first-of-type {
+            margin-right: 8%;
+        }
     </style>
 
 </head>
@@ -110,7 +116,7 @@
                 {% endfor %}
             </div>
         </section>
-        <section id="email-settings" class="ninety-width sub-landing">
+        <section id="email-settings" class="ninety-width sub-landing" data-email-update-route="/profile/settings/notifications/staff/">
             <h1>Email Settings</h1>
             <div class="half-width left">
                 <h4>Reported Petitions</h4>
@@ -138,6 +144,32 @@
                     <el-button v-else class="button-new-user" size="small" @click="showReportUserInput">+ Add User</el-button>
                 </div>
             </div>
+            <div class="half-width left">
+                <h4>Petition Threshold Met</h4>
+                <p>These are people that receive emails for petitions that reach threshold.</p>
+                <div class="white-background padding-left padding-top padding-right full-width">
+                    <el-tag
+                            :key="email"
+                            v-for="email in thresholdUsers"
+                            closable
+                            :disable-transitions="false"
+                            color="#fefefe"
+                            @close="handleRemoveThresholdUser(email)">
+                        {[email]}
+                    </el-tag>
+                    <el-autocomplete
+                            class="input-new-user"
+                            v-if="thresholdInputVisible"
+                            v-model="thresholdInputValue"
+                            ref="saveTagInput"
+                            size="mini"
+                            :fetch-suggestions="getUsers"
+                            @select="handleThresholdUserInputConfirm"
+                    >
+                    </el-autocomplete>
+                    <el-button v-else class="button-new-user" size="small" @click="showThresholdUserInput">+ Add User</el-button>
+                </div>
+            </div>
         </section>
     </main>
 </div>
@@ -151,7 +183,10 @@
             users: users,
             reportUsers: [{% for user in reportUsers%}"{{ user.username }}", {% endfor %}],
             reportInputVisible: false,
-            reportInputValue: ''
+            reportInputValue: '',
+            thresholdUsers: [{% for user in thresholdUsers%}"{{ user.username }}", {% endfor %}],
+            thresholdInputVisible: false,
+            thresholdInputValue: ''
         },
         methods: {
             getUsers(queryString, cb) {
@@ -167,8 +202,19 @@
                     return (username.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             },
+            saveEmailSettings(type, username, status) {
+                var route = $("#email-settings").data("email-update-route");
+                $.post(route + username, {
+                    "email-setting": type,
+                    "email-value": status,
+                    "csrfmiddlewaretoken": get_csrf()
+                }, function (response) {
+                    console.log(response);
+                });
+            },
             handleRemoveReportUser(username) {
                 this.reportUsers.splice(this.reportUsers.indexOf(username), 1);
+                this.saveEmailSettings('report', username, false);
             },
             showReportUserInput() {
                 this.reportInputVisible = true;
@@ -181,8 +227,28 @@
                 if (inputValue) {
                     this.reportUsers.push(inputValue);
                 }
+                this.saveEmailSettings('report', inputValue, true);
                 this.reportInputVisible = false;
                 this.reportInputValue = '';
+            },
+            handleRemoveThresholdUser(username) {
+                this.thresholdUsers.splice(this.thresholdUsers.indexOf(username), 1);
+                this.saveEmailSettings('threshold', username, false);
+            },
+            showThresholdUserInput() {
+                this.thresholdInputVisible = true;
+                this.$nextTick(function() {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+            handleThresholdUserInputConfirm() {
+                var inputValue = this.thresholdInputValue;
+                if (inputValue) {
+                    this.thresholdUsers.push(inputValue);
+                }
+                this.saveEmailSettings('threshold', inputValue, true);
+                this.thresholdInputVisible = false;
+                this.thresholdInputValue = '';
             }
         },
         delimiters: ['{[', ']}']

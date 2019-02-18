@@ -32,6 +32,7 @@ class Notifications(models.Model):
     update = models.BooleanField(default=True)
     response = models.BooleanField(default=True)
     reported = models.BooleanField(default=False)
+    threshold = models.BooleanField(default=False)
 
 
 # Defines the model for an app-wide, after login, popup on user clients

@@ -58,6 +58,11 @@ def admin(request):
 
     alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': 'False', 'content': 'Placeholder alert content.'})
 
+    report_user_profiles = Profile.objects.filter(notifications__reported=True).distinct("id")
+    report_users = [prof.user for prof in report_user_profiles]
+    threshold_user_profiles = Profile.objects.filter(notifications__threshold=True).distinct("id")
+    threshold_users = [prof.user for prof in threshold_user_profiles]
+
     data_object = {
         'superusers': superusers,
         'staff': User.objects.filter(is_staff=True).exclude(id__in=superusers_id),
@@ -66,7 +71,9 @@ def admin(request):
         'generate_top_nav': CONFIG['generate_top_nav'],
         'analytics_id': settings.ANALYTICS,
         'name': CONFIG['name'],
-        'alert': alert
+        'alert': alert,
+        'reportUsers': report_users,
+        'thresholdUsers': threshold_users,
     }
     return render(request, 'admin.html', data_object)
 
@@ -153,6 +160,28 @@ def update_notifications(request, user_id):
 
     user.save()
     return HttpResponse(True)
+
+
+@require_POST
+@login_required
+def update_staff_emailing(request, username):
+    """ Handles updating a users
+    notification settings.
+    """
+    if request.user.is_superuser:
+        user = User.objects.get(username=username)
+        if user:
+            emailing_setting = request.POST.get('email-setting')
+            emailing_value = request.POST.get('email-value')
+            if emailing_setting == 'report':
+                user.profile.notifications.reported = True if emailing_value == 'true' else False
+            elif emailing_setting == 'threshold':
+                user.profile.notifications.threshold = True if emailing_value == 'true' else False
+            else:
+                return HttpResponse(False)
+            user.save()
+            return HttpResponse(True)
+    return HttpResponse(False)
 
 
 @login_required
