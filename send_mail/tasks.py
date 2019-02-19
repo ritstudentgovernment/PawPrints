@@ -203,8 +203,11 @@ def petition_reached(petition_id, site_path):
     petition = Petition.objects.get(pk=petition_id)
 
     # Gets all users that are subscribed or have signed the petition and if they want to receive emails about petition response.
-    users = Profile.objects.filter(Q(subscriptions=petition) | Q(petitions_signed=petition)).filter(
-        notifications__response=True).distinct("id")
+    users = Profile.objects.filter(
+        Q(subscriptions=petition) |
+        Q(petitions_signed=petition) |
+        Q(notifications__threshold=True)
+    ).filter(notifications__response=True).distinct("id")
 
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
