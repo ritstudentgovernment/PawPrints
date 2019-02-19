@@ -58,11 +58,12 @@ class ProfileTest(TestCase):
         self.assertEqual(response.getvalue().decode("utf-8"), str(False))
 
     def test_update_staff_notification(self):
-        self.client.force_login(self.testUser)
+        self.client.force_login(self.superUser)
         response = self.client.post(
             '/profile/settings/notifications/staff/'+str(self.testUser.username),
             {'email-setting': 'threshold', 'email-value': 'true'}
         )
+        self.assertEqual(response.getvalue().decode("utf-8"), str(True))
         user = User.objects.get(id=self.testUser.id)
         self.assertEqual(user.profile.notifications.threshold, True)
 
@@ -70,6 +71,7 @@ class ProfileTest(TestCase):
             '/profile/settings/notifications/staff/'+str(self.testUser.username),
             {'email-setting': 'report', 'email-value': 'true'}
         )
+        self.assertEqual(response.getvalue().decode("utf-8"), str(True))
         user = User.objects.get(id=self.testUser.id)
         self.assertEqual(user.profile.notifications.reported, True)
 
