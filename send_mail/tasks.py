@@ -321,7 +321,7 @@ def petition_reported(petition_id, report_id, site_path):
     reporter = User.objects.get(pk=report.reporter_id)
 
     # Gets all users that are on the email list for reported petitions.
-    users = Profile.objects.filter(notifications__reported=True).filter(Q(pk=petition.author.id)).distinct("id")
+    users = Profile.objects.filter(notifications__reported=True).distinct("id")
 
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]

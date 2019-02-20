@@ -693,7 +693,7 @@
         window.popup = new Modal({
             headerClass: "highlight",
             headerContent: "<h2>Why are you reporting this petition?</h2>",
-            bodyContent: "<select id='report-petition-select'><option value='Spam or misleading'>Spam or misleading</option><option value='Hateful or abusive content'>Hateful or abusive content</option><option value='Irrelevant or unconstructive'>Irrelevant or unconstructive</option></select><p>An email will be sent to moderators and the petition author that will contain your initials and the reason you selected to report this petition.</p>",
+            bodyContent: "<select id='report-petition-select'><option value='Spam or misleading'>Spam or misleading</option><option value='Hateful or abusive'>Hateful or abusive</option><option value='Harassing or violent'>Harassing or violent</option><option value='Against policy'>Against policy</option></select><p>An email will be sent to moderators that will contain your initials and the reason you selected to report this petition.</p><p>Reporting a petition does not necessarily mean that it will be taken down. The petition will be reviewed by the current Student Government administration and a decision will be made.</p>",
             iconContainerClass:"text-highlight",
             iconClass:"md-48",
             iconText:"report",
@@ -720,7 +720,7 @@
     }
 
     function reportPetition(petition_id, reason){
-        var allowedReasons = ["Spam or misleading", "Hateful or abusive content", "Irrelevant or unconstructive"];
+        var allowedReasons = ["Spam or misleading", "Hateful or abusive", "Against policy", "Harassing or violent"];
         if (allowedReasons.includes(reason)){
             $.post('petition/report/'+petition_id, {'reason': reason, "csrfmiddlewaretoken": get_csrf()}, function (r) {
                 window.popup.close();
