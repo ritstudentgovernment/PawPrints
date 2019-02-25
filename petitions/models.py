@@ -73,6 +73,16 @@ class Update(models.Model):
 
 
 #
+# Defines the model for reporting petitions
+#
+class Report(models.Model):
+    petition = models.ForeignKey(Petition, on_delete=models.PROTECT)
+    reporter = models.ForeignKey(User, on_delete=models.PROTECT)
+    reported_at = models.DateTimeField()
+    reported_for = models.TextField(default='', blank=True)
+
+
+#
 # The following defines a signal function which is called before a save() is actually run
 # on a petition object.
 # The following signal function sanitizes the petition description and title.

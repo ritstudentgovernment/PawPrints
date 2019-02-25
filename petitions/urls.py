@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^subscribe/(?P<petition_id>\d+)$', views.petition_subscribe),
     url(r'^unsubscribe/(?P<petition_id>\d+)$', views.petition_unsubscribe),
     url(r'^unpublish/(?P<petition_id>\d+)$', views.petition_unpublish),
+    url(r'^report/(?P<petition_id>\d+)$', views.petition_report, name='petition_report'),
     url(r'^bots/(?P<petition_id>\d+)$', views.petition_bots)
 ]

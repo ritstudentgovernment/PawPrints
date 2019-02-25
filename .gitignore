@@ -124,7 +124,7 @@ profanity.csv
 static/css/index.css
 static/css/about.css
 static/css/petition.css
-static/css/staff.css
+static/css/admin.css
 static/css/profile.css
 static/css/global.css
 static/js/petitionedit.js

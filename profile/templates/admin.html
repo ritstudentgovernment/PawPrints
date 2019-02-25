@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load compress %}
+    {% load static %}
+    {% include 'head.html' with analytics_id=analytics_id %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/switchery/0.8.2/switchery.min.css">
+    <!-- ELEMENT UI -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <title>Admin Panel | {{ name }}</title>
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/admin.css' %}">
+    {% endcompress %}
+
+    <style>
+        .el-tag + .el-tag {
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .button-new-user {
+            margin-left: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom:10px;
+        }
+        .input-new-user {
+            margin-top: 0;
+            width: 90px;
+            margin-left: 10px;
+            vertical-align: bottom;
+            margin-bottom:10px;
+        }
+        #email-settings .half-width {
+            width: 45%;
+        }
+        #email-settings .half-width:first-of-type {
+            margin-right: 8%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="wrapper">
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name %}
+    <main class="full-width">
+        <section id="landing" class="ninety-width">
+            <h1 class="text-center">Admin Panel</h1>
+            <div class="full-width">
+                <h3>Global Alert</h3>
+                <p>Configure an alert that shows up after login for all users.</p>
+                <div class="full-width padding white-background">
+                    <ul class="list">
+                        <li class="list-item block padding overflow-hidden">
+                            <form id="global-alert-settings" class="block full-width" name="global-alert-settings" method="post" action="{% url 'profile:alert_update' %}">
+                                {% csrf_token %}
+                                <div class="overflow-hidden">
+                                    <label class="block left ninety-width padding cursor" for="alert-active">
+                                        Enable Popup after login
+                                    </label>
+                                    <div class="right padding-right padding-top">
+                                        <input id="alert-active" name="alert-active" class="js-switch" type="checkbox" {% if alert.active %} checked="checked" {% endif %} />
+                                    </div>
+                                </div>
+                                <div class="padding">
+                                    <label class="block padding-bottom" for="alert-content">Message to display to users</label>
+                                    <textarea id="alert-content" name="alert-content" class="material-input full-width">{{ alert.content }}</textarea>
+                                </div>
+                                <button id="save-alert" class="material-button material material-hover material-shadow cursor add-team-member hidden">Save</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section class="ninety-width text-center sub-landing overflow-hidden">
+            <h1>Staff Management</h1>
+            <div class="half-width left padding-top">
+                <label for="newSuperUserSearch">
+                    <h3>Add a new admin</h3>
+                    <input id="newSuperUserSearch" placeholder="Enter a username" name="superUserSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="admin">Add</button>
+            </div>
+            <div class="half-width left padding-top">
+                <label for="newStaffMemberSearch">
+                    <h3>Add a new staff member</h3>
+                    <input id="newStaffMemberSearch" placeholder="Enter a username" name="newStaffMemberSearch" class="material-input user-search" />
+                </label>
+                <button class="material-button material material-hover material-shadow cursor add-team-member" data-role="manager">Add</button>
+            </div>
+        </section>
+        <section class="ninety-width sub-landing">
+            <h1>Administrators</h1>
+            <p>Administrators have the ability to access this page to add new staff members or remove current ones.</p>
+
+            {% for superuser in superusers %}
+                <h4 class="user block">{{ superuser.first_name }} {{ superuser.last_name }} ({{ superuser.username }})<i class="remove-user material-icons cursor right" data-role="admin" data-username="{{superuser.username}}" title="Remove user from administrative role.">delete</i></h4>
+            {% endfor %}
+        </section>
+        <section class="ninety-width sub-landing">
+            <h1>Staff Members</h1>
+            <p>Staff members have the ability to update, delete, and respond to petitions.</p>
+            <div id="staff-members">
+                {% for staff_member in staff %}
+                    <h4 class="user material-icon-container block">{{ staff_member.first_name }} {{ staff_member.last_name }} ({{ staff_member.username }})<i class="remove-user cursor material-icons right" data-role="manager" data-username="{{staff_member.username}}" title="Remove user from staff users role.">delete</i></h4>
+                {% endfor %}
+            </div>
+        </section>
+        <section id="email-settings" class="ninety-width sub-landing" data-email-update-route="/profile/settings/notifications/staff/">
+            <h1>Email Settings</h1>
+            <div class="half-width left">
+                <h4>Reported Petitions</h4>
+                <p>These are people that receive emails for petitions that are reported.</p>
+                <div class="white-background padding-left padding-top padding-right full-width">
+                    <el-tag
+                            :key="email"
+                            v-for="email in reportUsers"
+                            closable
+                            :disable-transitions="false"
+                            color="#fefefe"
+                            @close="handleRemoveReportUser(email)">
+                        {[email]}
+                    </el-tag>
+                    <el-autocomplete
+                            class="input-new-user"
+                            v-if="reportInputVisible"
+                            v-model="reportInputValue"
+                            ref="saveTagInput"
+                            size="mini"
+                            :fetch-suggestions="getUsers"
+                            @select="handleReportUserInputConfirm"
+                    >
+                    </el-autocomplete>
+                    <el-button v-else class="button-new-user" size="small" @click="showReportUserInput">+ Add User</el-button>
+                </div>
+            </div>
+            <div class="half-width left">
+                <h4>Petition Threshold Met</h4>
+                <p>These are people that receive emails for petitions that reach threshold.</p>
+                <div class="white-background padding-left padding-top padding-right full-width">
+                    <el-tag
+                            :key="email"
+                            v-for="email in thresholdUsers"
+                            closable
+                            :disable-transitions="false"
+                            color="#fefefe"
+                            @close="handleRemoveThresholdUser(email)">
+                        {[email]}
+                    </el-tag>
+                    <el-autocomplete
+                            class="input-new-user"
+                            v-if="thresholdInputVisible"
+                            v-model="thresholdInputValue"
+                            ref="saveTagInput"
+                            size="mini"
+                            :fetch-suggestions="getUsers"
+                            @select="handleThresholdUserInputConfirm"
+                    >
+                    </el-autocomplete>
+                    <el-button v-else class="button-new-user" size="small" @click="showThresholdUserInput">+ Add User</el-button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    var users = { {% for user in all_users %}"{{user.username}}":{{user.id}}, {% endfor %} };
+
+    var emailSettings = new Vue({
+        el: "#email-settings",
+        data: {
+            users: users,
+            reportUsers: [{% for user in reportUsers%}"{{ user.username }}", {% endfor %}],
+            reportInputVisible: false,
+            reportInputValue: '',
+            thresholdUsers: [{% for user in thresholdUsers%}"{{ user.username }}", {% endfor %}],
+            thresholdInputVisible: false,
+            thresholdInputValue: ''
+        },
+        methods: {
+            getUsers(queryString, cb) {
+                var users = Object.keys(this.users);
+                users = users.map(function(user){
+                    return {'value': user}
+                });
+                var results = queryString ? users.filter(this.createFilter(queryString)) : users;
+                cb(results);
+            },
+            createFilter(queryString) {
+                return function(username) {
+                    return (username.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            saveEmailSettings(type, username, status) {
+                var route = $("#email-settings").data("email-update-route");
+                $.post(route + username, {
+                    "email-setting": type,
+                    "email-value": status,
+                    "csrfmiddlewaretoken": get_csrf()
+                }, function (response) {
+                    console.log(response);
+                });
+            },
+            handleRemoveReportUser(username) {
+                this.reportUsers.splice(this.reportUsers.indexOf(username), 1);
+                this.saveEmailSettings('report', username, false);
+            },
+            showReportUserInput() {
+                this.reportInputVisible = true;
+                this.$nextTick(function() {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+            handleReportUserInputConfirm() {
+                var inputValue = this.reportInputValue;
+                if (inputValue) {
+                    this.reportUsers.push(inputValue);
+                }
+                this.saveEmailSettings('report', inputValue, true);
+                this.reportInputVisible = false;
+                this.reportInputValue = '';
+            },
+            handleRemoveThresholdUser(username) {
+                this.thresholdUsers.splice(this.thresholdUsers.indexOf(username), 1);
+                this.saveEmailSettings('threshold', username, false);
+            },
+            showThresholdUserInput() {
+                this.thresholdInputVisible = true;
+                this.$nextTick(function() {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+            handleThresholdUserInputConfirm() {
+                var inputValue = this.thresholdInputValue;
+                if (inputValue) {
+                    this.thresholdUsers.push(inputValue);
+                }
+                this.saveEmailSettings('threshold', inputValue, true);
+                this.thresholdInputVisible = false;
+                this.thresholdInputValue = '';
+            }
+        },
+        delimiters: ['{[', ']}']
+    });
+
+    function saveGlobalAlert(form){
+        $.post(form.attr("action"), form.serialize(), function(r){
+            if(!r){
+                console.log("Error saving alert settings.");
+            }
+        });
+    }
+
+    function saveCommandDelegator(self){
+        var form = $(self).closest("form");
+        saveGlobalAlert(form);
+    }
+
+    $(document).ready(function(){
+
+        window.plugins = {
+            "switchery":[]
+        };
+
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        elems.forEach(function(html) {
+            window.plugins.switchery.push(new Switchery(html,{size:"small"}));
+        });
+
+        $("#alert-active, #alert-content").change(function(){ saveCommandDelegator(this); });
+        $("#save-alert").click(function(){ saveCommandDelegator(this); });
+
+        var user_list = Object.keys(users);
+        $(".user-search").autocomplete({
+            source: user_list
+        });
+
+        $(".add-team-member").click(function(){
+
+            var role = $(this).data("role");
+            var username = (role === "admin") ? $("#newSuperUserSearch").val() : $("#newStaffMemberSearch").val();
+            if(users.hasOwnProperty(username)){
+                var user_id = users[username];
+                $.post("/profile/manage/"+role+"/add/"+user_id,{"csrfmiddlewaretoken":get_csrf()},function(r){
+                    if(r === "True"){
+                        window.location.reload();
+                    }
+                    else{
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered. Please have them log in first."});
+            }
+
+        });
+
+        $(document).on("click",".remove-user",function(){
+
+            var me = $(this);
+            var role = me.data("role");
+            var username = me.data("username");
+            if(users.hasOwnProperty(username)) {
+                var user_id = users[username];
+                $.post("/profile/manage/" + role + "/remove/" + user_id, {"csrfmiddlewaretoken": get_csrf()}, function (r) {
+                    if (r === "True") {
+                        var element = me.parent().remove();
+                        if (role === "superuser") {
+                            element.appendTo("#staff-members");
+                        }
+                    }
+                    else {
+                        console.log(r);
+                    }
+                });
+            }
+            else{
+                checkErrorInResponse({Error:"That user is not registered. Please have them log in first."});
+            }
+
+        });
+
+    });
+</script>
+
+</body>
+</html>

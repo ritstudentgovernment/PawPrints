@@ -109,6 +109,11 @@
                             </div>
                         {% endif %}
                         <div id="action-cards" class="block overflow-hidden right">
+                            {% if user.first_name %}
+                                <div class="margin-right padding-right right padding-top margin-top">
+                                    <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
+                                </div>
+                            {% endif %}
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
                                 <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
@@ -260,6 +265,22 @@
                 });
             });
         });
+        {% if alert.active %}
+            window.popup = new Modal({
+                headerContent: "<h2>A Message From SG</h2>",
+                bodyContent: "<p class='padding-bottom'>{{ alert.content }}</p>",
+                icon: false,
+                exitOverlayOnClick: false,
+                exitButton: false,
+                bodyButtons: [
+                    ["Ok", "material material-button large material-shadow margin-top margin-bottom transition", "window.popup.close()"]
+                ]
+            });
+            if (getCookie('hasSeenPopup') === "") { // User has not seen the popup before
+                setCookie('hasSeenPopup', 'true', 1); // Set the hasSeenPopup cookie so they don't see it every time they load the page
+                popup.open();
+            }
+        {% endif %}
     </script>
 {% else %}
     <script>

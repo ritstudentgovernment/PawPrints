@@ -26,6 +26,7 @@ import channels
 import petitions.profanity
 from asgiref.sync import async_to_sync
 from petitions.models import Petition, Tag
+from profile.models import GlobalAlert
 from send_mail.tasks import *
 
 CONFIG = settings.CONFIG
@@ -40,6 +41,7 @@ def index(request):
     """
     Handles displaying the index page of PawPrints.
     """
+    alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': 'False', 'content': 'Placeholder alert content.'})
     text_data = CONFIG['text']
     data_object = {
         'tags': Tag.objects.all,
@@ -52,7 +54,8 @@ def index(request):
         'slideshow_first': text_data['slideshow']['first_line'],
         'slideshow_second': text_data['slideshow']['second_line'],
         'analytics_id': settings.ANALYTICS,
-        'name': CONFIG['name']
+        'name': CONFIG['name'],
+        'alert': alert,
     }
 
     return render(request, 'index.html', data_object)
@@ -700,6 +703,20 @@ def petition_unpublish(request, petition_id):
                     ' unpublished petition ' + petition.title)
 
     return redirect('/profile') if user.id == petition.author.id else HttpResponse(True)
+
+
+@login_required
+def petition_report(request, petition_id):
+    user = request.user
+    petition = get_object_or_404(Petition, pk=petition_id)
+    previous_report_exists = Report.objects.filter(petition=petition_id, reporter=user.id).exists()
+    if not previous_report_exists:
+        reason = request.POST.get('reason')
+        report = Report(petition=petition, reporter=user, reported_at=timezone.now(), reported_for=reason)
+        report.save()
+        petition_reported(petition_id, report.id, request.META['HTTP_HOST'])
+        return HttpResponse('true')
+    return HttpResponse('false')
 
 
 # HELPER FUNCTIONS #

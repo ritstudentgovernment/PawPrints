@@ -1,7 +1,7 @@
 from django.core import mail
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from petitions.models import Petition, Tag
+from petitions.models import Petition, Tag, Report
 from profile.models import Profile
 from datetime import timedelta
 from django.utils import timezone
@@ -13,9 +13,11 @@ class EmailTests(TestCase):
         self.tag.save()
         self.user = User.objects.create_user(username='testuser', email='tesetuser@something.com')
         self.user.save()
-        self.petition = Petition(title='test petition', description='This is a test petition', author=self.user,created_at=timezone.now(),status=1, expires=timezone.now()+timedelta(days=30))
+        self.petition = Petition(title='test petition', description='This is a test petition', author=self.user, created_at=timezone.now(), status=1, expires=timezone.now()+timedelta(days=30))
         self.petition.save()
         self.user.profile.petitions_signed.add(self.petition)
+        self.report = Report(petition=self.petition, reporter=self.user, reported_at=timezone.now(), reported_for='Testing purposes')
+        self.report.save()
 
     def test_petition_approved(self):
         petition_approved(self.petition.id, 'test_path')
@@ -52,3 +54,9 @@ class EmailTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, EmailTitles.Petition_Needs_Approval)
+
+    def test_petition_reported(self):
+        petition_reported(self.petition.id, self.report.id, 'test_path')
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, EmailTitles.Petition_Reported)
