@@ -36,7 +36,7 @@ Before running the script, ensure that the containers are up and grab the name o
 
 Then to run the script, ```docker exec -it pawprints_web_1 python manage.py mockdata```. The script will take a while to run as it generates the mock data.
 
-Finally, to view the app, simply navigate to http://localhost:8000
+Finally, to view the app, simply navigate to ```http://localhost:8000```.
 
 ### More Info
 For more detailed information about setting up the app and other common FAQs, please visit the [wiki](https://github.com/ritstudentgovernment/PawPrints/wiki).
