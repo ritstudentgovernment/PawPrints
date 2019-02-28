@@ -105,23 +105,23 @@ class AuthTestCase(TestCase):
         assert auth_user.profile.has_access == 0
         assert auth_user.profile.display_name == 'EU'
 
-    @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
-    def test_authenticate_method_no_affiliation(self, auth_mock):
-        saml_backend = SAMLSPBackend()
-
-        # Test no edu affiliation attr
-        attrs_emp = {Attributes.USERNAME: ['emp1234'], Attributes.FIRST_NAME: [
-            'Employee'], Attributes.LAST_NAME: ['User']}
-        auth_mock.get_attributes.return_value = attrs_emp
-
-        assert not User.objects.filter(username='emp1234').exists()
-
-        auth_user = saml_backend.authenticate(
-            None, saml_authentication=auth_mock)
-        assert User.objects.filter(username='emp1234').exists()
-        assert auth_user.profile.full_name == 'Employee User'
-        assert auth_user.profile.has_access == 0
-        assert auth_user.profile.display_name == 'EU'
+    # @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
+    # def test_authenticate_method_no_affiliation(self, auth_mock):
+    #     saml_backend = SAMLSPBackend()
+    #
+    #     # Test no edu affiliation attr
+    #     attrs_emp = {Attributes.USERNAME: ['emp1234'], Attributes.FIRST_NAME: [
+    #         'Employee'], Attributes.LAST_NAME: ['User']}
+    #     auth_mock.get_attributes.return_value = attrs_emp
+    #
+    #     assert not User.objects.filter(username='emp1234').exists()
+    #
+    #     auth_user = saml_backend.authenticate(
+    #         None, saml_authentication=auth_mock)
+    #     assert User.objects.filter(username='emp1234').exists()
+    #     assert auth_user.profile.full_name == 'Employee User'
+    #     assert auth_user.profile.has_access == 0
+    #     assert auth_user.profile.display_name == 'EU'
 
     @patch('onelogin.saml2.auth.OneLogin_Saml2_Auth')
     def test_authenticate_method_not_authenticated(self, auth_mock):
