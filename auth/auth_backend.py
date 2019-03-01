@@ -29,7 +29,7 @@ class SAMLSPBackend(object):
             last_name = attributes[Attributes.LAST_NAME][0]
             affiliation = attributes.get(Attributes.EDU_AFFILIATION, ['-1'])
 
-            print affiliation
+            print(affiliation)
 
             try:
                 # Grab attributes from shib and auth user
