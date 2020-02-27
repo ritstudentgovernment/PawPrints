@@ -186,6 +186,5 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
                     return None
-            self.send_json(
-                {"text": "Error must sent a non-empty 'command' parameter"})
+            self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
             return None
