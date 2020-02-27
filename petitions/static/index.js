@@ -23,7 +23,6 @@
                 let ordered = [],
                     cols    = 3;
 
-                console.log(this.width);
                 if (this.width <= 1035 && this.width > 815) {
                     cols = 2;
                 } else if (this.width <= 815) {
