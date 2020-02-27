@@ -1,4 +1,4 @@
-    window.debug = true;
+    window.debug = false;
     window.slideshow_images = {{ images|safe }};
     window.social = {{ social|safe }};
     /* Initialize the Vue.js wrappers for the page.
