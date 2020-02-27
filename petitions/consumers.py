@@ -86,6 +86,9 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
             self.send_json({"command": "get", "petition": petition})
 
+    def send_petitions(self, petitions):
+        self.send_json(serialize_petitions(petitions))
+
     def connect(self):
         """
         Endpoint for the petitions_connect route. Fires when web socket(WS) connections are made to the server.
@@ -102,7 +105,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
         self.accept()
 
-        self.send_petitions_individually(petitions)
+        self.send_petitions(petitions)
 
     def disconnect(self, close_code):
         """
@@ -135,7 +138,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             petitions = views.filtering_controller(
                                 petitions, data.get('filter'))
 
-                        self.send_petitions_individually(petitions)
+                        self.send_petitions(petitions)
 
                         return None
 
@@ -163,7 +166,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     query = data.get('query', '')
                     if query:
                         petitions = views.sorting_controller("search", query)
-                        self.send_petitions_individually(petitions)
+                        self.send_petitions(petitions)
                         return None
                     return None
                 elif command == 'paginate':
@@ -177,7 +180,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             petitions = views.filtering_controller(
                                 petitions, data.get('filter'))
                         petitions = paginate(petitions, page)
-                        self.send_petitions_individually(petitions)
+                        self.send_petitions(petitions)
                         return None
 
                     self.send_json(

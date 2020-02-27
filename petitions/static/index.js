@@ -1,4 +1,4 @@
-    window.debug = false;
+    window.debug = true;
     window.slideshow_images = {{ images|safe }};
     window.social = {{ social|safe }};
     /* Initialize the Vue.js wrappers for the page.
@@ -13,9 +13,39 @@
     var petitions = new Vue({
         el: "#petitions",
         data: {
+            width: window.innerWidth,
             loading: true,
             list: [],
             map: {}
+        },
+        computed: {
+            orderedList: function () {
+                let ordered = [],
+                    cols    = 3;
+
+                console.log(this.width);
+                if (this.width <= 1035 && this.width > 815) {
+                    cols = 2;
+                } else if (this.width <= 815) {
+                    cols = 1;
+                }
+
+                for (let col = 0; col < cols; col++) {
+                    for(let i = 0; i < this.list.length; i += cols) {
+                        let petition = this.list[i + col];
+                        if (petition !== undefined) {
+                            ordered.push(petition);
+                        }
+                    }
+                }
+
+                return ordered;
+            }
+        },
+        mounted() {
+            window.addEventListener('resize', () => {
+              this.width = window.innerWidth;
+            })
         },
         delimiters: ['{[', ']}']
     });
@@ -658,6 +688,8 @@
 
                 }
                 else {
+
+                    data = JSON.parse(data);
 
                     // Default behaviour is to update everything on response if no command is given.
                     if (data.hasOwnProperty("petitions")) {
