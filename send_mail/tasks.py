@@ -1,7 +1,7 @@
 """
 Defines email sending tasks that will run in the background with Huey
 
-Author: Peter Zujko & Omar De La Hoz
+Author: Peter Zujko & Omar De La Hoz & Lukas Yelle (lxy5611)
 
 All db_tasks will retry at most 3 times.
 """
@@ -36,19 +36,21 @@ class EmailTitles():
     Petition_Needs_Approval = email_titles['needs_approval']
     Petition_Received = email_titles['received']
     Petition_Reported = email_titles['reported']
+    Petition_Charged = email_titles['charged']
 
-@db_task(retries=3, retry_delay=3)
-def petition_approved(petition_id, site_path):
+
+def generate_email(petition_id, event, site_path, to=None, bcc=None, email_data=None):
     petition = Petition.objects.get(pk=petition_id)
 
-    email = EmailMessage(
-        EmailTitles.Petition_Approved,
-        get_template('email_inlined/petition_approved.html').render(
-            {
+    if event in email_titles:
+        to = petition.author.email if to is None else to
+
+        if email_data is None:
+            email_data = {
                 'petition_id': petition.id,
                 'title': petition.title,
                 'first_name': petition.author.first_name,
-                'author': petition.author.first_name + ' ' + petition.author.last_name,
+                'author': petition.author.profile.full_name,
                 'site_path': site_path,
                 'protocol': 'https',
                 'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message.',
@@ -58,56 +60,39 @@ def petition_approved(petition_id, site_path):
                 'name': NAME,
                 'header_image': HEADER_IMAGE
             }
-        ),
-        EMAIL_ADDR,
-        [petition.author.email],
-    )
+        email = EmailMessage(
+            email_titles[event],
+            get_template('email_inlined/petition_' + event + '.html').render(email_data),
+            EMAIL_ADDR,
+            [to],
+            bcc=bcc,
+        )
+        email.content_subtype = "html"
+        return email
+    return None
 
-    email.content_subtype = "html"
+
+def send_email(email, petition_id, event):
     try:
         email.send()
         logger.info(
-            "Petition Approval email SEND \nPetition ID: " + str(petition.id))
+            "Petition " + event + " email SEND \nPetition ID: " + str(petition_id))
     except Exception as e:
         logger.critical(
-            "Petition Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
+            "Petition " + event + " email FAILED \nPetition ID: " + str(petition_id), exc_info=True)
         raise e
 
 
 @db_task(retries=3, retry_delay=3)
-def petition_rejected(petition_id, site_path):
-    petition = Petition.objects.get(pk=petition_id)
+def petition_approved(petition_id, site_path):
+    email = generate_email(petition_id, 'approved', site_path)
+    send_email(email, petition_id, 'Approved')
 
-    email = EmailMessage(
-        EmailTitles.Petition_Rejected,
-        get_template('email_inlined/petition_rejected.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'first_name': petition.author.first_name,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [petition.author.email]
-    )
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Rejection email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical(
-            "Petition Rejection email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        raise e
+
+@db_task(retries=3, retry_delay=3)
+def petition_rejected(petition_id, site_path):
+    email = generate_email(petition_id, 'rejected', site_path)
+    send_email(email, petition_id, 'Rejected')
 
 
 @db_task(retries=3, retry_delay=3)
@@ -121,37 +106,8 @@ def petition_update(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = EmailMessage(
-        EmailTitles.Petition_Update,
-        get_template('email_inlined/petition_status_update.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [EMAIL_ADDR],
-        bcc=recipients
-    )
-
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Update email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical("Petition Update email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(recipients),
-                        exc_info=True)
-        raise e
+    email = generate_email(petition_id, 'status_update', site_path, EMAIL_ADDR, recipients)
+    send_email(email, petition_id, 'Status Update')
 
 
 @db_task(retries=3, retry_delay=3)
@@ -165,37 +121,8 @@ def petition_responded(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = EmailMessage(
-        EmailTitles.Petition_Responded,
-        get_template('email_inlined/petition_response_received.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [EMAIL_ADDR],
-        bcc=recipients
-    )
-
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Response email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical(
-            "Petition Response email FAILED \nPetition ID: " + str(petition.id) + "\nRecipients:\n" + str(recipients), exc_info=True)
-        raise e
+    email = generate_email(petition_id, 'response_received', site_path, EMAIL_ADDR, recipients)
+    send_email(email, petition_id, 'Response Received')
 
 
 @db_task(retries=3, retry_delay=3)
@@ -212,36 +139,8 @@ def petition_reached(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = EmailMessage(
-        EmailTitles.Petition_Reached,
-        get_template('email_inlined/petition_threshold_reached.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + 'End of message.',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [EMAIL_ADDR],
-        bcc=recipients
-    )
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Reached email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical("Petition Reached email FAILED\nPetition ID: " +
-                        str(petition.id) + "\nRecipients: " + str(recipients), exc_info=True)
-        raise e
+    email = generate_email(petition_id, 'threshold_reached', site_path, EMAIL_ADDR, recipients)
+    send_email(email, petition_id, 'Threshold Reached')
 
 
 @db_task(retries=3, retry_delay=3)
@@ -281,37 +180,8 @@ def petition_received(petition_id, site_path):
 
 @db_task(retries=3, retry_delay=3)
 def petition_needs_approval(petition_id, site_path):
-    petition = Petition.objects.get(pk=petition_id)
-
-    email = EmailMessage(
-        EmailTitles.Petition_Needs_Approval,
-        get_template('email_inlined/petition_needs_approval.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [petition.author.email]
-    )
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Needs Approval email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical(
-            "Petition Needs Approval email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        raise e
+    email = generate_email(petition_id, 'needs_approval', site_path)
+    send_email(email, petition_id, 'Needs Approval')
 
 
 @db_task(retries=3, retry_delay=3)
@@ -326,36 +196,21 @@ def petition_reported(petition_id, report_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = EmailMessage(
-        EmailTitles.Petition_Reported,
-        get_template('email_inlined/petition_reported.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'first_name': petition.author.first_name,
-                'author': petition.author.profile.full_name,
-                'reason': report.reported_for,
-                'reporter': reporter.profile.display_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [EMAIL_ADDR],
-        bcc=recipients
-    )
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Reported email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical(
-            "Petition Reported email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        raise e
+    email_data = {
+                    'petition_id': petition.id,
+                    'title': petition.title,
+                    'first_name': petition.author.first_name,
+                    'author': petition.author.profile.full_name,
+                    'reason': report.reported_for,
+                    'reporter': reporter.profile.display_name,
+                    'site_path': site_path,
+                    'protocol': 'https',
+                    'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
+                    'organization': ORGANIZATION,
+                    'email_header': COLORS['email_header'],
+                    'org_logo': ORG_LOGO,
+                    'name': NAME,
+                    'header_image': HEADER_IMAGE
+                 }
+    email = generate_email(petition_id, 'reported', site_path, EMAIL_ADDR, recipients, email_data)
+    send_email(email, petition_id, 'Reported')
