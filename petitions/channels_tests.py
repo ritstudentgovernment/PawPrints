@@ -26,12 +26,13 @@ async def test_websocket_consumer_failures():
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     # Send a totally invalid command
     await communicator.send_json_to({"invalid": "invalid"})
     response = await communicator.receive_json_from()
-    assert response == {
-        "text": "Error must sent a non-empty 'command' parameter"}
+    assert response == {"text": "Error must sent a non-empty 'command' parameter"}
 
     # Send list command with no sort field
     await communicator.send_json_to({"command": "list"})
@@ -54,6 +55,8 @@ async def test_websocket_consumer_none():
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     await communicator.send_json_to({"command": "search"})
     assert await communicator.receive_nothing() is True
@@ -102,6 +105,8 @@ async def test_websocket_consumer_get(django_user_model):
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     await communicator.send_json_to({"command": "get", "id": 45})
     response = await communicator.receive_json_from()
