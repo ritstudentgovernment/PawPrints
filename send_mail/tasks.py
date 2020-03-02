@@ -145,37 +145,8 @@ def petition_reached(petition_id, site_path):
 
 @db_task(retries=3, retry_delay=3)
 def petition_received(petition_id, site_path):
-    petition = Petition.objects.get(pk=petition_id)
-
-    email = EmailMessage(
-        EmailTitles.Petition_Received,
-        get_template('email_inlined/petition_rejected.html').render(
-            {
-                'petition_id': petition.id,
-                'title': petition.title,
-                'author': petition.author.profile.full_name,
-                'site_path': site_path,
-                'protocol': 'https',
-                'timestamp': time.strftime('[%H:%M:%S %d/%m/%Y]') + ' End of message',
-                'organization': ORGANIZATION,
-                'email_header': COLORS['email_header'],
-                'org_logo': ORG_LOGO,
-                'name': NAME,
-                'header_image': HEADER_IMAGE
-            }
-        ),
-        EMAIL_ADDR,
-        [petition.author.email]
-    )
-    email.content_subtype = "html"
-    try:
-        email.send()
-        logger.info(
-            "Petition Received email SENT \nPetition ID: " + str(petition.id))
-    except Exception as e:
-        logger.critical(
-            "Petition Received email FAILED \nPetition ID: " + str(petition.id), exc_info=True)
-        raise e
+    email = generate_email(petition_id, 'received', site_path)
+    send_email(email, petition_id, 'Received')
 
 
 @db_task(retries=3, retry_delay=3)
