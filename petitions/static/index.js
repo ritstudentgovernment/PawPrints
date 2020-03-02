@@ -1,4 +1,4 @@
-    window.debug = false;
+    window.debug = true;
     window.slideshow_images = {{ images|safe }};
     window.social = {{ social|safe }};
     /* Initialize the Vue.js wrappers for the page.
@@ -656,7 +656,7 @@
 
                     }
                     else if (command === "mark-in-progress") {
-                        // Handle someone marking a petition in progresss
+                        // Handle someone marking a petition in progress
 
                         if (websocket_debug) console.log("Petition was marked as in progress, updating it.");
                         petition_id = data["petition"]["petition_id"];
@@ -680,6 +680,21 @@
                         }
 
                     }
+                    else if (command === "paginate") {
+
+                        if (websocket_debug) {
+                            console.log("Trying to add the next page of petitions to the page.");
+                            console.log("List size before: " + petitions.list.length);
+                            console.log("Size of next page: " + data["petitions"].length);
+                        }
+                        petitions.list.push(...data["petitions"]);
+                        petitions.map = Object.assign(petitions.map, data["map"]);
+                        petitions.loading = false;
+                        window.last_paginate = data["petitions"];
+
+                        if (websocket_debug) console.log("List size after: " + petitions.list.length)
+
+                    }
                     else {
                         console.log("Unrecognized command: " + command);
                         console.log(data);
@@ -687,8 +702,6 @@
 
                 }
                 else {
-
-                    data = JSON.parse(data);
 
                     // Default behaviour is to update everything on response if no command is given.
                     if (data.hasOwnProperty("petitions")) {

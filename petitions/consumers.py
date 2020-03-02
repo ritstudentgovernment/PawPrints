@@ -13,7 +13,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 
-def serialize_petitions(petitions_obj, user=None):
+def get_petitions_and_map(petitions_obj, user=None):
     """
     Helper Function.
     Serializes petitions into JSON format for transmission back to the frontend via websocket.
@@ -69,10 +69,10 @@ def serialize_petitions(petitions_obj, user=None):
         })
         petition_map[petition.id] = x
 
-    return json.dumps({
+    return {
         "petitions": petitions,
         "map": petition_map
-    })
+    }
 
 
 def paginate(petitions, page): return petitions[(page-1)*45:page*45]
@@ -82,12 +82,15 @@ class PetitionConsumer(JsonWebsocketConsumer):
     def send_petitions_individually(self, petitions):
         for petition in petitions:
             petition = [petition]
-            petition = serialize_petitions(petition, self.scope["user"])
+            petition = get_petitions_and_map(petition, self.scope["user"])
 
-            self.send_json({"command": "get", "petition": petition})
+            self.send_json({"command": "get", "petition": json.dumps(petition)})
 
-    def send_petitions(self, petitions):
-        self.send_json(serialize_petitions(petitions))
+    def send_petitions(self, petitions, command=None):
+        petitions = get_petitions_and_map(petitions)
+        if command is not None:
+            petitions.update({"command": command})
+        self.send_json(petitions)
 
     def connect(self):
         """
@@ -152,7 +155,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     if data_id:
                         petition = [views.get_petition(
                             data_id, self.scope["user"])]
-                        petition = serialize_petitions(
+                        petition = get_petitions_and_map(
                             petition, self.scope["user"]) if petition[0] else False
                         reply = {
                             "command": "get",
@@ -180,7 +183,8 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             petitions = views.filtering_controller(
                                 petitions, data.get('filter'))
                         petitions = paginate(petitions, page)
-                        self.send_petitions(petitions)
+                        if len(petitions) > 0:
+                            self.send_petitions(petitions, 'paginate')
                         return None
 
                     self.send_json(

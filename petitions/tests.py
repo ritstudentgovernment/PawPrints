@@ -14,7 +14,7 @@ from django.utils import timezone
 
 from petitions.models import Petition, Response, Tag, Update
 
-from .consumers import serialize_petitions
+from .consumers import get_petitions_and_map
 from .views import (PETITION_DEFAULT_BODY, PETITION_DEFAULT_TITLE, edit_check,
                     get_petition, petition_edit, petition_sign, petition_report)
 
@@ -196,7 +196,7 @@ class PetitionTest(TestCase):
 
     def test_serialize_petitions(self):
         petitions = Petition.objects.all()
-        json_response = serialize_petitions(petitions)
+        json_response = get_petitions_and_map(petitions)
         # TODO: Improve this test to be more thorough
         self.assertNotEqual(json_response, None)
 
