@@ -439,6 +439,13 @@
 
     }
 
+    function setMapBasedOnLocation(petitions){
+        petitions = Array.isArray(petitions) ? petitions : [petitions];
+        petitions.forEach((petition) => {
+            window.petitions.map[petition.id] = window.petitions.list.indexOf(petition);
+        });
+    }
+
     function setupSocket(){
         /**
          * This function sets up and handles all websocket interactions.
@@ -616,7 +623,7 @@
                             if (petitions.map[petition.id] === undefined) {
 
                                 petitions.list.push(petition);
-                                petitions.map[petition.id] = petitions.list.indexOf(petition);
+                                setMapBasedOnLocation(petition);
                                 animateUpdate(petition.id);
 
                             }
@@ -689,14 +696,14 @@
                             console.log("Size of next page: " + data["petitions"].length);
                         }
                         petitions.list.push(...data["petitions"]);
-                        petitions.map = Object.assign(petitions.map, data["map"]);
-                        petitions.loading = false;
+                        setMapBasedOnLocation(data["petitions"]);
                         window.last_paginate = data["petitions"];
+                        petitions.loading = false;
 
                         if (websocket_debug) console.log("List size after: " + petitions.list.length)
 
                     }
-                    else {
+                    else if (websocket_debug) {
                         console.log("Unrecognized command: " + command);
                         console.log(data);
                     }
@@ -714,9 +721,9 @@
                             openPetition(petitionID, true);
                         }
                     }
-                    else {
+                    else if (websocket_debug) {
 
-                        if (websocket_debug) console.log("Default action failed; petitions object does not exist in response.");
+                        console.log("Default action failed; petitions object does not exist in response.");
 
                     }
 
@@ -726,8 +733,7 @@
             catch (error) {
 
                 // Catch any errors and reset the petition data.
-                console.log("Error: " + error + ". Data: ");
-                console.log(data);
+                console.error(error, data);
                 updatePetitionHistory(false);
 
             }
