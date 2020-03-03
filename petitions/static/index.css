@@ -694,14 +694,6 @@ progress::-webkit-progress-value{
         margin: 0 auto;
     }
 
-    #report-petition-card {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-        margin-right: 0;
-        padding: 0;
-    }
-
     #timeline-container {
         padding-left: 11%;
         overflow: auto;
@@ -724,6 +716,13 @@ progress::-webkit-progress-value{
     }
 }
 @media screen and (max-width: 830px){
+    #report-petition-card {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+        padding: 0;
+    }
     #action-drawer-icon-container{
         display: block;
     }
