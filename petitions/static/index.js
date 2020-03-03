@@ -41,6 +41,13 @@
                 return ordered;
             }
         },
+        methods: {
+            openPetition: (petition, event) => {
+                if(!event.target.classList.contains("tag")) {
+                    window.openPetition(petition.id);
+                }
+            }
+        },
         mounted() {
             window.addEventListener('resize', () => {
               this.width = window.innerWidth;
@@ -858,14 +865,6 @@
             actionCards.toggle(200,"linear",function(){
                 setContentAvailableSpace($("#petition-modal")); // Resize the box so it is the correct size.
             });
-        });
-
-        $(document).on("click", ".petition", function(e){
-            if(!$(e.target).hasClass("tag")){
-                var petitionID = $(this).data("petition-id");
-                openPetition(petitionID);
-            }
-
         });
 
         $(document).on("click","#sign-petition-button",function(){
