@@ -34,7 +34,7 @@ logger = logging.getLogger("pawprints." + __name__)
 
 # PETITION DEFAULT CONSTANTS.
 PETITION_DEFAULT_TITLE = CONFIG['petitions']['default_title']
-PETITION_DEFAULT_BODY = CONFIG['petitions']['default_title']
+PETITION_DEFAULT_BODY = CONFIG['petitions']['default_body']
 
 
 def index(request):
