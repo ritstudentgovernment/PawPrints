@@ -7,7 +7,7 @@ import pytest
 from channels.testing import WebsocketCommunicator
 from petitions.models import Petition, Tag
 
-from .consumers import PetitionConsumer, serialize_petitions
+from .consumers import PetitionConsumer, get_petitions_and_map
 
 
 class AuthWebsocketCommunicator(WebsocketCommunicator):
@@ -26,12 +26,13 @@ async def test_websocket_consumer_failures():
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     # Send a totally invalid command
     await communicator.send_json_to({"invalid": "invalid"})
     response = await communicator.receive_json_from()
-    assert response == {
-        "text": "Error must sent a non-empty 'command' parameter"}
+    assert response == {"text": "Error must sent a non-empty 'command' parameter"}
 
     # Send list command with no sort field
     await communicator.send_json_to({"command": "list"})
@@ -54,6 +55,8 @@ async def test_websocket_consumer_none():
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     await communicator.send_json_to({"command": "search"})
     assert await communicator.receive_nothing() is True
@@ -102,12 +105,14 @@ async def test_websocket_consumer_get(django_user_model):
     connected, subprotocol = await communicator.connect()
 
     assert connected
+    response = await communicator.receive_json_from()
+    assert response is not None
 
     await communicator.send_json_to({"command": "get", "id": 45})
     response = await communicator.receive_json_from()
     assert response == {"command": "get", "petition": False}
     """
-    dump = serialize_petitions([pet], user)
+    dump = get_petitions_and_map([pet], user)
     await communicator.send_json_to({"command": "get", "id": pet.id})
 
     response = await communicator.receive_json_from()
