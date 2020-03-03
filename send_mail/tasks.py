@@ -106,7 +106,7 @@ def petition_update(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = generate_email(petition_id, 'status_update', site_path, EMAIL_ADDR, recipients)
+    email = generate_email(petition_id, 'updated', site_path, EMAIL_ADDR, recipients)
     send_email(email, petition_id, 'Status Update')
 
 
@@ -121,7 +121,7 @@ def petition_responded(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = generate_email(petition_id, 'response_received', site_path, EMAIL_ADDR, recipients)
+    email = generate_email(petition_id, 'responded', site_path, EMAIL_ADDR, recipients)
     send_email(email, petition_id, 'Response Received')
 
 
@@ -139,7 +139,7 @@ def petition_reached(petition_id, site_path):
     # Construct array of email addresses
     recipients = [prof.user.email for prof in users]
 
-    email = generate_email(petition_id, 'threshold_reached', site_path, EMAIL_ADDR, recipients)
+    email = generate_email(petition_id, 'reached', site_path, EMAIL_ADDR, recipients)
     send_email(email, petition_id, 'Threshold Reached')
 
 
