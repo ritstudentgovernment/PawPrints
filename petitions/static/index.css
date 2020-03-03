@@ -643,14 +643,17 @@ progress::-webkit-progress-value{
     #action-cards{
         width: 100%;
         float: none;
-        -webkit-column-count: 5; /* Chrome, Safari, Opera */
-        -moz-column-count: 5; /* Firefox */
-        column-count: 5;
+        -webkit-column-count: 4; /* Chrome, Safari, Opera */
+        -moz-column-count: 4; /* Firefox */
+        column-count: 4;
         -moz-column-gap: 0.5em;
         -webkit-column-gap: 0.5em;
         column-gap: 0.5em;
         white-space:nowrap;
         overflow: hidden;
+    }
+    .petition-action-card{
+        width: 55%;
     }
 }
 @media screen and (max-width: 1020px){
