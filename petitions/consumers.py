@@ -16,9 +16,9 @@ from channels.generic.websocket import JsonWebsocketConsumer
 def get_petitions_and_map(petitions_obj, user=None):
     """
     Helper Function.
-    Serializes petitions into JSON format for transmission back to the frontend via websocket.
+    Gathers and properly formats petitions for transmission back to the frontend via websocket.
     :param petitions_obj: Database object of petitions.
-    :return: JSON formatted dump of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
+    :return: formatted object of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
     """
 
     # Initialize variables
