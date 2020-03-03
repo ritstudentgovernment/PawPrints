@@ -148,6 +148,11 @@ def petition_received(petition_id, site_path):
     email = generate_email(petition_id, 'received', site_path)
     send_email(email, petition_id, 'Received')
 
+@db_task(retries=3, retry_delay=3)
+def petition_charged(petition_id, site_path):
+    email = generate_email(petition_id, 'charged', site_path)
+    send_email(email, petition_id, 'Charged')
+
 
 @db_task(retries=3, retry_delay=3)
 def petition_needs_approval(petition_id, site_path):

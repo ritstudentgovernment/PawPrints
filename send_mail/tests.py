@@ -60,3 +60,9 @@ class EmailTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, EmailTitles.Petition_Reported)
+
+    def test_petition_charged(self):
+        petition_charged(self.petition.id, self.report.id, 'test_path')
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, EmailTitles.Petition_Charged)
