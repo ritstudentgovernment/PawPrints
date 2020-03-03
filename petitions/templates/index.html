@@ -109,13 +109,6 @@
                             </div>
                         {% endif %}
                         <div id="action-cards" class="block overflow-hidden right">
-                            {% if user.first_name %}
-                                <div class="margin-right padding-right right padding-top margin-top">
-                                    <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
-                                </div>
-                            {% else %}
-                                <div class="petition-action-card"></div>
-                            {% endif %}
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
                                 <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
@@ -137,6 +130,11 @@
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
                                 <span class="alternate-font" v-else>In Progress</span>
                             </div>
+                            {% if user.first_name %}
+                                <div class="margin-right padding-right right padding-top margin-top" id=report-petition-card>
+                                    <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
+                                </div>
+                            {% endif %}
                         </div>
                         <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
                     </div>

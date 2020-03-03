@@ -640,20 +640,17 @@ progress::-webkit-progress-value{
     }
 }
 @media screen and (max-width: 1170px) and (min-width: 890px){
-    #action-cards{
-        width: 100%;
+    #petition-actions {
+        text-align: center;
+    }
+    #action-cards {
         float: none;
-        -webkit-column-count: 4; /* Chrome, Safari, Opera */
-        -moz-column-count: 4; /* Firefox */
-        column-count: 4;
-        -moz-column-gap: 0.5em;
-        -webkit-column-gap: 0.5em;
-        column-gap: 0.5em;
-        white-space:nowrap;
-        overflow: hidden;
+        display: inline-block;
+        margin: 0 auto;
     }
     .petition-action-card{
-        width: 55%;
+        width: auto;
+        text-align: center;
     }
 }
 @media screen and (max-width: 1020px){
@@ -695,6 +692,14 @@ progress::-webkit-progress-value{
         float: none;
         display: inline-block;
         margin: 0 auto;
+    }
+
+    #report-petition-card {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 0;
+        padding: 0;
     }
 
     #timeline-container {
