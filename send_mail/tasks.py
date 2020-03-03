@@ -29,14 +29,14 @@ HEADER_IMAGE = settings.CONFIG['email']['header_image']
 
 class EmailTitles():
     Petition_Approved = email_titles['approved']
-    Petition_Rejected = email_titles['rejected']
-    Petition_Update = email_titles['updated']
-    Petition_Responded = email_titles['responded']
-    Petition_Reached = email_titles['reached']
-    Petition_Needs_Approval = email_titles['needs_approval']
-    Petition_Received = email_titles['received']
-    Petition_Reported = email_titles['reported']
     Petition_Charged = email_titles['charged']
+    Petition_Needs_Approval = email_titles['needs_approval']
+    Petition_Reached = email_titles['reached']
+    Petition_Received = email_titles['received']
+    Petition_Rejected = email_titles['rejected']
+    Petition_Reported = email_titles['reported']
+    Petition_Responded = email_titles['responded']
+    Petition_Update = email_titles['updated']
 
 
 def generate_email(petition_id, event, site_path, to=None, bcc=None, email_data=None):
