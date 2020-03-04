@@ -20,7 +20,7 @@ function verifyInputs(){
         var input = $(this);
         var value;
         if(input.hasClass("editable")){
-            value = tinyMCE.get(input.attr("id")).getContent();
+            value = $(tinyMCE.get(input.attr("id")).getContent()).text();
             if(value.trim() === "" || ( scoreLikeness(value, "{{ default_title }}") > .90 ) || ( scoreLikeness(value, "{{ default_body }}") > .90 ) ){
                 allPass = thisPass = false;
                 input.addClass("error");
