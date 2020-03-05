@@ -305,8 +305,11 @@ class PetitionTest(TestCase):
         }
         self.assertEqual(self.petitionPublished.in_progress, None)
 
-        response = self.client.post(
+        request = self.factory.post(
             '/petition/update/' + str(self.petitionPublished.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petitionPublished.id)
 
         self.assertNotEqual(response.status_code, 404)
 

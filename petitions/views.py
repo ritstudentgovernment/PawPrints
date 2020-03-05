@@ -544,6 +544,8 @@ def petition_edit(request, petition_id):
                 }
                 send_update(data)
 
+                petition_charged(petition_id, request.META['HTTP_HOST'])
+
             elif attribute == "unpublish":
 
                 petition.status = 2

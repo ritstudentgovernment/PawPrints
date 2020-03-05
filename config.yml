@@ -49,6 +49,7 @@ email:
   needs_approval: "PawPrints - Petition needs approval"
   received: "PawPrints - Petition received"
   reported: "PawPrints - A Petition has been reported by a member of the community."
+  charged: "PawPrints - Petition has been charged!"
 
   header_image: "/images/pawprintsemail.png" # image located in /static/
 
