@@ -36,7 +36,7 @@
             </div>
             <div class="modal-body relative block">
                 <div id="timeline-container">
-                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type" :data-element="index">
+                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in sortedTimeline" v-bind:key="index" :data-type="element.type" :data-element="index">
                         <div class="timeline-element-wrap">
                             <div class="timeline-element-arrow-container">
                                 <div class="timeline-element-arrow" v-if="element.type != 'created'"></div>
