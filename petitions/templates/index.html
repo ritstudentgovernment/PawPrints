@@ -165,13 +165,6 @@
         <div id="parallax-overlay" class="full-width">
             <h1>{{ slideshow_bold|title }}</h1>
             <h3>{{ slideshow_first }}<br />{{ slideshow_second }}</h3>
-            <label id="search-container" for="search-term" class="full-width cursor">
-                <div class="material-icon-container">
-                    <i class="material-icons">search</i>
-                    <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                    <span class="">Search Petitions</span>
-                </div>
-            </label>
         </div>
     </section>
 
@@ -213,6 +206,15 @@
         </nav>
 
         <div id="petitions" class="right">
+            <div id="search-container" class="padding-top center">
+                <label for="search-term" class="block white-background margin-top padding cursor">
+                    <div class="material-icon-container">
+                        <i class="material-icons">search</i>
+                        <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
+                        <span class="">Search Petitions</span>
+                    </div>
+                </label>
+            </div>
             <div class="block padding text-center" v-if="list.length == 0 && !loading">
                 <span class="padding-top">No petitions fit that query!</span>
             </div>

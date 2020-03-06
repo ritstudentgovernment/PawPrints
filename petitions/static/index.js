@@ -14,9 +14,11 @@
         el: "#petitions",
         data: {
             width: window.innerWidth,
+            searchString: '',
+            timeout: false,
             loading: true,
             list: [],
-            map: {}
+            map: {},
         },
         computed: {
             orderedList: function () {
@@ -50,6 +52,29 @@
                 if(!event.target.classList.contains("tag")) {
                     window.openPetition(petition.id);
                 }
+            },
+            search: function(){
+                if (this.timeout) clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    if(this.searchString.trim() !== ""){
+                        this.loading = true;
+                        this.map = {};
+                        this.list = [];
+                        socket.send('{"command":"search","query":"'+this.searchString+'"}');
+                        window.searched = true;
+                        setTimeout(() => {
+                            // Timeout waiting for the websocket response after 3 seconds.
+                            petitions.loading = false;
+                        },3000);
+                    }
+                    else{
+                        window.searched = false;
+                        var sort = $("#sort");
+                        var filter_tag = sort.data("filter");
+                        var sort_by = sort.val();
+                        reloadPetitions(sort_by, filter_tag, socket);
+                    }
+                },300);
             }
         },
         mounted() {
@@ -105,42 +130,6 @@
 
                 // Let the body scroll again.
                 $("html, body").removeClass("no-scroll");
-            }
-        }
-    });
-    /**
-     * "search" defines how searching petitions is handled.
-     * It is bound to the search-container element.
-     **/
-    timeout = setTimeout(function(){},0);
-    var search = new Vue({
-        el:"#search-container",
-        data:{
-            searchString: ""
-        },
-        methods:{
-            search: function(){
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    if(search.searchString.trim() !== ""){
-                        petitions.loading = true;
-                        petitions.map = {};
-                        petitions.list = [];
-                        socket.send('{"command":"search","query":"'+search.searchString+'"}');
-                        window.searched = true;
-                        setTimeout(function(){
-                            // Timeout waiting for the websocket response after 3 seconds.
-                            petitions.loading = false;
-                        },3000);
-                    }
-                    else{
-                        window.searched = false;
-                        var sort = $("#sort");
-                        var filter_tag = sort.data("filter");
-                        var sort_by = sort.val();
-                        reloadPetitions(sort_by, filter_tag, socket);
-                    }
-                },300);
             }
         }
     });
