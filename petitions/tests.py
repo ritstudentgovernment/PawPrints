@@ -78,7 +78,7 @@ class PetitionTest(TestCase):
         self.assertTemplateUsed(response, '404.html')
 
     def test_petition_edit(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         # Change petition title to 'New'
         obj = {
             "attribute": "title",
@@ -190,7 +190,7 @@ class PetitionTest(TestCase):
     def test_check_edit(self):
         self.client.force_login(self.user)
         self.assertEqual(edit_check(self.user, self.petition), True)
-        self.assertEqual(edit_check(self.superUser, self.petition), True)
+        self.assertEqual(edit_check(self.superUser, self.petition), False)
         self.assertEqual(edit_check(self.superUser2, self.petition), False)
         self.assertEqual(edit_check(self.user2, self.petition), False)
 
@@ -208,7 +208,7 @@ class PetitionTest(TestCase):
                              status_code=302, target_status_code=200)
 
     def test_edit_petition_description(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         obj = {
             "attribute": "description",
             "value": "test test test"
@@ -221,7 +221,7 @@ class PetitionTest(TestCase):
         self.assertEqual(pet.description, "test test test")
 
     def test_petition_add_tag(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         tag = Tag(name='test tag2')
         tag.save()
         obj = {
@@ -238,7 +238,7 @@ class PetitionTest(TestCase):
             self.fail("tag not added")
 
     def test_petition_remove_tag(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         tag = Tag(name='test tag2')
         tag.save()
         self.petition.tags.add(tag)
