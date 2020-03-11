@@ -407,7 +407,7 @@
             // Begin the fade in animation
             var modal = $("#petition-modal");
             modal.removeClass("hidden");
-            modal.find(".modal-overlay").fadeIn(400, () => {
+            modal.find(".modal-overlay").fadeIn(400, function () {
                 $(this).removeClass("hidden");
             });
 
@@ -427,7 +427,7 @@
 
             });
 
-            $(document).on("keyup", (e) => {
+            $(document).on("keyup", function () {
                 if(e.keyCode === 27){ // Close the petition when you press the escape key.
                     modalData.closePetition();
                     $(document).unbind("keyup");
