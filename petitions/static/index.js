@@ -824,7 +824,7 @@
         $(".slideshow-container").slideshow();
 
         // Event Listeners.
-        $(document).on("click", ".tag", () => {
+        $(document).on("click", ".tag", function () {
             // Bind the click event on elements with the tag class
 
             // Get the tag name
@@ -846,7 +846,7 @@
 
         });
 
-        $("#sort").change(() => {
+        $("#sort").change(function () {
 
             // Grab the tag name
             var filter_tag = $("#sort").data("filter");
@@ -859,7 +859,7 @@
 
         });
 
-        $("#mobile-filter").change(() => {
+        $("#mobile-filter").change(function () {
 
             // Grab the tag name
             var filter_tag = $(this).val();
@@ -873,7 +873,7 @@
 
         });
 
-        $(document).on("click","#action-drawer-icon-container", () => {
+        $(document).on("click","#action-drawer-icon-container", function () {
             var me = $(this);
             var icon = me.find("i");
             var actionCards = $("#action-cards");
@@ -886,7 +886,7 @@
                 actionCards.data("closed",false);
             }
             setContentAvailableSpace($("#petition-modal"),200); // Extend the petition modal box too much so the animation is smooth
-            actionCards.toggle(200,"linear",function(){
+            actionCards.toggle(200,"linear",function () {
                 setContentAvailableSpace($("#petition-modal")); // Resize the box so it is the correct size.
             });
         });
