@@ -807,6 +807,9 @@ progress::-webkit-progress-value{
         width: 100%;
         padding-top:10px;
     }
+    #search-container{
+        margin-bottom: -12px;
+    }
 }
 @media screen and (max-width: 600px){
     #petition-modal #timeline-container{
