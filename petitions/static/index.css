@@ -35,7 +35,7 @@
 #parallax-overlay{
     text-align: center;
     color: #fff;
-    top: calc( 20 / (6vw + 20vh)) !important;
+    top: 35% !important;
 }
 #parallax-overlay h1{
     min-width: 45%;
