@@ -87,7 +87,8 @@ class PetitionConsumer(JsonWebsocketConsumer):
             self.send_json({"command": "get", "petition": json.dumps(petition)})
 
     def send_petitions(self, petitions, command=None):
-        petitions = get_petitions_and_map(petitions, self.scope["user"])
+        user = self.scope["user"] if hasattr(self.scope, "user") else None
+        petitions = get_petitions_and_map(petitions, user)
         if command is not None:
             petitions.update({"command": command})
         self.send_json(petitions)
