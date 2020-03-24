@@ -74,7 +74,7 @@
                         var sort_by = sort.val();
                         reloadPetitions(sort_by, filter_tag, socket);
                     }
-                },300);
+                },600);
             }
         },
         mounted() {

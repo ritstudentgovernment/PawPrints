@@ -210,8 +210,8 @@
                 <label for="search-term" class="block white-background margin-top padding cursor">
                     <div class="material-icon-container">
                         <i class="material-icons">search</i>
-                        <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                        <span class="">Search Petitions</span>
+                        <input id='search-term' v-model="searchString" @keyup="search" :class="(searchString ? 'searched ' : '') + 'material-input'" type="text" />
+                        <span id="search-bar-label">Search Petitions</span>
                     </div>
                 </label>
             </div>
