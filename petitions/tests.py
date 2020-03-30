@@ -14,7 +14,7 @@ from django.utils import timezone
 
 from petitions.models import Petition, Response, Tag, Update
 
-from .consumers import serialize_petitions
+from .consumers import get_petitions_and_map
 from .views import (PETITION_DEFAULT_BODY, PETITION_DEFAULT_TITLE, edit_check,
                     get_petition, petition_edit, petition_sign, petition_report)
 
@@ -78,7 +78,7 @@ class PetitionTest(TestCase):
         self.assertTemplateUsed(response, '404.html')
 
     def test_petition_edit(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         # Change petition title to 'New'
         obj = {
             "attribute": "title",
@@ -190,13 +190,13 @@ class PetitionTest(TestCase):
     def test_check_edit(self):
         self.client.force_login(self.user)
         self.assertEqual(edit_check(self.user, self.petition), True)
-        self.assertEqual(edit_check(self.superUser, self.petition), True)
+        self.assertEqual(edit_check(self.superUser, self.petition), False)
         self.assertEqual(edit_check(self.superUser2, self.petition), False)
         self.assertEqual(edit_check(self.user2, self.petition), False)
 
     def test_serialize_petitions(self):
         petitions = Petition.objects.all()
-        json_response = serialize_petitions(petitions)
+        json_response = get_petitions_and_map(petitions)
         # TODO: Improve this test to be more thorough
         self.assertNotEqual(json_response, None)
 
@@ -208,7 +208,7 @@ class PetitionTest(TestCase):
                              status_code=302, target_status_code=200)
 
     def test_edit_petition_description(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         obj = {
             "attribute": "description",
             "value": "test test test"
@@ -221,7 +221,7 @@ class PetitionTest(TestCase):
         self.assertEqual(pet.description, "test test test")
 
     def test_petition_add_tag(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         tag = Tag(name='test tag2')
         tag.save()
         obj = {
@@ -238,7 +238,7 @@ class PetitionTest(TestCase):
             self.fail("tag not added")
 
     def test_petition_remove_tag(self):
-        self.client.force_login(self.superUser)
+        self.client.force_login(self.user)
         tag = Tag(name='test tag2')
         tag.save()
         self.petition.tags.add(tag)
@@ -305,8 +305,11 @@ class PetitionTest(TestCase):
         }
         self.assertEqual(self.petitionPublished.in_progress, None)
 
-        response = self.client.post(
+        request = self.factory.post(
             '/petition/update/' + str(self.petitionPublished.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petitionPublished.id)
 
         self.assertNotEqual(response.status_code, 404)
 

@@ -36,7 +36,7 @@
             </div>
             <div class="modal-body relative block">
                 <div id="timeline-container">
-                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in timeline" v-bind:key="index" :data-type="element.type" :data-element="index">
+                    <div class="timeline-element material-shadow animated zoomIn relative" v-for="(element, index) in sortedTimeline" v-bind:key="index" :data-type="element.type" :data-element="index">
                         <div class="timeline-element-wrap">
                             <div class="timeline-element-arrow-container">
                                 <div class="timeline-element-arrow" v-if="element.type != 'created'"></div>
@@ -109,11 +109,6 @@
                             </div>
                         {% endif %}
                         <div id="action-cards" class="block overflow-hidden right">
-                            {% if user.first_name %}
-                                <div class="margin-right padding-right right padding-top margin-top">
-                                    <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
-                                </div>
-                            {% endif %}
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
                                 <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
@@ -135,6 +130,11 @@
                                 <span class="alternate-font" v-else-if="petition.expired">Expired</span>
                                 <span class="alternate-font" v-else>In Progress</span>
                             </div>
+                            {% if user.first_name %}
+                                <div class="margin-right padding-right right padding-top margin-top" id=report-petition-card>
+                                    <a href="#" id="report-petition-link" class="text-highlight">Report This Petition</a>
+                                </div>
+                            {% endif %}
                         </div>
                         <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
                     </div>
@@ -165,13 +165,6 @@
         <div id="parallax-overlay" class="full-width">
             <h1>{{ slideshow_bold|title }}</h1>
             <h3>{{ slideshow_first }}<br />{{ slideshow_second }}</h3>
-            <label id="search-container" for="search-term" class="full-width cursor">
-                <div class="material-icon-container">
-                    <i class="material-icons">search</i>
-                    <input id='search-term' v-model="searchString" @keyup="search" class="material-input" type="text" />
-                    <span class="">Search Petitions</span>
-                </div>
-            </label>
         </div>
     </section>
 
@@ -213,11 +206,20 @@
         </nav>
 
         <div id="petitions" class="right">
+            <div id="search-container" class="padding-top center">
+                <label for="search-term" class="block white-background margin-top padding cursor">
+                    <div class="material-icon-container">
+                        <i class="material-icons">search</i>
+                        <input id='search-term' v-model="searchString" @keyup="search" :class="(searchString ? 'searched ' : '') + 'material-input'" type="text" />
+                        <span id="search-bar-label">Search Petitions</span>
+                    </div>
+                </label>
+            </div>
             <div class="block padding text-center" v-if="list.length == 0 && !loading">
                 <span class="padding-top">No petitions fit that query!</span>
             </div>
             <div v-if="list.length > 0" id="petitions-container">
-                <article v-for="petition in list" v-if="!petition.deleted" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" :data-petition-id="petition.id">
+                <article v-for="petition in orderedList" v-if="!petition.deleted" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" @click="openPetition(petition, $event)">
                     <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
                     <div class="petition-body">
                         <h4 class="petition-signatures">

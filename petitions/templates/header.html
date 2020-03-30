@@ -10,12 +10,10 @@
 
 {% if generate_top_nav %}
 <nav>
-    <div class = "header-top">
-
+    <div class="header-top">
         <div class="dropdown-left">
             <a href="https://sg.rit.edu/">RIT Student Government</a>
         </div>
-
         <div class="dropdown-right-main">
             <button id="1" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">
                 About
@@ -25,49 +23,33 @@
                     <a href="https://sg.rit.edu/about/">Structure</a>
                     <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
                     <a href="https://sg.rit.edu/about/committees/">Committees</a>
-                    <a href="https://sg.rit.edu/about/msos/">MSO's</a>
-                    <a href="https://sg.rit.edu/awards/">Awards</a>
+                    <a href="https://sg.rit.edu/about/msos/">RSO's</a>
                 </div>
             </button>
-
-            <button id="2" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Services
+            <button id="2" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">
+                Services
                 <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
                 <div id="myDropdown2" class="dropdown-content">
                     <a href="https://sg.rit.edu/services/">Services Overview</a>
                     <a href="https://pawprints.rit.edu/">Paw Prints</a>
-                    <a href="https://bikeshare.rit.edu/">Bike Share</a>
                     <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
                     <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
                     <a href="https://openevals.rit.edu/">Open Evals</a>
-                    <a href="https://sites.sg.rit.edu/">SG Sites</a>
                     <a href="https://sg.rit.edu/finance/">Finance</a>
-                    <a href="https://sg.rit.edu/breakbus/">Bike Share</a>
+                    <a href="https://sg.rit.edu/breakbus/">Break Bus</a>
                 </div>
             </button>
-
-            <button id="3" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Resources
-                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
-                <div id="myDropdown3" class="dropdown-content">
-                    <a href="https://sg.rit.edu/sgupdates/">SG Updates</a>
-                    <a href="https://sg.rit.edu/resources/">Resourse List</a>
-                    <a href="https://sg.rit.edu/resources/sg-logos/">SG Logos</a>
-                </div>
+            <button id="3" class="dropbtn">
+                <a href="https://sg.rit.edu/resources/" class="white-text">Resources</a>
             </button>
-
-            <button id="4" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn">Get Involved
-                <i class="material-icons" style="font-size:12px;font-weight: bold;">keyboard_arrow_down</i>
-                <div id="myDropdown4" class="dropdown-content">
-                    <a href="https://sg.rit.edu/spirit/">Project SpiRIT</a>
-                    <a href="https://sg.rit.edu/get-involved/events-calendar/">Event Calendar</a>
-                    <a href="https://sg.rit.edu/get-involved/">Opportunities</a>
-                </div>
+            <button id="4" class="dropbtn">
+                <a href="https://sg.rit.edu/get-involved/" class="white-text">Get Involved</a>
             </button>
         </div>
-
         <div class="dropdown-right-mobile">
-            <button id="10" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)" class="dropbtn-mobile">
+            <button id="10" onmouseover="openDropdown(this.id)" onmouseout="closeDropdown(this.id)"
+                    class="dropbtn-mobile">
                 <i class="material-icons">dehaze</i>
-
                 <div id="myDropdown10" class="dropdown-content-mobile">
 
                     <p>About</p>
@@ -75,34 +57,27 @@
                     <a href="https://sg.rit.edu/about/">Structure</a>
                     <a href="https://sg.rit.edu/about/mission-and-vision/">Mission and Vision</a>
                     <a href="https://sg.rit.edu/about/committees/">Committees</a>
-                    <a href="https://sg.rit.edu/about/msos/">MSO's</a>
-                    <a href="https://sg.rit.edu/awards/">Awards</a>
+                    <a href="https://sg.rit.edu/about/msos/">RSO's</a>
 
                     <p>Services</p>
                     <a href="https://sg.rit.edu/services/">Overview</a>
                     <a href="https://pawprints.rit.edu/">Paw Prints</a>
-                    <a href="https://bikeshare.rit.edu/">Bike Share</a>
                     <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
                     <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
                     <a href="https://openevals.rit.edu/">Open Evals</a>
                     <a href="https://sites.sg.rit.edu/">SG Sites</a>
                     <a href="https://sg.rit.edu/finance/">Finance</a>
-                    <a href="https://sg.rit.edu/breakbus/">Bike Share</a>
+                    <a href="https://sg.rit.edu/breakbus/">Break Bus</a>
 
                     <p>Resources</p>
-                    <a href="https://sg.rit.edu/sgupdates/">SG Updates</a>
-                    <a href="https://sg.rit.edu/resources/">Resourse List</a>
-                    <a href="https://sg.rit.edu/resources/sg-logos/">SG Logos</a>
+                    <a href="https://sg.rit.edu/resources/">Resources List</a>
 
                     <p>Get Involved</p>
-                    <a href="https://sg.rit.edu/spirit/">Project SpiRIT</a>
-                    <a href="https://sg.rit.edu/get-involved/events-calendar/">Event Calendar</a>
                     <a href="https://sg.rit.edu/get-involved/">Opportunities</a>
+
                 </div>
             </button>
-
         </div>
-
     </div>
 </nav>
 {% endif %}

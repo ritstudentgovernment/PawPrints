@@ -13,12 +13,12 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 
 
-def serialize_petitions(petitions_obj, user=None):
+def get_petitions_and_map(petitions_obj, user=None):
     """
     Helper Function.
-    Serializes petitions into JSON format for transmission back to the frontend via websocket.
+    Gathers and properly formats petitions for transmission back to the frontend via websocket.
     :param petitions_obj: Database object of petitions.
-    :return: JSON formatted dump of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
+    :return: formatted object of the sent petitions: {"petitions": [ {}, ... ], "map":[ ... ]}.
     """
 
     # Initialize variables
@@ -69,10 +69,10 @@ def serialize_petitions(petitions_obj, user=None):
         })
         petition_map[petition.id] = x
 
-    return json.dumps({
+    return {
         "petitions": petitions,
         "map": petition_map
-    })
+    }
 
 
 def paginate(petitions, page): return petitions[(page-1)*45:page*45]
@@ -82,9 +82,16 @@ class PetitionConsumer(JsonWebsocketConsumer):
     def send_petitions_individually(self, petitions):
         for petition in petitions:
             petition = [petition]
-            petition = serialize_petitions(petition, self.scope["user"])
+            petition = get_petitions_and_map(petition, self.scope["user"])
 
-            self.send_json({"command": "get", "petition": petition})
+            self.send_json({"command": "get", "petition": json.dumps(petition)})
+
+    def send_petitions(self, petitions, command=None):
+        user = self.scope["user"] if hasattr(self.scope, "user") else None
+        petitions = get_petitions_and_map(petitions, user)
+        if command is not None:
+            petitions.update({"command": command})
+        self.send_json(petitions)
 
     def connect(self):
         """
@@ -102,7 +109,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
         self.accept()
 
-        self.send_petitions_individually(petitions)
+        self.send_petitions(petitions)
 
     def disconnect(self, close_code):
         """
@@ -135,7 +142,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             petitions = views.filtering_controller(
                                 petitions, data.get('filter'))
 
-                        self.send_petitions_individually(petitions)
+                        self.send_petitions(petitions)
 
                         return None
 
@@ -149,7 +156,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     if data_id:
                         petition = [views.get_petition(
                             data_id, self.scope["user"])]
-                        petition = serialize_petitions(
+                        petition = get_petitions_and_map(
                             petition, self.scope["user"]) if petition[0] else False
                         reply = {
                             "command": "get",
@@ -163,7 +170,7 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     query = data.get('query', '')
                     if query:
                         petitions = views.sorting_controller("search", query)
-                        self.send_petitions_individually(petitions)
+                        self.send_petitions(petitions)
                         return None
                     return None
                 elif command == 'paginate':
@@ -177,12 +184,12 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             petitions = views.filtering_controller(
                                 petitions, data.get('filter'))
                         petitions = paginate(petitions, page)
-                        self.send_petitions_individually(petitions)
+                        if len(petitions) > 0:
+                            self.send_petitions(petitions, 'paginate')
                         return None
 
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
                     return None
-            self.send_json(
-                {"text": "Error must sent a non-empty 'command' parameter"})
+            self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
             return None

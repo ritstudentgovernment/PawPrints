@@ -34,7 +34,7 @@ logger = logging.getLogger("pawprints." + __name__)
 
 # PETITION DEFAULT CONSTANTS.
 PETITION_DEFAULT_TITLE = CONFIG['petitions']['default_title']
-PETITION_DEFAULT_BODY = CONFIG['petitions']['default_title']
+PETITION_DEFAULT_BODY = CONFIG['petitions']['default_body']
 
 
 def index(request):
@@ -459,15 +459,14 @@ def petition_edit(request, petition_id):
 
     # create the petition object based on the petition id sent.
     petition = get_object_or_404(Petition, pk=petition_id)
+    attribute = request.POST.get("attribute")
+    value = request.POST.get("value")
 
     # Check if the user is able to edit
     if edit_check(request.user, petition):
 
         logger.info('user ' + request.user.email + ' edited petition ' +
                     petition.title + " ID: " + str(petition.id))
-
-        attribute = request.POST.get("attribute")
-        value = request.POST.get("value")
 
         if attribute == "publish":
 
@@ -520,62 +519,67 @@ def petition_edit(request, petition_id):
 
             petition.tags.remove(value)
 
-        elif request.user.is_staff:
+        elif not request.user.is_staff:
+            # Only send this error if the petition author is not an admin, because admin operations
+            # have not been checked yet.
+            return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
 
-            # STAFF ONLY OPERATIONS
+    # Otherwise, check if they are an admin
+    elif request.user.is_staff:
+        # STAFF ONLY OPERATIONS
 
-            if attribute == "add_update":
+        if attribute == "add_update":
 
-                return add_update(request, petition, value)
+            return add_update(request, petition, value)
 
-            elif attribute == "response":
+        elif attribute == "response":
 
-                return add_response(request, petition, value)
+            return add_response(request, petition, value)
 
-            elif attribute == "mark-in-progress":
+        elif attribute == "mark-in-progress":
 
-                petition.in_progress = True
+            petition.in_progress = True
 
-                data = {
-                    "command": "mark-in-progress",
-                    "petition": {
-                        "petition_id": petition_id
-                    }
+            data = {
+                "command": "mark-in-progress",
+                "petition": {
+                    "petition_id": petition_id
                 }
-                send_update(data)
+            }
+            send_update(data)
 
-            elif attribute == "unpublish":
+            petition_charged(petition_id, request.META['HTTP_HOST'])
 
-                petition.status = 2
+        elif attribute == "unpublish":
 
-                # Send unpublish command over websocket
-                data = {
-                    "command": "remove-petition",
-                    "petition": {
-                        "petition_id": petition_id
-                    }
+            petition.status = 2
+
+            # Send unpublish command over websocket
+            data = {
+                "command": "remove-petition",
+                "petition": {
+                    "petition_id": petition_id
                 }
-                send_update(data)
+            }
+            send_update(data)
 
-                # Notify author that the petition was rejected over email.
-                petition_rejected(petition_id, request.META['HTTP_HOST'])
+            # Notify author that the petition was rejected over email.
+            petition_rejected(petition_id, request.META['HTTP_HOST'])
 
-            elif attribute == "editUpdate":
+        elif attribute == "editUpdate":
 
-                new_value = json2obj(value)
-                position = int(new_value.position)
-                description = new_value.update
+            new_value = json2obj(value)
+            position = int(new_value.position)
+            description = new_value.update
 
-                return edit_update(request, petition, position, description)
+            return edit_update(request, petition, position, description)
 
-            elif attribute == "editResponse":
+        elif attribute == "editResponse":
 
-                return edit_response(request, petition, value)
-
-            else:
-                return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
+            return edit_response(request, petition, value)
 
         else:
+
             return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
 
     else:
@@ -695,7 +699,7 @@ def petition_unpublish(request, petition_id):
     user = request.user
     petition = get_object_or_404(Petition, pk=petition_id)
 
-    if edit_check(user, petition):
+    if user.is_staff:
         # Set status to 2 to hide it from view.
         petition.status = 2
         petition.save()
@@ -757,9 +761,8 @@ def edit_check(user, petition):
     if user.is_authenticated:
         # Check if the user's account is active (it may be disabled)
         if user.is_active:
-            # Check if the user is a staff member or the author of the petition.
-            # If it is the petition's author, the petition must not have already been published.
-            if user.is_staff or (user.id == petition.author.id and petition.status == 0):
+            # Check if the user the author of the petition and the petition must not have already been published.
+            if user.id == petition.author.id and petition.status == 0:
                 # The user is authenticated, and can edit the petition!
                 edit = True
     return edit
