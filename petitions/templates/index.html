@@ -227,9 +227,11 @@
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
                             <span v-if="petition.isSigned"> | <span class="bold">Signed</span></span>
-                            <span v-if="petition.response" class="right">Responded</span>
-                            <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
-                            <span v-else-if="petition.in_progress" class="right">In Progress</span>
+                            <span v-if="petition.response" class="right petition-responded">Responded</span>
+                            <span v-else-if="petition.updates.length > 0" class="right petition-charged">Updated</span>
+                            <span v-else-if="petition.in_progress" class="right petition-charged">In Progress</span>
+                            <span v-else-if="petition.signatures >= 200" class="right petition-charged">Threshold Met</span>
+                            <span v-else class="right signatures-missing">Needs {[ 200 - petition.signatures ]} Signatures</span>
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>

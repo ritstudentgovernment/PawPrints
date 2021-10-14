@@ -7,6 +7,18 @@
 .bright-text{
     color: {{ colors.bright_text }} !important;
 }
+.petition-responded {
+    color: #20c73e;
+    font-weight: bold;
+}
+.petition-charged {
+    color: #edd013;
+    font-weight: bold;
+}
+.signatures-missing {
+    color: #f36e21;
+    font-weight: bold;
+}
 .modern-link{
     color: {{ colors.dark_text }};
     text-decoration: none;
