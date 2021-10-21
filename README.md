@@ -1,4 +1,4 @@
-# PawPrints [![Build Status](https://travis-ci.org/ritstudentgovernment/PawPrints.svg?branch=master)](https://travis-ci.org/ritstudentgovernment/PawPrints) [![codecov](https://codecov.io/gh/ritstudentgovernment/PawPrints/branch/master/graph/badge.svg)](https://codecov.io/gh/ritstudentgovernment/PawPrints)
+# PawPrints [![Build Status](https://travis-ci.com/ritstudentgovernment/PawPrints.svg?branch=master)](https://travis-ci.com/ritstudentgovernment/PawPrints) [![codecov](https://codecov.io/gh/ritstudentgovernment/PawPrints/branch/master/graph/badge.svg)](https://codecov.io/gh/ritstudentgovernment/PawPrints)
 
 ![PawPrints Logo](/static/images/pawprintsemail.png)
 
