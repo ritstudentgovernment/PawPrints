@@ -86,6 +86,9 @@ article div:hover{
 article div p{
     font-family: "Montserrat", sans-serif;
 }
+.committee-article {
+    width:33% !important;
+}
 #sub-landing{
     padding-top: 0;
 }
@@ -104,5 +107,15 @@ article div p{
 @media screen and (max-width: 600px){
     article{
         width: 100%;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .committee-article {
+        width: 50% !important;
+    }
+}
+@media screen and (max-width: 800px) {
+    .committee-article {
+        width: 100% !important;
     }
 }
