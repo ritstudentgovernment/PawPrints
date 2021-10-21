@@ -92,14 +92,24 @@
 <header class="full-width fixed transition large-header no-top-nav">
 {% endif %}
     <div id="header-top" class="transition">
-        <nav class="left">
+        <nav class="header-nav left">
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
             <ul class="list">
-                <li id="about" class="list-item left">
-                    <a id="about-link" class="modern-link material-icon-container" href="/about">
+                <li id="about" class="list-item left header-link-wrapper">
+                    <a id="about-link" class="modern-link material-icon-container header-link" href="/about">
                         <i class="material-icons hidden">info_outline</i><span id="about-text">About</span>
                     </a>
                 </li>
+                <li id="committees" class="list-item left header-link-wrapper">
+                    <a id="committees-link" class="modern-link material-icon-container header-link" href="/about">
+                        <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
+                    </a>
+                </li>
+                <!-- <li id="committees" class="list-item left">
+                    <a id="committees-link" class="modern-link material-icon-container" href="https://pawprints.rit.edu">
+                        <i class="material-icons hidden">info_outline</i><span id="committees-text">Committees</span>
+                    </a>
+                </li> -->
             </ul>
         </nav>
         <div class="right">
