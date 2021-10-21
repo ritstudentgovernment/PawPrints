@@ -308,16 +308,12 @@ nav .margin-right{
     text-decoration: none;
     color: #fff;
 }
-.header-link{
-    margin: 0 0.1em 0 0.4em;
-}
-.header-link:hover {
+.header-link-wrapper:hover {
     transform:scale(1.1);
     transition: transform 0.1s ease-in;
 }
-
-.header-nav {
-    margin: 0 5em 0 0;
+.header-nav li {
+    margin: 0 .4em 0 .4em;
 }
 #user-menu{
     position: relative;
