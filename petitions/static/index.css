@@ -65,6 +65,7 @@
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
+    display: flex;
 }
 #search-container .material-icon-container {
     width: 100%;
@@ -79,7 +80,7 @@
 #search-term:focus, #search-term.searched{
     opacity: 1;
     padding: 7px;
-    width: calc(76vw - 2em - 7px);
+    width: calc(50vw - 2em - 7px);
 }
 #search-term:focus + #search-bar-label, #search-term.searched + #search-bar-label{
     opacity: 0;
@@ -125,6 +126,7 @@
     overflow-y: auto;
     position: relative;
     max-height: calc(100vh - 90px);
+    /* display: none; */
 }
 #filter-sort h3, #filter-sort h5{
     font-family: "Montserrat", sans-serif;
@@ -166,6 +168,14 @@
     margin-right: 5px;
     margin-top:5px;
 }
+.search-filter #sort{
+   display: none;
+}
+
+.search-filter #sort:checked+label{
+   background-color: greenyellow;
+}
+
 #filter-sort .tag:hover:not(.current-tag){
     background-color:#fff;
     -webkit-box-shadow: 0px 0px 5px 0px #eee;
@@ -182,13 +192,23 @@
     box-shadow:         0px 0px 5px 0px #eee;
 }
 #mobile-filter{
-    display: none;
+    /* display: none; */
 }
 /* - Petitions - */
 #petitions{
     padding-bottom: 1em;
-    width: calc(100% - (200px + 1em));
+    width: 100%;
+   /* width: calc(100% - (200px + 1em));*/
 }
+
+.search-filter{
+   display: flex;
+}
+
+.search-filter > *{
+   padding: 5px;
+}
+
 #petitions-container{
     overflow: hidden;
     -moz-column-count: 3;
@@ -674,7 +694,7 @@ progress::-webkit-progress-value{
         width: 177px;
     }
     #petitions{
-        width: calc(100% - 200px);
+      /*  width: calc(100% - 200px);*/
     }
     #petitions-container{
         -moz-column-count: 2;

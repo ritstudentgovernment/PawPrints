@@ -167,44 +167,7 @@
             <h3>{{ slideshow_first }}<br />{{ slideshow_second }}</h3>
         </div>
     </section>
-
     <section id="sub-landing" class="relative">
-
-        {% if generate_top_nav %}
-        <nav id="filter-sort" class="left attach" data-top="91" data-left="0">
-        {% else %}
-        <nav id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
-        {% endif %}
-            <div id="filter-sort-content-box">
-                <h3 class="filter-sort-title">Sort By:</h3>
-                <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
-                    <optgroup label="Sort By">
-                        <option value="most recent" selected="selected">Active</option>
-                        <option value="last signed">Last Signed</option>
-                        <option value="in progress">In Progress</option>
-                        <option value="responded">Responded</option>
-                        <option value="most signatures">Most Signatures</option>
-                        <option value="archived">Expired</option>
-                    </optgroup>
-                </select>
-                <h3 class="filter-sort-title">Filter By Tag:</h3>
-                <ul class="list full-width">
-                    <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
-                    {% for tag in tags %}
-                        <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
-                    {% endfor %}
-                </ul>
-                <select id="mobile-filter" class="material-shadow material-hover cursor transition">
-                    <optgroup label="Filter By">
-                        <option value="all">All</option>
-                        {% for tag in tags %}
-                            <option value="{{ tag.id }}">{{ tag.name }}</option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-            </div>
-        </nav>
-
         <div id="petitions" class="right">
             <div id="search-container" class="padding-top center">
                 <label for="search-term" class="block white-background margin-top padding cursor">
@@ -213,6 +176,28 @@
                         <input id='search-term' v-model="searchString" @keyup="search" :class="(searchString ? 'searched ' : '') + 'material-input'" type="text" />
                         <span id="search-bar-label">Search Petitions</span>
                     </div>
+                    <div class="search-filter">
+                   
+                <!-- <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
+                        <option value="most recent" selected="selected">Active</option>
+                        <option value="most signatures">Most Signatures</option>
+                </select> -->
+                <div id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
+                
+                    <div id="filter-sort-content-box">
+                        <select id="mobile-filter" class="material-shadow material-hover cursor transition">
+                            <optgroup label="Filter By">
+                                <option value="all">All</option>
+                                {% for tag in tags %}
+                                <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                  <input type="checkbox" class="material-icons hidden material-shadow material-hover cursor transition" id="sort" value="most signatures" checked>  <label for="sort" class="material-icons hidden material-shadow material-hover cursor transition" >trending_up</label></input>
+
+            </div>
                 </label>
             </div>
             <div class="block padding text-center" v-if="list.length == 0 && !loading">
