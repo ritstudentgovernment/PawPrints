@@ -86,6 +86,22 @@ function adminEdit(action, id = false){
             return true;
         case "mark_in_progress":
             update("mark-in-progress", false, getUrl("p"));
+            // Build the Deletion modal
+            window.chargeModal = new Modal({
+                icon: false,
+                headerClass:"background-highlight bright-text",
+                headerContent: "<h2>Charge This Petition.</h2>",
+                bodyContent:"<p>Choose a committee to assign this petition to.</p>",
+                bodyButtons:[
+                    ["Academics & Co-ops","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
+                    ["Housing & Dining","material-button material-hover material-shadow cursor transition minimal",'window.chargeModal.close()'],
+                    ["Facilities, Parking, & Transportation","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
+                    ["Student Affairs","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
+                    ["Sustainability","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
+                    ["Deaf Advocacy","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"]
+                ]
+            });
+            chargeModal.open();
             return true;
         case "edit-update":
             if(window.debug)console.log("EDIT UPDATE "+id);
