@@ -101,7 +101,7 @@
                     </a>
                 </li>
                  <li id="about" class="list-item left">
-                    <a id="about-link" class="modern-link material-icon-container" href="/news">
+                    <a id="about-link" class="modern-link material-icon-container" target="_self" href="https://www.rit.edu/studentgovernment/">
                         <i class="material-icons hidden">feed</i><span id="about-text">News</span>
                     </a>
                 </li>
@@ -144,6 +144,7 @@
                     <li><span><h3>Pages</h3></span></li>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
+                     <li><a target="_self" href="https://www.rit.edu/studentgovernment/">News</a></li>
                     {% if user.first_name %}
                         {% if user.is_superuser %}
                             <li>

@@ -106,6 +106,7 @@ main{
 }
 .list-item{
     list-style-type:none;
+    padding: 0 10px;
 }
 .material-line{
     width: 100px;
