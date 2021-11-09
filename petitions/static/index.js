@@ -187,7 +187,7 @@
          **/
         // load the petitions into the Vue instance.
 
-        
+
         //side nav removed 
         // if($(".current-tag").attr("id") !== filter){
 
@@ -816,10 +816,10 @@
         sort.on("change", function (params) {
             sort.attr("checked") ? 1 : 0;
             sort_by = sort.is(":checked") ? 'most signatures' : 'most recent'
-            console.log(sort.is(":checked"));
+            // console.log(sort.is(":checked"), 'trending');
             // Grab the tag name
              var filter_tag = $("#mobile-filter").val()
-            console.log(filter_tag, '3');
+            // console.log(filter_tag, 'trending filter_tag');
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
@@ -839,7 +839,7 @@
 
             // Update the select field for mobile devices
             $("#mobile-filter").val(filter_tag);
-            console.log(filter_tag,'gh');
+            // console.log(filter_tag,'filter_tag');
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
