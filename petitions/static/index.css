@@ -140,16 +140,16 @@
     -o-appearance: none;
     appearance: none;
     width: 196px;
-    padding:10px;
+    padding:10px 5px;
     border: none;
     font-family: "Montserrat", sans-serif;
     font-weight: 400;
-    font-size: 0.9em;
+    font-size: 0.7em;
     color: #757575;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAhklEQVR4Ae3NsQ3CYAxE4VdmA/KvgygQLAtdJgkZhVSmQ8hFLKwr76tP9zAzMytdOFEZnGm6s7MWicHGmysNN3aCyIl8TxC9xJMgDhOD13fz4G8Ty2Fi/rlfmECQENwXCcF9kZDcF4mZNd9rE/L7nEj38kS61yfSvT6R7vWJdK9PdO7NzMw+ihJ379BDyXQAAAAASUVORK5CYII=');
-    background-position: calc(100% - 10px) 50%;
+    background-position: calc(100% - 5px) 50%;
     background-repeat: no-repeat;
-    background-size: 30px;
+    background-size: 28px;
     background-color: #fff;
 }
 #filter-sort-content-box{
@@ -781,7 +781,7 @@ progress::-webkit-progress-value{
 }
 @media screen and (max-width: 700px){
     #sub-landing{
-        padding-top: 110px;
+        padding-top: 75px;
     }
     #filter-sort{
         float: none;
