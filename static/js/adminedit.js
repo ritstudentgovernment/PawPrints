@@ -85,7 +85,6 @@ function adminEdit(action, id = false){
             deleteModal.open();
             return true;
         case "mark_in_progress":
-            update("mark-in-progress", false, getUrl("p"));
             // Build the Deletion modal
             window.chargeModal = new Modal({
                 icon: false,
@@ -93,12 +92,12 @@ function adminEdit(action, id = false){
                 headerContent: "<h2>Charge This Petition.</h2>",
                 bodyContent:"<p>Choose a committee to assign this petition to.</p>",
                 bodyButtons:[
-                    ["Academics & Co-ops","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
-                    ["Housing & Dining","material-button material-hover material-shadow cursor transition minimal",'window.chargeModal.close()'],
-                    ["Facilities, Parking, & Transportation","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
-                    ["Student Affairs","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
-                    ["Sustainability","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"],
-                    ["Deaf Advocacy","material-button material-hover material-shadow cursor transition minimal","window.chargeModal.close()"]
+                    ["Academics & Co-ops","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Academics & Co-Ops")'],
+                    ["Housing & Dining","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Dining")'],
+                    ["Facilities, Parking, & Transportation","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Facilities & Parking")'],
+                    ["Student Affairs","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Student Affairs")'],
+                    ["Sustainability","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Sustainability")'],
+                    ["Deaf Advocacy","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Deaf Advocacy")']
                 ]
             });
             chargeModal.open();
@@ -152,6 +151,11 @@ function adminEdit(action, id = false){
         default:
             throw "Error when dispatching an admin control action.";
     }
+}
+function setCommitteeTag(targetTag) {
+    update("mark-in-progress", false, getUrl("p"));
+    update("committee", targetTag, getUrl("p"));
+    window.chargeModal.close();
 }
 $(document).on("click","#admin-actions .circle",function(e){
     if(window.debug)console.log("CLICK ADMIN BUTTON");

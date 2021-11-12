@@ -523,6 +523,12 @@ def petition_edit(request, petition_id):
 
             return edit_description(petition, value)
 
+        elif attribute == "committee":
+            tag = Tag(name='CHARGED: ' + value)
+            tag.save()
+            petition.tags.add(tag)
+            petition.save()
+
         elif attribute == "add-tag":
 
             petition.tags.add(value)
@@ -531,7 +537,7 @@ def petition_edit(request, petition_id):
 
             petition.tags.remove(value)
 
-        elif not request.user.is_staff:
+        elif not request.user.is_staff: # reset before deployment with a 'not'
             # Only send this error if the petition author is not an admin, because admin operations
             # have not been checked yet.
             return JsonResponse({"Error": "Operation " + attribute + " Not Known."})

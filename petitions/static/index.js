@@ -416,7 +416,7 @@
 
             });
 
-            $(document).on("keyup", function () {
+            $(document).on("keyup", function (e) {
                 if(e.keyCode === 27){ // Close the petition when you press the escape key.
                     modalData.closePetition();
                     $(document).unbind("keyup");

@@ -87,7 +87,6 @@
                             <i class="material-icons">keyboard_arrow_down</i>
                         </div>
                         {% if user.first_name and user.is_staff %}
-                        {% endif %}
                             <div id="admin-actions">
                                 <div v-if="!petition.in_progress && !petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
                                     <i class="material-icons">check</i>
@@ -108,7 +107,7 @@
                                     <span class="invisible transition">Delete</span>
                                 </div>
                             </div>
-                        
+                        {% endif %}
                         <div id="action-cards" class="block overflow-hidden right">
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
@@ -295,11 +294,10 @@
     </script>
 {% endif %}
 {% if user.is_staff %}
-{% endif %}
 {% compress js %}
     <script src="{% static '/js/adminedit.js' %}" type="module"></script>
     {% endcompress %}
-
+    {% endif %}
 <a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
 </div>
 {% csrf_token %}
