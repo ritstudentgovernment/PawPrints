@@ -97,7 +97,8 @@ function adminEdit(action, id = false){
                     ["Facilities, Parking, & Transportation","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Facilities & Parking")'],
                     ["Student Affairs","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Student Affairs")'],
                     ["Sustainability","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Sustainability")'],
-                    ["Deaf Advocacy","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Deaf Advocacy")']
+                    ["Deaf Advocacy","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Deaf Advocacy")'],
+                    ["Other","material-button material-hover material-shadow cursor transition minimal",'setCommitteeTag("Other")']
                 ]
             });
             chargeModal.open();
