@@ -34,9 +34,9 @@
                     <a href="https://pawprints.rit.edu/">Paw Prints</a>
                     <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
                     <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
-                    <a href="https://openevals.rit.edu/">Open Evals</a>
+                    <!-- <a href="https://openevals.rit.edu/">Open Evals</a> -->
                     <a href="https://sg.rit.edu/finance/">Finance</a>
-                    <a href="https://sg.rit.edu/breakbus/">Break Bus</a>
+                    <!-- <a href="https://sg.rit.edu/breakbus/">Break Bus</a> -->
                 </div>
             </button>
             <button id="3" class="dropbtn">
@@ -103,6 +103,9 @@
                 <li id="committees" class="list-item left header-link-wrapper">
                     <a id="committees-link" class="modern-link material-icon-container header-link" href="/committees">
                         <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
+                 <li id="about" class="list-item left">
+                    <a id="about-link" class="modern-link material-icon-container" target="_self" href="https://www.rit.edu/studentgovernment/">
+                        <i class="material-icons hidden">feed</i><span id="about-text">News</span>
                     </a>
                 </li>
             </ul>
@@ -144,6 +147,7 @@
                     <li><span><h3>Pages</h3></span></li>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
+                     <li><a target="_self" href="https://www.rit.edu/studentgovernment/">News</a></li>
                     {% if user.first_name %}
                         {% if user.is_superuser %}
                             <li>

@@ -70,7 +70,7 @@
                     else{
                         window.searched = false;
                         var sort = $("#sort");
-                        var filter_tag = sort.data("filter");
+                         var filter_tag = $("#mobile-filter").val()
                         var sort_by = sort.val();
                         reloadPetitions(sort_by, filter_tag, socket);
                     }
@@ -185,14 +185,18 @@
          * petitions.loading is set to true here to show the loading petitions animation
          * petitions.map and petitions.list are reset to empty here in order to allow a new set of petitions to be loaded
          **/
-
         // load the petitions into the Vue instance.
-        if($(".current-tag").attr("id") !== filter){
 
-            $(".current-tag").removeClass("current-tag");
 
-        }
-        $("#tag-"+filter).addClass("current-tag");
+        //side nav removed 
+        // if($(".current-tag").attr("id") !== filter){
+
+        //     $(".current-tag").removeClass("current-tag");
+
+        // }
+        // $("#tag-"+filter).addClass("current-tag");
+
+
         window.page = 1;
         window.searched = false;
         petitions.loading = true;
@@ -806,6 +810,20 @@
 
         window.page = 1;
         setupSocket();
+        // Get the sort key globally
+        var sort = $("#sort");
+        let sort_by = 'most signatures';
+        sort.on("change", function (params) {
+            sort.attr("checked") ? 1 : 0;
+            sort_by = sort.is(":checked") ? 'most signatures' : 'most recent'
+            // console.log(sort.is(":checked"), 'trending');
+            // Grab the tag name
+             var filter_tag = $("#mobile-filter").val()
+            // console.log(filter_tag, 'trending filter_tag');
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+        })
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
@@ -819,13 +837,9 @@
             // Get the tag name
             var filter_tag = $(this).data("tag");
 
-            // Get the sort key
-            var sort = $("#sort");
-            var sort_by = sort.val();
-            sort.data("filter",filter_tag);
-
             // Update the select field for mobile devices
             $("#mobile-filter").val(filter_tag);
+            // console.log(filter_tag,'filter_tag');
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
@@ -835,27 +849,23 @@
 
         });
 
-        $("#sort").change(function () {
+        // $("#sort").change(function () {
 
-            // Grab the tag name
-            var filter_tag = $("#sort").data("filter");
+        //     // Grab the tag name
+        //     var filter_tag = $("#sort").data("filter");
 
-            // Grab the sort key
-            var sort_by = $(this).val();
+        //     // Grab the sort key
+        //     var sort_by = $(this).val();
 
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
+        //     // Reload all of the petitions with the updated information.
+        //     reloadPetitions(sort_by, filter_tag, socket);
 
-        });
+        // });
 
         $("#mobile-filter").change(function () {
 
             // Grab the tag name
             var filter_tag = $(this).val();
-            $("#sort").data("filter",filter_tag);
-
-            // Grab the sort key
-            var sort_by = $("#sort").val();
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
@@ -933,8 +943,7 @@
                     paginationTimeout = setTimeout(function () {
                         window.page++;
                         window.petitions.loading = true;
-                        var filter_tag = $("#sort").data("filter");
-                        var sort_by = $("#sort").val();
+                         var filter_tag = $("#mobile-filter").val()
                         loadPetitions(sort_by, filter_tag, window.socket);
                     },250);
 

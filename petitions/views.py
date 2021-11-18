@@ -85,6 +85,18 @@ def committees(request):
     }
     return render(request, 'committees.html', data_object)
 
+def news(request):
+    """
+    Handles displaying the news page
+    """
+    data_object = {
+        'name': CONFIG['name'],
+        'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
+    }
+    return render(request, 'news.html', data_object)
+
 
 def maintenance(request):
     return render(request, 'Something_Special.html')

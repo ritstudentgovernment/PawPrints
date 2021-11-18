@@ -1,7 +1,7 @@
 aioredis==1.2.0
 appdirs==1.4.3
-asgi-redis==1.4.3
-asgiref==2.3.2
+asgi-redis
+asgiref
 async-timeout==3.0.1
 atomicwrites==1.2.1
 attrs==18.2.0
@@ -11,7 +11,7 @@ Babel==2.6.0
 billiard==3.5.0.5
 bleach==3.0.2
 certifi==2018.11.29
-channels==2.1.6
+channels
 channels-redis==2.3.2
 chardet==3.0.4
 constantly==15.1.0
@@ -49,7 +49,7 @@ pytz==2018.7
 PyYAML==3.13
 raven==6.9.0
 rcssmin==1.0.6
-redis==3.0.1
+redis
 requests==2.21.0
 rjsmin==1.0.12
 six==1.12.0

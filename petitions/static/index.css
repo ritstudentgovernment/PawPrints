@@ -91,6 +91,7 @@
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
+    display: flex;
 }
 #search-container .material-icon-container {
     width: 100%;
@@ -105,7 +106,7 @@
 #search-term:focus, #search-term.searched{
     opacity: 1;
     padding: 7px;
-    width: calc(76vw - 2em - 7px);
+    width: calc(50vw - 2em - 7px);
 }
 #search-term:focus + #search-bar-label, #search-term.searched + #search-bar-label{
     opacity: 0;
@@ -151,6 +152,7 @@
     overflow-y: auto;
     position: relative;
     max-height: calc(100vh - 90px);
+    /* display: none; */
 }
 #filter-sort h3, #filter-sort h5{
     font-family: "Montserrat", sans-serif;
@@ -164,16 +166,16 @@
     -o-appearance: none;
     appearance: none;
     width: 196px;
-    padding:10px;
+    padding:10px 5px;
     border: none;
     font-family: "Montserrat", sans-serif;
     font-weight: 400;
-    font-size: 0.9em;
+    font-size: 0.7em;
     color: #757575;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAhklEQVR4Ae3NsQ3CYAxE4VdmA/KvgygQLAtdJgkZhVSmQ8hFLKwr76tP9zAzMytdOFEZnGm6s7MWicHGmysNN3aCyIl8TxC9xJMgDhOD13fz4G8Ty2Fi/rlfmECQENwXCcF9kZDcF4mZNd9rE/L7nEj38kS61yfSvT6R7vWJdK9PdO7NzMw+ihJ379BDyXQAAAAASUVORK5CYII=');
-    background-position: calc(100% - 10px) 50%;
+    background-position: calc(100% - 5px) 50%;
     background-repeat: no-repeat;
-    background-size: 30px;
+    background-size: 28px;
     background-color: #fff;
 }
 #filter-sort-content-box{
@@ -192,6 +194,14 @@
     margin-right: 5px;
     margin-top:5px;
 }
+.search-filter #sort{
+   display: none;
+}
+
+.search-filter #sort:checked+label{
+   background-color: greenyellow;
+}
+
 #filter-sort .tag:hover:not(.current-tag){
     background-color:#fff;
     -webkit-box-shadow: 0px 0px 5px 0px #eee;
@@ -208,13 +218,23 @@
     box-shadow:         0px 0px 5px 0px #eee;
 }
 #mobile-filter{
-    display: none;
+    /* display: none; */
 }
 /* - Petitions - */
 #petitions{
     padding-bottom: 1em;
-    width: calc(100% - (200px + 1em));
+    width: 100%;
+   /* width: calc(100% - (200px + 1em));*/
 }
+
+.search-filter{
+   display: flex;
+}
+
+.search-filter > *{
+   padding: 5px;
+}
+
 #petitions-container{
     overflow: hidden;
     -moz-column-count: 3;
@@ -700,7 +720,7 @@ progress::-webkit-progress-value{
         width: 177px;
     }
     #petitions{
-        width: calc(100% - 200px);
+      /*  width: calc(100% - 200px);*/
     }
     #petitions-container{
         -moz-column-count: 2;
@@ -787,7 +807,7 @@ progress::-webkit-progress-value{
 }
 @media screen and (max-width: 700px){
     #sub-landing{
-        padding-top: 110px;
+        padding-top: 75px;
     }
     #filter-sort{
         float: none;
