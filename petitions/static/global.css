@@ -10,14 +10,15 @@ html, body{
     -webkit-overflow-scrolling: touch;
 }
 header{
-    top: 30px;
+    /* top: 30px; */
     left: 0px;
     font-family: "Montserrat", Arial;
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: {{ colors.orange_highlight }};
     z-index:1000;
 }
 main{
-    margin-top: 40px;
+    /* margin-top: 40px; */
 }
 * {
     text-rendering: optimizeLegibility;
@@ -95,6 +96,7 @@ main{
 }
 .left{
     float: left;
+    flex: 1;
 }
 .right{
     float: right;
@@ -156,9 +158,9 @@ main{
     border-radius:3px;
     font-family: "Montserrat", Arial;
     font-size: 0.7em;
-    background-color: {{colors.highlight}};
-    color: #f0f0f0;
-    border: 1px solid {{colors.highlight}};
+    background-color: #fff;
+    color: {{ colors.orange_highlight }};
+    border: 1px solid #fff;
     margin-right: 5px;
     text-transform: uppercase;
 }
@@ -229,7 +231,8 @@ nav .margin-right{
     display: block;
 }
 .inline-block{
-    display: inline-block;
+    /* display: inline-block; */
+    font-weight: 600;
 }
 .relative{
     position: relative;
@@ -248,7 +251,7 @@ nav .margin-right{
     text-align: center;
 }
 .attached{
-    position: fixed !important;
+    display: contents;
 }
 .white-background{
     background-color: #fff;
@@ -275,10 +278,15 @@ nav .margin-right{
 /* -- Global IDs -- */
 #logo{
     font-size: 2em;
+    padding-left: 10px;
+    padding-right: 30px;
 }
 #logo img{
     height: 40px;
-    margin-top: 15px;
+    /* margin-top: 15px; */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 #back-up{
     position: fixed;
@@ -310,7 +318,7 @@ nav .margin-right{
     color: #fff;
 }
 #about-link i{
-    margin-right: 0.5em;
+    margin-right: 0.3em;
 }
 #user-menu{
     position: relative;
@@ -318,6 +326,10 @@ nav .margin-right{
 #header-top{
     width:calc(100% - 2em);
     margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 #user-menu button{
     margin-left: 1em;
@@ -378,15 +390,17 @@ nav .margin-right{
     padding: 0;
 }
 .large-header #menu{
-    padding-top: 7px;
-    height: 63px;
+    /* padding-top: 7px;
+    height: 63px; */
+    display: flex;    
 }
 #about{
     margin-top: 3px;
 }
 .small-header #menu{
     padding-top: 12px;
-    height: 45px;
+    /* height: 45px; */
+    display: flex;
 }
 .small-header #menu-content{
     margin-top: -13px;

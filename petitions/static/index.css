@@ -8,7 +8,7 @@
     color: {{ colors.bright_text }} !important;
 }
 .modern-link{
-    color: {{ colors.dark_text }};
+    color: {{ colors.light_text }};
     text-decoration: none;
 }
 .material-input:focus{
@@ -56,7 +56,7 @@
     font-weight: 400;
 }
 #search-container{
-    display: block;
+    display: flex;
     font-family: "Montserrat", sans-serif;
     font-weight: 500;
     width: calc(100% - 2em);
@@ -66,6 +66,8 @@
     margin-right: 5px;
     margin-bottom: 5px;
     display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 #search-container .material-icon-container {
     width: 100%;
@@ -81,6 +83,9 @@
     opacity: 1;
     padding: 7px;
     width: calc(50vw - 2em - 7px);
+    width: calc(76vw - 2em - 7px);
+    /* width: calc(50vw - 2em - 7px); */
+    width: 100%;
 }
 #search-term:focus + #search-bar-label, #search-term.searched + #search-bar-label{
     opacity: 0;
@@ -97,6 +102,11 @@
     min-height: calc(100vh - 65px);
     background-color: #f5f5f5;
     overflow: hidden;
+    display: flex;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
 }
 #new-petition{
     position: fixed;
@@ -122,7 +132,7 @@
     text-shadow:        0px 5px 10px rgba(0,0,0,0.2);
 }
 #filter-sort{
-    width: calc(200px + 1em);
+    width: calc(230px + 1em);
     overflow-y: auto;
     position: relative;
     max-height: calc(100vh - 90px);
@@ -139,8 +149,8 @@
     -ms-appearance: none;
     -o-appearance: none;
     appearance: none;
-    width: 196px;
-    padding:10px 5px;
+    width: 230px;
+    padding:10px;
     border: none;
     font-family: "Montserrat", sans-serif;
     font-weight: 400;
@@ -153,7 +163,7 @@
     background-color: #fff;
 }
 #filter-sort-content-box{
-    width: 200px;
+    width: 230px;
     margin-left: 1em;
     text-align: left;
 }
@@ -169,11 +179,22 @@
     margin-top:5px;
 }
 .search-filter #sort{
-   display: none;
+    display: flex;
+    /* width: 30%; */
+    position: absolute;
+    visibility: hidden;
+    margin: 0;
 }
 
 .search-filter #sort:checked+label{
-   background-color: greenyellow;
+    background-color: greenyellow;
+    position: relative;
+    width: 1.2em;
+    height: 1.2em;
+    margin: 0;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
 #filter-sort .tag:hover:not(.current-tag){
@@ -198,15 +219,18 @@
 #petitions{
     padding-bottom: 1em;
     width: 100%;
-   /* width: calc(100% - (200px + 1em));*/
+    /* width: calc(100% - (200px + 1em));*/
 }
 
 .search-filter{
-   display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: calc(100% - (200px + 1em)); */
 }
 
 .search-filter > *{
-   padding: 5px;
+    padding: 5px;
 }
 
 #petitions-container{
@@ -324,7 +348,7 @@ progress[value]::-moz-progress-bar {
     margin-bottom: 10px;
     margin-left: 10px;
     font-family: "Montserrat", sans-serif;
-    color: {{ colors.highlight }};
+    color: {{ colors.orange_highlight }};
     text-transform: capitalize;
 }
 #petition-modal .modal-header span{
@@ -434,11 +458,12 @@ progress[value]::-moz-progress-bar {
     overflow: hidden;
     word-wrap: break-word;
 }
-.timeline-element-header span.text-highlight{
+.timeline-element-header span.orange-highlight{
     text-transform: uppercase;
     font-family: "Montserrat", sans-serif;
     font-weight: 800;
     float: left;
+    color: {{ colors.orange_highlight }};
 }
 .timeline-element-content, .timeline-element-content *{
     font-family: "Muli", "Work Sans", Arial !important;
@@ -482,10 +507,12 @@ progress[value]::-moz-progress-bar {
 #sign-petition-button span{
     display: block;
     padding: 7px 15px 7px 15px;
+    background-color: {{ colors.orange_highlight }};
 }
 #sign-petition-button{
     background-color: transparent;
-    color: {{ colors.highlight_hover }};
+    /* color: {{ colors.highlight_hover }}; */
+    color: white;
 }
 #sign-petition-button:not(:disabled):hover{
     background-color: {{ colors.highlight_hover }};
@@ -498,7 +525,12 @@ progress[value]::-moz-progress-bar {
     transform: scale(1);
 }
 #signature-card span{
-    color: {{ colors.highlight_hover }};
+    /* color: {{ colors.light_text}}; */
+    /* color: white; */
+}
+.number-signature{
+    padding-left: 10px;
+    color: {{ colors.highlight }};
 }
 .social-icon{
     padding-top: 1px;
@@ -539,13 +571,11 @@ progress[value]::-moz-progress-bar {
     margin-bottom: -1px;
     float: left;
 }
-.petition-progress{
-    width: 100%;
-}
 progress{
-    -webkit-appearance: none;
+    width: 100%;
+    /* -webkit-appearance: none;
     height: 15px;
-    z-index:1;
+    z-index:1; */
 }
 progress[value]::-webkit-progress-bar {
     background-color: #cfcfcf;
@@ -553,19 +583,52 @@ progress[value]::-webkit-progress-bar {
     color:#fff;
     text-align: center;
 }
-progress[value]::-webkit-progress-value {
+/* progress[value]::-webkit-progress-value {
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
     background-color: {{ colors.highlight }};
+    progress::-webkit-progress-value{
+        -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
+    }
+} */
+.petition-progress[value]::-webkit-progress-value{
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    text-align: center;
+    background-color: {{ colors.orange_highlight }};
+    -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
+}
+.petition-progress-green[value]::-webkit-progress-value{
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    text-align: center;
+    background-color: {{ colors.progress_green }};
+    -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 progress[value]::-moz-progress-bar {
+    background-color: #cfcfcf;
     border-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
-    background-color: {{ colors.highlight }};
+    /* background-color: {{ colors.highlight }}; */
 }
-progress::-webkit-progress-value{
+.petition-progress[value]::-moz-progress-bar{
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    text-align: center;
+    background-color: {{ colors.orange_highlight }};
+    -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
+}
+.petition-progress-green[value]::-moz-progress-bar{
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    text-align: center;
+    background-color: {{ colors.progress_green }};
     -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 
@@ -694,7 +757,9 @@ progress::-webkit-progress-value{
         width: 177px;
     }
     #petitions{
-      /*  width: calc(100% - 200px);*/
+    /*  width: calc(100% - 200px);*/
+        width: calc(100% - 200px);
+    /*  width: calc(100% - 200px);*/
     }
     #petitions-container{
         -moz-column-count: 2;

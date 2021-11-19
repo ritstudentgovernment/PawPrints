@@ -30,7 +30,7 @@
         <div class="modal-overlay hidden" @click="closePetition()"></div>
         <div class="modal-container hidden">
             <div class="modal-header overflow-hidden material-shadow">
-                <h2 class="inline-block text-highlight">{[ petition.title ]}</h2>
+                <h2 class="inline-block orange-highlight">{[ petition.title ]}</h2>
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
             </div>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
                                 <h4 class="timeline-element-header">
-                                    <span class="text-highlight">{[ element.type ]}</span>
+                                    <span class="orange-highlight">{[ element.type ]}</span>
                                     <span v-if="element.dateDiff==0">Today</span>
                                     <span v-else-if="element.dateDiff<30">
                                         {[ element.dateDiff ]} Day<span v-if="element.dateDiff>1">s</span> Ago
@@ -81,7 +81,7 @@
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
                                 <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
                             </button>
-                            <span class="padding-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
+                            <span class="number-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
                         </div>
                         <div id="action-drawer-icon-container" class="transition">
                             <i class="material-icons">keyboard_arrow_down</i>
@@ -136,7 +136,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
+                        <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
+                        <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     </div>
                     <div v-else-if="petition.status == 0">
                         <div class="ninety-width">
@@ -176,14 +177,12 @@
                         <input id='search-term' v-model="searchString" @keyup="search" :class="(searchString ? 'searched ' : '') + 'material-input'" type="text" />
                         <span id="search-bar-label">Search Petitions</span>
                     </div>
-                    <div class="search-filter">
-                   
+            <div class="search-filter">
                 <!-- <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
                         <option value="most recent" selected="selected">Active</option>
                         <option value="most signatures">Most Signatures</option>
                 </select> -->
                 <div id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
-                
                     <div id="filter-sort-content-box">
                         <select id="mobile-filter" class="material-shadow material-hover cursor transition">
                             <optgroup label="Filter By">
@@ -195,7 +194,13 @@
                         </select>
                     </div>
                 </div>
-                  <input type="checkbox" class="material-icons hidden material-shadow material-hover cursor transition" id="sort" value="most signatures"  data-filter="all">  <label for="sort" class="material-icons hidden material-shadow material-hover cursor transition" >trending_up</label></input>
+                <div class="trending">
+                    <input type="checkbox" class="material-icons hidden cursor transition" id="sort" value="most signatures" checked>
+                        <label for="sort" class="material-icons hidden material-shadow material-hover cursor transition" >trending_up
+                        </label>
+                    </input>
+                </div>
+                <!-- <input type="checkbox" class="material-icons hidden material-shadow material-hover cursor transition" id="sort" value="most signatures"  data-filter="all">  <label for="sort" class="material-icons hidden material-shadow material-hover cursor transition" >trending_up</label></input> -->
 
             </div>
                 </label>
@@ -205,7 +210,8 @@
             </div>
             <div v-if="list.length > 0" id="petitions-container">
                 <article v-for="petition in orderedList" v-if="!petition.deleted" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" @click="openPetition(petition, $event)">
-                    <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                    <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
+                    <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     <div class="petition-body">
                         <h4 class="petition-signatures">
                             {[ petition.signatures ]}
