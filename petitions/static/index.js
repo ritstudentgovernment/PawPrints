@@ -53,28 +53,34 @@
                     window.openPetition(petition.id);
                 }
             },
-            search: function(){
-                if (this.timeout) clearTimeout(this.timeout);
-                this.timeout = setTimeout(() => {
-                    if(this.searchString.trim() !== ""){
-                        this.loading = true;
-                        this.map = {};
-                        this.list = [];
-                        socket.send('{"command":"search","query":"'+this.searchString+'"}');
-                        window.searched = true;
-                        setTimeout(() => {
-                            // Timeout waiting for the websocket response after 3 seconds.
-                            petitions.loading = false;
-                        },3000);
-                    }
-                    else{
-                        window.searched = false;
-                        var sort = $("#sort");
-                         var filter_tag = $("#mobile-filter").val()
-                        var sort_by = sort.val();
-                        reloadPetitions(sort_by, filter_tag, socket);
-                    }
-                },600);
+            search: function () {
+                if (this.searchString !== "") {
+                    let origin = this.list;
+                    // this.map = {};
+                    // this.list =[] ;
+                    // socket.send('{"command":"search","query":"'+this.searchString+'"}');
+                   
+                    window.loading = true;
+                    window.searched = true;
+                    console.log(this.list, 'this');
+                    // Timeout waiting for the websocket response after 3 seconds.
+                    // petitions.loading = false;
+                    console.log(this.list.filter((item) => item.title.toLowerCase().includes(this.searchString)), 'mapped results');
+
+                    this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString));
+                     setTimeout(() => {
+                        // Timeout waiting for the websocket response after 3 seconds.
+                        petitions.loading = false;
+                    },3000);
+                }
+                else {
+                    window.searched = false;
+                    var sort = $("#sort");
+                    var filter_tag = $("#mobile-filter").val();
+                    var sort_by = sort.val();
+                    console.log(sort_by);
+                    reloadPetitions(sort_by, filter_tag, socket);
+                }
             }
         },
         mounted() {
@@ -812,10 +818,12 @@
         setupSocket();
         // Get the sort key globally
         var sort = $("#sort");
-        let sort_by = 'most signatures';
+        console.log(sort);
+        let sort_by = sort.is(":checked") ? 'most signatures' : 'most recent'
         sort.on("change", function (params) {
             sort.attr("checked") ? 1 : 0;
-            sort_by = sort.is(":checked") ? 'most signatures' : 'most recent'
+            
+            sort.val(sort_by);
             // console.log(sort.is(":checked"), 'trending');
             // Grab the tag name
              var filter_tag = $("#mobile-filter").val()
