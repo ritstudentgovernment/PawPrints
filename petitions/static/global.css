@@ -317,8 +317,15 @@ nav .margin-right{
     text-decoration: none;
     color: #fff;
 }
-#about-link i{
+/* #about-link i{
     margin-right: 0.3em;
+} */
+.header-link-wrapper:hover {
+    transform:scale(1.1);
+    transition: transform 0.1s ease-in;
+}
+.header-nav li {
+    margin: 0 .4em 0 .4em;
 }
 #user-menu{
     position: relative;
@@ -394,7 +401,7 @@ nav .margin-right{
     height: 63px; */
     display: flex;    
 }
-#about{
+.header-link-wrapper{
     margin-top: 3px;
 }
 .small-header #menu{
@@ -474,7 +481,7 @@ header.small-header #menu-content:hover #account-dropdown{
     #sg-nav{
         display: none;
     }
-    #about{
+    .header-link-wrapper{
         display: none;
     }
     #menu-content{

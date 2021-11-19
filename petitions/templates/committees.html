@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load compress %}
+    {% load static %}
+    {% include 'head.html' with analytics_id=analytics_id %}
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <title>Committees | {{ name }}</title>
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
+    {% endcompress %}
+</head>
+<body>
+
+<div id="wrapper">
+    {% include 'header.html' with main_logo=main_logo generate_top_nav=generate_top_nav name=name%}
+    <main class="full-width">
+
+        <a id="landing-marker"></a>
+        {% if generate_top_nav %}
+        <section id="landing" class="text-left overflow-hidden">
+
+            <div id="sub-landing"></div>
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+                <h1>{[ section.title ]}</h1>
+                <transition name="fade">
+                    <div v-if="section.active" class="transition">
+                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+                    </div>
+                </transition>
+            </article>
+
+        </section>
+        {% else %}
+        <section id="landing" class="text-left overflow-hidden" style="margin-top: 78px">
+
+            <div id="sub-landing"></div>
+            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+                <h1 style="line-height: calc(50vh - 103px); height: calc(50vh - 103px);">{[ section.title ]}</h1>
+                <transition name="fade">
+                    <div v-if="section.active" class="transition">
+                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+                    </div>
+                </transition>
+            </article>
+
+        </section>
+        {% endif %}
+
+    </main>
+</div>
+<a id="back-up" href="#landing-marker" class="padding transition material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
+<script>
+    /* Initialize the Vue.js wrappers for the page. */
+    /**
+     **/
+    var sections = new Vue({
+        el: "#landing",
+        data: {
+            sections: [
+                {
+                    title: "Academics & Co-Ops",
+                    body: [
+                        "<h3>ACADEMICS & CO-OPS</h3>",
+                        "The Academics & Co-ops Committee discusses and proposes solutions on issues relating to academic and co-op affairs as well as promote ideas for improvement at RIT. Some of those projects include:",
+                        `<ul><li>Proposing a new grading scale to promote students to challenge themselves through free electives</li>
+                        <li>Discussing plans to efficiently using student time during finals week</li>
+                        <li>Enforcing reasonable time grade feedback policy</li>
+                        <li>Pursuing extending class drop period</li></ul>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"white-background committee-article",
+                    active: false
+                },
+                {
+                    title: "Housing & Dining",
+                    body: [
+                        "<h3>HOUSING & DINING</h3>",
+                        "Everyone loves to eat! As one of our most active committees, there is a great partnership between Dining Services and SG. Some of the current charges of the Dining section of the Housing and Dining committee include:",
+                        `<ul><li>Helping with Gracie's renovation plans</li>
+                        <li>Expanding locations that support Tiger Bucks</li></ul>`,
+                        "For students living in apartments and residence halls, the Housing section of the Housing and Dining Committee looks at all of the issues and potential improvements to housing at RIT. Some of the current charges include:",
+                        `<ul><li>Gender-inclusive housing</li>
+                        <li>Affordable housing</li></ul>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"orange-background committee-article",
+                    active: false
+                },
+                {
+                    title: "Facilities and Transit",
+                    body: [
+                        "<h3>FACILITIES, PARKING, AND TRANSPORTATION</h3>",
+                        "Facilities looks at the buildings, operating times, and furnishings on RIT’s campus. Some of the current facilities charges include:",
+                        `<ul><li>Improving lighting on campus</li>
+                        <li>24hr lab and building access</li>
+                        <li>Improving the quality of on-campus leisure locations, such as swings</li></ul>`,
+                        "All issues related to parking and transportation services at RIT fall under this committee. In partnership with the Parking and Transportation Office, the committee is currently working on:",
+                        `<ul><li>Improving parking on campus</li>
+                        <li>UR/RIT bus route partnership</li>
+                        <li>RTS partnerships</li></ul>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"white-background committee-article",
+                    active: false
+                },
+                {
+                    title: "Student Affairs",
+                    body: [
+                        "<h3>STUDENT AFFAIRS</h3>",
+                        "Taking a lot of charges relating to improvement of student life at RIT, some of the current charges of Student Affairs committee are:",
+                        `<ul><li>Improving psychological and counselling services</li>
+                        <li>Creating scholarships for study abroad programs</li>
+                        <li>Increasing student employee wages</li>
+                        <li>Promoting financial literacy</li></ul>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"orange-background committee-article",
+                    active: false
+                },
+                {
+                    title: "Sustainability",
+                    body: [
+                        "<h3>SUSTAINABILITY</h3>",
+                        "One of Student Government’s largest committees, the Sustainability committee helps look at ways to increase sustainable actions on RIT’s campus. Some of their current charges include:",
+                        `<ul><li>Ethical and sustainable sourcing guides for the university</li>
+                        <li>Integrating more plant-based options into menus</li>
+                        <li>Coordinating with Dining Services to increase compostable and reusable utensils and containers.</li>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"white-background committee-article",
+                    active: false
+                },
+                {
+                    title: "Deaf Advocacy",
+                    body: [
+                        "<h3>DEAF ADVOCACY</h3>",
+                        "The Deaf Advocacy Committee strives to make the RIT/NTID experience more Deaf-Friendly through a variety of initiatives. Some of their efforts include:",
+                        `<ul><li>Improving accessibility at dining services</li>
+                        <li>Facilitating understanding and relationships between Monroe County Sheriff’s Office and Deaf students</li>
+                        <li>ASL education across campus</li>`,
+                        "Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times."
+                    ],
+                    style:"orange-background committee-article",
+                    active: false
+                }
+            ]
+        },
+        methods:{
+            click: function(me){
+                var was_active = me.active;
+                for(var i = 0; i < sections.sections.length; i++){
+                    sections.sections[i].active = false;
+                }
+                me.active = !was_active;
+            }
+        },
+        delimiters: ['{[', ']}']
+    });
+</script>
+</body>
+</html>
