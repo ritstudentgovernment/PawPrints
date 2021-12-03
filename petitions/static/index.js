@@ -818,20 +818,38 @@
         setupSocket();
         // Get the sort key globally
         var sort = $("#sort");
-        console.log(sort);
-        let sort_by = sort.is(":checked") ? 'most signatures' : 'most recent'
-        sort.on("change", function (params) {
-            sort.attr("checked") ? 1 : 0;
-            
-            sort.val(sort_by);
-            // console.log(sort.is(":checked"), 'trending');
+        let sort_by = 'most recent';
+        sort.on("click", function (params) {
+            sort.is(":checked") ? (sort.prop("checked", false)) : sort.prop("checked", true);
+            if (sort.is(":checked")) {
+                console.log(sort);
+                sort_by = 'most recent';
+                sort.prop("checked", false);
+            } else {
+                sort_by = 'most signatures';
+                sort.prop("checked", true);
+                console.log('tru');
+                console.log(sort.is(":checked"), 'trending');
+            }
             // Grab the tag name
-             var filter_tag = $("#mobile-filter").val()
+            var filter_tag = $("#mobile-filter").val()
             // console.log(filter_tag, 'trending filter_tag');
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
-        })
+        });
+
+         $("#mobile-filter").change(function () {
+
+            // Grab the tag name
+            var filter_tag = $(this).val();
+            sort_by = 'most recent';
+            sort.prop("checked", false);
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+
+        });
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
@@ -844,6 +862,8 @@
 
             // Get the tag name
             var filter_tag = $(this).data("tag");
+            sort_by = 'most recent';
+            sort.prop("checked", false);
 
             // Update the select field for mobile devices
             $("#mobile-filter").val(filter_tag);
@@ -852,33 +872,12 @@
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
 
-            var to_elem = $("#petitions");
+            var to_elem = $("#petitions-container");
             scroll(to_elem);
 
         });
 
-        // $("#sort").change(function () {
-
-        //     // Grab the tag name
-        //     var filter_tag = $("#sort").data("filter");
-
-        //     // Grab the sort key
-        //     var sort_by = $(this).val();
-
-        //     // Reload all of the petitions with the updated information.
-        //     reloadPetitions(sort_by, filter_tag, socket);
-
-        // });
-
-        $("#mobile-filter").change(function () {
-
-            // Grab the tag name
-            var filter_tag = $(this).val();
-
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
-
-        });
+       
 
         $(document).on("click","#action-drawer-icon-container", function () {
             var me = $(this);
