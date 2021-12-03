@@ -809,6 +809,7 @@ def filtering_controller(sorted_objects, tag):
 # SORTING
 def sorting_controller(key, query=None):
     result = {
+        'all': all(),
         'most recent': most_recent(),
         'most signatures': most_signatures(),
         'last signed': last_signed(),
@@ -820,6 +821,8 @@ def sorting_controller(key, query=None):
     }.get(key, None)
     return result
 
+def all():
+    return Petition.objects.all()
 
 def most_recent():
     return Petition.objects.all() \

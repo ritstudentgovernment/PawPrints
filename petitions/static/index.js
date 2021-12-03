@@ -55,23 +55,16 @@
             },
             search: function () {
                 if (this.searchString !== "") {
-                    let origin = this.list;
-                    // this.map = {};
-                    // this.list =[] ;
-                    // socket.send('{"command":"search","query":"'+this.searchString+'"}');
-                   
+                    this.map = {};
+                    this.list =[] ;
+                    socket.send('{"command":"all"}');
                     window.loading = true;
                     window.searched = true;
-                    console.log(this.list, 'this');
-                    // Timeout waiting for the websocket response after 3 seconds.
-                    // petitions.loading = false;
-                    console.log(this.list.filter((item) => item.title.toLowerCase().includes(this.searchString)), 'mapped results');
-
-                    this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString));
                      setTimeout(() => {
                         // Timeout waiting for the websocket response after 3 seconds.
-                        petitions.loading = false;
-                    },3000);
+                         petitions.loading = false;
+                         this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString.toLowerCase()));
+                     }, 3000);
                 }
                 else {
                     window.searched = false;
@@ -194,20 +187,12 @@
         // load the petitions into the Vue instance.
 
 
-        //side nav removed 
-        // if($(".current-tag").attr("id") !== filter){
-
-        //     $(".current-tag").removeClass("current-tag");
-
-        // }
-        // $("#tag-"+filter).addClass("current-tag");
-
-
         window.page = 1;
         window.searched = false;
         petitions.loading = true;
         petitions.map = {};
         petitions.list = [];
+        petitions.searchString = '';
         loadPetitions(sort_by, filter, socket);
 
     }
@@ -501,6 +486,7 @@
         };
 
         socket.onmessage = (e) => {
+            console.log('hi');
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
 
@@ -728,6 +714,20 @@
                         petitions.list.push(...data["petitions"]);
                         setMapBasedOnLocation(data["petitions"]);
                         window.last_paginate = data["petitions"];
+                        petitions.loading = false;
+
+                        if (websocket_debug) console.log("List size after: " + petitions.list.length)
+
+                    }
+                    else if (command === "all") {
+                        if (websocket_debug) {
+                            console.log("Trying to add the next page of petitions to the page.");
+                            console.log("List size before: " + petitions.list.length);
+                            console.log("Size of next page: " + data["petitions"].length);
+                        }
+                       
+                        petitions.list.push(...data["petitions"]);
+                        setMapBasedOnLocation(data["petitions"]);
                         petitions.loading = false;
 
                         if (websocket_debug) console.log("List size after: " + petitions.list.length)
