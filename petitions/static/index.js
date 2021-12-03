@@ -58,12 +58,18 @@
                     this.map = {};
                     this.list =[] ;
                     socket.send('{"command":"all"}');
-                    window.loading = true;
-                    window.searched = true;
+                   
                      setTimeout(() => {
                         // Timeout waiting for the websocket response after 3 seconds.
-                         petitions.loading = false;
-                         this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString.toLowerCase()));
+                         if (this.list.length > 0) {
+                             this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString.toLowerCase()));
+                             petitions.loading = false;
+                         } else {
+                             window.loading = true;
+                             window.searched = true;
+                         }
+                         
+                         
                      }, 3000);
                 }
                 else {
@@ -871,9 +877,8 @@
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
-
-            var to_elem = $("#petitions-container");
-            scroll(to_elem);
+            
+            $('html, body').animate({scrollTop: $("#petitions").offset().top -100 }, 'slow');
 
         });
 
