@@ -822,7 +822,8 @@ def sorting_controller(key, query=None):
     return result
 
 def all():
-    return Petition.objects.all()
+    return Petition.objects.all() \
+        .filter(status=1) 
 
 def most_recent():
     return Petition.objects.all() \

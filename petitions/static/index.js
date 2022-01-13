@@ -61,8 +61,11 @@
                    
                      setTimeout(() => {
                         // Timeout waiting for the websocket response after 3 seconds.
+                       
                          if (this.list.length > 0) {
-                             this.list = this.list.filter((item) => item.title.toLowerCase().includes(this.searchString.toLowerCase()));
+                             this.list = this.list.filter((item) =>
+                                 item.title.toLowerCase().includes(this.searchString.toLowerCase())
+                             || item.title.toLowerCase(). replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g,"").includes(this.searchString.toLowerCase()));
                              petitions.loading = false;
                          } else {
                              window.loading = true;
