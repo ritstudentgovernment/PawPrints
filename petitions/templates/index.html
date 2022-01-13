@@ -30,7 +30,7 @@
         <div class="modal-overlay hidden" @click="closePetition()"></div>
         <div class="modal-container hidden">
             <div class="modal-header overflow-hidden material-shadow">
-                <h2 class="inline-block text-highlight">{[ petition.title ]}</h2>
+                <h2 class="inline-block orange-highlight">{[ petition.title ]}</h2>
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
             </div>
@@ -44,7 +44,7 @@
                             </div>
                             <div class="timeline-element-body" v-if="element.type != 'created'">
                                 <h4 class="timeline-element-header">
-                                    <span class="text-highlight">{[ element.type ]}</span>
+                                    <span class="orange-highlight">{[ element.type ]}</span>
                                     <span v-if="element.dateDiff==0">Today</span>
                                     <span v-else-if="element.dateDiff<30">
                                         {[ element.dateDiff ]} Day<span v-if="element.dateDiff>1">s</span> Ago
@@ -81,7 +81,7 @@
                                 <!-- You cannot sign an expired petition -->        <span v-else-if="petition.expired">This petition has expired</span>
                                 <!-- You may sign the petition -->                  <span v-else>Sign This Petition</span>
                             </button>
-                            <span class="padding-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
+                            <span class="number-left">{[ petition.signatures ]} / {[ petition.threshold ]} Signatures</span>
                         </div>
                         <div id="action-drawer-icon-container" class="transition">
                             <i class="material-icons">keyboard_arrow_down</i>
@@ -90,7 +90,7 @@
                             <div id="admin-actions">
                                 <div v-if="!petition.in_progress && !petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="mark_in_progress">
                                     <i class="material-icons">check</i>
-                                    <span class="invisible transition">Charged</span>
+                                    <span class="invisible transition">Charge</span>
                                 </div>
                                 <div v-else class="admin-action-spacer left"></div>
                                 <div v-if="!petition.response" class="circle material-shadow material-hover cursor transition left" data-admin-control="respond">
@@ -136,7 +136,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <progress class="petition-progress" :value="petition.signatures" :max="petition.threshold"></progress>
+                        <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
+                        <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     </div>
                     <div v-else-if="petition.status == 0">
                         <div class="ninety-width">
@@ -167,44 +168,7 @@
             <h3>{{ slideshow_first }}<br />{{ slideshow_second }}</h3>
         </div>
     </section>
-
     <section id="sub-landing" class="relative">
-
-        {% if generate_top_nav %}
-        <nav id="filter-sort" class="left attach" data-top="91" data-left="0">
-        {% else %}
-        <nav id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
-        {% endif %}
-            <div id="filter-sort-content-box">
-                <h3 class="filter-sort-title">Sort By:</h3>
-                <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
-                    <optgroup label="Sort By">
-                        <option value="most recent" selected="selected">Active</option>
-                        <option value="last signed">Last Signed</option>
-                        <option value="in progress">In Progress</option>
-                        <option value="responded">Responded</option>
-                        <option value="most signatures">Most Signatures</option>
-                        <option value="archived">Expired</option>
-                    </optgroup>
-                </select>
-                <h3 class="filter-sort-title">Filter By Tag:</h3>
-                <ul class="list full-width">
-                    <li id="tag-all" data-tag="all" class="list-item tag current-tag">All</li>
-                    {% for tag in tags %}
-                        <li id="tag-{{ tag.id }}" data-tag="{{ tag.id }}" class="list-item tag transition">{{ tag.name }}</li>
-                    {% endfor %}
-                </ul>
-                <select id="mobile-filter" class="material-shadow material-hover cursor transition">
-                    <optgroup label="Filter By">
-                        <option value="all">All</option>
-                        {% for tag in tags %}
-                            <option value="{{ tag.id }}">{{ tag.name }}</option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-            </div>
-        </nav>
-
         <div id="petitions" class="right">
             <div id="search-container" class="padding-top center">
                 <label for="search-term" class="block white-background margin-top padding cursor">
@@ -213,6 +177,32 @@
                         <input id='search-term' v-model="searchString" @keyup="search" :class="(searchString ? 'searched ' : '') + 'material-input'" type="text" />
                         <span id="search-bar-label">Search Petitions</span>
                     </div>
+            <div class="search-filter">
+                <!-- <select id="sort" data-filter="all" class="material-shadow material-hover cursor transition">
+                        <option value="most recent" selected="selected">Active</option>
+                        <option value="most signatures">Most Signatures</option>
+                </select> -->
+                <div id="filter-sort" class="left attach" style="max-height: calc(100vh - 60px)" data-top="61" data-left="0">
+                    <div id="filter-sort-content-box">
+                        <select id="mobile-filter" class="material-shadow material-hover cursor transition">
+                            <optgroup label="Filter By">
+                                <option value="all">All</option>
+                                {% for tag in tags %}
+                                <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="trending material-shadow material-hover">
+                    <input type="checkbox" class="material-icons hidden cursor transition" id="sort" value="most recent">
+                        <label for="sort" class="material-icons hidden  cursor transition" >trending_up
+                        </label>
+                    </input>
+                </div>
+                <!-- <input type="checkbox" class="material-icons hidden material-shadow material-hover cursor transition" id="sort" value="most signatures"  data-filter="all">  <label for="sort" class="material-icons hidden material-shadow material-hover cursor transition" >trending_up</label></input> -->
+
+            </div>
                 </label>
             </div>
             <div class="block padding text-center" v-if="list.length == 0 && !loading">
@@ -220,16 +210,19 @@
             </div>
             <div v-if="list.length > 0" id="petitions-container">
                 <article v-for="petition in orderedList" v-if="!petition.deleted" v-bind:class="[petition.response ? 'responded ' : petition.in_progress ? 'in-progress ' : ''] + 'petition material-shadow material-hover transition'" @click="openPetition(petition, $event)">
-                    <progress class="petition-progress" max="200" :value="petition.signatures"></progress>
+                    <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
+                    <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     <div class="petition-body">
                         <h4 class="petition-signatures">
                             {[ petition.signatures ]}
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
                             <span v-if="petition.isSigned"> | <span class="bold">Signed</span></span>
-                            <span v-if="petition.response" class="right">Responded</span>
-                            <span v-else-if="petition.updates.length > 0" class="right">Updated</span>
-                            <span v-else-if="petition.in_progress" class="right">In Progress</span>
+                            <span v-if="petition.response" class="right petition-responded has-hover-content" data-content="This petition has received a response from the Student Government.">Responded</span>
+                            <span v-else-if="petition.updates.length > 0" class="right petition-charged has-hover-content" data-content="This petition has been updated by an SG committee.">Updated</span>
+                            <span v-else-if="petition.in_progress" class="right petition-charged has-hover-content" data-content="This petition has been charged to an SG committee. Expect a response in the near future.">Charged</span> <!-- Update this to name the committee -->
+                            <span v-else-if="petition.signatures >= 200" class="right petition-charged has-hover-content" data-content="This petition has enough signatures to be charged to a committee.">Threshold Met</span>
+                            <span v-else class="right signatures-missing has-hover-content" data-content="This petition needs more signatures to be charged to a committee.">Needs {[ 200 - petition.signatures ]} Signatures</span>
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>
@@ -292,11 +285,10 @@
     </script>
 {% endif %}
 {% if user.is_staff %}
-    {% compress js %}
-    <script src="{% static '/js/adminedit.js' %}"></script>
+{% compress js %}
+    <script src="{% static '/js/adminedit.js' %}" type="module"></script>
     {% endcompress %}
-{% endif %}
-
+    {% endif %}
 <a id="back-up" href="#landing-marker" class="padding circle transition material-shadow material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
 </div>
 {% csrf_token %}
