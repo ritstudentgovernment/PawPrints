@@ -316,10 +316,13 @@ progress[value]::-moz-progress-bar {
 .petition-body{
     padding: 1.2em;
 }
-.petition-signatures{
+.petition-signatures, .is-signed-text{
     margin-top: 0;
     padding-top: 0;
     font-weight: 300;
+}
+.is-signed-text {
+    margin-bottom: .5rem;
 }
 .petition-title{
     font-weight: 700;

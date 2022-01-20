@@ -213,16 +213,22 @@
                     <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
                     <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     <div class="petition-body">
+                        <h4 v-if="petition.signatures % 2 == 0" class="is-signed-text">
+                            <span class="bold">Signed</span>
+                        </h4>
                         <h4 class="petition-signatures">
                             {[ petition.signatures ]}
                             <span v-if="petition.signatures == 1"> Signature</span>
                             <span v-else> Signatures</span>
-                            <span v-if="petition.isSigned"> | <span class="bold">Signed</span></span>
-                            <span v-if="petition.response" class="right petition-responded has-hover-content" data-content="This petition has received a response from the Student Government.">Responded</span>
-                            <span v-else-if="petition.updates.length > 0" class="right petition-charged has-hover-content" data-content="This petition has been updated by an SG committee.">Updated</span>
-                            <span v-else-if="petition.in_progress" class="right petition-charged has-hover-content" data-content="This petition has been charged to an SG committee. Expect a response in the near future.">Charged</span> <!-- Update this to name the committee -->
-                            <span v-else-if="petition.signatures >= 200" class="right petition-charged has-hover-content" data-content="This petition has enough signatures to be charged to a committee.">Threshold Met</span>
-                            <span v-else class="right signatures-missing has-hover-content" data-content="This petition needs more signatures to be charged to a committee.">Needs {[ 200 - petition.signatures ]} Signatures</span>
+                            <span> | </span>
+                            <span class="bold">
+                                <span v-if="petition.response" data-content="This petition has received a response from the Student Government.">Responded</span>
+                                <span v-else-if="petition.updates.length > 0" data-content="This petition has been updated by an SG committee.">Updated</span>
+                                <span v-else-if="petition.in_progress" data-content="This petition has been charged to an SG committee. Expect a response in the near future.">Charged</span> <!-- Update this to name the committee -->
+                                <span v-else-if="petition.signatures >= 200" data-content="This petition has enough signatures to be charged to a committee.">Threshold Met</span>
+                                <span v-else data-content="This petition needs more signatures to be charged to a committee.">Needs {[ 200 - petition.signatures ]} More</span>
+                            </span>
+                            
                         </h4>
                         <h3 class="petition-title"><a class="text-highlight modern-link" :data-petition-id="petition.id">{[ petition.title ]}</a></h3>
                         <ul>
