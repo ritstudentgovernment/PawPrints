@@ -278,8 +278,7 @@ nav .margin-right{
 /* -- Global IDs -- */
 #logo{
     font-size: 2em;
-    padding-left: 10px;
-    padding-right: 30px;
+    padding: 20px;
 }
 #logo img{
     height: 40px;
