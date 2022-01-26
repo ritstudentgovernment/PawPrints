@@ -54,35 +54,32 @@
                 }
             },
             search: function () {
-                if (this.searchString !== "") {
-                    this.map = {};
-                    this.list =[] ;
-                    socket.send('{"command":"all"}');
-                   
-                     setTimeout(() => {
-                        // Timeout waiting for the websocket response after 3 seconds.
-                       
-                         if (this.list.length > 0) {
-                             this.list = this.list.filter((item) =>
-                                 item.title.toLowerCase().includes(this.searchString.toLowerCase())
-                             || item.title.toLowerCase(). replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g,"").includes(this.searchString.toLowerCase()));
-                             petitions.loading = false;
-                         } else {
-                             window.loading = true;
-                             window.searched = true;
-                         }
-                         
-                         
-                     }, 3000);
-                }
-                else {
-                    window.searched = false;
-                    var sort = $("#sort");
-                    var filter_tag = $("#mobile-filter").val();
-                    var sort_by = sort.val();
-                    console.log(sort_by);
-                    reloadPetitions(sort_by, filter_tag, socket);
-                }
+                if (this.timeout) clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    if(this.searchString.trim() !== ""){
+                        this.loading = true;
+                        this.map = {};
+                        this.list = [];
+                        socket.send('{"command":"all"}');
+                        window.searched = true;
+                        setTimeout(() => {
+                            // Timeout waiting for the websocket response after 3 seconds.
+                            if (this.list.length > 0) {
+                                this.list = this.list.filter((item) =>
+                                    item.title.toLowerCase().includes(this.searchString.toLowerCase())
+                                    || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
+                                // petitions.loading = false;
+                            } 
+                        },3000);
+                    }
+                    else{
+                        window.searched = false;
+                        var sort = $("#sort");
+                        var filter_tag = sort.data("filter");
+                        var sort_by = sort.val();
+                        reloadPetitions(sort_by, filter_tag, socket);
+                    }
+                }, 600);
             }
         },
         mounted() {

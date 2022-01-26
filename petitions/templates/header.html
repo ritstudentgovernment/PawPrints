@@ -88,101 +88,111 @@
 
 {% if generate_top_nav %}
 <header class="full-width fixed transition large-header">
-{% else %}
-<header class="full-width fixed transition large-header no-top-nav">
-{% endif %}
-    <div id="header-top" class="transition">
-        <span id="logo" class="transition">
-            <a class="modern-link text-highlight" href="/">
-                <img class='transition' src="{% static main_logo %}" alt="{{name}}" />
-            </a>
-        </span>
-        <nav class=" header-nav left">
-            <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
-            <ul class="list">
-                <li id="about" class="list-item left header-link-wrapper">
-                    <a id="about-link" class="modern-link material-icon-container header-link" href="/about">
-                        <i class="material-icons hidden">info_outline</i><span id="about-text">About</span>
-                    </a>
-                </li>
-                <li id="committees" class="list-item left header-link-wrapper">
-                    <a id="committees-link" class="modern-link material-icon-container header-link" href="/committees">
-                        <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
-                 <li id="about" class="list-item left">
-                    <a id="about-link" class="modern-link material-icon-container" target="_self" href="https://www.rit.edu/studentgovernment/">
-                        <i class="material-icons hidden">feed</i><span id="about-text">News</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <div class="right">
-            <div id="menu">
-                <div id="menu-content" class="material-icon-container">
-                    {% if user.first_name %}
+    {% else %}
+    <header class="full-width fixed transition large-header no-top-nav">
+        {% endif %}
+        <div id="header-top" class="transition">
+            <span id="logo" class="transition">
+                <a class="modern-link text-highlight" href="/">
+                    <img class='transition' src="{% static main_logo %}" alt="{{name}}" />
+                </a>
+            </span>
+            <nav class=" header-nav left">
+                <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
+                <ul class="list">
+                    <li id="about" class="list-item left header-link-wrapper">
+                        <a id="about-link" class="modern-link material-icon-container header-link" href="/about">
+                            <i class="material-icons hidden">info_outline</i><span id="about-text">About</span>
+                        </a>
+                    </li>
+                    <li id="committees" class="list-item left header-link-wrapper">
+                        <a id="committees-link" class="modern-link material-icon-container header-link"
+                            href="/committees">
+                            <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
+                        </a>
+                    </li>
+                    <li id="about" class="list-item left header-link-wrapper">
+                        <a id="about-link" class="modern-link material-icon-container header-link" target="_self"
+                            href="https://www.rit.edu/studentgovernment/">
+                            <i class="material-icons hidden">feed</i><span id="about-text">News</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="right">
+                <div id="menu">
+                    <div id="menu-content" class="material-icon-container">
+                        {% if user.first_name %}
                         <span>Hi there, {{ user.first_name }}</span>
                         <i class="material-icons">keyboard_arrow_down</i>
                         <ul id="account-dropdown" class="list hidden transition">
                             <li><a href="/profile" class="block modern-link">Profile</a></li>
                             {% if user.is_superuser %}
-                                <li><a href="/profile/manage/admin" class="block modern-link">Admin Panel</a></li>
+                            <li><a href="/profile/manage/admin" class="block modern-link">Admin Panel</a></li>
                             {% endif %}
                             <li><a href="/logout/?next=/" class="block modern-link">Log Out</a></li>
                         </ul>
-                    {% else %}
-                        <button onclick="setCookie('hasSeenPopup', false, -1); window.location.href='/login/';" class="material material-button material-shadow transition">Login</button>
-                    {% endif %}
+                        {% else %}
+                        <button onclick="setCookie('hasSeenPopup', false, -1); window.location.href='/login/';"
+                            class="material material-button material-shadow transition">Login</button>
+                        {% endif %}
+                    </div>
+                    <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
                 </div>
-                <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
-                    <span class="hamburger-box">
-                    <span class="hamburger-inner"></span>
-                    </span>
-                </button>
             </div>
-        </div>
-        <div class="text-center">
-        </div>
-        <nav id="mobile-nav">
-            <div>
-                <ul>
-                    <li><span><h3>Pages</h3></span></li>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a target="_self" href="https://www.rit.edu/studentgovernment/">News</a></li>
-                    {% if user.first_name %}
+            <div class="text-center">
+            </div>
+            <nav id="mobile-nav">
+                <div>
+                    <ul>
+                        <li><span>
+                                <h3>Pages</h3>
+                            </span></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a target="_self" href="https://www.rit.edu/studentgovernment/">News</a></li>
+                        {% if user.first_name %}
                         {% if user.is_superuser %}
-                            <li>
-                                <a href="/profile/manage/admin">Admin Panel</a>
-                            </li>
+                        <li>
+                            <a href="/profile/manage/admin">Admin Panel</a>
+                        </li>
                         {% endif %}
                         <li>
                             <a>Account</a>
                             <ul>
-                                <li><span><h3>Hi there, {{ user.first_name }}.</h3></span></li>
+                                <li><span>
+                                        <h3>Hi there, {{ user.first_name }}.</h3>
+                                    </span></li>
                                 <li><a href="/profile" class="modern-link">Profile</a></li>
                                 <li><a href="/logout/?next=/" class="modern-link">Log Out</a></li>
                             </ul>
                         </li>
-                    {% else %}
-                        <button onclick="window.location.href='/login/'" class="material material-button material-shadow transition">Login</button>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </div>
-</header>
-<div id="modal-template" class="">
-    <div class="modal hidden">
-        <div class="modal-overlay hidden"></div>
-        <div class="modal-container">
-            <button class="modal-close-button hidden cursor">&times;</button>
-            <div class="modal-header text-center padding-top">
-                <span class="material-icon-container padding hidden"><i class="material-icons"></i></span>
-                <div class="modal-header-content overflow-hidden"></div>
-            </div>
-            <div class="modal-body">
-                <div class="modal-content"></div>
-                <div class="modal-buttons hidden"></div>
+                        {% else %}
+                        <button onclick="window.location.href='/login/'"
+                            class="material material-button material-shadow transition">Login</button>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div id="modal-template" class="">
+        <div class="modal hidden">
+            <div class="modal-overlay hidden"></div>
+            <div class="modal-container">
+                <button class="modal-close-button hidden cursor">&times;</button>
+                <div class="modal-header text-center padding-top">
+                    <span class="material-icon-container padding hidden"><i class="material-icons"></i></span>
+                    <div class="modal-header-content overflow-hidden"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-content"></div>
+                    <div class="modal-buttons hidden"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
