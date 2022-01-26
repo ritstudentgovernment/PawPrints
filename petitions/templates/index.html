@@ -213,7 +213,7 @@
                     <progress v-if="petition.signatures < 200" :value="petition.signatures"max="200" class="petition-progress"></progress> 
                     <progress v-else :value="petition.signatures"max="200" class="petition-progress-green" ></progress>
                     <div class="petition-body">
-                        <h4 v-if="petition.signatures % 2 == 0" class="is-signed-text">
+                        <h4 v-if="petition.isSigned" class="is-signed-text">
                             <span class="bold">Signed</span>
                         </h4>
                         <h4 class="petition-signatures">
