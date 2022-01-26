@@ -8,7 +8,7 @@
     <title>Committees | {{ name }}</title>
 
     {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/committees.css' %}">
     {% endcompress %}
 </head>
 <body>
@@ -20,6 +20,10 @@
         <a id="landing-marker"></a>
         {% if generate_top_nav %}
         <section id="landing" class="text-left overflow-hidden">
+            <div id="hero">
+                <h1>Committees</h1>
+                <h3></h3>
+            </div>
 
             <div id="sub-landing"></div>
             <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
