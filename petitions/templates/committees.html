@@ -25,15 +25,173 @@
                 <h3></h3>
             </div>
 
-            <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
-                <h1>{[ section.title ]}</h1>
-                <transition name="fade">
-                    <div v-if="section.active" class="transition">
-                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+            <div id="sub-landing">
+                <!-- Committee Page Update: 02-09-2022 -->
+                <div>
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            ACADEMICS & CO-OPS
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                The Academics & Co-ops Committee discusses and proposes solutions on issues relating to academic and co-op affairs as well as promote ideas for improvement at RIT. Some of those projects include:
+                                <br>
+                                <ul>
+                                    <li>Proposing a new grading scale to promote students to challenge themselves through free electives</li>
+                                    <li>Discussing plans to efficiently using student time during finals week</li>
+                                    <li>Enforcing reasonable time grade feedback policy</li>
+                                    <li>Pursuing extending class drop period</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
                     </div>
-                </transition>
-            </article>
+                
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            HOUSING & DINING
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                Everyone loves to eat! As one of our most active committees, there is a great partnership between Dining Services and SG. Some of the current charges of the Dining section of the Housing and Dining committee include:
+                                <br>
+                                <ul>
+                                    <li>Helping with Gracie's renovation plans</li>
+                                    <li>Expanding locations that support Tiger Bucks</li>
+                                </ul>
+                                <br>
+                                For students living in apartments and residence halls, the Housing section of the Housing and Dining Committee looks at all of the issues and potential improvements to housing at RIT. Some of the current charges include:
+                                <ul>
+                                    <li>Gender-inclusive housing</li>
+                                    <li>Affordable housing</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            FACILITIES, PARKING, AND TRANSPORTATION
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                Facilities looks at the buildings, operating times, and furnishings on RIT’s campus. Some of the current facilities charges include:
+                                <br>
+                                <ul>
+                                    <li>Improving lighting on campus</li>
+                                    <li>24hr lab and building access</li>
+                                    <li>Improving the quality of on-campus leisure locations, such as swings</li>
+                                </ul>
+                                <br>
+                                All issues related to parking and transportation services at RIT fall under this committee. In partnership with the Parking and Transportation Office, the committee is currently working on:
+                                <br>
+                                <ul>
+                                    <li>Improving parking on campus</li>
+                                    <li>UR/RIT bus route partnership</li>
+                                    <li>RTS partnerships</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            STUDENT AFFAIRS
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                Taking a lot of charges relating to improvement of student life at RIT, some of the current charges of Student Affairs committee are:
+                                <br>
+                                <ul>
+                                    <li>Improving psychological and counselling services</li>
+                                    <li>Creating scholarships for study abroad programs</li>
+                                    <li>Increasing student employee wages</li>
+                                    <li>Promoting financial literacy</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            SUSTAINABILITY
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                One of Student Government’s largest committees, the Sustainability committee helps look at ways to increase sustainable actions on RIT’s campus. Some of their current charges include:
+                                <br>
+                                <ul>
+                                    <li>Ethical and sustainable sourcing guides for the university</li>
+                                    <li>Integrating more plant-based options into menus</li>
+                                    <li>Coordinating with Dining Services to increase compostable and reusable utensils and containers.</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-committee">
+                        <div class="title-committee">
+                            DEAF ADVOCACY
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="text">
+                                The Deaf Advocacy Committee strives to make the RIT/NTID experience more Deaf-Friendly through a variety of initiatives. Some of their efforts include:
+                                <br>
+                                <ul>
+                                    <li>Improving accessibility at dining services</li>
+                                    <li>Facilitating understanding and relationships between Monroe County Sheriff’s Office and Deaf students</li>
+                                    <li>ASL education across campus</li>
+                                </ul>
+                                <br>
+                                Refer to the <a class='text-underline text-highlight' target='_blank' href='https://www.rit.edu/studentgovernment/committees'>SG Website</a> for meeting times.
+                                <br>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                </div>
+            </div>
+            <!-- <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)"> -->
+                <!-- <h1>{[ section.title ]}</h1> -->
+                <!-- <transition name="fade"> -->
+                    <!-- <div v-if="section.active" class="transition">
+                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+                    </div> -->
+                <!-- </transition> -->
+            <!-- </article> -->
 
         </section>
         {% else %}
@@ -43,9 +201,9 @@
             <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
                 <h1 style="line-height: calc(50vh - 103px); height: calc(50vh - 103px);">{[ section.title ]}</h1>
                 <transition name="fade">
-                    <div v-if="section.active" class="transition">
+                    <!-- <div v-if="section.active" class="transition">
                         <p v-for="paragraph in section.body" v-html="paragraph"></p>
-                    </div>
+                    </div> -->
                 </transition>
             </article>
 

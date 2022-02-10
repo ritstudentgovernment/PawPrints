@@ -754,6 +754,9 @@ progress[value]::-moz-progress-bar {
 /* -- Responsiveness -- */
 
 @media screen and (max-width: 1170px){
+    #sub-landing{
+        width: 90%;
+    }
     #signature-card{
         float: none;
         margin: 0 auto;
@@ -790,11 +793,11 @@ progress[value]::-moz-progress-bar {
     #filter-sort select{
         width: 177px;
     }
-    #petitions{
+    /* #petitions{
     /*  width: calc(100% - 200px);*/
-        width: calc(100% - 200px);
+        /* width: calc(100% - 200px); */
     /*  width: calc(100% - 200px);*/
-    }
+    } */
     #petitions-container{
         -moz-column-count: 2;
         -webkit-column-count:2;
@@ -930,7 +933,7 @@ progress[value]::-moz-progress-bar {
         margin-bottom: -12px;
     }
 }
-@media screen and (max-width: 600px){
+@media screen and (max-width: 660px){
     #petition-modal #timeline-container{
         padding-bottom: 100px;
     }
@@ -955,6 +958,9 @@ progress[value]::-moz-progress-bar {
     #social-share{
         margin-top: 10px;
         margin-right: calc(50% - 95px);
+    }
+    #header-top{
+        margin: 10px;
     }
     .timeline-element:before{
         left: calc(-8vw + 3px);
@@ -1106,6 +1112,9 @@ progress[value]::-moz-progress-bar {
     -moz-animation-delay: 0.58s;
 }
 
+.attached{
+    display: flex;
+}
 @keyframes load-upDown {
     from {
         transform: translateY(19px);

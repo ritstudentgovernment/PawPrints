@@ -1,5 +1,5 @@
 .text-highlight{
-color: {{ colors.highlight }} !important;
+    color: {{ colors.orange_highlight }} !important;
 }
 .bright-text{
 color: {{ colors.bright_text }} !important;
@@ -8,7 +8,7 @@ color: {{ colors.bright_text }} !important;
 color: {{ colors.dark_text }} !important;
 }
 .modern-link{
-color: {{ colors.dark_text }};
+color: {{ colors.light_text }};
 text-decoration: none;
 }
 .material-input:focus{
@@ -91,6 +91,8 @@ article div p{
 }
 #sub-landing{
     padding-top: 0;
+    width: 80%;
+    margin: auto;
 }
 #back-up:hover{
     -webkit-box-shadow: 0 0 0 0 #000;
@@ -104,9 +106,70 @@ article div p{
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
-@media screen and (max-width: 600px){
-    article{
-        width: 100%;
+
+/* new about page 01/26/2022 */
+.title{
+    font-size: 3em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    color: {{ colors.orange_highlight }} !important;
+}
+.title-committee{
+    font-size: 3em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    color: {{ colors.orange_highlight }} !important;
+}
+.text{
+    flex: 1;
+    font-weight: 500;
+    font-size: 1.5em;
+    padding: 20px;
+    font-family: "Montserrat", sans-serif;
+    color: {{ colors.highlight }} !important;
+}
+.section{
+    height: 600px;
+}
+.gap{
+    height: 100px;
+}
+.history-section{
+    display: flex;
+    flex-direction: row-reverse;
+    height: auto;
+}
+.title-text{
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
+    font-size: 2em;
+    text-align: center;
+    height: 2.5em;
+    color: {{ colors.orange_highlight }} !important;
+}
+.petitions-mid{
+    display: flex;
+}
+.icon-mid{
+    flex: 1;
+    padding: 15px;
+}
+.icon-img{
+    padding: 10px;
+    flex: 1;
+    text-align: center;
+}
+.icon-img img{
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+
+
+@media screen and (max-width: 1200px) {
+    .icon-img img{
+        width: 80%;
     }
 }
 @media screen and (max-width: 1000px) {
@@ -117,5 +180,40 @@ article div p{
 @media screen and (max-width: 800px) {
     .committee-article {
         width: 100% !important;
+    }
+    .title{
+        font-size: 2.5em;
+    }
+    .title-committee{
+        font-size: 2.5em;
+    }
+    .section{
+        height: auto;
+    }
+    .petitions-mid{
+        flex-direction: column;
+    }
+    .history-section{
+        flex-direction: column;
+    }
+    .icon-img img{
+        width: 70%;
+    }
+    .text{
+        font-size: 1em;
+    }
+}
+@media screen and (max-width: 600px){
+    article{
+        width: 100%;
+    }
+    .icon-img img{
+        width: 90%;
+    }
+    #sub-landing{
+        width: 90%;
+    }
+    .title-committee{
+        font-size: 1.5em;
     }
 }

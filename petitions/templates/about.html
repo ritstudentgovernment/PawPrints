@@ -9,6 +9,7 @@
 
     {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/index.css' %}"> -->
     {% endcompress %}
 </head>
 <body>
@@ -21,37 +22,124 @@
         {% if generate_top_nav %}
         <section id="landing" class="text-left overflow-hidden">
 
-            <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
-                <h1>{[ section.title ]}</h1>
-                <transition name="fade">
-                    <div v-if="section.active" class="transition">
-                        <p v-for="paragraph in section.body" v-html="paragraph"></p>
+            <div id="sub-landing">
+
+                <!-- <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+                    <h1>{[ section.title ]}</h1>
+                    <transition name="fade">
+                        <div v-if="section.active" class="transition">
+                            <p v-for="paragraph in section.body" v-html="paragraph"></p>
+                        </div>
+                    </transition>
+                </article> -->
+                <div>
+                    <div class="section">
+                        <div class="title">
+                            HISTORY
+                        </div>
+                        <br>
+                        <div class="history-section  icon-mid">
+                            <div class="icon-img">
+                                <img src="/static/images/history.png">
+                            </div>
+                            <div class="text">
+                                Student Government President Ashley Carrington and Vice President Tyler Pierce (2014-2015) sought to improve engagement of RIT Students through a Petition site. The site creates a place for the RIT community to converse on important issues.
+                                <br>
+                                <br>
+                                To remain transparent, this site is an open source project available on <a class='text-underline text-highlight' target='_blank' href='https://github.com/ritstudentgovernment/PawPrints'>GitHub</a>
+                                <br>
+                            </div>
+                        </div>
                     </div>
-                </transition>
-            </article>
+                    <br>
+                    <br>
+                    <div class="petitions-mid">
+                        <div class="icon-mid">
+                            <div class="icon-img">
+                                <img src="/static/images/icon-idea.png">
+                            </div>
+                            <br>
+                            <div class="title-text">
+                                HAVE AN IDEA
+                            </div>
+                            <br>
+                            <div  class="text">
+                                Search for petitions and if a petition similar to yours already exists, sign that petition.This will help raise support for issue and help you better reach the minimum threshold of 200 signatures (as of 09/28/2014) for receiving an official Student Government response.
+                            </div>
+                        </div>
 
-        </section>
-        {% else %}
-        <section id="landing" class="text-left overflow-hidden" style="margin-top: 78px">
+                        <div class="icon-mid">
+                            <div class="icon-img">
+                                <img src="/static/images/icon-write.png">
+                            </div>
+                            <br>
+                            <div class="title-text">
+                                WRITE YOUR PETITION
+                            </div>
+                            <br>
+                            <div class="text">
+                                Use proper spelling and grammar when writing your petition. This will help other users find the petition more easily. Be sure to review our Moderation Policy before posting.
+                            </div>
+                        </div>
+
+                        <div class="icon-mid">
+                            <div class="icon-img">
+                                <img src="/static/images/icon-share.png">
+                            </div>
+                            <br>
+                            <div class="title-text">
+                                SHARE YOUR PETITION
+                            </div>
+                            <br>
+                            <div  class="text">
+                                Use social media to spread awareness of your issue. A petition has one month to reach its threshold. If the threshold is not reached, then the petition is archived and available via the search. Student Government may elect to respond to a petition prior to reaching its threshold.
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="gap"></div>
+                    <div class="section">
+                        <div class="title">
+                            MODERATION POLICY
+                        </div>
+                        <br>
+                        <div  class="text">
+                            Use of this site falls under the <a class='text-underline text-highlight' target='_blank' href='http://www.rit.edu/computerconduct/'>RIT Code of Conduct for Computer and Network Use.</a>
+                            <br>
+                            <br>
+                            Student Government reserves the right to edit or remove any petition at any time for violating the Code of Conduct. This includes, but is not limited to, creating an intimidating, hostile or abusive environment for any member of the RIT community, or posting of any obscene, defamatory, threatening, or otherwise harassing petitions.
+                            <br>
+                            <br>
+                            When using this service, you agree to sign petitions from only one RIT Computer Account. Should you have access to more than one account, you will only sign from your primary student, faculty, or staff account.
+                            <br>
+                            <br>
+                            Please exercise good judgment when using this service.
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+            {% else %}
+            <section id="landing" class="text-left overflow-hidden" style="margin-top: 78px">
 
             <div id="sub-landing"></div>
-            <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
+            <!-- <article v-for="section in sections" :class="section.style + ' cursor transition'" v-on:click="click(section)">
                 <h1 style="line-height: calc(50vh - 103px); height: calc(50vh - 103px);">{[ section.title ]}</h1>
                 <transition name="fade">
                     <div v-if="section.active" class="transition">
                         <p v-for="paragraph in section.body" v-html="paragraph"></p>
                     </div>
                 </transition>
-            </article>
+            </article> -->
 
         </section>
         {% endif %}
 
     </main>
 </div>
-<a id="back-up" href="#landing-marker" class="padding transition material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
-<script>
+<!-- <<a id="back-up" href="#landing-marker" class="padding transition material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
+script>
     /* Initialize the Vue.js wrappers for the page. */
     /**
      **/
@@ -109,6 +197,6 @@
         },
         delimiters: ['{[', ']}']
     });
-</script>
+</script> -->
 </body>
 </html>
