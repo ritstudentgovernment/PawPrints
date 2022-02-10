@@ -5,10 +5,11 @@
     {% load static %}
     {% include 'head.html' with analytics_id=analytics_id %}
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-    <title>Committees | {{ name }}</title>
+    <!-- <title>Committees | {{ name }}</title> -->
 
     {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{% static '/css/committees.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/about.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static '/css/committees.css' %}"> -->
     {% endcompress %}
 </head>
 <body>
@@ -20,10 +21,10 @@
         <a id="landing-marker"></a>
         {% if generate_top_nav %}
         <section id="landing" class="text-left overflow-hidden">
-            <div id="hero">
+            <!-- <div id="hero">
                 <h1>Committees</h1>
                 <h3></h3>
-            </div>
+            </div> -->
 
             <div id="sub-landing">
                 <!-- Committee Page Update: 02-09-2022 -->
@@ -213,7 +214,7 @@
     </main>
 </div>
 <a id="back-up" href="#landing-marker" class="padding transition material-hover"><span class="material-icon-container"><i class="material-icons">expand_less</i></span></a>
-<script>
+<!-- <script>
     /* Initialize the Vue.js wrappers for the page. */
     /**
      **/
@@ -320,6 +321,6 @@
         },
         delimiters: ['{[', ']}']
     });
-</script>
+</script> -->
 </body>
 </html>
