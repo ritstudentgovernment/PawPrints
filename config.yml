@@ -17,7 +17,7 @@ text:
         # Text that shows up in the middle of the slideshow
         bold_text: "Make Your Mark"
         first_line: "Create and sign petitions."
-        second_line: "Receive official response from Student Government."
+        second_line: "Receive official responses from Student Government."
 
 petitions:
     # Default values that show up when user creates a petition
