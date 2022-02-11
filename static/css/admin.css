@@ -1,8 +1,8 @@
 .background-highlight{
-    background-color: #f36e21;
+    background-color: #36454F;
     }
     .text-highlight{
-    color: #f36e21 !important;
+    color: #36454F !important;
     }
     .bright-text{
     color: #fff !important;
@@ -12,7 +12,7 @@
     text-decoration: none;
     }
     .material-input:focus{
-    border-color: #f36e21;
+    border-color: #36454F;
     }
     .alternate-font{
         font-family: "Slabo 27px", sans-serif;

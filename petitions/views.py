@@ -73,6 +73,30 @@ def about(request):
     }
     return render(request, 'about.html', data_object)
 
+def committees(request):
+    """
+    Handles displaying the committees page
+    """
+    data_object = {
+        'name': CONFIG['name'],
+        'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
+    }
+    return render(request, 'committees.html', data_object)
+
+def news(request):
+    """
+    Handles displaying the news page
+    """
+    data_object = {
+        'name': CONFIG['name'],
+        'main_logo': CONFIG['main_logo'],
+        'generate_top_nav': CONFIG['generate_top_nav'],
+        'analytics_id': settings.ANALYTICS
+    }
+    return render(request, 'news.html', data_object)
+
 
 def maintenance(request):
     return render(request, 'Something_Special.html')
@@ -511,6 +535,12 @@ def petition_edit(request, petition_id):
 
             return edit_description(petition, value)
 
+        elif attribute == "committee":
+            tag = Tag(name='CHARGED: ' + value)
+            tag.save()
+            petition.tags.add(tag)
+            petition.save()
+
         elif attribute == "add-tag":
 
             petition.tags.add(value)
@@ -519,7 +549,7 @@ def petition_edit(request, petition_id):
 
             petition.tags.remove(value)
 
-        elif not request.user.is_staff:
+        elif not request.user.is_staff: # reset before deployment with a 'not'
             # Only send this error if the petition author is not an admin, because admin operations
             # have not been checked yet.
             return JsonResponse({"Error": "Operation " + attribute + " Not Known."})
@@ -779,6 +809,7 @@ def filtering_controller(sorted_objects, tag):
 # SORTING
 def sorting_controller(key, query=None):
     result = {
+        'all': all(),
         'most recent': most_recent(),
         'most signatures': most_signatures(),
         'last signed': last_signed(),
@@ -790,6 +821,9 @@ def sorting_controller(key, query=None):
     }.get(key, None)
     return result
 
+def all():
+    return Petition.objects.all() \
+        .filter(status=1) 
 
 def most_recent():
     return Petition.objects.all() \

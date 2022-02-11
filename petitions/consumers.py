@@ -164,6 +164,14 @@ class PetitionConsumer(JsonWebsocketConsumer):
                         }
                         self.send_json(reply)
                     return None
+                elif command == 'all':
+                    # Parse the search command. Required query. Optional = filter.
+                    # Sends the WS a sorted and optionally filtered list of petitions.
+                    petitions = views.sorting_controller("all")
+                    if petitions:
+                        self.send_petitions(petitions)
+                        return None
+                    return None
                 elif command == 'search':
                     # Parse the search command. Required query. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.

@@ -1,7 +1,7 @@
 # Configuration for the app
 name: "PawPrints"
 description: "Make Your Mark. Create and sign petitions. Receive official responses from Student Government."
-main_logo: "/images/pawprints.svg" # Main logo location in static directory
+main_logo: "/images/pawprints-white.svg" # Main logo location in static directory
 
 organization: "RIT Student Government" # Organization responding to petitions
 org_logo: "/images/sg-logo.png" # Logo for the organization
@@ -17,7 +17,7 @@ text:
         # Text that shows up in the middle of the slideshow
         bold_text: "Make Your Mark"
         first_line: "Create and sign petitions."
-        second_line: "Receive official response from Student Government."
+        second_line: "Receive official responses from Student Government."
 
 petitions:
     # Default values that show up when user creates a petition
@@ -58,14 +58,17 @@ email:
   
 ui:
     colors:
-        highlight: "#f36e21"
-        highlight_hover: "#e86920"
+        highlight: "#36454F"
+        orange_highlight: "#f36e21"
+        highlight_hover: "#606d75"
+        # highlight_hover: "#e86920"
         dark_text: "#0f0f0f"
         light_text: "#f0f0f0"
         bright_text: "#fff"
         light_background: "#fafafa"
         main_color: "#ff7700"
         responded_highlight: "#9d5f4b"
+        progress_green: "#18A558"
     slideshow_images:
     # Defines images that show up in the slideshow
     # To add more or less, add another block in the form

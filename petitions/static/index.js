@@ -53,28 +53,28 @@
                     window.openPetition(petition.id);
                 }
             },
-            search: function(){
-                if (this.timeout) clearTimeout(this.timeout);
-                this.timeout = setTimeout(() => {
-                    if(this.searchString.trim() !== ""){
-                        this.loading = true;
-                        this.map = {};
-                        this.list = [];
-                        socket.send('{"command":"search","query":"'+this.searchString+'"}');
-                        window.searched = true;
-                        setTimeout(() => {
-                            // Timeout waiting for the websocket response after 3 seconds.
-                            petitions.loading = false;
-                        },3000);
-                    }
-                    else{
-                        window.searched = false;
-                        var sort = $("#sort");
-                        var filter_tag = sort.data("filter");
-                        var sort_by = sort.val();
-                        reloadPetitions(sort_by, filter_tag, socket);
-                    }
-                },600);
+            search: function () {
+                if (this.searchString !== "") {
+                    this.map = {};
+                    this.list =[] ;
+                    socket.send('{"command":"all"}');
+                    window.loading = true;
+                    window.searched = true;
+                     setTimeout(() => {
+                        // Timeout waiting for the websocket response after 3 seconds.
+                          this.list = this.list.filter((item) =>
+                                    item.title.toLowerCase().includes(this.searchString.toLowerCase())
+                                    || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
+                     }, 3000);
+                }
+                else {
+                    window.searched = false;
+                    var sort = $("#sort");
+                    var filter_tag = $("#mobile-filter").val();
+                    var sort_by = sort.val();
+                    console.log(sort_by);
+                    reloadPetitions(sort_by, filter_tag, socket);
+                }
             }
         },
         mounted() {
@@ -185,19 +185,15 @@
          * petitions.loading is set to true here to show the loading petitions animation
          * petitions.map and petitions.list are reset to empty here in order to allow a new set of petitions to be loaded
          **/
-
         // load the petitions into the Vue instance.
-        if($(".current-tag").attr("id") !== filter){
 
-            $(".current-tag").removeClass("current-tag");
 
-        }
-        $("#tag-"+filter).addClass("current-tag");
         window.page = 1;
         window.searched = false;
         petitions.loading = true;
         petitions.map = {};
         petitions.list = [];
+        petitions.searchString = '';
         loadPetitions(sort_by, filter, socket);
 
     }
@@ -416,7 +412,7 @@
 
             });
 
-            $(document).on("keyup", function () {
+            $(document).on("keyup", function (e) {
                 if(e.keyCode === 27){ // Close the petition when you press the escape key.
                     modalData.closePetition();
                     $(document).unbind("keyup");
@@ -491,6 +487,7 @@
         };
 
         socket.onmessage = (e) => {
+            console.log('hi');
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
 
@@ -723,6 +720,20 @@
                         if (websocket_debug) console.log("List size after: " + petitions.list.length)
 
                     }
+                    else if (command === "all") {
+                        if (websocket_debug) {
+                            console.log("Trying to add the next page of petitions to the page.");
+                            console.log("List size before: " + petitions.list.length);
+                            console.log("Size of next page: " + data["petitions"].length);
+                        }
+                       
+                        petitions.list.push(...data["petitions"]);
+                        setMapBasedOnLocation(data["petitions"]);
+                        petitions.loading = false;
+
+                        if (websocket_debug) console.log("List size after: " + petitions.list.length)
+
+                    }
                     else if (websocket_debug) {
                         console.log("Unrecognized command: " + command);
                         console.log(data);
@@ -806,6 +817,40 @@
 
         window.page = 1;
         setupSocket();
+        // Get the sort key globally
+        var sort = $("#sort");
+        let sort_by = 'most recent';
+        sort.on("click", function (params) {
+            sort.is(":checked") ? (sort.prop("checked", false)) : sort.prop("checked", true);
+            if (sort.is(":checked")) {
+                console.log(sort);
+                sort_by = 'most recent';
+                sort.prop("checked", false);
+            } else {
+                sort_by = 'most signatures';
+                sort.prop("checked", true);
+                console.log('tru');
+                console.log(sort.is(":checked"), 'trending');
+            }
+            // Grab the tag name
+            var filter_tag = $("#mobile-filter").val()
+            // console.log(filter_tag, 'trending filter_tag');
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+        });
+
+         $("#mobile-filter").change(function () {
+
+            // Grab the tag name
+            var filter_tag = $(this).val();
+            sort_by = 'most recent';
+            sort.prop("checked", false);
+
+            // Reload all of the petitions with the updated information.
+            reloadPetitions(sort_by, filter_tag, socket);
+
+        });
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
@@ -818,49 +863,21 @@
 
             // Get the tag name
             var filter_tag = $(this).data("tag");
-
-            // Get the sort key
-            var sort = $("#sort");
-            var sort_by = sort.val();
-            sort.data("filter",filter_tag);
+            sort_by = 'most recent';
+            sort.prop("checked", false);
 
             // Update the select field for mobile devices
             $("#mobile-filter").val(filter_tag);
+            // console.log(filter_tag,'filter_tag');
 
             // Reload all of the petitions with the updated information.
             reloadPetitions(sort_by, filter_tag, socket);
-
-            var to_elem = $("#petitions");
-            scroll(to_elem);
-
-        });
-
-        $("#sort").change(function () {
-
-            // Grab the tag name
-            var filter_tag = $("#sort").data("filter");
-
-            // Grab the sort key
-            var sort_by = $(this).val();
-
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
+            
+            $('html, body').animate({scrollTop: $("#petitions").offset().top -100 }, 'slow');
 
         });
 
-        $("#mobile-filter").change(function () {
-
-            // Grab the tag name
-            var filter_tag = $(this).val();
-            $("#sort").data("filter",filter_tag);
-
-            // Grab the sort key
-            var sort_by = $("#sort").val();
-
-            // Reload all of the petitions with the updated information.
-            reloadPetitions(sort_by, filter_tag, socket);
-
-        });
+       
 
         $(document).on("click","#action-drawer-icon-container", function () {
             var me = $(this);
@@ -933,8 +950,7 @@
                     paginationTimeout = setTimeout(function () {
                         window.page++;
                         window.petitions.loading = true;
-                        var filter_tag = $("#sort").data("filter");
-                        var sort_by = $("#sort").val();
+                         var filter_tag = $("#mobile-filter").val()
                         loadPetitions(sort_by, filter_tag, window.socket);
                     },250);
 

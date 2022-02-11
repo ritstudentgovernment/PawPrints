@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
 {% if generate_top_nav %}
-<nav>
+<!-- <nav>
     <div class="header-top">
         <div class="dropdown-left">
             <a href="https://sg.rit.edu/">RIT Student Government</a>
@@ -34,9 +34,9 @@
                     <a href="https://pawprints.rit.edu/">Paw Prints</a>
                     <a href="https://sg.rit.edu/legalaid/">Legal Aid</a>
                     <a href="https://ritpedia.rit.edu/Main_Page">RITpedia</a>
-                    <!-- <a href="https://openevals.rit.edu/">Open Evals</a> -->
+                    <a href="https://openevals.rit.edu/">Open Evals</a>
                     <a href="https://sg.rit.edu/finance/">Finance</a>
-                    <!-- <a href="https://sg.rit.edu/breakbus/">Break Bus</a> -->
+                    <a href="https://sg.rit.edu/breakbus/">Break Bus</a>
                 </div>
             </button>
             <button id="3" class="dropbtn">
@@ -79,7 +79,7 @@
             </button>
         </div>
     </div>
-</nav>
+</nav> -->
 {% endif %}
 
 {% compress css %}
@@ -92,12 +92,27 @@
 <header class="full-width fixed transition large-header no-top-nav">
 {% endif %}
     <div id="header-top" class="transition">
-        <nav class="left">
+        <span id="logo" class="transition">
+            <a class="modern-link text-highlight" href="/">
+                <img class='transition' src="{% static main_logo %}" alt="{{name}}" />
+            </a>
+        </span>
+        <nav class=" header-nav left">
             <span class="material-icon-container hidden"><i class="material-icons">menu</i></span>
             <ul class="list">
-                <li id="about" class="list-item left">
-                    <a id="about-link" class="modern-link material-icon-container" href="/about">
+                <li id="about" class="list-item left header-link-wrapper">
+                    <a id="about-link" class="modern-link material-icon-container header-link" href="/about">
                         <i class="material-icons hidden">info_outline</i><span id="about-text">About</span>
+                    </a>
+                </li>
+                <li id="committees" class="list-item left header-link-wrapper">
+                    <a id="committees-link" class="modern-link material-icon-container header-link" href="/committees">
+                        <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
+                    </a>
+                </li>
+                <li id="about" class="list-item left  header-link-wrapper">
+                    <a id="about-link" class="modern-link material-icon-container  header-link" target="_self" href="https://www.rit.edu/studentgovernment/">
+                        <i class="material-icons hidden">feed</i><span id="about-text">News</span>
                     </a>
                 </li>
             </ul>
@@ -120,18 +135,13 @@
                     {% endif %}
                 </div>
                 <button id="menu-icon" class="hamburger hamburger--collapse" type="button">
-                  <span class="hamburger-box">
+                    <span class="hamburger-box">
                     <span class="hamburger-inner"></span>
-                  </span>
+                    </span>
                 </button>
             </div>
         </div>
         <div class="text-center">
-            <span id="logo" class="transition">
-                <a class="modern-link text-highlight" href="/">
-                    <img class='transition' src="{% static main_logo %}" alt="{{name}}" />
-                </a>
-            </span>
         </div>
         <nav id="mobile-nav">
             <div>
@@ -139,6 +149,8 @@
                     <li><span><h3>Pages</h3></span></li>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
+                    <li><a href="/committees">Committees</a></li>
+                    <li><a target="_self" href="https://www.rit.edu/studentgovernment/">News</a></li>
                     {% if user.first_name %}
                         {% if user.is_superuser %}
                             <li>
