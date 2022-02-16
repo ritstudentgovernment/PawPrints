@@ -435,6 +435,11 @@ nav .margin-right{
 .mm-navbar *{
     color: {{colors.highlight}} !important;
 }
+.dropdown-link {
+    color: #0f0f0f !important;
+    text-decoration: none;
+    font-weight: 100;
+}
 #menu-content:hover #account-dropdown{
     display: block !important;
     color: #0f0f0f !important;
@@ -445,13 +450,14 @@ header.small-header #menu-content:hover #account-dropdown{
 }
 #account-dropdown{
     position: fixed;
-    top: 100px;
+    top: 50px;
     right: 1em;
     min-width: 115px;
     padding: 10px;
     background-color: #fff;
     line-height: 1.5em;
     text-align: center;
+    list-style-type: none;
 }
 #account-dropdown li:hover{
     text-decoration: underline;
