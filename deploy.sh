@@ -1,6 +1,9 @@
-if [ $TRAVIS_BRANCH = "master" ]; then
-  curl -u $USERNAME:$PASSWORD -d '{"author": "'"$AUTHOR_NAME"'", "email": "'"$COMMITTER_EMAIL"'"}' https://pawprints.rit.edu/deploy ;
-  exit 0;
-elif [ $TRAVIS_BRANCH = "develop" ]; then
-  curl -u $USERNAME:$PASSWORD -d '{"author": "'"$AUTHOR_NAME"'", "email": "'"$COMMITTER_EMAIL"'"}' https://sgstage.rit.edu/deploy ;
-fi
+#!/bin/bash
+
+# This is a script that will deploy pawprints if ran inside the ./PawPrints directory AFTER the master branch has been merged with develop!
+
+#pulling all of the new code that was merged into master in the github repo
+git pull
+
+# restarting the container to implement the code changes pulled from the github repo
+docker container restart pawprints_web_1
