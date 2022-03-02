@@ -107,7 +107,7 @@
                 </li>
                 <li id="committees" class="list-item left header-link-wrapper">
                     <a id="committees-link" class="modern-link material-icon-container header-link" href="/committees">
-                        <i class="material-icons hidden">groups</i><span id="about-text">Committees</span>
+                        <i class="material-icons hidden">info_outline</i><span id="about-text">Committees</span>
                     </a>
                 </li>
                 <li id="about" class="list-item left  header-link-wrapper">
@@ -124,11 +124,11 @@
                         <span>Hi there, {{ user.first_name }}</span>
                         <i class="material-icons">keyboard_arrow_down</i>
                         <ul id="account-dropdown" class="list hidden transition">
-                            <li><a href="/profile" class="block dropdown-link">Profile</a></li>
+                            <li><a href="/profile" class="block modern-link">Profile</a></li>
                             {% if user.is_superuser %}
-                                <li><a href="/profile/manage/admin" class="block dropdown-link">Admin Panel</a></li>
+                                <li><a href="/profile/manage/admin" class="block modern-link">Admin Panel</a></li>
                             {% endif %}
-                            <li><a href="/logout/?next=/" class="block dropdown-link">Log Out</a></li>
+                            <li><a href="/logout/?next=/" class="block modern-link">Log Out</a></li>
                         </ul>
                     {% else %}
                         <button onclick="setCookie('hasSeenPopup', false, -1); window.location.href='/login/';" class="material material-button material-shadow transition">Login</button>

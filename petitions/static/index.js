@@ -56,18 +56,15 @@
             search: function () {
                 if (this.searchString !== "") {
                     this.map = {};
-                    this.list = [];
-                    console.log(socket);
-                    console.log(window.socket);
+                    this.list =[] ;
                     socket.send('{"command":"all"}');
                     window.loading = true;
                     window.searched = true;
                      setTimeout(() => {
                         // Timeout waiting for the websocket response after 3 seconds.
-                        //  console.log(this.list + 'wwww');
-                        //   this.list = this.list.filter((item) =>
-                        //             item.title.toLowerCase().includes(this.searchString.toLowerCase())
-                        //             || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
+                          this.list = this.list.filter((item) =>
+                                    item.title.toLowerCase().includes(this.searchString.toLowerCase())
+                                    || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
                      }, 3000);
                 }
                 else {
@@ -503,10 +500,6 @@
                     console.log("Received Websocket Command...");
                     console.log(data);
                 }
-                console.log(data);
-                if (window.searched) { 
-                    data["command"] = 'all'
-                }
 
                 // If there is a command sent from the server
                 if (data["command"]) {
@@ -733,16 +726,10 @@
                             console.log("List size before: " + petitions.list.length);
                             console.log("Size of next page: " + data["petitions"].length);
                         }
-                    //    console.log('we '+ data["petitions"]);
-                        let searchString = window.petitions.searchString;
-                        petitions.list = [];
-                        let list = data["petitions"].filter((item) =>
-                                    item.title.toLowerCase().includes(searchString.toLowerCase())
-                                    || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(searchString.toLowerCase()))
-                        petitions.list.push(...list);
-                        setMapBasedOnLocation(list);
+                       
+                        petitions.list.push(...data["petitions"]);
+                        setMapBasedOnLocation(data["petitions"]);
                         petitions.loading = false;
-                        petitions.searched = false;
 
                         if (websocket_debug) console.log("List size after: " + petitions.list.length)
 
@@ -753,25 +740,25 @@
                     }
 
                 }
-                // else {
+                else {
 
-                //     // Default behaviour is to update everything on response if no command is given.
-                //     if (data.hasOwnProperty("petitions")) {
-                //         petitions.list = data["petitions"];
-                //         petitions.map = data["map"];
-                //         petitions.loading = false;
-                //         petitionID = getUrl("p");
-                //         if (petitionID) {
-                //             openPetition(petitionID, true);
-                //         }
-                //     }
-                //     else if (websocket_debug) {
+                    // Default behaviour is to update everything on response if no command is given.
+                    if (data.hasOwnProperty("petitions")) {
+                        petitions.list = data["petitions"];
+                        petitions.map = data["map"];
+                        petitions.loading = false;
+                        petitionID = getUrl("p");
+                        if (petitionID) {
+                            openPetition(petitionID, true);
+                        }
+                    }
+                    else if (websocket_debug) {
 
-                //         console.log("Default action failed; petitions object does not exist in response.");
+                        console.log("Default action failed; petitions object does not exist in response.");
 
-                //     }
+                    }
 
-                // }
+                }
 
             }
             catch (error) {
@@ -830,11 +817,9 @@
 
         window.page = 1;
         setupSocket();
-        
         // Get the sort key globally
         var sort = $("#sort");
         let sort_by = 'most recent';
-        var filter_tag = $("#mobile-filter").val()
         sort.on("click", function (params) {
             sort.is(":checked") ? (sort.prop("checked", false)) : sort.prop("checked", true);
             if (sort.is(":checked")) {
@@ -848,7 +833,7 @@
                 console.log(sort.is(":checked"), 'trending');
             }
             // Grab the tag name
-            
+            var filter_tag = $("#mobile-filter").val()
             // console.log(filter_tag, 'trending filter_tag');
 
             // Reload all of the petitions with the updated information.
@@ -866,7 +851,6 @@
             reloadPetitions(sort_by, filter_tag, socket);
 
         });
-         socket.onopen = ()=> loadPetitions(sort_by, filter_tag, socket);
 
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
