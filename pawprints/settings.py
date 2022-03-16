@@ -254,6 +254,9 @@ LOGGING = {
             'backupCount': 10,
             'encoding': 'utf8'
         },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
     },
     'loggers': {
         'pawprints': {
@@ -271,6 +274,10 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': ['WARNING'],
     },
 }
 
