@@ -1,6 +1,6 @@
 {
     "strict": true,
-    "debug": true,
+    "debug": false,
     "sp": {
         "entityId": "https://pawprints.rit.edu/saml",
         "assertionConsumerService": {
