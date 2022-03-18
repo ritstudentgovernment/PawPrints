@@ -1,13 +1,12 @@
 {
     "strict": true,
-    "debug": false,
+    "debug": true,
     "sp": {
         "entityId": "https://pawprints.rit.edu/saml",
         "assertionConsumerService": {
             "url": "https://pawprints.rit.edu/acs",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
         },
-        "signAuthnRequest": "true",
         "singleLogoutService": {
             "url": "https://pawprints.rit.edu/sls",
             "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
