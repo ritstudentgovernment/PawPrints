@@ -490,7 +490,6 @@
         };
 
         socket.onmessage = (e) => {
-            console.log('hi');
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
 
@@ -503,7 +502,7 @@
                     console.log("Received Websocket Command...");
                     console.log(data);
                 }
-                console.log(data);
+                // console.log(data);
                 if (window.searched) { 
                     data["command"] = 'all'
                 }
