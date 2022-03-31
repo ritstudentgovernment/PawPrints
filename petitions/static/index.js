@@ -487,7 +487,6 @@
             }
 
         };
-        console.log(socket);
         socket.onmessage = (e) => {
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
@@ -869,7 +868,6 @@
 
         });
         socket.onopen = ()=> {
-            console.log('onopen 2 is a thing?');
             petitionID = getUrl("p");
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
