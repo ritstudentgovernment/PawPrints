@@ -478,7 +478,9 @@
 
         // Setup Web Socket.
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
+        console.log(socket_type);
         socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
+        console.log(socket);
         socket.onopen = (e) => {
             console.log('websocket is open');
             petitionID = getUrl("p");
