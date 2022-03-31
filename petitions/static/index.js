@@ -478,11 +478,8 @@
 
         // Setup Web Socket.
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
-        console.log(socket_type);
         socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
-        console.log(socket);
         socket.onopen = (e) => {
-            console.log('websocket is open');
             petitionID = getUrl("p");
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
@@ -830,6 +827,11 @@
 
         window.page = 1;
         setupSocket();
+        petitionID = getUrl("p");
+        console.log(petitionID);
+        if(petitionID && modalData.petition.id !== Number(petitionID)){
+            openPetition(petitionID, true);
+        }
         
         // Get the sort key globally
         var sort = $("#sort");
@@ -972,6 +974,9 @@
 
                 }
             }
+
+
+
         });
 
         window.onpopstate = function () {
