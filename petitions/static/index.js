@@ -477,11 +477,10 @@
         var petitionID;
 
         // Setup Web Socket.
-
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
         socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
         socket.onopen = (e) => {
-
+            console.log('websocket is open');
             petitionID = getUrl("p");
             if(petitionID && modalData.petition.id !== Number(petitionID)){
                 openPetition(petitionID, true);
@@ -977,6 +976,9 @@
             //Refresh the page on back.
             location.reload();
         };
+
+        // let petID = getUrl("p");
+        // if (petID) openPetition(petID);
 
     });
 
