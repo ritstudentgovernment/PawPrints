@@ -827,11 +827,10 @@
 
         window.page = 1;
         setupSocket();
-        petitionID = getUrl("p");
-        console.log(petitionID);
-        if(petitionID && modalData.petition.id !== Number(petitionID)){
-            openPetition(petitionID, true);
-        }
+        // petitionID = getUrl("p");
+        // if(petitionID && modalData.petition.id !== Number(petitionID)){
+        //     openPetition(petitionID, true);
+        // }
         
         // Get the sort key globally
         var sort = $("#sort");
