@@ -479,6 +479,7 @@
         // Setup Web Socket.
         var socket_type = window.location.protocol === "https:" ? "wss" : "ws";
         socket = new WebSocket(socket_type+"://" + window.location.host + "/ws/");
+        
         socket.onopen = (e) => {
             petitionID = getUrl("p");
             if(petitionID && modalData.petition.id !== Number(petitionID)){
@@ -486,7 +487,7 @@
             }
 
         };
-
+        console.log(socket);
         socket.onmessage = (e) => {
             // Get Escape special characters so JSON.parse works.
             var data = e.data.replace(/%/gi, '\%').replace(/"/gi, '\"').replace(/&/gi, '\&');
@@ -867,8 +868,14 @@
             reloadPetitions(sort_by, filter_tag, socket);
 
         });
-         socket.onopen = ()=> loadPetitions(sort_by, filter_tag, socket);
-
+        socket.onopen = ()=> {
+            console.log('onopen 2 is a thing?');
+            petitionID = getUrl("p");
+            if(petitionID && modalData.petition.id !== Number(petitionID)){
+                openPetition(petitionID, true);
+            }
+            loadPetitions(sort_by, filter_tag, socket);
+        };
         // Bind parallax effects.
         $("#parallax-slideshow").parallax({divisor:-2.5});
         $("#parallax-overlay").parallax({divisor:-5,offset:30});
