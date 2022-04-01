@@ -112,6 +112,7 @@
                             <div id="social-share" class="right overflow-hidden transition petition-action-card">
                                 <h3>Share</h3>
                                 <div class="left material-icon-container social-icon" v-for="icon in social" ><a :href="icon.link +'?p='+petition.id" target="_blank"><img :src="icon.imgURL" :alt="icon.name" :title="icon.name" /></a></div>
+                                <div class="left material-icon-container social-icon"><img src="/static/images/link_icon.png" alt="Link" title="Link" id="link-copy-button"></div>
                             </div>
                             <div class="petition-action-card margin-right padding-right right">
                                 <h3>Expires</h3>

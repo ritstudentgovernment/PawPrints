@@ -940,6 +940,12 @@
             reportPetitionModal(petition);
         });
 
+        // Handles the link button separately from the others sinice it isn't supposed to link you to other pages
+        $(document).on('click', "#link-copy-button", (e) => {
+            e.preventDefault();
+            navigator.clipboard.writeText(window.location.href);
+        });
+
         $(document).on("click","#publish-button", function () {
             var petition = getUrl("p");
 
