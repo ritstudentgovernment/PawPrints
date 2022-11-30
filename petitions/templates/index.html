@@ -267,7 +267,7 @@
                 });
             });
         });
-        {% if alert.active %}
+        if (alert.active) {
             window.popup = new Modal({
                 headerContent: "<h2>A Message From SG</h2>",
                 bodyContent: "<p class='padding-bottom'>{{ alert.content }}</p>",
@@ -282,7 +282,7 @@
                 setCookie('hasSeenPopup', 'true', 1); // Set the hasSeenPopup cookie so they don't see it every time they load the page
                 popup.open();
             }
-        {% endif %}
+        }
     </script>
 {% else %}
     <script>
