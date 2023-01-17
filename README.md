@@ -34,7 +34,7 @@ If running the application for the first time, there will be no data in the data
 
 Before running the script, ensure that the containers are up and grab the name of the web container. Refering to the output of ```docker ps``` above, the web container is named ```pawprints_web_1```.
 
-Then to run the script, ```docker exec -it pawprints_web_1 python manage.py mockdata```. The script will take a while to run as it generates the mock data.
+Then to run the script, ```docker exec -it pawprints-web-1 python manage.py mockdata```. The script will take a while to run as it generates the mock data.
 
 Finally, to view the app, simply navigate to ```http://localhost:8000```.
 
