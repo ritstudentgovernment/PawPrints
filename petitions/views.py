@@ -355,6 +355,22 @@ def add_update(request, petition, description):
 
     return JsonResponse({"petition": petition.id})
 
+def add_committee (request, petition, committee):
+    """
+    Adds a committee to the petition
+    :param request: The staff user's request
+    :param petition: The petition the committee is being charged to
+    :param committee: The committee to add
+    """
+    petition.committee = committee
+    data = {
+        "command": "set-committee",
+        "committee": committee,
+        "petition_id": petition.id
+    }
+    send_update(data)
+    petition.save()
+
 
 def add_response(request, petition, description):
     """

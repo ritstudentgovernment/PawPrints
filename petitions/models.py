@@ -38,7 +38,7 @@ class Petition(models.Model):
     updates = models.ManyToManyField('petitions.Update', default=None)
     old_id = models.CharField(max_length=20, default=None, blank=True, null=True)
     # Indicates to the user what committee a petition has been charged to
-    # committee = models.CharField(max_length=100, default="none")
+    committee = models.CharField(max_length=100, default="none")
 
     def __str__(self):
         return self.title

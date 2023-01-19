@@ -65,7 +65,8 @@ def get_petitions_and_map(petitions_obj, user=None):
             'in_progress': petition.in_progress,
             'isSigned': profile.petitions_signed.filter(id=petition.id).exists() if profile is not False else False,
             'deleted': False,
-            'id': petition.id
+            'id': petition.id,
+            'committee': petition.committee
         })
         petition_map[petition.id] = x
 

@@ -315,6 +315,24 @@ class PetitionTest(TestCase):
 
         pet = Petition.objects.get(pk=self.petitionPublished.id)
         self.assertEqual(pet.in_progress, True)
+    
+    def test_petition_mark_committee(self):
+        self.client.force_login(self.superUser)
+        obj = {
+            "attribute": "mark-in-progress"
+        }
+        self.assertEqual(self.petitionPublished.in_progress, None)
+
+        request = self.factory.post(
+            '/petition/update/' + str(self.petitionPublished.id), obj)
+        request.user = self.superUser
+        request.META['HTTP_HOST'] = "random"
+        response = petition_edit(request, self.petitionPublished.id)
+
+        self.assertNotEqual(response.status_code, 404)
+
+        pet = Petition.objects.get(pk=self.petitionPublished.id)
+        self.assertEqual(pet.in_progress, True)
 
     def test_petition_unpublish_progress(self):
         self.client.force_login(self.superUser)

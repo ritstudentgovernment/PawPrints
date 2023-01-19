@@ -332,7 +332,8 @@
                 response:toPetition.response.length,
                 in_progress:toPetition.in_progress,
                 isSigned:toPetition.isSigned,
-                id:toPetition.id
+                id:toPetition.id,
+                committee:toPetition.committee
             };
 
             // Ensure the timeline is empty, this prevents duplicate insertions when opening a specific petition
@@ -535,6 +536,13 @@
 
                         animateUpdate(data["petition_id"]);
 
+                    }
+                    // TODO check modalData, add test, animateUpdate
+                    else if (command === "set-committee") {
+                        petition_id = data["petition_id"];
+                        committee = data["committee"];
+                        petitions.list[petitions.map[petition_id]].committee = committee;
+                        if (websocket_debug) console.log(`Petition ${petition_id}'s committee is now ${committee}`);
                     }
                     else if (command === "new-update") {
                         // Handle petitions getting an update.
