@@ -38,6 +38,21 @@ Then to run the script, ```docker exec -it pawprints_web_1 python manage.py mock
 
 Finally, to view the app, simply navigate to ```http://localhost:8000```.
 
+#Run pawprints locally:
+
+--------after creating .env file---------
+#continue in same terminal
+1. docker-compose up
+
+#open new terminal
+1.docker ps
+2. docker exec -it pawprints-web-1 python manage.py mockdata
+3. http://localhost:8000
+
+
+Note: comment:
+	   petitions>>models.py>> committee = models.CharField(max_length=100, default=None)
+
 ### More Info
 For more detailed information about setting up the app and other common FAQs, please visit the [wiki](https://github.com/ritstudentgovernment/PawPrints/wiki).
 
