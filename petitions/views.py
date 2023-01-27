@@ -763,7 +763,7 @@ def send_update(update):
     channel = channels.layers.get_channel_layer()
     async_to_sync(channel.group_send)(
         "petitions", {"type": "group.update", "text": update})
-    return None
+    return
 
 
 def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())

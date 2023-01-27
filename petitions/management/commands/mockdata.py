@@ -182,7 +182,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(
                 'Failed to generate %s Petition objects\n %s' % (len(users), e)))
             print(traceback.format_exc())
-            return None
+            return
 
     def generate_tags(self):
         taglst = []
@@ -200,7 +200,7 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.ERROR(
                 'Failed to create Tag objects\n %s' % e))
-            return None
+            return
 
     def set_profile_data(self, users):
         self.stdout.write('Updating profile data')
@@ -248,4 +248,4 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.ERROR(
                 'Failed to generate %s users\n %s' % (num_users, e)))
-            return None
+            return

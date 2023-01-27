@@ -144,11 +144,11 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
                         self.send_petitions(petitions)
 
-                        return None
+                        return
 
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
-                    return None
+                    return
                 elif command == 'get':
                     # Parse the Get command. Required data = id.
                     # Gets a single petition with a particular id.
@@ -163,15 +163,15 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             "petition": petition
                         }
                         self.send_json(reply)
-                    return None
+                    return
                 elif command == 'all':
                     # Parse the search command. Required query. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.
                     petitions = views.sorting_controller("all")
                     if petitions:
                         self.send_petitions(petitions)
-                        return None
-                    return None
+                        return
+                    return
                 elif command == 'search':
                     # Parse the search command. Required query. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.
@@ -179,8 +179,8 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     if query:
                         petitions = views.sorting_controller("search", query)
                         self.send_petitions(petitions)
-                        return None
-                    return None
+                        return
+                    return
                 elif command == 'paginate':
                     # Parse the pageinate command. Required: page, sort. Optional filter.
                     # Sends the WS a sorted and optionally filtered list of petitions between a range.
@@ -194,10 +194,10 @@ class PetitionConsumer(JsonWebsocketConsumer):
                         petitions = paginate(petitions, page)
                         if len(petitions) > 0:
                             self.send_petitions(petitions, 'paginate')
-                        return None
+                        return
 
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
-                    return None
+                    return 
             self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
-            return None
+            return 
