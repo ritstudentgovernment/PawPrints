@@ -3,25 +3,21 @@ Provides functionality to see if a petition contains profanities.
 Author: Peter Zujko
 
 """
-import csv
 import os
 import re
 
 
-def load_words(filename):
+def load_words(filename: str) -> list:
     """
     Loads words from csv to list
     """
-    words = []
-    dirname = os.path.dirname(__file__)
-    csvfile = open(os.path.join(dirname, filename), 'r')
-    for line in csvfile:
-        words.append(line.strip())
-    csvfile.close()
-    return words
+    with open(os.path.join(os.path.dirname(__file__), filename), "r") as csv_file:
+        return [
+            line.strip() for line in csv_file
+        ]
 
 
-def has_profanity(petition_body):
+def has_profanity(petition_body: str) -> bool:
     profanities = load_words('profanity.csv')
     petition_body = re.sub(r"<[^<]+?>", "", petition_body)
 
