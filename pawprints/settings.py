@@ -4,8 +4,6 @@ Django settings for pawprints project.
 import os
 import datetime
 import channels.apps  # Don't remove this, it prevents a warning about Twisted
-import raven
-import json
 import yaml
 from huey import RedisHuey
 
@@ -163,8 +161,8 @@ WSGI_APPLICATION = 'pawprints.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME', ''),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': os.environ.get('DB_USER', ''),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', ''),

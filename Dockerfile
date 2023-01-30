@@ -1,4 +1,4 @@
-FROM python:3.6-alpine3.6
+FROM python:3.10.9-alpine3.17
 ENV PYTHONUNBUFFERED 1
 
 RUN apk update 

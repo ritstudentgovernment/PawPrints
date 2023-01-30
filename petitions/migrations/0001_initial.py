@@ -19,23 +19,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Petition',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=80)),
                 ('description', models.TextField()),
                 ('signatures', models.PositiveIntegerField(default=0)),
                 ('created_at', models.DateTimeField()),
                 ('status', models.PositiveSmallIntegerField(default=0)),
                 ('expires', models.DateTimeField()),
-                ('last_signed', models.DateTimeField(blank=True, default=None, null=True)),
+                ('last_signed', models.DateTimeField(
+                    blank=True, default=None, null=True)),
                 ('has_response', models.BooleanField(default=False)),
-                ('in_progress', models.NullBooleanField()),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('in_progress', models.BooleanField(null=True)),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Response',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.TextField()),
                 ('created_at', models.DateTimeField()),
                 ('author', models.TextField()),
@@ -44,14 +48,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
             name='Update',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.TextField()),
                 ('created_at', models.DateTimeField()),
             ],
@@ -59,7 +65,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='petition',
             name='response',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to='petitions.Response'),
+            field=models.ForeignKey(blank=True, default=None, null=True,
+                                    on_delete=django.db.models.deletion.CASCADE, to='petitions.Response'),
         ),
         migrations.AddField(
             model_name='petition',
