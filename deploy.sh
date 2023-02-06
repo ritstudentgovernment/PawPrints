@@ -1,6 +1,8 @@
-if [ $TRAVIS_BRANCH = "master" ]; then
-  curl -u $USERNAME:$PASSWORD -d '{"author": "'"$AUTHOR_NAME"'", "email": "'"$COMMITTER_EMAIL"'"}' https://pawprints.rit.edu/deploy ;
-  exit 0;
-elif [ $TRAVIS_BRANCH = "develop" ]; then
-  curl -u $USERNAME:$PASSWORD -d '{"author": "'"$AUTHOR_NAME"'", "email": "'"$COMMITTER_EMAIL"'"}' https://sgstage.rit.edu/deploy ;
-fi
+ENDPOINT=''
+
+case $TRAVIS_BRANCH in
+  "master") ENDPOINT='https://pawprints.rit.edu/deploy';;
+  "develop") ENDPOINT='https://sgstage.rit.edu/deploy';;
+esac
+
+curl -u "$USERNAME":"$PASSWORD" -d '{"author": "'"$AUTHOR_NAME"'", "email": "'"$COMMITTER_EMAIL"'"}' $ENDPOINT;

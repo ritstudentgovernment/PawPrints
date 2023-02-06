@@ -5,12 +5,11 @@ auth: Lukas Yelle (@lxy5611)
       Peter Zujko (pxz3370)
 """
 import json
-import string
-from collections import namedtuple
 
-import petitions.views as views
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
+
+import petitions.views as views
 
 
 def get_petitions_and_map(petitions_obj, user=None):
@@ -26,23 +25,22 @@ def get_petitions_and_map(petitions_obj, user=None):
     petitions = []
 
     # Loop over every object in the petitions object passed to the function.
-    for x in range(len(petitions_obj)):
-        petition = petitions_obj[x]
+    for i, petition in enumerate(petitions_obj):
 
         tags = []
         all_tags = petition.tags.all()
-        for t in all_tags:
+        for tag in all_tags:
             tags.append({
-                "name": t.name,
-                "id": t.id
+                "name": tag.name,
+                "id": tag.id
             })
 
         updates = []
         all_updates = petition.updates.all()
-        for u in all_updates:
+        for update in all_updates:
             updates.append({
-                "description": u.description,
-                "timestamp": u.created_at.strftime("%B %d, %Y")
+                "description": update.description,
+                "timestamp": update.created_at.strftime("%B %d, %Y")
             })
 
         profile = user.profile if hasattr(user, "profile") else False
@@ -63,11 +61,11 @@ def get_petitions_and_map(petitions_obj, user=None):
             'expires': petition.expires.strftime("%B %d, %Y"),
             'status': petition.status,
             'in_progress': petition.in_progress,
-            'isSigned': profile.petitions_signed.filter(id=petition.id).exists() if profile is not False else False,
+            'isSigned': profile.petitions_signed.filter(id=petition.id).exists() if not isinstance(profile, bool) else False,
             'deleted': False,
             'id': petition.id
         })
-        petition_map[petition.id] = x
+        petition_map[petition.id] = i
 
     return {
         "petitions": petitions,
@@ -75,10 +73,18 @@ def get_petitions_and_map(petitions_obj, user=None):
     }
 
 
-def paginate(petitions, page): return petitions[(page-1)*45:page*45]
+def paginate(petitions, page):
+    """Range of petitions to be displayed on a page."""
+    return petitions[(page-1)*45:page*45]
 
 
 class PetitionConsumer(JsonWebsocketConsumer):
+    """Consumer class for the petitions websocket.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.group_name = ""
+
     def send_petitions_individually(self, petitions):
         for petition in petitions:
             petition = [petition]
@@ -111,10 +117,11 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
         self.send_petitions(petitions)
 
-    def disconnect(self, close_code):
+    def disconnect(self, *args):
         """
         Endpoint for the petitions_disconnect route. Fires when web socket connections are dropped.
         """
+        del args
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name)
 
@@ -144,11 +151,11 @@ class PetitionConsumer(JsonWebsocketConsumer):
 
                         self.send_petitions(petitions)
 
-                        return None
+                        return
 
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
-                    return None
+                    return
                 elif command == 'get':
                     # Parse the Get command. Required data = id.
                     # Gets a single petition with a particular id.
@@ -163,15 +170,15 @@ class PetitionConsumer(JsonWebsocketConsumer):
                             "petition": petition
                         }
                         self.send_json(reply)
-                    return None
+                    return
                 elif command == 'all':
                     # Parse the search command. Required query. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.
                     petitions = views.sorting_controller("all")
                     if petitions:
                         self.send_petitions(petitions)
-                        return None
-                    return None
+                        return
+                    return
                 elif command == 'search':
                     # Parse the search command. Required query. Optional = filter.
                     # Sends the WS a sorted and optionally filtered list of petitions.
@@ -179,11 +186,11 @@ class PetitionConsumer(JsonWebsocketConsumer):
                     if query:
                         petitions = views.sorting_controller("search", query)
                         self.send_petitions(petitions)
-                        return None
-                    return None
+                        return
+                    return
                 elif command == 'paginate':
                     # Parse the pageinate command. Required: page, sort. Optional filter.
-                    # Sends the WS a sorted and optionally filtered list of petitions between a range.
+                    # Sends the WS a sorted and optionally filtered list of petitions in a range.
                     sort = data.get('sort', '')
                     page = data.get('page', '')
                     if sort and page:
@@ -194,10 +201,10 @@ class PetitionConsumer(JsonWebsocketConsumer):
                         petitions = paginate(petitions, page)
                         if len(petitions) > 0:
                             self.send_petitions(petitions, 'paginate')
-                        return None
+                        return
 
                     self.send_json(
                         {"text": "Error. Must send 'sort' parameter"})
-                    return None
+                    return
             self.send_json({"text": "Error must sent a non-empty 'command' parameter"})
-            return None
+            return
