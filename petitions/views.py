@@ -171,7 +171,7 @@ def petition_create(request):
         author=user,
         signatures=0,
         created_at=date,
-        expires=date + timedelta(days=30),
+        expires=date + timedelta(days=364),
         in_progress=False,
         id=last_petition.id + 1 if last_petition is not None else 0
     )
@@ -285,7 +285,7 @@ def edit_title(petition, new_title):
     # Update petition created and expires dates.
     date = timezone.now()
     petition.created_at = date
-    petition.expires = date + timedelta(days=30)
+    petition.expires = date + timedelta(days=364)
 
     petition.save()
 
@@ -312,7 +312,7 @@ def edit_description(petition, new_description):
     # Update petition created and expires dates.
     date = timezone.now()
     petition.created_at = date
-    petition.expires = date + timedelta(days=30)
+    petition.expires = date + timedelta(days=364)
 
     petition.save()
 
@@ -704,7 +704,7 @@ def petition_publish(user, petition, request):
             # Resets the created_at date to be sure the petition is active for as long as it is supposed to be.
             date = timezone.now()
             petition.created_at = date
-            petition.expires = date + timedelta(days=30)
+            petition.expires = date + timedelta(days=364)
             # Save the petition.
             petition.save()
             response = True

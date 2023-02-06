@@ -44,7 +44,7 @@ class PetitionTest(TestCase):
                                  author=self.user,
                                  created_at=timezone.now(),
                                  status=0,
-                                 expires=timezone.now() + timedelta(days=30)
+                                 expires=timezone.now() + timedelta(days=364)
                                  )
         self.petition.save()
         self.petition.tags.add(self.tag)
@@ -53,7 +53,7 @@ class PetitionTest(TestCase):
                                           author=self.user2,
                                           created_at=timezone.now(),
                                           status=1,
-                                          expires=timezone.now() + timedelta(days=30)
+                                          expires=timezone.now() + timedelta(days=364)
                                           )
         self.petitionPublished.save()
 
