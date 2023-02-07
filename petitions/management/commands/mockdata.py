@@ -136,13 +136,13 @@ class Command(BaseCommand):
                         signatures = random.randint(1, len(users))
                     created_at = timezone.now() - timedelta(days=random.randint(0, 10))
                     status = 1
-                    expires = created_at + timedelta(days=30)
+                    expires = created_at + timedelta(days=364)
                     last_signed = created_at + \
                         timedelta(days=random.randint(0, 10))
                     petition = Petition()
                     if expired > 0:
-                        created_at = timezone.now() - timedelta(days=31)
-                        expires = created_at + timedelta(days=30)
+                        created_at = timezone.now() - timedelta(days=364)
+                        expires = created_at + timedelta(days=364)
                         last_signed = created_at + \
                             timedelta(days=random.randint(1, 30))
                         expired -= 1
