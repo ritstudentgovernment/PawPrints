@@ -15,15 +15,13 @@ Including another URLconf
 """
 from profile.views import user_logout
 
+from django.urls import re_path
 from django.conf import settings
-from django.conf.urls import include, url
+from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.http import HttpResponseNotFound, HttpResponseServerError
-from django.template import loader
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.defaults import page_not_found, server_error
 
 from auth.views import CompleteAuthView, InitAuthView, MetadataView
 from petitions import views
@@ -36,20 +34,20 @@ def handler500(request):
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^about/', views.about, name='about'),
-    url(r'committees/', views.committees, name='committees'),
-    url(r'^news/', views.news, name='news'),
-    url(r'^admin/login', InitAuthView.as_view(), name='init-auth'),
-    url(r'^admin/', admin.site.urls),
-    url(r'^acs$', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
-    url(r'^saml$', MetadataView.as_view(), name='metadata'),
-    url(r'^login/', InitAuthView.as_view(), name='init-auth'),
-    url(r'^logout/', user_logout, name='user_logout'),
-    url(r'^petition/', include('petitions.urls')),
-    url(r'^profile/', include('profile.urls')),
-    url(r'^maintenance/', views.maintenance),
-    url(r'^petitions/(?P<petition_id>\w+)$', views.petition_redirect)
+    re_path(r'^$', views.index, name='index'),
+    re_path(r'^about/', views.about, name='about'),
+    re_path(r'committees/', views.committees, name='committees'),
+    re_path(r'^news/', views.news, name='news'),
+    re_path(r'^admin/login', InitAuthView.as_view(), name='init-auth'),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^acs$', csrf_exempt(CompleteAuthView.as_view()), name='acs'),
+    re_path(r'^saml$', MetadataView.as_view(), name='metadata'),
+    re_path(r'^login/', InitAuthView.as_view(), name='init-auth'),
+    re_path(r'^logout/', user_logout, name='user_logout'),
+    re_path(r'^petition/', include('petitions.urls')),
+    re_path(r'^profile/', include('profile.urls')),
+    re_path(r'^maintenance/', views.maintenance),
+    re_path(r'^petitions/(?P<petition_id>\w+)$', views.petition_redirect)
 ]
 
 if settings.DEBUG:

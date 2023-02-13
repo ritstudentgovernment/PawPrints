@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('expires', models.DateTimeField()),
                 ('last_signed', models.DateTimeField(blank=True, default=None, null=True)),
                 ('has_response', models.BooleanField(default=False)),
-                ('in_progress', models.NullBooleanField()),
+                ('in_progress', models.BooleanField(null=True)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

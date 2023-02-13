@@ -11,9 +11,14 @@ from django.dispatch import receiver
 
 import bleach
 
-bleach.sanitizer.ALLOWED_TAGS.extend([u'i',u'h1', u'h2',u'h3', u'h4', u'h5', u'h6',u'p',u'sub',u'br',u'sup', u'span',u'img'])
+
+bleach.sanitizer.ALLOWED_TAGS = frozenset((
+    *bleach.sanitizer.ALLOWED_TAGS,
+    'i','h1', 'h2','h3', 'h4', 'h5', 'h6','p','sub','br','sup', 'span','img', 'ul', 'ol', 'li'
+    ))
+    
 bleach.sanitizer.ALLOWED_ATTRIBUTES[u'img'] = [u'alt', u'height', u'src', u'width']
-bleach.sanitizer.ALLOWED_STYLES.extend(u'text-align')
+
 for key in bleach.sanitizer.ALLOWED_ATTRIBUTES.keys():
     bleach.sanitizer.ALLOWED_ATTRIBUTES[key].append(u'data-mce-style')
 
@@ -34,7 +39,7 @@ class Petition(models.Model):
     last_signed = models.DateTimeField(default=None, blank=True, null=True)
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True, on_delete=models.SET_NULL)
-    in_progress = models.NullBooleanField()
+    in_progress = models.BooleanField(null=True)
     updates = models.ManyToManyField('petitions.Update', default=None)
     old_id = models.CharField(max_length=20, default=None, blank=True, null=True)
     committee = models.CharField(max_length=100, default=None)

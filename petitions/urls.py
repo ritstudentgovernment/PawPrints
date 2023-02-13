@@ -1,16 +1,16 @@
-from django.conf.urls import url
+from django.urls import re_path
 from . import views
 
 app_name = 'petitions'
 
 urlpatterns = [
-    url(r'^(?P<petition_id>\d+)$', views.petition),
-    url(r'^create/', views.petition_create),
-    url(r'^sign/(?P<petition_id>\d+)$', views.petition_sign),
-    url(r'^update/(?P<petition_id>\d+)$', views.petition_edit),
-    url(r'^subscribe/(?P<petition_id>\d+)$', views.petition_subscribe),
-    url(r'^unsubscribe/(?P<petition_id>\d+)$', views.petition_unsubscribe),
-    url(r'^unpublish/(?P<petition_id>\d+)$', views.petition_unpublish),
-    url(r'^report/(?P<petition_id>\d+)$', views.petition_report, name='petition_report'),
-    url(r'^bots/(?P<petition_id>\d+)$', views.petition_bots)
+    re_path(r'^(?P<petition_id>\d+)$', views.petition),
+    re_path(r'^create/', views.petition_create),
+    re_path(r'^sign/(?P<petition_id>\d+)$', views.petition_sign),
+    re_path(r'^update/(?P<petition_id>\d+)$', views.petition_edit),
+    re_path(r'^subscribe/(?P<petition_id>\d+)$', views.petition_subscribe),
+    re_path(r'^unsubscribe/(?P<petition_id>\d+)$', views.petition_unsubscribe),
+    re_path(r'^unpublish/(?P<petition_id>\d+)$', views.petition_unpublish),
+    re_path(r'^report/(?P<petition_id>\d+)$', views.petition_report, name='petition_report'),
+    re_path(r'^bots/(?P<petition_id>\d+)$', views.petition_bots)
 ]
