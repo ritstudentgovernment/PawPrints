@@ -41,7 +41,7 @@ def index(request):
     """
     Handles displaying the index page of PawPrints.
     """
-    alert, created = GlobalAlert.objects.get_or_create(id=1, defaults={'active': 'False', 'content': 'Placeholder alert content.'})
+    alert, _ = GlobalAlert.objects.get_or_create(id=1, defaults={'active': 'False', 'content': 'Placeholder alert content.'})
     text_data = CONFIG['text']
     data_object = {
         'tags': Tag.objects.all,
@@ -102,7 +102,7 @@ def maintenance(request):
     return render(request, 'Something_Special.html')
 
 
-def petition(request, petition_id):
+def get_petition(request, petition_id):
     """ Handles displaying A single petition.
     DB queried to get Petition object and User objects.
     User object queries retrieve author

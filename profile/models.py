@@ -48,12 +48,12 @@ class GlobalAlert(models.Model):
 # object's save method, all saving is done with the User model.
 #
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(_, instance, created, **__):
     if created:
         Profile.objects.create(user=instance, notifications=Notifications.objects.create())
 
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
+def save_user_profile(_, instance, **__):
     instance.profile.save()
     instance.profile.notifications.save()

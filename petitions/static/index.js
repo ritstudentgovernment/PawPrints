@@ -747,28 +747,7 @@ function setupSocket() {
                     console.log("Unrecognized command: " + command);
                     console.log(data);
                 }
-
             }
-            // else {
-
-            //     // Default behaviour is to update everything on response if no command is given.
-            //     if (data.hasOwnProperty("petitions")) {
-            //         petitions.list = data["petitions"];
-            //         petitions.map = data["map"];
-            //         petitions.loading = false;
-            //         petitionID = getUrl("p");
-            //         if (petitionID) {
-            //             openPetition(petitionID, true);
-            //         }
-            //     }
-            //     else if (websocket_debug) {
-
-            //         console.log("Default action failed; petitions object does not exist in response.");
-
-            //     }
-
-            // }
-
         }
         catch (error) {
 
@@ -826,10 +805,6 @@ $(document).ready(function () {
 
     window.page = 1;
     setupSocket();
-    // petitionID = getUrl("p");
-    // if(petitionID && modalData.petition.id !== Number(petitionID)){
-    //     openPetition(petitionID, true);
-    // }
 
     // Get the sort key globally
     var sort = $("#sort");

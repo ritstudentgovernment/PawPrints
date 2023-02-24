@@ -22,6 +22,7 @@ for key in bleach.sanitizer.ALLOWED_ATTRIBUTES.keys():
 # Defines petition model.
 #
 class Petition(models.Model):
+    read_only = ['has_response', 'response']
     title = models.CharField(max_length=80)
     description = models.TextField()
     tags = models.ManyToManyField('petitions.Tag')
