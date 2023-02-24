@@ -1,3 +1,6 @@
+/* I can't describe how much I hate seeing "window" used to define global variables.
+ TODO: Revamp this
+*/
 window.debug = false;
 window.slideshow_images = {{ images|safe }};
 window.social = {{ social|safe }};
