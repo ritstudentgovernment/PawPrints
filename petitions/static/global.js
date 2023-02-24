@@ -6,21 +6,15 @@
  * Lang: JavaScript
  **/
 
-function getCookie(cname) {
-  /**
-   * This function was created by W3Schools.
-   * It's purpose is to get a specified cookie's value.
-   **/
-
-  var name = cname + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
+// @author: Sma-Das
+// I will personally replace every W3Schools copied code with my own (better!) code.
+function getCookie(cookieName) {
+  const name = cookieName + "=";
+  const cookieArray = document.cookie.split(";");
+  for (let i = 0; i < cookieArray.length; i++) {
+    let cookie = cookieArray[i].trim();
+    if (cookie.indexOf(name) === 0) {
+      return cookie.substring(name.length, cookie.length);
     }
   }
   return "";
