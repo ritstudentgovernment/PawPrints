@@ -17,9 +17,9 @@ class Attributes():
 
 
 class SAMLSPBackend(object):
-    def authenticate(self, request, saml_authentication=None):
+    def authenticate(self, _, saml_authentication=None):
         if not saml_authentication:
-            return None
+            return
 
         if saml_authentication.is_authenticated():
             attributes = saml_authentication.get_attributes()
@@ -55,10 +55,10 @@ class SAMLSPBackend(object):
 
             return user
 
-        return None
+        return
 
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
-            return None
+            return
