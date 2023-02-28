@@ -960,6 +960,9 @@ progress[value]::-moz-progress-bar {
         margin-top: 10px;
         margin-right: calc(50% - 95px);
     }
+    #link-copy-button > img {
+        cursor: pointer;
+    }
     #header-top{
         margin: 10px;
     }
