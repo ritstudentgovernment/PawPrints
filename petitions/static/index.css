@@ -574,6 +574,9 @@ progress[value]::-moz-progress-bar {
 .social-icon img{
     height: 1em;
 }
+#link-copy-button > img {
+    cursor: pointer;
+}
 #petition-modal .modal-container{
     overflow-y: hidden;
 }
@@ -959,9 +962,6 @@ progress[value]::-moz-progress-bar {
     #social-share{
         margin-top: 10px;
         margin-right: calc(50% - 95px);
-    }
-    #link-copy-button > img {
-        cursor: pointer;
     }
     #header-top{
         margin: 10px;
