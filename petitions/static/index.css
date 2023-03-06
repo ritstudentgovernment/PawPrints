@@ -159,8 +159,8 @@
 }
 #filter-sort{
     width: calc(230px + 1em);
-    overflow-y: auto;
-    position: relative;
+    /* overflow-y: auto;
+    position: relative; */
     max-height: calc(100vh - 90px);
     /* display: none; */
 }
