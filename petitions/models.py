@@ -35,7 +35,7 @@ class Petition(models.Model):
     has_response = models.BooleanField(default=False)
     response = models.ForeignKey('petitions.Response', default=None, blank=True, null=True, on_delete=models.SET_NULL)
     in_progress = models.NullBooleanField()
-    updates = models.ManyToManyField('petitions.Update', default=None)
+    updates = models.ManyToManyField('petitions.Update', default=None, required=False, null=True, blank=True)
     old_id = models.CharField(max_length=20, default=None, blank=True, null=True)
     #committee = models.CharField(max_length=100, default=None)
 
