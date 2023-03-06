@@ -371,11 +371,11 @@ nav .margin-right{
     display: none;
 }
 .small-header #logo{
-    height: 60px;
+    /* height: 60px; */
 }
-.small-header #logo img{
+/* .small-header #logo img{
     margin-top: 10px;
-}
+} */
 .header-scrolled{
     border-bottom: 1px solid #ccc;
     box-shadow: 0px 5px 5px -5px #ccc;
