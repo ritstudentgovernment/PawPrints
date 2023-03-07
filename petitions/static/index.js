@@ -1,6 +1,3 @@
-/* I can't describe how much I hate seeing "window" used to define global variables.
- TODO: Revamp this
-*/
 window.debug = false;
 window.slideshow_images = {{ images | safe }};
 window.social = {{ social | safe }};
@@ -63,14 +60,18 @@ var petitions = new Vue({
                 console.log(socket);
                 console.log(window.socket);
                 socket.send('{"command":"all"}');
-                this.loading = true;
-                this.searched = true;
+                petitions.loading = true;
+                petitions.searched = true;
                 setTimeout(() => {
-                    this.loading = false
+                    // Timeout waiting for the websocket response after 3 seconds.
+                    //  console.log(this.list + 'wwww');
+                    //   this.list = this.list.filter((item) =>
+                    //             item.title.toLowerCase().includes(this.searchString.toLowerCase())
+                    //             || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
                 }, 3000);
             }
             else {
-                window.searched = false;
+                petitions.searched = false;
                 var sort = $("#sort");
                 var filter_tag = $("#mobile-filter").val();
                 var sort_by = sort.val();
@@ -183,7 +184,7 @@ function loadPetitions(sort_by, filter, socket) {
 function reloadPetitions(sort_by, filter, socket) {
     /**
      * This function is responsible for reloading all petitions that fit in the given filter + sort set.
-     * window.searched is reset to false here
+     * petitions.searched is reset to false here
      * petitions.loading is set to true here to show the loading petitions animation
      * petitions.map and petitions.list are reset to empty here in order to allow a new set of petitions to be loaded
      **/
@@ -191,7 +192,7 @@ function reloadPetitions(sort_by, filter, socket) {
 
 
     window.page = 1;
-    window.searched = false;
+    petitions.searched = false;
     petitions.loading = true;
     petitions.map = {};
     petitions.list = [];
@@ -500,7 +501,7 @@ function setupSocket() {
                 console.log(data);
             }
             // console.log(data);
-            if (window.searched) {
+            if (petitions.searched) {
                 data["command"] = 'all'
             }
 
@@ -970,7 +971,7 @@ $(document).ready(function () {
             // Do not call paginate if the user has searched something.
             // Do not call paginate if Petitions are currently being loaded.
             // Only call paginate if the last paginate returned some petitions.
-            if (!window.searched && !window.petitions.loading && (!window.last_paginate || (window.last_paginate && window.last_paginate.length !== 0))) {
+            if (!petitions.searched && !window.petitions.loading && (!window.last_paginate || (window.last_paginate && window.last_paginate.length !== 0))) {
 
                 // Timeout will prevent duplicate calls to paginate
                 clearTimeout(paginationTimeout);
