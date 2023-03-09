@@ -69,7 +69,7 @@ def generate_email(petition_id, event, site_path, to=None, bcc=None, email_data=
         )
         email.content_subtype = "html"
         return email
-    return None
+    return
 
 
 def send_email(email, petition_id, event):
