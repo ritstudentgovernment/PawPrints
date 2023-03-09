@@ -7,16 +7,20 @@
 PawPrints petition application for the RIT community.
 
 ## Installation
-To get PawPrints up and running, you must have Docker and Docker Compose installed on your machine.
+To get PawPrints up and running, you must have Docker and Docker Compose installed on your machine or use GitHub Codespaces.
 
 ### Building Containers
 Once you have Docker installed, clone the repository. 
 
-``` git clone https://github.com/ritstudentgovernment/PawPrints.git```
+```sh
+git clone https://github.com/ritstudentgovernment/PawPrints.git
+```
 
 Next, copy the ```template.env``` file at the root of the project to ```.env``` and fill out the environment variables. When running the application locally, the ```SERVER_ENV``` variable should be set to ```local```. The defaults should be sufficient for running locally.
 
-```cp template.env .env```
+```sh
+cp template.env .env
+```
 
 Once you have the env file, simply run 
 ```docker-compose up``` from the root project directory. This will take a few minutes as it builds the containers.
@@ -43,9 +47,10 @@ Finally, to view the app, simply navigate to ```http://localhost:8000```.
 --------after creating .env file---------
 #continue in same terminal
 1. docker-compose up
+2. Preview changes with `docker-compose restart`
 
 #open new terminal
-1.docker ps
+1.`docker ps`
 2. docker exec -it pawprints-web-1 python manage.py mockdata
 3. http://localhost:8000
 
