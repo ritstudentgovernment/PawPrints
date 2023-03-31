@@ -57,21 +57,6 @@ def index(request):
         'name': CONFIG['name'],
         'alert': alert,
     }
-    petitionid = request.GET.get('p', None)
-    if petitionid is not None:
-        petition = get_object_or_404(Petition, pk=petitionid)
-        url = "{}/?p={}".format(request.META['HTTP_HOST'], petition.id)
-        if request.is_secure():
-            url = "https://{}".format(url)
-        else:
-            url = "http://{}".format(url)
-
-        data_object['petition'] = {
-            'title': petition.title,
-            'description': petition.description,
-            'url': url,
-            'image': CONFIG['social']['image']
-        }
 
     return render(request, 'index.html', data_object)
 
