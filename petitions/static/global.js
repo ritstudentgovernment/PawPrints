@@ -41,16 +41,327 @@ function get_csrf(){
 }
 
 
-function getUrl(variable){
-    /**
-     * This function returns a given URL variable's value if it exists, false otherwise.
-     **/
-    try{
-        var query = window.location.search.substring(1);
-        var vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-            var pair = vars[i].split("=");
-            if(pair[0] == variable){return pair[1];}
+function scroll(to_elem) {
+  /**
+   * This function smoothly scrolls the viewport to a given element.
+   **/
+  var offset = to_elem.offset().top;
+  var fsh = $("#filter-sort").height();
+  if (fsh < 300) offset -= fsh - 7;
+  offset -= $("header").height() + $("nav").find(".header-top").height() - 1;
+  $("html, body")
+    .stop()
+    .animate({ scrollTop: offset + "px" }, 700);
+}
+
+function verticalOffset(element, givenOffset = false) {
+  /**
+   * This function is responsible for positioning (via top property) an element in the center of its
+   * parent.
+   **/
+  var elementHeight = element.height();
+  var windowHeight = $(window).height();
+  var topOffset = windowHeight / 2 - elementHeight / 2;
+  topOffset = topOffset > 0 ? topOffset : 0; // Prevent negative values.
+  topOffset = givenOffset === false ? topOffset : givenOffset; // Provide a offset override.
+  if (window.debug)
+    console.log(
+      "verticalOffset: " +
+        elementHeight +
+        " | " +
+        windowHeight +
+        " = " +
+        topOffset
+    );
+  element.css({ top: topOffset + "px" });
+}
+
+$(document).ready(function () {
+  $(".create_petition").click(function () {
+    $.post(
+      "/petition/create/",
+      { csrfmiddlewaretoken: get_csrf() },
+      function (response) {
+        window.location.href = "/petition/" + response;
+      }
+    );
+  });
+  var $mobile = $("#mobile-nav").mmenu({
+    offCanvas: {
+      position: "right",
+      pageSelector: "#wrapper",
+    },
+    navbar: {
+      title: "{{name}}",
+    },
+    extensions: ["pagedim-black"],
+  });
+  $().smartWebBanner({
+    title: "{{name}}",
+    author: "{{org}}",
+    url: "/",
+    autoApp: true,
+  });
+  var $icon = $("#menu-icon");
+  var API = $mobile.data("mmenu");
+  $icon.on("click", function () {
+    if (!$(this).hasClass("is-active")) API.open();
+    else API.close();
+  });
+  API.bind("open:start", function () {
+    $icon.addClass("is-active");
+    $("#wrapper").click(function () {
+      API.close();
+      $("#wrapper").unbind("click");
+    });
+    var resize = $(window).resize(function () {
+      API.close();
+      resize = null;
+    });
+  });
+  API.bind("close:start", function () {
+    $icon.removeClass("is-active");
+  });
+//   var scrolledWaypoint = $("#sub-landing").waypoint(
+//     function (direction) {
+//       if (direction === "down") {
+//         $("header").addClass("small-header header-scrolled");
+//         $("#back-up").stop().fadeIn(100);
+//         $(".attach").each(function () {
+//           var me = $(this);
+//           var topPos = me.data("top");
+//           var leftPos = me.data("left");
+//           var rightPos = me.data("right");
+//           var bottomPos = me.data("bottom");
+//           me.addClass("attached");
+//           if (topPos !== undefined) {
+//             me.css({ top: topPos + "px" });
+//           }
+//           if (leftPos !== undefined) {
+//             me.css({ left: leftPos + "px" });
+//           }
+//           if (rightPos !== undefined) {
+//             me.css({ right: rightPos + "px" });
+//           }
+//           if (bottomPos !== undefined) {
+//             me.css({ bottom: bottomPos + "px" });
+//           }
+//         });
+//       } else {
+//         $("header").removeClass("small-header header-scrolled");
+//         $("#back-up").stop().fadeOut(200);
+//         $(".attach").each(function () {
+//           var me = $(this);
+//           var topPos = me.data("top");
+//           var leftPos = me.data("left");
+//           var rightPos = me.data("right");
+//           var bottomPos = me.data("bottom");
+//           me.removeClass("attached");
+//           if (topPos !== undefined) {
+//             me.css({ top: "" });
+//           }
+//           if (leftPos !== undefined) {
+//             me.css({ left: "" });
+//           }
+//           if (rightPos !== undefined) {
+//             me.css({ right: "" });
+//           }
+//           if (bottomPos !== undefined) {
+//             me.css({ bottom: "" });
+//           }
+//         });
+//       }
+//     },
+//     {
+//       offset: "60px",
+//     }
+//   );
+  $("#back-up").click(function (e) {
+    e.preventDefault();
+    var to_elem = $("#landing-marker");
+    scroll(to_elem);
+  });
+});
+function inViewport(el) {
+  var r, html;
+  if (!el || 1 !== el.nodeType) {
+    return false;
+  }
+  html = document.documentElement;
+
+  r = el.getBoundingClientRect();
+
+  return (
+    !!r &&
+    r.bottom >= 0 &&
+    r.right >= 0 &&
+    r.top <= html.clientHeight &&
+    r.left <= html.clientWidth
+  );
+}
+
+function checkErrorInResponse(response, callback = false) {
+  try {
+    if (response.hasOwnProperty("Error")) {
+      window.errorModal = new Modal({
+        iconText: "error",
+        iconClass: "bright-text md-48",
+        iconContainerClass: "",
+        headerClass: "error-background bright-text",
+        headerContent: "<h2>Error</h2>",
+        bodyContent: "<p>" + response.Error + "</p>",
+        bodyButtons: [
+          [
+            "OK",
+            "material-button material-hover material-shadow cursor transition minimal",
+            "window.errorModal.close()",
+          ],
+        ],
+      });
+      errorModal.open();
+    } else {
+      if (callback && typeof callback === "function") {
+        callback(response);
+      }
+    }
+  } catch (e) {
+    console.log("Error: " + e + "\nResponse: " + response);
+  }
+}
+
+function publishPetition(petition) {
+  $.post(
+    "/petition/update/" + petition,
+    { attribute: "publish", value: "none", csrfmiddlewaretoken: get_csrf() },
+    function (r) {
+      checkErrorInResponse(r, function () {
+        window.location.href = "/?p=" + petition;
+      });
+    }
+  );
+}
+
+function update(what, value, petition_id, callback = false) {
+  $.post(
+    "/petition/update/" + petition_id,
+    { attribute: what, value: value, csrfmiddlewaretoken: get_csrf() },
+    function (r) {
+      checkErrorInResponse(r, callback);
+    }
+  );
+}
+
+function ucfirst(string) {
+  return string.charAt(0).toUpperCase() + string.substr(1);
+}
+
+(function ($) {
+  this.Button = function (text, onClick = false, defaultClasses = false) {
+    this.text = text;
+    this.cssClasses = defaultClasses
+      ? defaultClasses
+      : [
+          "material-button",
+          "material-hover",
+          "material-shadow",
+          "cursor",
+          "transition",
+        ];
+    this.onClick = onClick;
+    return this;
+  };
+  Button.prototype.getClasses = function () {
+    return this.cssClasses.join(" ");
+  };
+  Button.prototype.addClass = function (className) {
+    this.cssClasses.push(className);
+    return this;
+  };
+  Button.prototype.render = function () {
+    return (
+      "<button class='" +
+      this.getClasses() +
+      "' onclick='(" +
+      this.onClick +
+      ")'>" +
+      this.text +
+      "</button>"
+    );
+  };
+
+  // Custom Modal Plugin
+  // Relies on jQuery, animate.css and my custom cssanimate jQuery plugin.
+  function buildModal() {
+    // Constructs a new modal from the modal template and configures it based on user settings.
+
+    if (this.settings.debug) {
+      console.log(this);
+    }
+
+    if (this.settings.clone) {
+      this.element = $("#modal-template").find(".modal").clone();
+    } else {
+      this.element = $("#modal-template").find(".modal");
+    }
+
+    if (this.settings.exitButton) {
+      this.exitButton = this.element.find(".modal-close-button");
+      this.exitButton.removeClass("hidden");
+      this.exitButton = this.exitButton[0];
+    }
+    if (this.settings.overlay) {
+      this.overlay = this.element.find(".modal-overlay");
+      this.overlay.removeClass("hidden");
+      this.overlay = this.overlay[0];
+    }
+
+    if (this.settings.icon) {
+      this.element
+        .find(".material-icon-container")
+        .addClass(this.settings.iconContainerClass)
+        .removeClass("hidden");
+      this.element
+        .find(".material-icons")
+        .addClass(this.settings.iconClass)
+        .html(this.settings.iconText);
+    } else {
+      this.element.find(".material-icon-container").remove();
+      this.element.find(".modal-header").removeClass("padding-top");
+    }
+
+    this.element.find(".modal-header").addClass(this.settings.headerClass);
+    if (this.settings.headerContent) {
+      this.element
+        .find(".modal-header-content")
+        .html(this.settings.headerContent);
+    }
+
+    var me = this;
+    this.element.find(".modal-body").addClass(this.settings.bodyClass);
+    if (this.settings.bodyContent) {
+      this.element.find(".modal-content").html(this.settings.bodyContent);
+    }
+
+    if (this.settings.bodyButtons) {
+      var buttonsContainer = this.element
+        .find(".modal-buttons")
+        .removeClass("hidden");
+      if (window.debug) console.log(this.settings.bodyButtons);
+      for (var bid in this.settings.bodyButtons) {
+        var button = this.settings.bodyButtons[bid];
+        if (window.debug) console.log(button);
+        if (button instanceof Button) {
+          buttonsContainer.append(button.render());
+        } else {
+          buttonsContainer.append(
+            "<button class='" +
+              button[1] +
+              "' onclick='" +
+              button[2] +
+              "'>" +
+              button[0] +
+              "</button>"
+          );
         }
         return(false);
     }
@@ -219,9 +530,91 @@ function checkErrorInResponse(response, callback=false){
             });
             errorModal.open();
         }
-        else{
-            if(callback && typeof callback === "function"){
-                callback(response);
+        var bg = "url('" + $(this).data("backgroundimage") + "')";
+        if (settings.debug) {
+          console.log(bg);
+        }
+        $(this).css({
+          "background-image": bg,
+          "background-size": "cover",
+          "background-position": "center",
+          "background-repeat": "no-repeat",
+          position: "absolute",
+          "top:": 0,
+          left: 0,
+          opacity: 0,
+        });
+      });
+      setTimeout(function () {
+        switch (settings.transition) {
+          case "dissolve":
+            selector.css({
+              height: "50vh",
+            });
+            selector.find("." + settings.slideClass).css({
+              position: "absolute",
+              top: 0,
+              left: 0,
+            });
+            var slide_num = 0;
+            selector.find("." + settings.slideClass).each(function () {
+              var slide = $(this);
+              slide_num++;
+              if (slide_num > 1) {
+                slide.css({ opacity: 0 });
+              }
+            });
+            settings.numSlides = slide_num;
+            break;
+          default:
+            console.log(
+              "Slide Show: Transition '" +
+                settings.transition +
+                "' was not found."
+            );
+            break;
+        }
+        selector.find("." + settings.slideClass).css({
+          transition: "all " + settings.transitionDuration + "ms linear",
+          "-moz-transition": "all " + settings.transitionDuration + "ms linear",
+          "-ms-transition": "all " + settings.transitionDuration + "ms linear",
+          "-o-transition": "all " + settings.transitionDuration + "ms linear",
+        });
+      }, 1);
+    }
+    current_slide = 0;
+    function rotate() {
+      if (inViewport(selector[0])) {
+        current_slide++;
+        switch (settings.transition) {
+          case "dissolve":
+            var slide_selector = 0;
+            selector.find("." + settings.slideClass).each(function () {
+              var slide = $(this);
+              slide_selector++;
+              if (current_slide < settings.numSlides) {
+                if (slide_selector == current_slide) {
+                  // Fade out old slide
+                  slide.css({ opacity: 0 });
+                }
+                if (slide_selector == current_slide + 1) {
+                  // Fade in the new slide
+                  slide.css({ opacity: 1 });
+                }
+              }
+            });
+            if (current_slide >= settings.numSlides) {
+              var slide_num = 0;
+              selector.find("." + settings.slideClass).each(function () {
+                var slide = $(this);
+                slide_num++;
+                if (slide_num > 1) {
+                  slide.css({ opacity: 0 });
+                } else {
+                  slide.css({ opacity: 1 });
+                }
+              });
+              current_slide = 0;
             }
         }
     }

@@ -160,7 +160,7 @@
     <a id="landing-marker"></a>
     <section id="landing" class="parallax-container">
         <div id="parallax-slideshow" class="full-width">
-            <div class="slideshow-container">
+            <div class="slideshow-container" style="height: 50vh;">
                 <div v-for="(image, index) in images" v-if="index < limit || limit == 0" :id="id_pre+(index+1)" class="slide full-width" :data-backgroundimage="image.url"></div>
             </div>
         </div>

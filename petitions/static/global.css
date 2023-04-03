@@ -182,7 +182,7 @@ main{
     font-size: 0.9em;
 }
 .parallax-container{
-    height: calc(90vh - 70px);
+    height: calc(50vh - 70px);
     display: block;
     z-index: 10;
     overflow: hidden;
