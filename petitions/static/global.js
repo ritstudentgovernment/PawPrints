@@ -134,60 +134,60 @@ $(document).ready(function () {
   API.bind("close:start", function () {
     $icon.removeClass("is-active");
   });
-  var scrolledWaypoint = $("#sub-landing").waypoint(
-    function (direction) {
-      if (direction === "down") {
-        $("header").addClass("small-header header-scrolled");
-        $("#back-up").stop().fadeIn(100);
-        $(".attach").each(function () {
-          var me = $(this);
-          var topPos = me.data("top");
-          var leftPos = me.data("left");
-          var rightPos = me.data("right");
-          var bottomPos = me.data("bottom");
-          me.addClass("attached");
-          if (topPos !== undefined) {
-            me.css({ top: topPos + "px" });
-          }
-          if (leftPos !== undefined) {
-            me.css({ left: leftPos + "px" });
-          }
-          if (rightPos !== undefined) {
-            me.css({ right: rightPos + "px" });
-          }
-          if (bottomPos !== undefined) {
-            me.css({ bottom: bottomPos + "px" });
-          }
-        });
-      } else {
-        $("header").removeClass("small-header header-scrolled");
-        $("#back-up").stop().fadeOut(200);
-        $(".attach").each(function () {
-          var me = $(this);
-          var topPos = me.data("top");
-          var leftPos = me.data("left");
-          var rightPos = me.data("right");
-          var bottomPos = me.data("bottom");
-          me.removeClass("attached");
-          if (topPos !== undefined) {
-            me.css({ top: "" });
-          }
-          if (leftPos !== undefined) {
-            me.css({ left: "" });
-          }
-          if (rightPos !== undefined) {
-            me.css({ right: "" });
-          }
-          if (bottomPos !== undefined) {
-            me.css({ bottom: "" });
-          }
-        });
-      }
-    },
-    {
-      offset: "60px",
-    }
-  );
+//   var scrolledWaypoint = $("#sub-landing").waypoint(
+//     function (direction) {
+//       if (direction === "down") {
+//         $("header").addClass("small-header header-scrolled");
+//         $("#back-up").stop().fadeIn(100);
+//         $(".attach").each(function () {
+//           var me = $(this);
+//           var topPos = me.data("top");
+//           var leftPos = me.data("left");
+//           var rightPos = me.data("right");
+//           var bottomPos = me.data("bottom");
+//           me.addClass("attached");
+//           if (topPos !== undefined) {
+//             me.css({ top: topPos + "px" });
+//           }
+//           if (leftPos !== undefined) {
+//             me.css({ left: leftPos + "px" });
+//           }
+//           if (rightPos !== undefined) {
+//             me.css({ right: rightPos + "px" });
+//           }
+//           if (bottomPos !== undefined) {
+//             me.css({ bottom: bottomPos + "px" });
+//           }
+//         });
+//       } else {
+//         $("header").removeClass("small-header header-scrolled");
+//         $("#back-up").stop().fadeOut(200);
+//         $(".attach").each(function () {
+//           var me = $(this);
+//           var topPos = me.data("top");
+//           var leftPos = me.data("left");
+//           var rightPos = me.data("right");
+//           var bottomPos = me.data("bottom");
+//           me.removeClass("attached");
+//           if (topPos !== undefined) {
+//             me.css({ top: "" });
+//           }
+//           if (leftPos !== undefined) {
+//             me.css({ left: "" });
+//           }
+//           if (rightPos !== undefined) {
+//             me.css({ right: "" });
+//           }
+//           if (bottomPos !== undefined) {
+//             me.css({ bottom: "" });
+//           }
+//         });
+//       }
+//     },
+//     {
+//       offset: "60px",
+//     }
+//   );
   $("#back-up").click(function (e) {
     e.preventDefault();
     var to_elem = $("#landing-marker");
@@ -756,7 +756,7 @@ function ucfirst(string) {
         switch (settings.transition) {
           case "dissolve":
             selector.css({
-              height: "100vh",
+              height: "50vh",
             });
             selector.find("." + settings.slideClass).css({
               position: "absolute",
