@@ -33,6 +33,78 @@
                 <h2 class="inline-block orange-highlight">{[ petition.title ]}</h2>
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
+            
+
+
+
+                
+                <!DOCTYPE html>
+<html>
+  <title>W3.CSS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <body>
+    <div class="w3-container">
+      <p>Petition Status:</p>
+      <div class="w3-light-grey">
+        <div id="myBar" class="w3-container w3-green" style="height:24px;width:0%"></div>
+      </div>
+
+      <input type="number" id="myInput">
+      <button class="w3-button w3-light-grey" onclick="changeLabelAndMove(); this.disabled='true'">Update Status</button>
+
+    </div>
+    <script src="script.js"></script>
+    <script>
+
+
+
+
+
+
+      function changeLabelAndMove() {
+        var elem = document.getElementById("myBar");
+        var input = parseInt(document.getElementById("myInput").value);
+        var label = "";
+        var width = 0;
+        switch(input) {
+          case 1:
+            label = "created";
+            width = 25;
+            elem.style.width = width + "%";
+            break;
+          case 2:
+            label = "charged";
+            width = 50;
+            elem.style.width = width + "%";
+            break;
+          case 3:
+            label = "updated";
+            width = 75;
+            elem.style.width = width + "%";
+            break;
+          case 4:
+            label = "responded";
+            width = 100;
+            elem.style.width = width + "%";
+            break;
+          default:
+            label = "";
+        }
+        document.getElementsByTagName("p")[0].innerHTML = "Petition Status: " + label;
+        move(width);
+      }
+    </script>
+  </body>
+</html>
+
+                
+
+             
+                
+
+
+
             </div>
             <div class="modal-body relative block">
                 <div id="timeline-container">
@@ -53,6 +125,10 @@
                                     {% if user.first_name and user.is_staff %}
                                         <span v-if="element.type == 'Official Update' || element.type == 'Official Response'" class="right padding-left">
                                             <i class="admin-edit-icon cursor material-icons">edit</i>
+
+                                       <!--   <input type="number" id="myInput"> -->                                         
+                                          <!--<button class="w3-button w3-light-grey" onclick="changeLabelAndMove(); this.disabled='true'">Update Status</button>-->  
+
                                         </span>
                                     {% endif %}
                                 </h4>
