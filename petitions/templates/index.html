@@ -45,7 +45,8 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <body>
     <div class="w3-container">
-      <p>Petition Status:</p>
+      <h2>Petition Status:</h2>
+      <p></p>
       <div class="w3-light-grey">
         <div id="myBar" class="w3-container w3-green" style="height:24px;width:0%"></div>
       </div>
@@ -70,28 +71,35 @@
         switch(input) {
           case 1:
             label = "created";
+            text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
             width = 25;
             elem.style.width = width + "%";
             break;
           case 2:
-            label = "charged";
+            label = "charged"
+            text = "Your petition has been charged to someone within SG. We are working on the best solution we can find. Feel free to reach out to us if you have any questions or concerns!";
             width = 50;
             elem.style.width = width + "%";
             break;
           case 3:
             label = "updated";
+            text = "test";
             width = 75;
             elem.style.width = width + "%";
             break;
           case 4:
             label = "responded";
+            text = "text";
             width = 100;
             elem.style.width = width + "%";
             break;
           default:
             label = "";
+            width = 25;
         }
-        document.getElementsByTagName("p")[0].innerHTML = "Petition Status: " + label;
+        document.getElementsByTagName("h2")[1].innerHTML = "Petition Status: " + label;
+        document.getElementsByTagName("p")[0].innerHTML = text;
+
         move(width);
       }
     </script>
