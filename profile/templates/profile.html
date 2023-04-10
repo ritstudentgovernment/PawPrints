@@ -41,6 +41,14 @@
                             <input id="response" class="js-switch " type="checkbox" name="response" {% if notification_settings.response %} checked="checked" {% endif %}>
                         </div>
                     </li>
+                    <li class="list-item block padding overflow-hidden">
+                        <label class="block left ninety-width padding cursor" for="response">
+                            Turn on PawPrints Dark Mode.
+                        </label>
+                        <div class="right padding-right padding-top">
+                            <input id="response" class="js-switch " type="checkbox" name="response" {% if notification_settings.darkmode %} checked="checked" {% endif %} (click)="darkmode()">
+                        </div>
+                    </li>
                 </ul>
             </form>
         </section>
@@ -93,6 +101,10 @@
         });
 
     });
+
+    $(document).ready(function darkmode(){
+        document.documentElement.style.setProperty('--navbackground', "lightblue");
+    })
 </script>
 
 </body>

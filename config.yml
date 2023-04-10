@@ -69,6 +69,20 @@ ui:
         main_color: "#ff7700"
         responded_highlight: "#9d5f4b"
         progress_green: "#18A558"
+      
+      dark_colors:
+        highlight: "#DBE2E6"
+        orange_highlight: "#f36e21"
+        highlight_hover: "#BCC2C8"
+        # highlight_hover: "#e86920"
+        dark_text: "#F5F5F5"
+        light_text: "#292929"
+        bright_text: "#0A0A0A"
+        light_background: "#141414"
+        main_color: "#ff7700"
+        responded_highlight: "#9d5f4b"
+        progress_green: "#18A558"
+
     slideshow_images:
     # Defines images that show up in the slideshow
     # To add more or less, add another block in the form
