@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'petitions.apps.PetitionsConfig',
     'send_mail.apps.SendMailConfig',
     'huey.contrib.djhuey',
+    'djhuey_email',
     'django.contrib.auth',
     'django.contrib.postgres',
     'django.contrib.contenttypes',
@@ -79,11 +80,12 @@ class PawPrintsRedisHuey(RedisHuey):
 
 
 HUEY = {
+    'huey_class': 'huey.RedisHuey',  # Huey implementation to use.
     'name': 'pawprints',  # Use db name for huey.
-    'result_store': False,  # Do not store return values of tasks.
+    'results': False,  # Do not store return values of tasks.
     'events': True,  # Consumer emits events allowing real-time monitoring.
     'store_none': False,  # If a task returns None, do not save to results.
-    'always_eager': ALWAYS_EAGER,  # If DEBUG=True, run synchronously.
+    'immediate': DEBUG,  # If DEBUG=True, run synchronously.
     'store_errors': True,  # Store error info if task throws exception.
     'blocking': False,  # Poll the queue rather than do blocking pop.
     'backend_class': 'pawprints.settings.PawPrintsRedisHuey',
@@ -104,6 +106,8 @@ HUEY = {
         'health_check_interval': 1,  # Check worker health every second.
     },
 }
+
+EMAIL_BACKEND = 'djhuey_email.backends.HueyEmailBackend'
 
 AUTHENTICATION_BACKENDS = ['auth.auth_backend.SAMLSPBackend']
 

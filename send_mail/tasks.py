@@ -13,6 +13,32 @@ from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
 from huey.contrib.djhuey import db_task
+from django.core import mail #used to send emails
+
+
+
+
+
+from django.core.mail import send_mail
+
+send_mail(
+    'Test, hope this works',
+    'Here is the message. SECRET TUNNELLLLLLLLL',
+    'pawprints@rit.edu',
+    ['benfauteux@comcast.net'],
+    fail_silently=False,
+)
+
+
+
+
+
+
+
+
+
+
+
 import time
 import logging
 

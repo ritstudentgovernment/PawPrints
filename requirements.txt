@@ -23,7 +23,7 @@ Django==2.1.11
 django-appconf==1.0.2
 django-compressor==2.2
 hiredis==0.3.0
-huey==1.10.4
+huey==2.4.5
 hyperlink==18.0.0
 idna==2.8
 incremental==17.5.0
