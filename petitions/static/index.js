@@ -501,11 +501,7 @@ function setupSocket(){
                 console.log(data);
             }
             // console.log(data);
-<<<<<<< HEAD
-            if (window.searched) { 
-=======
             if (petitions.searched) {
->>>>>>> b2071c2 (Fixed search timing out early)
                 data["command"] = 'all'
             }
 
@@ -975,11 +971,7 @@ $(document).ready(function(){
             // Do not call paginate if the user has searched something.
             // Do not call paginate if Petitions are currently being loaded.
             // Only call paginate if the last paginate returned some petitions.
-<<<<<<< HEAD
-            if(!window.searched && !window.petitions.loading && (!window.last_paginate || (window.last_paginate && window.last_paginate.length !== 0))){
-=======
             if (!petitions.searched && !window.petitions.loading && (!window.last_paginate || (window.last_paginate && window.last_paginate.length !== 0))) {
->>>>>>> b2071c2 (Fixed search timing out early)
 
                 // Timeout will prevent duplicate calls to paginate
                 clearTimeout(paginationTimeout);
