@@ -45,7 +45,7 @@ var petitions = new Vue({
             }
 
             return ordered;
-        }
+        0}
     },
     methods: {
         openPetition: (petition, event) => {
@@ -68,7 +68,7 @@ var petitions = new Vue({
                     //   this.list = this.list.filter((item) =>
                     //             item.title.toLowerCase().includes(this.searchString.toLowerCase())
                     //             || item.title.toLowerCase().replace(/(~|`|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, "").includes(this.searchString.toLowerCase()));
-                }, 3000);
+                }, 300);
             }
             else {
                 petitions.searched = false;
@@ -177,7 +177,7 @@ function loadPetitions(sort_by, filter, socket){
     setTimeout(function () {
         // Timeout waiting for the websocket response after 3 seconds.
         petitions.loading = false;
-    },3000);
+    },300);
 
 }
 
