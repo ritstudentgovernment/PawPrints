@@ -1,4 +1,6 @@
 window.debug = false;
+window.slideshow_images = {{ images|safe }};
+window.social = {{ social|safe }};
 /* Initialize the Vue.js wrappers for the page.
  *     el: the element to initialize on.
  *   data:
