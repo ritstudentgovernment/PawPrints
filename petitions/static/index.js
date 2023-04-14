@@ -59,8 +59,6 @@ var petitions = new Vue({
         console.log(socket);
         console.log(window.socket);
         await socket.send('{"command":"all"}');
-        console.log(petitions.list);
-        console.log("Gremlin was hsere!");
         petitions.loading = true;
         petitions.searched = true;
       } else {
