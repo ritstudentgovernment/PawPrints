@@ -34,7 +34,7 @@
                 <span class="inline-block">Petition by {[ petition.author ]}</span>
                 <div id="petition-close" class="inline-block right padding" @click="closePetition()"><span class="material-icon-container"><i class="material-icons">close</i></span></div>
             
-
+<!-- ######################################################33333-->
 
 
                 
@@ -47,13 +47,33 @@
     <div class="w3-container">
       <h2>Petition Status:</h2>
       <p></p>
-      <div class="w3-light-grey">
-        <div id="myBar" class="w3-container w3-green" style="height:24px;width:0%"></div>
-      </div>
+
+      <div class=" petition">
+        
+<div style="position: relative;">
+  <div id="Bar" class="w3-container w3-green" style="height:20px;width:100%; display: flex;"></div>
+  <div id="Circles" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-evenly; pointer-events: none;">
+    <div class="circle0" style="text-align: center;">&nbsp</div>
+    <div class="bar1" style="height: 2px; background-color: black; flex: 1;"></div>
+    <div class="circle1" style="text-align: center;">&nbsp</div>
+    <div class="bar2" style="height: 2px; background-color: black; flex: 1;"></div>
+    <div class="circle2" style="text-align: center;">&nbsp</div>
+    <div class="bar3" style="height: 2px; background-color: black; flex: 1;"></div>
+    <div class="circle3" style="text-align: center;">&nbsp</div>
+    <div class="bar4" style="height: 2px; background-color: black; flex: 1;"></div>
+    <div class="circle4" style="text-align: center;">&nbsp</div>
+  </div>
+</div>
+
+
+
+
+
+    
+    </div>
 
       <input type="number" id="myInput">
       <button class="w3-button w3-light-grey" onclick="changeLabelAndMove(); this.disabled='true'">Update Status</button>
-
     </div>
     <script src="script.js"></script>
     <script>
@@ -63,50 +83,97 @@
 
 
 
-      function changeLabelAndMove() {
-        var elem = document.getElementById("myBar");
-        var input = parseInt(document.getElementById("myInput").value);
-        var label = "";
-        var width = 0;
-        switch(input) {
-          case 1:
-            label = "created";
-            text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
-            width = 25;
-            elem.style.width = width + "%";
-            break;
-          case 2:
-            label = "charged"
-            text = "Your petition has been charged to someone within SG. We are working on the best solution we can find. Feel free to reach out to us if you have any questions or concerns!";
-            width = 50;
-            elem.style.width = width + "%";
-            break;
-          case 3:
-            label = "updated";
-            text = "test";
-            width = 75;
-            elem.style.width = width + "%";
-            break;
-          case 4:
-            label = "responded";
-            text = "text";
-            width = 100;
-            elem.style.width = width + "%";
-            break;
-          default:
-            label = "";
-            width = 25;
-        }
-        document.getElementsByTagName("h2")[1].innerHTML = "Petition Status: " + label;
-        document.getElementsByTagName("p")[0].innerHTML = text;
+        function changeLabelAndMove() {
+            var elem = document.getElementById("Bar");
+            var input = parseInt(document.getElementById("myInput").value);
+            var label = "";
+            var width = 0;
+            switch(input) {
+              case 0:
+                label = "created";
+                text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
+                width = 0;
+                elem.style.width = width + "%";
+                //change the fill color of circle0 and circle1 to green
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                break;
+              
+              case 1:
+                label = "created";
+                text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
+                width = 25;
+                elem.style.width = width + "%";
+                //change the fill color of circle0 and circle1 to green
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                break;
 
-        move(width);
-      }
-    </script>
+              case 2:
+                label = "charged"
+                text = "Your petition has been charged to someone within SG. We are working on the best solution we can find. Feel free to reach out to us if you have any questions or concerns!";
+                width = 50;
+                elem.style.width = width + "%";
+                //change the fill color of circle0, circle1, and circle2 to green
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";                
+                break;
+
+              case 3:
+                label = "updated";
+                text = "test";
+                width = 75;
+                elem.style.width = width + "%";
+                //change the fill color of circle0, circle1, circle2, and circle3 to green
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                break;
+
+              case 4:
+                label = "responded";
+                text = "text";
+                width = 100;
+                elem.style.width = width + "%";
+                //change the fill color of circle0, circle1, circle2, circle3, and circle4 to green
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "green";                
+                break;
+                
+              default:
+                label = "";
+                width = 25;
+                //change circle0, circle1, circle2, circle3,and circle4 to white fill color
+                document.getElementsByClassName("circle0")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle1")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";}
+            document.getElementsByTagName("h2")[1].innerHTML = "Petition Status: " + label;
+            document.getElementsByTagName("p")[0].innerHTML = text;
+    
+            move(width);
+          }
+    </script> 
   </body>
 </html>
 
                 
+<!-- ######################################################-->
 
              
                 
@@ -340,7 +407,7 @@
 
 {% if user.first_name and user.profile.has_access == 1 %}
     <button id="new-petition" class="cursor circle background-highlight bright-text light material-hover transition"><span class="material-icon-container"><i class="material-icons">add</i></span></button>
-    <script>
+    <scrip>
         $(document).ready(function(){
             $("#new-petition").click(function(){
                 $.post("/petition/create/",{"csrfmiddlewaretoken":get_csrf()},function(r){
@@ -367,7 +434,7 @@
                 popup.open();
             }
         {% endif %}
-    </script>
+    </scrip>
 {% else %}
     <script>
         $(document).ready(function(){
