@@ -16,7 +16,7 @@ from petitions.models import Petition, Tag, Response
 class Command(BaseCommand):
     help = "Generates fake data for PawPrints"
     tag_names = ['Technology', 'Academics', 'Parking & Transportation', 'Other', 'Dining', 'Sustainability',
-                 'Facilities', 'Housing', 'Public Safety', 'Campus Life', 'Governance', 'Clubs & Organizations', 'Deaf Advocacy']
+                 'Facilities', 'Housing', 'Public Safety', 'Campus Life', 'Governance', 'Clubs & Organizations', 'Accessibility']
 
     def add_arguments(self, parser):
         parser.add_argument('-wipe', dest='flag_exists', action='store_true',
