@@ -1621,3 +1621,48 @@ progress[value]::-moz-progress-bar {
         -moz-transform: translateY(-19px);
     }
 }
+
+
+
+
+
+/* petition progress bar ---------------------------------------------------*/
+.petition {
+    display: flex;
+}
+
+
+
+/* objects for progress bar*/
+.bar0,
+.bar1,
+.bar2,
+.bar3,
+.bar4 {
+    width: 5px;
+    height: 5px;
+    border: 1px solid #00ff4c;
+    fill: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    flex: 1;
+}
+
+
+
+.circle0,
+.circle1,
+.circle2,
+.circle3,
+.circle4 {
+
+    background: #5a00e9;
+    color: #b30000;
+    border-radius: 50%;
+    height: 5px;
+    width: 5px;
+    justify-content: center;
+    border: 3px solid var(--line-border-empty);
+    transition: .4s ease;
+
+}

@@ -42,7 +42,6 @@
 <html>
   <title>W3.CSS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <body>
     <div class="w3-container">
       <h2>Petition Status:</h2>
@@ -51,17 +50,31 @@
       <div class=" petition">
         
 <div style="position: relative;">
-  <div id="Bar" class="w3-container w3-green" style="height:20px;width:100%; display: flex;"></div>
+
+  <div id="Bars" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-evenly; pointer-events: none;">
+    <div id="bar0" class="bar0" style="height: 5px; width: 20px; flex: 1;"></div>
+    <div id="bar1" class="bar1" style="height: 5px; width: 20px; flex: 1;"></div>
+    <div id="bar2" class="bar2" style="height: 5px; width: 20px; flex: 1;"></div>
+    <div id="bar3" class="bar3" style="height: 5px; width: 20px; flex: 1;"></div>
+    <div id="bar4" class="bar4" style="height: 5px; width: 20px; flex: 1;"></div>
+  </div>
+    
   <div id="Circles" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-evenly; pointer-events: none;">
-    <div class="circle0" style="text-align: center;">&nbsp</div>
-    <div class="bar1" style="height: 2px; background-color: black; flex: 1;"></div>
-    <div class="circle1" style="text-align: center;">&nbsp</div>
-    <div class="bar2" style="height: 2px; background-color: black; flex: 1;"></div>
-    <div class="circle2" style="text-align: center;">&nbsp</div>
-    <div class="bar3" style="height: 2px; background-color: black; flex: 1;"></div>
-    <div class="circle3" style="text-align: center;">&nbsp</div>
-    <div class="bar4" style="height: 2px; background-color: black; flex: 1;"></div>
-    <div class="circle4" style="text-align: center;">&nbsp</div>
+    <div class="circle0" style="text-align: center;">
+    <img src="/static/images/paw.png" alt="paw-0" style="width:30px;height=30px;">
+    </div>
+    <div class="circle1" style="text-align: center;">
+    <img src="/static/images/paw.png" alt="paw-1" style="width:30px;height=30px;">
+    </div>
+    <div class="circle2" style="text-align: center;">
+    <img src="/static/images/paw.png" alt="paw-2" style="width:30px;height=30px;">
+    </div>
+    <div class="circle3" style="text-align: center;">
+    <img src="/static/images/paw.png" alt="paw-3" style="width:30px;height=30px;">
+    </div>
+    <div class="circle4" style="text-align: center;">
+    <img src="/static/images/paw.png" alt="paw-4" style="width:30px;height=30px;">
+    </div>
   </div>
 </div>
 
@@ -92,77 +105,102 @@
               case 0:
                 label = "created";
                 text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
-                width = 0;
-                elem.style.width = width + "%";
                 //change the fill color of circle0 and circle1 to green
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "white";
                 break;
               
               case 1:
                 label = "created";
                 text =  "Thanks for creating a petition! Once it reaches 200 signatures we will charge it to who we believe is best suited to help.";
-                width = 25;
-                elem.style.width = width + "%";
                 //change the fill color of circle0 and circle1 to green
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "white";
                 break;
 
               case 2:
                 label = "charged"
                 text = "Your petition has been charged to someone within SG. We are working on the best solution we can find. Feel free to reach out to us if you have any questions or concerns!";
-                width = 50;
-                elem.style.width = width + "%";
                 //change the fill color of circle0, circle1, and circle2 to green
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
-                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";                
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "white";                
                 break;
 
               case 3:
                 label = "updated";
                 text = "test";
-                width = 75;
-                elem.style.width = width + "%";
                 //change the fill color of circle0, circle1, circle2, and circle3 to green
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "white";  
                 break;
 
               case 4:
                 label = "responded";
                 text = "text";
-                width = 100;
-                elem.style.width = width + "%";
                 //change the fill color of circle0, circle1, circle2, circle3, and circle4 to green
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "green";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "green";
-                document.getElementsByClassName("circle4")[0].style.backgroundColor = "green";                
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "green";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "green";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "green";                  
                 break;
                 
               default:
                 label = "";
-                width = 25;
                 //change circle0, circle1, circle2, circle3,and circle4 to white fill color
                 document.getElementsByClassName("circle0")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle1")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle2")[0].style.backgroundColor = "white";
                 document.getElementsByClassName("circle3")[0].style.backgroundColor = "white";
-                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";}
+                document.getElementsByClassName("circle4")[0].style.backgroundColor = "white";
+                //change bars to match progress
+                document.getElementsByClassName("bar0")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar1")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar2")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar3")[0].style.backgroundColor = "white";
+                document.getElementsByClassName("bar4")[0].style.backgroundColor = "white";  }
             document.getElementsByTagName("h2")[1].innerHTML = "Petition Status: " + label;
             document.getElementsByTagName("p")[0].innerHTML = text;
     
