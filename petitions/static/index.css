@@ -1659,10 +1659,12 @@ progress[value]::-moz-progress-bar {
     background: #5a00e9;
     color: #b30000;
     border-radius: 50%;
-    height: 5px;
-    width: 5px;
-    justify-content: center;
+    height: 15px;
+    width: 15px;
+    justify-content: space-evenly;
     border: 3px solid var(--line-border-empty);
     transition: .4s ease;
+    margin-right: 100px;
+    margin-left: 100px;
 
 }
