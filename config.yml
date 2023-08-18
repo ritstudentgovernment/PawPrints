@@ -95,14 +95,14 @@ social:
 # Data that shows up when sharing to social networks
     title: "VSG"
     image: "/images/pawprintsemail.png" # image located in /static/ (This is usually just the same as the app logo)
-    # social_links:
+    social_links:
       # Links for social media sites, just point it to the root url.
       # - name: "Facebook"
       #   imgURL: "/static/images/facebook_icon.svg"
       #   link: "https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/"
-      # - name: "Twitter"
-        # imgURL: "/static/images/twitter_icon.svg"
-        # link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://pawprints.rit.edu/"
+      - name: "Twitter"
+        imgURL: "/static/images/twitter_icon.svg"
+        link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://pawprints.rit.edu/"
       # - name: "Reddit"
       #   imgURL: "/static/images/reddit_icon.png"
       #   link: "https://reddit.com/submit?title=&url=https://pawprints.rit.edu/"
