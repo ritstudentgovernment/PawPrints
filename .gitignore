@@ -144,3 +144,4 @@ PawPrints - Make your mark.webarchive
 *.iml
 *.rdb
 !/static/images/browserconfig.xml
+.DS_Store
