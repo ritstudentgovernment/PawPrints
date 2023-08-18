@@ -1,18 +1,18 @@
 # Configuration for the app
 name: "PawPrints"
-description: "Make Your Mark. Create and sign petitions. Receive official responses from Student Government."
+description: "Make Your Mark. Create and sign petitions. Receive official responses."
 main_logo: "/images/pawprints-white.svg" # Main logo location in static directory
 
-organization: "RIT Student Government" # Organization responding to petitions
+organization: "Vanderbilt Student Government" # Organization responding to petitions
 org_logo: "/images/sg-logo.png" # Logo for the organization
 
 
 # Determines if you want an additional nav at the top of the app for your organizations resources
 # Default set to False
-generate_top_nav: True
+generate_top_nav: False
 
 text:
-    header_title: "PawPrints - Make Your Mark" 
+    header_title: "Make Your Mark" 
     slideshow:
         # Text that shows up in the middle of the slideshow
         bold_text: "Make Your Mark"
@@ -41,15 +41,16 @@ tags:
     
 email:
   # Email titles
-  approved: "PawPrints - Your Petition is Published!"
-  rejected: "PawPrints - Petition Rejected"
-  updated: "PawPrints - A Petition you signed has a status update!"
-  responded: "PawPrints - A Petition you signed has a response!"
-  reached: "PawPrints - Petition threshold reached"
-  needs_approval: "PawPrints - Petition needs approval"
-  received: "PawPrints - Petition received"
-  reported: "PawPrints - A Petition has been reported by a member of the community."
-  charged: "PawPrints - Petition has been charged!"
+  # Add "Org Name - " to front
+  approved: "Your Petition is Published!"
+  rejected: "Petition Rejected"
+  updated: "A Petition you signed has a status update!"
+  responded: "A Petition you signed has a response!"
+  reached: "Petition threshold reached"
+  needs_approval: "Petition needs approval"
+  received: "Petition received"
+  reported: "A Petition has been reported by a member of the community."
+  charged: "Petition has been charged!"
 
   header_image: "/images/pawprintsemail.png" # image located in /static/
 
@@ -59,14 +60,15 @@ email:
 ui:
     colors:
         highlight: "#36454F"
-        orange_highlight: "#f36e21"
+        #hmmmmm
+        orange_highlight: "#d8ab4c"
         highlight_hover: "#606d75"
         # highlight_hover: "#e86920"
         dark_text: "#0f0f0f"
         light_text: "#f0f0f0"
         bright_text: "#fff"
         light_background: "#fafafa"
-        main_color: "#ff7700"
+        main_color: "#d8ab4c"
         responded_highlight: "#9d5f4b"
         progress_green: "#18A558"
     slideshow_images:
@@ -91,19 +93,19 @@ ui:
 
 social:
 # Data that shows up when sharing to social networks
-    title: "PawPrints"
+    title: "VSG"
     image: "/images/pawprintsemail.png" # image located in /static/ (This is usually just the same as the app logo)
-    social_links:
+    # social_links:
       # Links for social media sites, just point it to the root url.
-      - name: "Facebook"
-        imgURL: "/static/images/facebook_icon.svg"
-        link: "https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/"
-      - name: "Twitter"
-        imgURL: "/static/images/twitter_icon.svg"
-        link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://pawprints.rit.edu/"
-      - name: "Reddit"
-        imgURL: "/static/images/reddit_icon.png"
-        link: "https://reddit.com/submit?title=&url=https://pawprints.rit.edu/"
+      # - name: "Facebook"
+      #   imgURL: "/static/images/facebook_icon.svg"
+      #   link: "https://www.facebook.com/sharer.php?u=https://pawprints.rit.edu/"
+      # - name: "Twitter"
+        # imgURL: "/static/images/twitter_icon.svg"
+        # link: "https://twitter.com/intent/tweet?text=&via=&hashtags=&url=https://pawprints.rit.edu/"
+      # - name: "Reddit"
+      #   imgURL: "/static/images/reddit_icon.png"
+      #   link: "https://reddit.com/submit?title=&url=https://pawprints.rit.edu/"
       # - name: "Link"
       #   imgURL: "/static/images/link_icon.png"
       #   link: "https://pawprints.rit.edu/"
