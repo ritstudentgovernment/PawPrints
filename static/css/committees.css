@@ -1,18 +1,18 @@
 .text-highlight{
-color: #36454F !important;
+color: var(--highlight) !important;
 }
 .bright-text{
-color: #fff !important;
+color: var(--bright_text) !important;
 }
 .dark-text{
-color: #0f0f0f !important;
+color: var(--dark_text) !important;
 }
 .modern-link{
-color: #0f0f0f;
+color: var(--dark_text);
 text-decoration: none;
 }
 .material-input:focus{
-border-color: #36454F;
+border-color: var(--highlight);
 }
 .alternate-font{
     font-family: "Slabo 27px", sans-serif;

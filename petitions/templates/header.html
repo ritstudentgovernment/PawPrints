@@ -3,6 +3,7 @@
 
 {% compress js %}
 <script src="{% static '/js/header.js' %}"></script>
+<script src="{% static '/js/global.js' %}"></script>
 {% endcompress %}
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -91,6 +92,7 @@
 {% else %}
 <header class="full-width fixed transition large-header no-top-nav">
 {% endif %}
+<button onclick="darkMode()">darkMode</button>
     <div id="header-top" class="transition">
         <span id="logo" class="transition">
             <a class="modern-link text-highlight" href="/">

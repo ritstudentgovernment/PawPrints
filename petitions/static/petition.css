@@ -1,17 +1,17 @@
 /* -- Colors -- */
 .background-highlight{
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
 }
 .text-highlight{
-    color: {{ colors.highlight }} !important;
+    color: var(--highlight) !important;
 }
 .modern-link{
-    color: {{ colors.dark_text }};
+    color: var(--dark_text);
     text-decoration: none;
 }
 
 .material-input:focus{
-    border-color: {{ colors.highlight }};
+    border-color: var(--highlight);
 }
 /* ------------ */
 /* -- Modified HTML Tags -- */
@@ -26,7 +26,7 @@ p iframe{
 
 #landing{
     margin-top: 109px;
-    border-top: 3px solid {{ colors.highlight }};
+    border-top: 3px solid var(--highlight);
 }
 /* ------------------------ */
 /* -- Page Specific -- */
@@ -34,7 +34,7 @@ p iframe{
     font-family: "Montserrat", sans-serif;
     font-size: 1.3em;
     text-transform: capitalize;
-    color: {{ colors.highlight }};
+    color: var(--highlight);
 }
 #petition_description_title{
     padding-bottom: 10px;
@@ -51,15 +51,15 @@ p iframe{
     display: block;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected]{
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
 }
 .select2-selection__choice__remove{
-    color: #fff !important;
+    color: var(--bright_text) !important;
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
     border: none;
-    color: #FFF;
+    color: var(--bright_text);
     padding: 5px;
 }
 .select2-search.select2-search--inline{

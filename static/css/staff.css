@@ -1,18 +1,18 @@
 .background-highlight{
-    background-color: #f36e21;
+    background-color: var(--orange_highlight);
     }
     .text-highlight{
-    color: #f36e21 !important;
+    color: var(--orange_highlight) !important;
     }
     .bright-text{
-    color: #fff !important;
+    color: var(--bright_text) !important;
     }
     .modern-link{
-    color: #0f0f0f;
+    color: var(--dark_text);
     text-decoration: none;
     }
     .material-input:focus{
-    border-color: #f36e21;
+    border-color: var(--orange_highlight);
     }
     .alternate-font{
         font-family: "Slabo 27px", sans-serif;
@@ -35,7 +35,7 @@
         padding-bottom: 0;
     }
     #settings ul li{
-        background-color: #fff;
+        background-color: var(--bright_text);
         border-bottom: 1px solid #ccc;
     }
     #settings ul li:last-child{
@@ -46,7 +46,7 @@
         width: calc(100% - 65px);
     }
     .user{
-        background-color: #fff;
+        background-color: var(--bright_text);
         margin-top: 5px;
         padding: 1em;
         line-height: 2em;

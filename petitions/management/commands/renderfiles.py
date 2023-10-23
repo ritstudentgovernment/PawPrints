@@ -41,7 +41,7 @@ class Command(BaseCommand):
             self.petitions_dir) if isfile(join(self.petitions_dir, f))]
         profile_file_names = [f for f in listdir(
             self.profile_dir) if isfile(join(self.profile_dir, f))]
-        colors = settings.CONFIG["ui"]["darkcolors"]
+        colors = settings.CONFIG["ui"]["colors"]
         data_object = {
             'name': CONFIG['name'],
             'colors': colors,

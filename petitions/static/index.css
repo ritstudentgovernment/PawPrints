@@ -1,11 +1,11 @@
 .background-highlight{
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
 }
 .text-highlight{
-    color: {{ colors.highlight }} !important;
+    color: var(--highlight) !important;
 }
 .bright-text{
-    color: {{ colors.bright_text }} !important;
+    color: var(--bright_text) !important;
 }
 .petition-responded {
     color: #20c73e;
@@ -16,7 +16,7 @@
     font-weight: bold;
 }
 .signatures-missing {
-    color: #f36e21;
+    color: var(--orange_highlight);
     font-weight: bold;
 }
 .has-hover-content {
@@ -34,11 +34,11 @@
     color: white;
 }
 .modern-link{
-    color: {{ colors.light_text }};
+    color: var(--light_text);
     text-decoration: none;
 }
 .material-input:focus{
-    border-color: {{ colors.highlight }};
+    border-color: var(--highlight);
 }
 .alternate-font{
     font-family: "Slabo 27px", sans-serif;
@@ -60,7 +60,7 @@
 /* -- Page-Specific IDs -- */
 #parallax-overlay{
     text-align: center;
-    color: #fff;
+    color: var(--bright_text);
     top: 35% !important;
 }
 #parallax-overlay h1{
@@ -141,16 +141,16 @@
     height: 70px;
     width: 70px;
     text-align: center;
-    border-color: {{ colors.main_color }};
+    border-color: var(--main_color);
     z-index:1000;
-    background-color: {{ colors.main_color }}};
+    background-color: var(--main_color)};
     -webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
     -moz-box-shadow:    0px 5px 10px 0px rgba(0,0,0,0.3);
     -o-box-shadow:      0px 5px 10px 0px rgba(0,0,0,0.3);
     box-shadow:         0px 5px 10px 0px rgba(0,0,0,0.3);
 }
 #new-petition:hover{
-    background-color: {{ colors.main_color }};
+    background-color: var(--main_color);
     -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.4);
     -moz-box-shadow:    0px 2px 10px 0px rgba(0,0,0,0.4);
     -o-box-shadow:      0px 2px 10px 0px rgba(0,0,0,0.4);
@@ -186,7 +186,7 @@
     background-position: calc(100% - 5px) 50%;
     background-repeat: no-repeat;
     background-size: 28px;
-    background-color: #fff;
+    background-color: var(--bright_text);
 }
 #filter-sort-content-box{
     width: 230px;
@@ -229,15 +229,15 @@
 }
 
 #filter-sort .tag:hover:not(.current-tag){
-    background-color:#fff;
+    background-color:var(--bright_text);
     -webkit-box-shadow: 0px 0px 5px 0px #eee;
     -moz-box-shadow:    0px 0px 5px 0px #eee;
     -o-box-shadow:      0px 0px 5px 0px #eee;
     box-shadow:         0px 0px 5px 0px #eee;
 }
 #filter-sort .current-tag{
-    color: {{ colors.highlight }} !important;
-    background-color: #fff;
+    color: var(--highlight) !important;
+    background-color: var(--bright_text);
     -webkit-box-shadow: 0px 0px 5px 0px #eee;
     -moz-box-shadow:    0px 0px 5px 0px #eee;
     -o-box-shadow:      0px 0px 5px 0px #eee;
@@ -276,8 +276,8 @@
     margin: 0 auto;
 }
 .petition{
-    background-color: #fff;
-    color: #0f0f0f;
+    background-color: var(--bright_text);
+    color: var(--dark_text);
     padding-bottom: 1.2em;
     width: calc(100% - 10px);
     margin-left: 5px;
@@ -293,12 +293,12 @@
 .petition.in-progress{
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    border-bottom: 4px solid {{ colors.highlight }};
+    border-bottom: 4px solid var(--highlight);
 }
 .petition.responded{
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    border-bottom: 4px solid {{ colors.responded_highlight }};
+    border-bottom: 4px solid var(--responded_highlight);
 }
 .petition progress{
     height: 5px;
@@ -343,9 +343,9 @@ progress[value]::-moz-progress-bar {
     padding: 2px 5px;
     margin: 5px 7px 0 0px;
     float: left;
-    background-color: {{ colors.bright_text }};
-    color:{{ colors.highlight }};
-    border:1px solid {{ colors.highlight }};
+    background-color: var(--bright_text);
+    color:var(--highlight);
+    border:1px solid var(--highlight);
     -webkit-border-radius:40px;
     -moz-border-radius:40px;
     border-radius:40px;
@@ -356,8 +356,8 @@ progress[value]::-moz-progress-bar {
     -moz-box-shadow:    0px 0px 5px 0px #aaa;
     -o-box-shadow:      0px 0px 5px 0px #aaa;
     box-shadow:         0px 0px 5px 0px #aaa;
-    background-color: {{ colors.highlight_hover }};
-    color: {{ colors.bright_text }};
+    background-color: var(--highlight_hovert);
+    color: var(--bright_text);
 }
 #modal-template .modal-header h1{
     margin-top: -5px;
@@ -382,7 +382,7 @@ progress[value]::-moz-progress-bar {
     margin-bottom: 10px;
     margin-left: 10px;
     font-family: "Montserrat", sans-serif;
-    color: {{ colors.orange_highlight }};
+    color: var(--orange_highlight);
     text-transform: capitalize;
 }
 #petition-modal .modal-header span{
@@ -395,14 +395,14 @@ progress[value]::-moz-progress-bar {
     position: absolute;
     right: 10px;
     top: 10px;
-    color: {{ colors.highlight }};
+    color: var(--highlight);
 }
 #petition-modal #petition-close:hover{
     cursor: pointer;
 }
 #petition-modal .modal-body {
     overflow: auto;
-    background-color: #f0f0f0;
+    background-color: var(--light_text);
 }
 #petition-modal .modal-header h2, #petition-modal .modal-header span{
     max-width: calc(100% - 44px);
@@ -415,15 +415,15 @@ progress[value]::-moz-progress-bar {
     bottom:0px;
     left:0;
     right:0;
-    background-color: #fff;
+    background-color: var(--bright_text);
 }
 #petition-modal .modal-footer .material-button{
     padding: 7px 15px 7px 15px;
 }
 
 #timeline-container{
-    background-color: #f0f0f0;
-    color: #0f0f0f;
+    background-color: var(--light_text);
+    color: var(--dark_text);
     padding: 0 5%;
     position: relative;
     -webkit-transform: translateZ(0);
@@ -453,7 +453,7 @@ progress[value]::-moz-progress-bar {
 .timeline-element-wrap{
     padding: 10px;
     position: relative;
-    background-color: #fff;
+    background-color: var(--bright_text);
 }
 .timeline-element[data-type="created"] .timeline-element-wrap{
     background-color: transparent;
@@ -464,7 +464,7 @@ progress[value]::-moz-progress-bar {
     left: -23px;
     -webkit-transform: rotateZ(45deg);
     transform: rotateZ(45deg);
-    background-color: #fff;
+    background-color: var(--bright_text);
     width: 3em;
     height: 3em;
     z-index: -1;
@@ -476,7 +476,7 @@ progress[value]::-moz-progress-bar {
     left: calc(1px - 3.55vw);
     height: 9px;
     width: 9px;
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
     z-index: 3;
 }
 .timeline-element-header{
@@ -497,7 +497,7 @@ progress[value]::-moz-progress-bar {
     font-family: "Montserrat", sans-serif;
     font-weight: 800;
     float: left;
-    color: {{ colors.orange_highlight }};
+    color: var(--orange_highlight);
 }
 .timeline-element-content, .timeline-element-content *{
     font-family: "Muli", "Work Sans", Arial !important;
@@ -541,30 +541,30 @@ progress[value]::-moz-progress-bar {
 #sign-petition-button span{
     display: block;
     padding: 7px 15px 7px 15px;
-    background-color: {{ colors.orange_highlight }};
+    background-color: var(--orange_highlight);
 }
 #sign-petition-button{
     background-color: transparent;
-    /* color: {{ colors.highlight_hover }}; */
+    /* color: var(--highlight_hovert); */
     color: white;
 }
 #sign-petition-button:not(:disabled):hover{
-    background-color: {{ colors.highlight_hover }};
+    background-color: var(--highlight_hovert);
 }
 #sign-petition-button:not(:disabled):hover span{
-    color: {{ colors.light_text }};
+    color: var(--light_text);
 }
 #sign-petition-button:disabled:hover{
     cursor: auto;
     transform: scale(1);
 }
 #signature-card span{
-    /* color: {{ colors.light_text}}; */
+    /* color: var(--light_text); */
     /* color: white; */
 }
 .number-signature{
     padding-left: 10px;
-    color: {{ colors.highlight }};
+    color: var(--highlight);
 }
 .social-icon{
     padding-top: 1px;
@@ -592,10 +592,10 @@ progress[value]::-moz-progress-bar {
     display: block;
     width: 45px;
     height: 25px;
-    background-color: #fff;
+    background-color: var(--bright_text);
     border: 1px solid #ccc;
     border-bottom: none;
-    color: #0f0f0f;
+    color: var(--dark_text);
     content: "V";
     text-align: center;
     line-height: 25px;
@@ -617,7 +617,7 @@ progress{
 progress[value]::-webkit-progress-bar {
     background-color: #cfcfcf;
     content: "1";
-    color:#fff;
+    color:var(--bright_text);
     text-align: center;
 }
 /* progress[value]::-webkit-progress-value {
@@ -625,7 +625,7 @@ progress[value]::-webkit-progress-bar {
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
-    background-color: {{ colors.highlight }};
+    background-color: var(--highlight);
     progress::-webkit-progress-value{
         -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
     }
@@ -635,7 +635,7 @@ progress[value]::-webkit-progress-bar {
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
-    background-color: {{ colors.orange_highlight }};
+    background-color: var(--orange_highlight);
     -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 .petition-progress-green[value]::-webkit-progress-value{
@@ -643,21 +643,21 @@ progress[value]::-webkit-progress-bar {
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
-    background-color: {{ colors.progress_green }};
+    background-color: var(--progress_green);
     -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 progress[value]::-moz-progress-bar {
     background-color: #cfcfcf;
     border-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
-    /* background-color: {{ colors.highlight }}; */
+    /* background-color: var(--highlight); */
 }
 .petition-progress[value]::-moz-progress-bar{
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
-    background-color: {{ colors.orange_highlight }};
+    background-color: var(--orange_highlight);
     -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 .petition-progress-green[value]::-moz-progress-bar{
@@ -665,7 +665,7 @@ progress[value]::-moz-progress-bar {
     border-bottom-right-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
     text-align: center;
-    background-color: {{ colors.progress_green }};
+    background-color: var(--progress_green);
     -webkit-transition: width 500ms cubic-bezier(0.19, 1, 0.22, 1) 10ms;
 }
 
@@ -681,7 +681,7 @@ progress[value]::-moz-progress-bar {
     border: 1px solid #ccc;
     border-top: 3px solid #ccc;
     border-bottom: none;
-    background-color: #fff;
+    background-color: var(--bright_text);
     color: #a0a0a0;
 }
 #action-drawer-icon-container:hover{
@@ -690,7 +690,7 @@ progress[value]::-moz-progress-bar {
     line-height: 17px;
     top: -24px;
     cursor: pointer;
-    color: {{ colors.highlight }};
+    color: var(--highlight);
 }
 
 #edit-button, #publish-button{
@@ -711,7 +711,7 @@ progress[value]::-moz-progress-bar {
     height: 50px;
     width: 50px;
     margin-bottom: 20px;
-    background-color: #fff;
+    background-color: var(--bright_text);
     border: none;
 }
 #admin-actions div.circle i{
@@ -728,12 +728,12 @@ progress[value]::-moz-progress-bar {
     display: block;
 }
 #admin-actions div.circle:hover{
-    color: #fff;
-    background-color: {{ colors.highlight }};
+    color: var(--bright_text);
+    background-color: var(--highlight);
 }
 #admin-actions div.circle:hover span.invisible{
     opacity: 1;
-    color: {{ colors.highlight }};
+    color: var(--highlight);
 }
 .admin-action-spacer{
     height:50px;
@@ -750,8 +750,8 @@ progress[value]::-moz-progress-bar {
     right: 42.5px;
     left: auto;
     border: none !important;
-    background-color: #fff;
-    color: #0f0f0f;
+    background-color: var(--bright_text);
+    color: var(--dark_text);
 }
 
 /* -- Responsiveness -- */
@@ -1088,7 +1088,7 @@ progress[value]::-moz-progress-bar {
     -ms-animation-delay: 0.29s;
     -webkit-animation-delay: 0.29s;
     -moz-animation-delay: 0.29s;
-    background: {{ colors.highlight }};
+    background: var(--highlight);
 }
 .load-loading:after, .load-loading:before {
     position: absolute;

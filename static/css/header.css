@@ -1,6 +1,6 @@
 .dropbtn,.dropbtn-mobile{
     background-color:#f70;
-    color:#fff;
+    color:var(--bright_text);
     font-size:12px;
     border:none;
     outline:0
@@ -101,7 +101,7 @@
 }
 .dropdown-left a{
     background-color:#f70;
-    color:#fff;
+    color:var(--bright_text);
     font-size:12px;
     border:none;
     font-family:Montserrat;
@@ -136,9 +136,9 @@ body,html{
     }
 }
 .white-text{
-    color: #fff;
+    color: var(--bright_text);
 }
 .white-text:hover{
-    color: #fff;
+    color: var(--bright_text);
      text-decoration: none;
 }

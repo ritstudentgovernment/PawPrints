@@ -1,18 +1,18 @@
 .text-highlight{
-    color: {{ colors.orange_highlight }} !important;
+    color: var(--orange_highlight) !important;
 }
 .bright-text{
-color: {{ colors.bright_text }} !important;
+color: var(--bright_text) !important;
 }
 .dark-text{
-color: {{ colors.dark_text }} !important;
+color: var(--dark_text) !important;
 }
 .modern-link{
-color: {{ colors.light_text }};
+color: var(--light_text);
 text-decoration: none;
 }
 .material-input:focus{
-border-color: {{ colors.highlight }};
+border-color: var(--highlight);
 }
 .alternate-font{
     font-family: "Slabo 27px", sans-serif;
@@ -39,8 +39,8 @@ header{
     margin-top: 100px;
 }
 .orange-background{
-    background-color: {{ colors.main_color }};
-    color: #FFF;
+    background-color: var(--main_color);
+    color: var(--bright_text);
 }
 article{
     width: 50%;
@@ -52,10 +52,10 @@ article.transition:hover{
     transform: scale(1.01,1.01);
 }
 article.transition.white-background:hover{
-    background-color: #f0f0f0;
+    background-color: var(--light_text);
 }
 article.transition.orange-background:hover{
-    background-color: {{ colors.main_color }};
+    background-color: var(--main_color);
 }
 article:last-child{
     width: 100%;
@@ -78,7 +78,7 @@ article div{
     overflow-x: hidden;
     padding: 50px;
     background-color: rgba(0, 0, 0, 0.71);
-    color:#fff;
+    color:var(--bright_text);
 }
 article div:hover{
     cursor: default;
@@ -112,13 +112,13 @@ article div p{
     font-size: 3em;
     font-family: "Montserrat", sans-serif;
     font-weight: 800;
-    color: {{ colors.orange_highlight }} !important;
+    color: var(--orange_highlight) !important;
 }
 .title-committee{
     font-size: 3em;
     font-family: "Montserrat", sans-serif;
     font-weight: 800;
-    color: {{ colors.orange_highlight }} !important;
+    color: var(--orange_highlight) !important;
 }
 .text{
     flex: 1;
@@ -126,7 +126,7 @@ article div p{
     font-size: 1.5em;
     padding: 20px;
     font-family: "Montserrat", sans-serif;
-    color: {{ colors.highlight }} !important;
+    color: var(--highlight) !important;
 }
 .section{
     height: 600px;
@@ -145,7 +145,7 @@ article div p{
     font-size: 2em;
     text-align: center;
     height: 2.5em;
-    color: {{ colors.orange_highlight }} !important;
+    color: var(--orange_highlight) !important;
 }
 .petitions-mid{
     display: flex;

@@ -8,6 +8,22 @@
 
 // @author: Sma-Das
 // I will personally replace every W3Schools copied code with my own (better!) code.
+
+function darkMode() {
+  const root = document.querySelector(':root');
+
+  root.style.setProperty('--highlight', '#DBE2E6');
+  root.style.setProperty('--orange_highlight', '#f36e21');
+  root.style.setProperty('--highlight_hover', '#BCC2C8');
+  root.style.setProperty('--dark_text', '#F5F5F5');
+  root.style.setProperty('--light_text', '#292929');
+  root.style.setProperty('--bright_text', '#0A0A0A');
+  root.style.setProperty('--light_background', '#141414');
+  root.style.setProperty('--main_color', '#ff7700');
+  root.style.setProperty('--responded_highlight', '#9d5f4b');
+  root.style.setProperty('--progress_green', '#18A558');
+}
+
 function getCookie(cookieName) {
   const name = cookieName + "=";
   const cookieArray = document.cookie.split(";");

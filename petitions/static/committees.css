@@ -1,18 +1,18 @@
 .text-highlight{
-color: {{ colors.highlight }} !important;
+color: var(--highlight) !important;
 }
 .bright-text{
-color: {{ colors.bright_text }} !important;
+color: var(--bright_text) !important;
 }
 .dark-text{
-color: {{ colors.dark_text }} !important;
+color: var(--dark_text) !important;
 }
 .modern-link{
-color: {{ colors.dark_text }};
+color: var(--dark_text);
 text-decoration: none;
 }
 .material-input:focus{
-border-color: {{ colors.highlight }};
+border-color: var(--highlight);
 }
 .alternate-font{
     font-family: "Slabo 27px", sans-serif;
