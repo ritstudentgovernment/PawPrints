@@ -1,0 +1,54 @@
+.form {
+    margin-top: 0.5em;
+}
+
+.form input, .text-description, .tag-dropdown {
+    border: 1px solid darkgrey;
+    box-shadow: 0 0 1px gray;
+    border-radius: 10px;
+}
+/* 
+.tag-trigger {
+    background-color: white;
+    color: grey;
+    text-align: left;
+    width: 300px;
+    padding: 10px;
+    font-size: 0.75em;
+} */
+
+.tag-dropdown {
+    max-height: 250px; 
+    overflow-y: auto;
+    color: grey;
+}
+
+.submit{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn {
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 0 0 2px var(--dark_gray);
+}
+
+.submit-btn:hover {
+    background-color: var(--dark_gray);
+    color: white;
+}
+
+.draft-btn {
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: var(--light_background);
+    box-shadow: 0 0 2px var(--dark_gray);
+}
+
+.draft-btn:hover {
+    background-color: var(--dark_gray);
+    color: white;
+}

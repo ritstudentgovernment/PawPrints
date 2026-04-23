@@ -1,0 +1,316 @@
+.overlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-in-out;
+    z-index: 16;
+}
+
+.overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wrapper {
+    margin: auto;
+    background: var(--detail-background);
+    width: 75dvw;
+    height: 85dvh;
+    position: relative;
+    top: 8vh;
+    transition: all 100ms ease-in-out;
+}
+
+.inner {
+    overflow-y: auto;
+    max-height: 65dvh;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dark_gray) var(--light_background);
+    padding-top: 20px;
+    padding-bottom: 120px;
+}
+
+.header {
+    background: var(--bright_text);
+    padding: 20px;
+    margin: none;
+}
+
+.closebtn{
+    background-color: rgba(80, 80, 80, 0);
+    border: none;
+    color: var(--dark_text);
+    font-size: 1em;
+}
+
+.closebtn:hover{
+    color: var(--main_color);
+}
+
+.header .title {
+    color: var(--orange_highlight);
+    font-weight: 800;
+    font-size: 1.2em;
+}
+
+.header .closebtn {
+    float: right;
+}
+
+.content {
+    position: relative;
+    /* Needed for positioning the pseudo-element */
+    background: var(--light_background);
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+    margin: 15px 100px 15px 50px;
+    min-height: 80px;
+}
+
+.content::before {
+    content: "";
+    /* Ensures the pseudo-element is rendered */
+    position: absolute;
+    top: 0;
+    /* Aligns with the top of the box */
+    left: 0;
+    /* Aligns with the left of the box */
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 30px 30px 0;
+    /* Triangle dimensions */
+    border-color: transparent var(--light_background) transparent transparent;
+    /* Adjust colors */
+    transform: translate(-100%, 0);
+    /* Move the triangle to the left of the box */
+}
+
+.response-content {
+    position: relative;
+    /* Needed for positioning the pseudo-element */
+    background: var(--light_background);
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+    margin: 15px 50px 15px 100px;
+    min-height: 80px;
+}
+
+.response-content::before {
+    content: "";
+    /* Ensures the pseudo-element is rendered */
+    position: absolute;
+    top: 0;
+    /* Aligns with the top of the box */
+    right: 0;
+    /* Aligns with the right of the box */
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 40px 0 30px 30px;
+    /* Triangle dimensions */
+    border-color: transparent transparent transparent var(--light_background);
+    /* Adjust colors */
+    transform: translate(100%, 0);
+    /* Move the triangle to the right of the box */
+}
+
+
+.content h4{
+    color: var(--orange_highlight);
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+.response-content h4{
+    color: var(--orange_highlight);
+    font-weight: 600;
+    padding-bottom: 10px;
+}
+
+.progressdet[value] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.progressdet {
+    position: sticky;
+    bottom: 0px;
+    width: 100%;
+}
+
+.progressdet[value]::-webkit-progress-bar {
+    background-color: var(--bright_text);
+}
+
+.progressdet[value]::-moz-progress-bar {
+    background-color: var(--bright_text);
+}
+
+.progressdet[value]::-webkit-progress-value {
+    background-color: var(--orange_highlight);
+}
+
+.progressdet[value]::-moz-progress-value {
+    background-color: var(--orange_highlight);
+}
+
+.share-btn.icon-only {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-btn.icon-only:hover {
+  color: var(--main_color);
+}
+
+
+.footer{
+    padding: 20px 5px;
+    width: 100%;
+    position: sticky;
+    position: absolute;
+    bottom: 0px;
+    background-color: var(--light_background);
+    max-height: 300px;
+}
+
+.footer .sign{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    align-items: center;
+}
+
+.footer .sign #sign {
+    width: fit-content;
+    padding: 5px;
+    margin-right: 10px;
+    border: none;
+    text-transform: uppercase;
+    grid-column: 2;
+    font-weight: bold;
+}
+
+
+.footer .sign button {
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 3px 3px 5px var(--dark_gray);
+}
+
+.footer #nums {
+    grid-column: 3;
+    text-align: center;
+    text-transform: lowercase;
+}
+
+.footer .info {
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    text-align: center;
+}
+
+.footer .info-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    text-align: center;
+}
+
+
+@media (max-width: 768px) {
+
+    .wrapper {
+        width: 100vw;
+        height: calc(100vh - 60px);
+        top: 60px;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inner {
+        flex: 1;
+        max-height: none;
+        overflow-y: auto;
+        padding: 15px;
+        padding-bottom: 140px; 
+    }
+
+    .content,
+    .response-content {
+        margin: 10px 0;
+        padding: 15px;
+    }
+
+    .content::before,
+    .response-content::before {
+        display: none;
+    }
+
+    .header {
+        padding: 15px;
+    }
+
+    .header .closebtn {
+        float: none;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+
+    .footer {
+        position: sticky;
+        bottom: 0;
+        padding: 15px;
+    }
+
+    .footer .sign {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .footer .sign #sign,
+    .footer #nums {
+        grid-column: auto;
+        justify-self: center;
+    }
+
+    .footer .info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .footer .info .info-stats {
+        gap: 8px;
+        font-size: 0.8rem;
+        display: grid;
+        width: 80%;
+        grid-template-columns: 1fr 1fr 1fr;
+        margin: 0 auto;
+    }
+
+}

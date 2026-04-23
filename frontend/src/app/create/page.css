@@ -1,0 +1,45 @@
+.material-icon-container{
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+  }
+  
+.outercreate {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-bottom: 150px;
+
+}
+
+
+.outercreate h1{
+  font-size: 35px;
+  font-weight: 800;
+  color: var(--orange_highlight);
+  padding: 10px 0px 10px 0px;
+  margin-top: 1em;
+}
+
+.outercreate h2 {
+  font-size: 1.3em;
+  font-weight: 700;
+
+  padding: 10px 0px 5px 0px;
+}
+
+.form-container {
+  padding: 20px;
+  border: 2px solid darkgrey;
+  border-radius: 20px;
+  box-shadow: 0 0 2px gray;
+}
+
+
+@media (max-width: 768px) {
+  .outercreate {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}

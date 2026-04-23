@@ -1,0 +1,92 @@
+# docker-compose.yml — runs the full PawPrints stack locally.
+#
+# Setup:
+#   cp backend/.env.example backend/.env      # fill in your values
+#   cp frontend/.env.example frontend/.env.local
+#   docker compose up --build
+#
+# Services exposed on the host:
+#   Frontend  → http://localhost:3000
+#   Backend   → http://localhost:8000
+#   MinIO API → http://localhost:9000
+#   MinIO UI  → http://localhost:9001
+#   pgAdmin   → http://localhost:8080  (use --profile dev to include)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: ./backend/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    env_file: ./backend/.env
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    ports:
+      - "8000:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        NEXT_PUBLIC_ALWAYS_LOGGED_IN: "false"
+    restart: unless-stopped
+    env_file: ./frontend/.env.local
+    environment:
+      # Lets Next.js SSR hit the backend over the internal Docker network
+      # instead of going out through localhost, which doesn't exist inside the container.
+      INTERNAL_API_URL: http://api:8001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD:-changeme}
+    ports:
+      - "${PG_ADMIN_PORT:-8080}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - dev
+
+volumes:
+  postgres_data:
+  minio_data:

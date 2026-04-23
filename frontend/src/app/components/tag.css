@@ -1,0 +1,17 @@
+.tag{
+    font-size: 0.85rem;
+    padding: 5px;
+    border:2px;
+    border-color: black;
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+    width: max-content;
+    transition: transform 0.3s ease;
+}
+
+.tag:hover {
+    transform: translateY(-2px);
+    color: white;
+    background-color: black;
+}

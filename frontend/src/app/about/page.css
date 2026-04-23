@@ -1,0 +1,150 @@
+.material-icon-container {
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+.outer {
+    padding-top: 50px;
+    padding-left: 10%;
+    padding-right: 10%;
+    font-size: 1.1em;
+}
+
+.outer h1 {
+    font-size: 35px;
+    font-weight: 800;
+    color: var(--orange_highlight);
+    padding: 10px 0px 10px 0px;
+    margin-top: 0.5em;
+}
+
+.outer p {
+    font-size: 20px;
+}
+
+.outer a {
+    color: var(--main_color);
+    text-decoration-line: underline;
+}
+
+.container {
+    display: flex;
+    gap: 10%;
+    align-items: center;
+}
+
+.history-text {
+    width: 65%;
+}
+
+.history-img {
+    width: 20%;
+}
+
+.mid {
+    display: flex;
+    gap: 8%;
+    margin-top: 10%;
+}
+
+.column1, .column2, .column3 {
+    display: flex;
+    flex-direction: column;
+    width: 30%;    
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.column-img {
+    width: 50%;
+}
+
+.column-title, .column-text {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.mod-policy {
+    margin-top: 10%;
+}
+
+.mod-policy h1 {
+    margin-bottom: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .outer {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    .container {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .history-text {
+        width: 100%;
+        text-align: left;
+    }
+
+    .history-img {
+        width: 60%;
+    }
+
+    .history-img img {
+        width: 100%;
+        height: auto;
+    }
+
+    .mid {
+        flex-direction: column;
+        gap: 50px;
+        margin-top: 50px;
+    }
+
+    .column1,
+    .column2,
+    .column3 {
+        width: 100%;
+    }
+
+    .column-img {
+        width: 40%;
+    }
+
+    .column-img img {
+        width: 100%;
+        height: auto;
+    }
+
+    .outer h1 {
+        font-size: 28px;
+    }
+
+    .outer p {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .mid {
+        margin-top: 40px;
+    }
+
+    .mod-policy {
+        margin-top: 50px;
+    }
+
+    .column1,
+    .column2,
+    .column3 {
+        background: var(--light_background);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+}

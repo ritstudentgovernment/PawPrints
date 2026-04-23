@@ -1,0 +1,111 @@
+# ===== Core Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+/alembic
+
+/minio_storage
+
+# Bytecode at repo root fallback
+*pyc
+
+# Virtual environments
+.venv/
+venv/
+.env
+.env/
+.env.*
+!.env.example          # keep a sample if you have one
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+wheels/
+*.whl
+
+# Logs & runtime files
+*.log
+*.pid
+*.pid.lock
+
+# Test & coverage
+.coverage
+.coverage.*
+htmlcov/
+.cache/                # pytest/ruff caches
+.pytest_cache/
+.tox/
+.nox/
+
+# Type checkers / linters
+.pyre/
+.pytype/
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Editors & IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# OS-generated
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker / Compose
+docker-compose.override.yml
+.docker/
+*.tar
+
+# Certificates / secrets (keep examples only)
+*.pem
+*.crt
+*.key
+cert/
+certs/
+new_cert/
+
+# App/Project specific -------------------------------------------------
+
+# Scripts & local helpers (untracked executables, local tooling)
+scripts/
+helpers/
+commands.sh
+
+# Database & state
+*.sqlite3
+postgres_data*
+dbSetup/
+
+# Generated data / misc
+other/
+pawprints2/
+
+
+# Text scratch files (if you really want to exclude all)
+*.txt
+
+# PR/CI artifacts (just in case)
+*.coverage
+*.cover
+coverage.xml
+
+# Twine / pypirc
+.pypirc
+
+# Node (if any frontends exist)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*

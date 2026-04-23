@@ -1,0 +1,402 @@
+/* pawstats.css — Pawstats Admin Dashboard Styles
+   Theme: black / dark-brown text, orange accents, warm cream backgrounds
+*/
+
+/* ── Root ─────────────────────────────────────────────────────────────────── */
+.ps-root {
+  padding: 0.25rem 0 2rem;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.ps-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e8ddd5;
+}
+
+.ps-main-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2c1a0e;
+  letter-spacing: -0.5px;
+}
+
+.ps-main-sub {
+  margin-top: 0.3rem;
+  color: #7a5c4f;
+  font-size: 0.95rem;
+}
+
+.ps-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.ps-last-updated {
+  font-size: 0.82rem;
+  color: #9d7d72;
+}
+
+.ps-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: #2c1a0e;
+  color: #fdf8f4;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ps-refresh-btn:hover:not(:disabled) {
+  background: #f36e21;
+}
+
+.ps-refresh-btn:active {
+  transform: scale(0.97);
+}
+
+.ps-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ps-refresh-btn .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
+@keyframes ps-spin {
+  to { transform: rotate(360deg); }
+}
+.ps-spin {
+  animation: ps-spin 0.9s linear infinite;
+}
+
+/* ── Error Banner ────────────────────────────────────────────────────────── */
+.ps-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.2rem;
+  background: #fff1ee;
+  border: 1px solid #f36e21;
+  border-left: 4px solid #c4581a;
+  border-radius: 8px;
+  color: #6b2a0e;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.ps-error .material-symbols-outlined {
+  font-size: 1.2rem;
+  color: #c4581a;
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.ps-section {
+  margin-top: 2.5rem;
+}
+
+.ps-section-title {
+  margin-bottom: 1.25rem;
+}
+
+.ps-section-title h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c1a0e;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.ps-section-icon {
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.ps-section-title p {
+  margin-top: 0.25rem;
+  color: #7a5c4f;
+  font-size: 0.88rem;
+}
+
+/* ── KPI Grid ────────────────────────────────────────────────────────────── */
+.ps-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.ps-kpi-card {
+  background: #fff;
+  border: 1px solid #e8ddd5;
+  border-top: 3px solid #f36e21;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  box-shadow: 0 1px 4px rgba(44, 26, 14, 0.06);
+  transition: box-shadow 0.15s ease;
+}
+
+.ps-kpi-card:hover {
+  box-shadow: 0 4px 12px rgba(44, 26, 14, 0.12);
+}
+
+.ps-kpi-icon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: inherit;
+}
+
+.ps-kpi-icon .material-symbols-outlined {
+  font-size: 1.35rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.ps-kpi-body {
+  min-width: 0;
+}
+
+.ps-kpi-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #7a5c4f;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #2c1a0e;
+  line-height: 1.1;
+  margin-top: 0.2rem;
+}
+
+.ps-kpi-sub {
+  font-size: 0.78rem;
+  color: #9d7d72;
+  margin-top: 0.25rem;
+}
+
+/* ── Charts Row ──────────────────────────────────────────────────────────── */
+.ps-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .ps-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Chart Card ──────────────────────────────────────────────────────────── */
+.ps-chart-card {
+  background: #fff;
+  border: 1px solid #e8ddd5;
+  border-radius: 10px;
+  padding: 1.25rem 1.25rem 1rem;
+  box-shadow: 0 1px 4px rgba(44, 26, 14, 0.06);
+}
+
+.ps-chart-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2c1a0e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.85rem;
+}
+
+/* ── Timeline Controls ───────────────────────────────────────────────────── */
+.ps-timeline-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ps-gran-btn {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid #e8ddd5;
+  border-radius: 6px;
+  background: #fff;
+  color: #7a5c4f;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ps-gran-btn:hover {
+  border-color: #f36e21;
+  color: #f36e21;
+}
+
+.ps-gran-btn.active {
+  background: #2c1a0e;
+  border-color: #2c1a0e;
+  color: #fdf8f4;
+  font-weight: 600;
+}
+
+/* ── Custom Tooltip ──────────────────────────────────────────────────────── */
+.ps-tooltip {
+  background: #fff;
+  border: 1px solid #e8ddd5;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.84rem;
+  box-shadow: 0 4px 12px rgba(44, 26, 14, 0.14);
+  color: #2c1a0e;
+  min-width: 130px;
+}
+
+.ps-tooltip-label {
+  font-weight: 700;
+  color: #2c1a0e;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Committee Table ─────────────────────────────────────────────────────── */
+.ps-committee-table-wrapper {
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.ps-committee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.ps-committee-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7a5c4f;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #e8ddd5;
+  white-space: nowrap;
+}
+
+.ps-committee-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #f5ede8;
+  color: #2c1a0e;
+  vertical-align: middle;
+}
+
+.ps-committee-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ps-committee-table tr:hover td {
+  background: #fdf8f4;
+}
+
+.ps-committee-name {
+  font-weight: 500;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Rate bar inside committee table */
+.ps-rate-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 90px;
+}
+
+.ps-rate-bar {
+  height: 6px;
+  background: linear-gradient(90deg, #2c1a0e, #f36e21);
+  border-radius: 3px;
+  flex-shrink: 0;
+  min-width: 4px;
+  max-width: 80px;
+  transition: width 0.4s ease;
+}
+
+.ps-rate-bar-wrap span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2c1a0e;
+  white-space: nowrap;
+}
+
+.ps-days {
+  font-variant-numeric: tabular-nums;
+  color: #6b3a2a;
+  font-weight: 500;
+}
+
+.ps-pending {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #7a5c4f;
+}
+
+.ps-pending-warn {
+  color: #c4581a;
+}
+
+/* ── Loading Skeleton ────────────────────────────────────────────────────── */
+.ps-loading-bar {
+  display: flex;
+  gap: 0.75rem;
+  padding: 2rem 0;
+  justify-content: center;
+}
+
+.ps-loading-bar span {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: #e8ddd5;
+  animation: ps-pulse 1.4s ease-in-out infinite;
+}
+
+.ps-loading-bar span:nth-child(2) { animation-delay: 0.2s; }
+.ps-loading-bar span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ps-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── Empty State ─────────────────────────────────────────────────────────── */
+.ps-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #9d7d72;
+  font-size: 0.9rem;
+}

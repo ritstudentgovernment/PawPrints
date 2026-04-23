@@ -1,0 +1,235 @@
+.profile-petitions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-petitions-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.profile-petitions-header p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: var(--dark_gray);
+}
+
+.profile-petitions-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.profile-petitions-label {
+  font-size: 0.95rem;
+}
+
+.profile-petitions-select {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.profile-petitions-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+}
+
+.profile-petitions-loading,
+.profile-petitions-error,
+.profile-petitions-empty {
+  padding: 1rem 0.5rem;
+  font-size: 0.95rem;
+}
+
+.profile-petitions-error {
+  color: #b00020;
+}
+
+.profile-petitions-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.profile-petitions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.profile-petitions-table thead {
+  background-color: #f5f5f5;
+}
+
+.profile-petitions-table th,
+.profile-petitions-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.profile-petitions-title-cell {
+  max-width: 260px;
+}
+
+.profile-petitions-title {
+  display: inline-block;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.profile-petitions-actions-cell {
+  text-align: right;
+}
+
+.profile-petitions-view-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: var(--orange_highlight);
+  color: #ffffff;
+  transition:
+    background-color 0.15s ease-out,
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+}
+
+.profile-petitions-view-button:hover {
+  background-color: #ff9900;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.profile-petitions-view-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.profile-pill-draft {
+  background-color: #ffe7d9;
+  color: #c05621;
+}
+
+.profile-pill-petition {
+  background-color: #e6ffed;
+  color: #276749;
+}
+
+.profile-petitions-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.profile-petitions-pagination button {
+  border-radius: 16px;
+  border: 1px solid #ccc;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.profile-petitions-pagination button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+}
+
+.profile-petitions-pagination button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.profile-petitions-page-info {
+  font-size: 0.9rem;
+  color: var(--dark_gray);
+}
+
+.form {
+  display: grid;
+}
+
+.close-form {
+  height: 2rem;
+  width: 4rem;
+  color: #E53935;
+  background-color: transparent;
+  justify-self: end;
+}
+
+.close-form:hover {
+  background-color: lightcoral;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  /* Turn table into a block layout */
+  .profile-petitions-table {
+    display: block;
+  }
+
+  .profile-petitions-table thead {
+    display: none; /* hide headers */
+  }
+
+  .profile-petitions-table tbody {
+    display: block;
+  }
+
+  .profile-petitions-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e2e2;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background-color: #fafafa;
+  }
+
+  .profile-petitions-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    border-bottom: none;
+  }
+
+  .profile-petitions-table td::before {
+    content: attr(data-label); 
+    font-weight: 600;
+    flex: 1 0 40%;
+    color: var(--dark_gray);
+  }
+
+  .profile-petitions-title-cell {
+    max-width: none;
+  }
+
+  .profile-petitions-title {
+    text-align: right;
+  }
+
+  .profile-petitions-actions-cell {
+    justify-content: flex-end;
+  }
+}
+

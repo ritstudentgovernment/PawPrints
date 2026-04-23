@@ -1,0 +1,59 @@
+.floating-create-button {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  width: 64px;
+  height: 64px;
+
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: none;
+
+  background-color: #ff8a00; /* PawPrints orange-ish */
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+
+  transition:
+    transform 0.15s ease-out,
+    box-shadow 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.floating-create-button__icon {
+  font-size: 2rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Hover / active states for nicer “smooth” feel */
+.floating-create-button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  background-color: #ff9900;
+}
+
+.floating-create-button:active {
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Slightly smaller on mobile */
+@media (max-width: 768px) {
+  .floating-create-button {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+  }
+
+  .floating-create-button__icon {
+    font-size: 1.75rem;
+  }
+}

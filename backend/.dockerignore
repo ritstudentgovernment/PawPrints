@@ -1,0 +1,58 @@
+# ===== VCS & CI =====
+.git
+.gitignore
+.github/
+
+# ===== Python caches & build junk =====
+__pycache__/
+*.py[cod]
+*$py.class
+*pyc
+.pytest_cache/
+.ruff_cache/
+.eggs/
+*.egg-info/
+build/
+dist/
+wheels/
+pip-wheel-metadata/
+
+# ===== Environments & local config =====
+.venv/
+venv/
+.env
+.env.*
+!.env.example        # keep a sample if you have one
+
+# ===== Logs & coverage =====
+*.log
+.coverage
+.coverage.*
+htmlcov/
+
+# ===== Jupyter =====
+*.ipynb
+.ipynb_checkpoints/
+
+# ===== OS/editor noise =====
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.code-workspace
+
+# ===== App-specific from your list =====
+scripts/             # remove if you COPY scripts/ into image
+*.json               # remove if you COPY any json configs
+postgres_data*
+*.txt
+new_cert/
+cert/
+certs/
+other/
+*.pem
+
+# ===== Docker-related =====
+docker-compose*.yml
+.docker/

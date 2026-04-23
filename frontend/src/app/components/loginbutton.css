@@ -1,0 +1,41 @@
+.login-btn {
+    font-weight: 900;
+    background-color: white;
+    color: var(--orange_highlight);
+    padding: 0 30px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.login-icon.material-symbols-outlined {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .login-btn {
+        padding: 0;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: white;
+    }
+
+    /* Hide text */
+    .login-text {
+        display: none;
+    }
+
+    /* Show icon */
+    .login-icon.material-symbols-outlined {
+        display: block;
+        font-size: 28px;
+    }
+}
+

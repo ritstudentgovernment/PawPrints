@@ -1,0 +1,8 @@
+.clear-button {
+    font-weight: 900;
+    background-color: white;
+    color: var(--orange_highlight);
+    padding: 0 30px;
+    margin-top: -50px;
+    height: 100%;
+}

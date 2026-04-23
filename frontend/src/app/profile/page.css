@@ -1,0 +1,80 @@
+.material-icon-container {
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+/* Main container for the profile page */
+.profile-page-outer {
+    padding-left: 10%;
+    padding-right: 10%;
+    font-size: 1.1em;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    /* Ensures the page has height so footer doesn't jump up */
+    min-height: 75vh;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Title styling */
+.profile-page-outer h1 {
+    font-size: 35px;
+    font-weight: 800;
+    color: var(--orange_highlight);
+    padding: 10px 0px 10px 0px;
+    margin-top: 0.5em;
+}
+
+/* Layout container: Profile on top, My PawPrints below */
+/* Width controlled here */
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    /* Constrain width and center in the page */
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Soft 3D effect for user profile card */
+.profile-layout-left {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border-radius: 12px;
+    padding: 1.5rem;
+
+    /* Soft modern shadow */
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Right section (My PawPrints) simply stacks below */
+.profile-layout-right {
+    width: 100%;
+}
+
+/* SMALL screens fix */
+@media (max-width: 768px) {
+    .profile-page-outer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        min-height: auto;
+    }
+
+    .profile-layout {
+        max-width: 100%;
+    }
+
+    .profile-layout-left {
+        padding: 1.25rem;
+    }
+}

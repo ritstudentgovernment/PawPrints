@@ -1,0 +1,29 @@
+
+.material-icon-container{
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+  }
+  
+.outer {
+    padding-left: 6em;
+    padding-right: 6em;
+}
+
+.search-btn {
+  text-align: right;
+  padding-top: 2em;
+  padding-right: 1em;
+}
+
+@media (max-width: 768px) {
+  .outer {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .search-btn {
+    text-align: center;
+    padding-top: 1em;
+    padding-right: 0;
+  }
+}

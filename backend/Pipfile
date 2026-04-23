@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+faker = "*"
+sqlalchemy = "*"
+python-dotenv = "*"
+alembic = "*"
+uvicorn = "*"
+pydantic = {extras = ["email"], version = "*"}
+asyncpg = "*"
+psycopg2-binary = "*"
+sqlalchemy_utils = "*"
+pendulum = "*"
+greenlet = "*"
+certbot = "*"
+fastapi-sessions = "*"
+pysaml2 = "*"
+dicttoxml = "*"
+python-multipart = "*"
+jose = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+aiosqlite = "*"
+sqlalchemy-utils = "*"
+pre-commit = "*"
+boto3 = "*"
+sniffio = "*"
+filetype = "*"
+
+[dev-packages]
+ipykernel = "*"
+boto3-stubs = {extras = ["s3"], version = "*"}

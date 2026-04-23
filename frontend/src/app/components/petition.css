@@ -1,0 +1,140 @@
+.petition {
+    background-color: var(--light_background);
+    color: #0f0f0f;
+    padding-bottom: 1.2em;
+    width: 100%;
+    height: 100%;
+    /* Takes full width of parent */
+    max-width: inherit;
+    margin: 0 auto;
+    /* Centering */
+    display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    box-sizing: border-box;
+    border-radius: 0px;
+    /* Ensures padding/borders don't affect width */
+    transition: transform 0.3s ease;
+}
+
+.petition:hover {
+    transform: translateY(-5px);
+    box-shadow: 2px 2px 4px rgb(0, 0, 0, 0.2);
+}
+
+.title h1 {
+    padding-top: 5px;
+    font-size: 1.5em;
+    padding-bottom: 5px;
+    text-align: center;
+    /* Ensures better alignment on small screens */
+}
+
+.petition progress {
+    height: 8px;
+    display: block;
+    width: 100%;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    /* Prevents overflow */
+}
+
+.topline {
+    padding-top: 5px;
+}
+
+progress {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: var(--dark_gray);
+}
+
+progress::-webkit-progress-value {
+    background-color: var(--orange_highlight);
+}
+
+progress::-moz-progress-bar {
+    background-color: var(--orange_highlight);
+}
+
+.progressbar {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.progressbar::-webkit-progress-bar {
+    background-color: var(--dark_gray);
+}
+
+.progressbar::-webkit-progress-value {
+    background-color: var(--orange_highlight);
+}
+
+.progressgreen::-webkit-progress-value {
+    background-color: var(--progress_green);
+}
+
+.progressgreen::-moz-progress-bar {
+    background-color: var(--progress_green);
+}
+
+.progressyellow::-webkit-progress-value {
+    background-color: var(--progress_yellow);
+}
+
+.progressyellow::-moz-progress-bar {
+    background-color: var(--progress_yellow);
+}
+
+.petcontent {
+    padding: 10px;
+}
+
+.petition-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+.tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    /* Ensures tags wrap properly on small screens */
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: auto;
+}
+
+.tagContainer :first-child {
+    align-self: center;
+}
+
+.tagContainer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  
+  /* Style for individual tag badges */
+  .petition-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: var(--tag-color, #e5e7eb);
+    color: #1f2937;
+    white-space: nowrap;
+  }
+  

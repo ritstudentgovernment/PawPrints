@@ -1,0 +1,25 @@
+.petitions-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1em;
+  width: calc(100% - 2em);
+  max-width: 100%;
+  margin: 1em auto;
+  margin-top: 2em;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .petitions-container {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 280px) {
+  .petitions-container {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+}

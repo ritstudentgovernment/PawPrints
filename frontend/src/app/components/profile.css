@@ -1,0 +1,21 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.logout-btn {
+    font-weight: 900;
+    background-color: white;
+    color: var(--orange_highlight);
+    padding: 0 30px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}

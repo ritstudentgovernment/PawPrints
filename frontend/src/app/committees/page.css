@@ -1,0 +1,88 @@
+.material-icon-container {
+    display: inline-flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+.outer {
+    padding-left: 10%;
+    padding-right: 10%;
+    font-size: 1.1em;
+}
+
+/* .outer h1 {
+    font-size: 35px;
+    font-weight: 800;
+    color: var(--orange_highlight);
+    padding: 10px 0px 10px 0px;
+    margin-top: 0.5em;
+} */
+
+.outer .accordion-container {
+    margin-top: 50px;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.outer .accordion {
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-bottom: 10px;
+    border: 3px solid var(--main_color);
+    box-shadow: 0 0 4px gray;
+    color: var(--main_color);
+}
+
+.outer .committee-content, .innerlist {
+    color: black;
+}
+
+.outer .innerlist ul{
+    margin-left: 20px;
+    list-style: disc !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.committee-content {
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .outer {
+        font-size: 1rem;
+    }
+
+    .outer .accordion-container {
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    .outer .accordion {
+        padding: 0.75em;
+        border-width: 2px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+
+    .committee-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .outer .innerlist ul {
+        margin-left: 16px;
+        padding-left: 0;
+    }
+
+    .outer button {
+        text-align: left;
+        line-height: 1.4;
+    }
+
+    .outer .accordion {
+        background: var(--light_background);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+}

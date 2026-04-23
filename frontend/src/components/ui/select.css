@@ -1,0 +1,53 @@
+/* select-trigger.css */
+
+.select-trigger {
+  box-sizing: border-box; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  min-width: 200px;
+  height: 2.5rem;
+
+  
+  background-color: #ffffff;
+  color: black;
+  
+  border: 1px solid gray;
+  border-radius: 6px;
+
+  padding: 0 12px;
+  
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.select-trigger > span {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-trigger:focus {
+  outline: none;
+  
+  box-shadow: 
+    0 0 0 2px var(--background, #ffffff), 
+    0 0 0 4px var(--ring, #94a3b8);
+}
+
+.select-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.select-trigger::placeholder {
+  color: var(--muted-foreground, #64748b);
+}
+
+.select-trigger:hover {
+  border-color: #333333;
+}

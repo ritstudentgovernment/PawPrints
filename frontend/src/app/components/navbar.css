@@ -1,0 +1,137 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    background-color: var(--main_color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px;
+    z-index: 100;
+    color: white;
+}
+
+/* Desktop left section */
+.nav-left-desktop {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Right side */
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Hide mobile-only sections on desktop */
+.nav-left-mobile,
+.nav-center-mobile,
+.mobile-menu {
+    display: none;
+}
+
+.logo {
+    width: 9rem;
+    padding-bottom: 8px;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 4px;            
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--main_color);
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    padding: 10px 0;
+}
+
+.dropdown-menu a {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.dropdown-menu a:hover {
+    background: var(--highlight_hover);
+}
+
+@media (max-width: 768px) {
+
+    .navbar {
+        justify-content: space-between;
+        padding: 0 15px;
+    }
+
+    /* Hide desktop links */
+    .nav-left-desktop {
+        display: none;
+    }
+
+    /* Show hamburger */
+    .nav-left-mobile {
+        display: flex;
+        align-items: center;
+    }
+
+    .hamburger {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    /* Center logo */
+    .nav-center-mobile {
+        display: flex;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Mobile dropdown menu */
+    .mobile-menu {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--main_color);
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .mobile-menu a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+    }
+}
