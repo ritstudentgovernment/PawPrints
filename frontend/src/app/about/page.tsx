@@ -17,8 +17,15 @@ export default function Page() {
                 <h1>History</h1>
                 <div className="container">
                     <div className="history-text">            
-                        <p>Student Government President Ashley Carrington and Vice President Tyler Pierce (2014-2015) sought to improve engagement of RIT Students through a Petition site. The site creates a place for the RIT community to converse on important issues.</p>
-
+                        <p>Student Government President Ashley Carrington and Vice President Tyler Pierce (2014-2015) 
+                            sought to improve engagement of RIT Students through a Petition site. The site creates a 
+                            place for the RIT community to converse on important issues.</p>
+                        <br />
+                        <p>After ten years Student Government Director of Technology Services Luke McEwen began 
+                            development of a complete remake of pawprints using modern coding practices to improve 
+                            stability and make pawprints easier to add new features. This project was finished in 2026 
+                            by Student Government Director of Technology Services Alexander Kilroy, laying the groundwork 
+                            for expansion of new features to the platform.</p>
                         <br />
                         <p>To remain transparent, this site is an open source project available on <a href="https://github.com/ritstudentgovernment/PawPrints">GitHub</a></p>
 
