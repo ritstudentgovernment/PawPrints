@@ -1,0 +1,42 @@
+.site-alert-bell {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.site-alert-bell__icon {
+  font-size: 2rem;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+  user-select: none;
+}
+
+.site-alert-bell:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.site-alert-bell:active {
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .site-alert-bell {
+    width: 56px;
+    height: 56px;
+  }
+
+  .site-alert-bell__icon {
+    font-size: 1.75rem;
+  }
+}

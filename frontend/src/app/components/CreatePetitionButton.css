@@ -1,7 +1,4 @@
 .floating-create-button {
-  position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
   width: 64px;
   height: 64px;
 
@@ -18,7 +15,6 @@
   justify-content: center;
 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  z-index: 1000;
 
   transition:
     transform 0.15s ease-out,
@@ -47,8 +43,6 @@
 /* Slightly smaller on mobile */
 @media (max-width: 768px) {
   .floating-create-button {
-    bottom: 1.5rem;
-    right: 1.5rem;
     width: 56px;
     height: 56px;
   }

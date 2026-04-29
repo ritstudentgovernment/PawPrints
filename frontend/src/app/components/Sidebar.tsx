@@ -15,17 +15,16 @@ export default function Sidebar({ tags }: { tags: TagType[] }) {
   const { replace } = useRouter();
   const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
 
-  // useEffect(() => {
-  //   const tagFromUrl = searchParams.get('tag');
-  //   setSelectedTag(getTagNameById(tagFromUrl));
-  // }, [searchParams]);
+  function getTagNameById(id?: string | null): string | undefined {
+    if (!id) return undefined;
+    const tag = tags.find((t) => t.id.toString() === id);
+    return tag ? tag.name : undefined;
+  }
 
-
-function getTagNameById(id?: string | null): string | undefined {
-  if (!id) return undefined;
-  const tag = tags.find((t) => t.id.toString() === id);
-  return tag ? tag.name : undefined;
-}
+  useEffect(() => {
+    const tagFromUrl = searchParams.get('tag');
+    setSelectedTag(getTagNameById(tagFromUrl));
+  }, [searchParams, tags]);
 
 function filterSearch(tag_id?: string, tag_name?: string) {
   const params = new URLSearchParams(searchParams.toString());

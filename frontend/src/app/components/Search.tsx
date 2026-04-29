@@ -6,11 +6,21 @@ import { useSearchParams, usePathname, useRouter} from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import Sidebar from './Sidebar';
 import { TagType } from './SidebarItem';
+import { useEffect, useState } from 'react';
+import { API_URL } from '../api/specialRoute';
 
-export default function Search({ placeholder, tags }: { placeholder: string, tags: TagType[]}) {
+export default function Search({ placeholder }: { placeholder: string }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
+    const [tags, setTags] = useState<TagType[]>([]);
+
+    useEffect(() => {
+        fetch(`${API_URL}/api/v1/tags`, { credentials: 'include' })
+            .then(res => res.ok ? res.json() : { tags: [] })
+            .then(data => setTags(data.tags ?? []))
+            .catch(() => {});
+    }, []);
 
     const handleSearch = useDebouncedCallback((term) => {
 

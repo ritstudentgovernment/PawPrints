@@ -43,7 +43,20 @@ export default function PetitionList({
         }
     }, [petitions, page]);
 
-    // TODO: FIX THIS, DOUBLE FETCHING ISSUE FOR FIRST LOAD ON PETITIONS 
+    // Client-side fallback: SSR fetch inside the container can fail (ECONNREFUSED);
+    // if initialData came back empty, re-fetch from the browser where the API is reachable.
+    useEffect(() => {
+        if (petitions.length > 0) return;
+        const fetchFallback = async () => {
+            const result = await GET(query, status, tag, 1, itemsPerPage);
+            if (result.petitions?.length > 0) {
+                setPetitions(result.petitions);
+            }
+        };
+        fetchFallback();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // TODO: FIX THIS, DOUBLE FETCHING ISSUE FOR FIRST LOAD ON PETITIONS
 
     useEffect(() => {
         const current = searchParams.toString();

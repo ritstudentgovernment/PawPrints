@@ -21,6 +21,7 @@ from pawprints.api import (
     permission_router,
     petition_router,
     role_router,
+    settings_router,
     stats_router,
     tag_router,
     user_router,
@@ -209,6 +210,7 @@ app.include_router(petition_router, prefix="/api/v1/petitions")
 app.include_router(image_router, prefix="/api/v1/images")
 app.include_router(tag_router, prefix="/api/v1/tags")
 app.include_router(stats_router, prefix="/api/v1/stats")
+app.include_router(settings_router, prefix="/api/v1/settings")
 app.include_router(
     admin_petition_router, prefix="/api/v1/admin/petitions"
 )  # Admin endpoints for petition management

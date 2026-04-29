@@ -853,6 +853,9 @@ class PermissionEnum(enum.StrEnum):
     stats_read = "stats.read"
     stats_refresh = "stats.refresh"
 
+    # --- Site Settings ---
+    settings_update = "settings.update"
+
 
 class PermissionSchema(BaseModel):
     """Schema for a permission.
@@ -1340,3 +1343,15 @@ class ActivityTrendResponse(BaseModel):
     """Daily activity trend over a date range."""
 
     data: list[ActivityTrendPoint]
+
+
+class SiteAlertSchema(BaseModel):
+    alert_enabled: bool
+    alert_message: str
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SiteAlertUpdate(BaseModel):
+    alert_enabled: bool
+    alert_message: str = ""

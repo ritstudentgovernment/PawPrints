@@ -3,6 +3,8 @@
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import BannerCreate from "../components/BannerCreate";
+import SiteAlertModal from "../components/SiteAlertModal";
+import FloatingActionsBar from "../components/FloatingActionsBar";
 import './page.css';
 import { PetitionForm } from "./PetitionForm";
 import { useAuth } from "../hooks/useAuth";
@@ -53,7 +55,9 @@ export default function Create() {
 
             </div>
       <Footer/>
-
+      <FloatingActionsBar>
+        <SiteAlertModal />
+      </FloatingActionsBar>
     </main>
     )
 }

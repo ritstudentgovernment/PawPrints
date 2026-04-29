@@ -11,6 +11,8 @@ import StatusButtons from './components/statusButtons';
 import Banner from './components/Banner';
 import CreatePetitionButton from './components/CreatePetitionButton';
 import LoginErrorAlert from './components/LoginErrorAlert';
+import SiteAlertModal from './components/SiteAlertModal';
+import FloatingActionsBar from './components/FloatingActionsBar';
 
 import { Metadata, ResolvingMetadata } from "next";
 
@@ -35,7 +37,7 @@ export async function generateMetadata(
         const data = await res.json();
         return {
           title: `Sign this Petition!`,
-          description: data.title.substring(0, 160) + "...",
+          description: data.title.length > 200 ? data.title.substring(0, 200) + "..." : data.title,
           // FOR IMAGES LATER
           // openGraph: {
           //   images: [data.image_url || "/default-share.png"],
@@ -54,24 +56,6 @@ export async function generateMetadata(
   };
 }
 
-// Fetch tags server-side
-async function fetchTags() {
-  try {
-    const res = await fetch(`${API_URL}/api/v1/tags`, {
-      credentials: "include",
-    });
-    if (!res.ok) {
-      console.error('Failed to fetch tags:', res.status);
-      return [];
-    }
-    const data = await res.json();
-    return data.tags || [];
-  } catch (err) {
-    console.error('Error fetching tags:', err);
-    return [];
-  }
-}
-
 export default async function Home({searchParams}: Props) {
   // Unwrap searchParams (server-side)
   const params = await searchParams;
@@ -79,8 +63,6 @@ export default async function Home({searchParams}: Props) {
   const currentPage = Number(Array.isArray(params.page) ? params.page[0] : params.page) || 1;
   const tag = Array.isArray(params.tag) ? params.tag[0] : params.tag || '';
   const status = Array.isArray(params.status) ? params.status[0] : params.status || '';
-
-  const tags = await fetchTags();
 
   return (
     <main className="main">
@@ -91,13 +73,17 @@ export default async function Home({searchParams}: Props) {
         <Suspense fallback={null}>
           <LoginErrorAlert />
         </Suspense>
-        <Search placeholder="Search petitions..." tags={tags} />
+        <Search placeholder="Search petitions..." />
         <StatusButtons />
         <Suspense key={currentPage} fallback={<Loading />}>
           <PetitionContainer query={query} tag={tag} status={status} />
-          <CreatePetitionButton></CreatePetitionButton>
         </Suspense>
       </div>
+
+      <FloatingActionsBar>
+        <SiteAlertModal />
+        <CreatePetitionButton />
+      </FloatingActionsBar>
     </main>
   );
 }

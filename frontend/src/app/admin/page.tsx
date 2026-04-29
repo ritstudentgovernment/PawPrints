@@ -10,6 +10,7 @@ import AdminCommitteesSection from "./AdminCommitteesSection";
 import AdminPetitionsSection from "./AdminPetitionsSection";
 import AdminTagsSection from "./AdminTagsSection";
 import AdminPawstatsSection from "./AdminPawstatsSection";
+import AdminSiteSettingsSection from "./AdminSiteSettingsSection";
 import { useState } from "react";
 import "material-symbols";
 import { useAuth } from "../hooks/useAuth";
@@ -93,6 +94,13 @@ export default function AdminPage() {
                 <span className="material-symbols-outlined" aria-hidden="true">bar_chart</span>
                 Pawstats
               </button>
+              <button
+                className={`admin-nav-item ${activeTab === "settings" ? "active" : ""}`}
+                onClick={() => handleNavClick("settings")}
+              >
+                <span className="material-symbols-outlined" aria-hidden="true">settings</span>
+                Site Settings
+              </button>
             </nav>
           </aside>
 
@@ -151,6 +159,13 @@ export default function AdminPage() {
             {activeTab === "pawstats" && (
               <section id="pawstats" className="admin-section">
                 <AdminPawstatsSection />
+              </section>
+            )}
+
+            {/* SITE SETTINGS SECTION */}
+            {activeTab === "settings" && (
+              <section id="settings" className="admin-section">
+                <AdminSiteSettingsSection />
               </section>
             )}
           </div>

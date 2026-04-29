@@ -1318,3 +1318,26 @@ class StatsActivityLog(Base):
 
     def __repr__(self) -> str:
         return f"<StatsActivityLog(date={self.date}, hour={self.hour}, endpoint={self.endpoint_group})>"
+
+
+# ---------------------------------------------------------------------
+# Site Settings (singleton row, id=1)
+# ---------------------------------------------------------------------
+
+
+class SiteSettings(Base):
+    """
+    Singleton settings row for site-wide configuration.
+
+    Only one row with id=1 is expected to exist.
+    """
+
+    __tablename__ = "site_settings"
+
+    id = Column(Integer, primary_key=True, default=1)
+    alert_enabled = Column(Boolean, nullable=False, default=False, server_default=sa.text("false"))
+    alert_message = Column(Text, nullable=False, default="", server_default="''")
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+    def __repr__(self) -> str:
+        return f"<SiteSettings(alert_enabled={self.alert_enabled})>"
